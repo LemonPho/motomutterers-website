@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'motomutters_fantasy_league.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'motomutterers_fantasy_league.settings')
 
 application = get_wsgi_application()
