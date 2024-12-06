@@ -82,7 +82,7 @@ def register(request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = account_activation_token.make_token(user)
     protocol = 'https' if request.is_secure() else 'http'
-    email_subject = "Activate your motomutters fantasy league account"
+    email_subject = "Activate your motomutterers fantasy league account"
     email_body = f"Hello {user.username},\nPlease activate your account with this link, it will be valid for 15 minutes: {protocol}://{domain}/activate?uid={uid}&token={token}"
     email = EmailMessage(email_subject, email_body, to=[email])
     if email.send():
