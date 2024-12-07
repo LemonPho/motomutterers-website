@@ -80,13 +80,11 @@ export function ApplicationContextProvider({children}){
     }
 
     async function retrieveApplicationContextData(){
-        setLoadingMessage("Loading...");
         setContextLoading(true);
         await retrieveUserData();
         await retrieveCurrentSeason();
         await retrievePicksState();
         setContextLoading(false);
-        setLoadingMessage(false);
     }
 
     async function setLogout(){

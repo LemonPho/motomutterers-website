@@ -9,7 +9,7 @@ from .models import Announcement, AnnouncementComment, Notification, CurrentSeas
 
 import re
 
-ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "ico", "svg"]
+ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "ico", "svg", "heic", "heif"]
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')

@@ -3,16 +3,21 @@ import { Navigate } from "react-router-dom";
 
 import { submitRegistration } from "./fetch-utils/fetchPost";
 
-import ApplicationContext, { useApplicationContext } from "./ApplicationContext";
+import { useApplicationContext } from "./ApplicationContext";
 
 import { enterKeySubmit } from "./utils";
 
-function RegisterPage() {
+export default function RegisterPage() {
     const {loggedIn, contextLoading, setErrorMessage, setSuccessMessage, setLoadingMessage} = useApplicationContext();
 
     const [createUserLoading, setCreateUserLoading] = useState(false);
 
     async function registerAccount(){
+        if(createUserLoading){
+            return;
+        }
+
+        setCreateUserLoading(true);
         setLoadingMessage("Loading...");
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
@@ -20,8 +25,6 @@ function RegisterPage() {
         const password2 = document.getElementById("password-confirm").value;
 
         const registerResponse = await submitRegistration(username, email, password1, password2);
-
-        console.log(registerResponse);
 
         if(registerResponse.error){
             setErrorMessage("An error ocurred while submiting the account");
@@ -101,5 +104,3 @@ function RegisterPage() {
         </div>
     );
 }
-
-export default RegisterPage;
