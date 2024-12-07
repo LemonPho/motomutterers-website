@@ -108,9 +108,6 @@ export default function FindAccount() {
                     <div className="input-group mt-3 px-3 mx-auto">
                         <button className="btn btn-primary btn-block" onClick={searchAccount}>Find Account</button>
                     </div>
-                    <div className="container d-flex justify-content-center mt-2 mb-2 px-3">
-                        <a href="/contact"><small>Contact admin</small></a>
-                    </div>
                 </div>
             </div>
         )

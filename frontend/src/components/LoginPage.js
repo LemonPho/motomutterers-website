@@ -8,7 +8,14 @@ import { enterKeySubmit } from "./utils";
 function LoginPage() {
     const {loggedIn, contextLoading, setLoadingMessage, retrieveUserData, setErrorMessage} = useApplicationContext();
 
+    const [loginLoading, setLoginLoading] = useState(false);
+
     async function login(){
+        if(loginLoading){
+            return;
+        }
+
+        setLoginLoading(true);
         setLoadingMessage("Loading...");
 
         let isUsername = true;
@@ -25,18 +32,21 @@ function LoginPage() {
             setErrorMessage("Error logging in");
             console.log(loginResponse.error);
             setLoadingMessage(false);
+            setLoginLoading(false);
             return;
         }
 
         if(loginResponse.status == 400){
             setErrorMessage("Invalid credentials");
             setLoadingMessage(false);
+            setLoginLoading(false);
             return;
         }
 
         if(loginResponse.status === 403){
             setLoadingMessage(false);
             setErrorMessage("Error logging in");
+            setLoginLoading(false);
             return;
         }
 
@@ -45,6 +55,7 @@ function LoginPage() {
         }
 
         setLoadingMessage(false);
+        setLoginLoading(false);
     }
 
     if(contextLoading){
@@ -68,9 +79,16 @@ function LoginPage() {
                 <div className="input-group mt-3 px-3 mx-auto">
                     <input type="password" className="form-control" placeholder="Password" id="password" onKeyUp={(e) => {enterKeySubmit(e, login)}}/>
                 </div>
+                
+                {loginLoading && 
+                <div className="input-group mt-3 px-3 mx-auto">
+                    <button type="submit" className="btn btn-primary w-100" disabled>Login</button>
+                </div>}
+                {!loginLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
                     <button type="submit" className="btn btn-primary w-100" onClick={login}>Login</button>
-                </div>
+                </div>}
+                
                 <div className="container d-flex justify-content-center">
                     <small className="mt-2 px-3"><a href="/find-account">Forgot your password?</a></small>
                 </div>

@@ -93,7 +93,7 @@ function LayoutPage() {
             </div>
             <div className="dynamic-container" style={{maxWidth: "10in", paddingLeft: "0.5rem", paddingRight: "0.5rem"}}>
                 {errorMessage && <div className="alert alert-danger my-2" style={{whiteSpace: "pre-line"}}>{errorMessage}</div>}
-                {successMessage &&  <div className="alert alert-success my-2" style={{whiteSpace: "pre-line"}}>{successMessage}</div>}
+                {successMessage && <div className="alert alert-success my-2" style={{whiteSpace: "pre-line"}}>{successMessage}</div>}
                 {loadingMessage && <div className="alert alert-secondary my-2" style={{whiteSpace: "pre-line"}}>{loadingMessage}</div>}
                 <Outlet />
             </div>

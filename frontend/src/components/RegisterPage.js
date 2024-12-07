@@ -79,7 +79,6 @@ export default function RegisterPage() {
                 </div>
                 <hr className="mt-2"/>
                 <div className="input-group mt-3 px-3 mx-auto">
-                {createUserLoading && <div className="alert alert-secondary w-100"><div className="d-flex justify-content-center">Loading...</div></div>}
                 </div>
                 <div className="input-group px-3  mx-auto">
                     <input type="text" className="form-control" placeholder="Username" id="username" onKeyUp={(e) => enterKeySubmit(e, registerAccount)}/>
@@ -93,9 +92,17 @@ export default function RegisterPage() {
                 <div className="input-group mt-3 px-3 mx-auto">
                     <input type="password" className="form-control" placeholder="Confirm password" id="password-confirm" onKeyUp={(e) => enterKeySubmit(e, registerAccount)}/>
                 </div>
+
+                {createUserLoading && 
+                <div className="input-group mt-3 px-3 mx-auto">
+                    <button className="btn btn-primary w-100" disabled>Sign up</button>    
+                </div>}
+
+                {!createUserLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
                     <button className="btn btn-primary w-100" onClick={registerAccount}>Sign up</button>
-                </div>
+                </div>}
+
                 <hr />
                 <div className="input-group mb-3 px-3 mx-auto">
                     <a href="/login" className="btn btn-success w-100">Login to an account</a>
