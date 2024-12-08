@@ -7,15 +7,19 @@ import { submitUserPicks } from "./fetch-utils/fetchPost";
 export default function UserPicksSelector(){
     const { setErrorMessage, addErrorMessage, setSuccessMessage, setLoadingMessage, currentSeason, competitorsSortedNumber, loggedIn, user, contextLoading, selectPicksState } = useApplicationContext();
 
-    const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0, 0, 0])
+    const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0])
     const [loading, setLoading] = useState(true);
     const [userPicks, setUserPicks] = useState([0, 0, 0, 0, 0]);
-    const [userIndependentPick, setUserIndependentPick] = useState(null);
-    const [userRookiePick, setUserRookiePick] = useState(null);
+    const [userIndependentPick, setUserIndependentPick] = useState(false);
+    const [invalidIndependent, setInvalidIndependent] = useState(false);
+    const [userRookiePick, setUserRookiePick] = useState(false);
+    const [invalidRookie, setInvalidRookie] = useState(false);
     const [picksWords, setPicksWords] = useState(["1st", "2nd", "3rd", "4th", "5th"]);
 
     function resetInvalidPicks(){
-        setInvalidPicks([0, 0, 0, 0, 0, 0, 0]);
+        setInvalidPicks([0, 0, 0, 0, 0]);
+        setInvalidRookie(false);
+        setInvalidIndependent(false);
     }
 
     function addUserPick(position, competitor) {
@@ -70,28 +74,14 @@ export default function UserPicksSelector(){
             }
 
             if(picksResponse.invalidIndependent){
-                if(!picksResponse.invalidPicks){
-                    addInvalidPicks([false, false, false, false, false, true, false])
-                } else {
-                    picksResponse.invalidPicks.push(true);
-                    addInvalidPicks(picksResponse.invalidPicks);
-                }
+                setInvalidIndependent(true);
                 addErrorMessage("Selected independent rider is not an independent rider");
-                return;
             }
 
             if(picksResponse.invalidRookie){
-                if(!picksResponse.invalidPicks){
-                    addInvalidPicks([false, false, false, false, false, false, true])
-                } else {
-                    picksResponse.invalidPicks.push(true);
-                    addInvalidPicks(picksResponse.invalidPicks);
-                }
+                setInvalidRookie(true);
                 addErrorMessage("Selected rookie is not rookie");
-                return;
             }
-
-            setErrorMessage("There was an error submiting the picks");
         }
     }
     
@@ -105,16 +95,11 @@ export default function UserPicksSelector(){
         }
 
         if(userPicksResponse.userPicks != null){
-            let tempUserPicks = [];
-            //sorting the picks based on position, they dont arrive sorted
-            for(let i = 0; i < 6; i++){
-                for(let j = 0; j < 6; j++){
-                    if(userPicksResponse.userPicks[j].position == i){
-                        tempUserPicks[i] = userPicksResponse.userPicks[i].competitor_points.competitor;
-                    }
-                }
-            }
-            setUserPicks(tempUserPicks);
+            // Sort the userPicks based on the 'position' field
+            const sortedUserPicks = userPicksResponse.userPicks
+            .sort((a, b) => a.position - b.position)
+            .map(pick => pick.competitor_points.competitor);
+            setUserPicks(sortedUserPicks);
             if(userPicksResponse.independentPick != null){
                 setUserIndependentPick(userPicksResponse.independentPick.competitor_points.competitor);
             }
@@ -205,21 +190,21 @@ export default function UserPicksSelector(){
 
                         <div className="card-body" style={{padding: "8px"}}>
                             <div className="dropdown p-2">
-                                {invalidPicks[5] && 
+                                {invalidIndependent == true && 
                                 <button className="btn btn-outline-danger dropdown-toggle" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
-                                    {userIndependentPick && <span>{userIndependentPick.first} {userIndependentPick.last}</span>}
-                                    {!userIndependentPick && <span>Independent Pick</span>}
+                                    {userIndependentPick != 0 && <span>{userIndependentPick.first} {userIndependentPick.last}</span>}
+                                    {userIndependentPick == 0 && <span>Independent Pick</span>}
                                 </button>}
 
-                                {!invalidPicks[5] &&
+                                {invalidIndependent == false &&
                                 <button className="btn btn-outline-secondary dropdown-toggle" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
-                                    {userIndependentPick && <span>{userIndependentPick.first} {userIndependentPick.last}</span>}
-                                    {!userIndependentPick && <span>Independent Pick</span>}
+                                    {userIndependentPick != 0 && <span>{userIndependentPick.first} {userIndependentPick.last}</span>}
+                                    {userIndependentPick == 0 && <span>Independent Pick</span>}
                                 </button>}
                                 
                                 <ul className="dropdown-menu" id={`independent-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
                                     {competitorsSortedNumber.map((competitor) => (
-                                        competitor.independent && <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
+                                        <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {setUserIndependentPick(competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
                                     ))}
                                 </ul>
                             </div>
@@ -236,21 +221,21 @@ export default function UserPicksSelector(){
 
                         <div className="card-body" style={{padding: "8px"}}>
                             <div className="dropdown p-2">
-                                {invalidPicks[6] && 
+                                {invalidRookie == true && 
                                 <button className="btn btn-outline-danger dropdown-toggle" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
-                                    {userRookiePick && <span>{userRookiePick.first} {userRookiePick.last}</span>}
-                                    {!userRookiePick && <span>Rookie Pick</span>}
+                                    {userRookiePick != 0 && <span>{userRookiePick.first} {userRookiePick.last}</span>}
+                                    {userRookiePick == 0 && <span>Rookie Pick</span>}
                                 </button>}
 
-                                {!invalidPicks[6] &&
+                                {invalidRookie == false &&
                                 <button className="btn btn-outline-secondary dropdown-toggle" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
-                                    {userRookiePick && <span>{userRookiePick.first} {userRookiePick.last}</span>}
-                                    {!userRookiePick && <span>Rookie Pick</span>}
+                                    {userRookiePick != 0 && <span>{userRookiePick.first} {userRookiePick.last}</span>}
+                                    {userRookiePick == 0 && <span>Rookie Pick</span>}
                                 </button>}
                                 
                                 <ul className="dropdown-menu" id={`rookie-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
                                     {competitorsSortedNumber.map((competitor) => (
-                                        competitor.rookie && <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
+                                        (<li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {setUserRookiePick(competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>)
                                     ))}
                                 </ul>
                             </div>

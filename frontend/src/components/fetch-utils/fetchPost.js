@@ -1125,13 +1125,14 @@ export async function submitToggleSeasonFinalize(year){
     return response;
 }
 
-export async function submitUserPicks(picks, independentPick){
+export async function submitUserPicks(picks, independentPick, rookiePick){
     let response = {
         error: false,
         status: null,
         picksAlreadySelected: false,
         invalidPicks: false,
         invalidIndependent: false,
+        invalidRookie: false,
     }
 
     try{
@@ -1146,6 +1147,7 @@ export async function submitUserPicks(picks, independentPick){
             body: JSON.stringify({
                 picks_ids: picks,
                 independent_pick_id: independentPick,
+                rookie_pick_id: rookiePick,
             }),
         });
 
@@ -1154,7 +1156,8 @@ export async function submitUserPicks(picks, independentPick){
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.picksAlreadySelected = apiResponse.status === 400 ? apiResult.picks_already_selected : false;
         response.invalidPicks = apiResponse.status === 400 ? apiResult.invalid_picks : false;
-        response.invalidIndependent = apiResponse.status === 400 ? apiResult.invalid_independent: false;
+        response.invalidIndependent = apiResponse.status === 400 ? apiResult.invalid_independent : false;
+        response.invalidRookie = apiResponse.status === 400 ? apiResult.invalid_rookie : false;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

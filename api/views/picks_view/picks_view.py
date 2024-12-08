@@ -6,7 +6,7 @@ import json
 from ...models import UserPicks, CurrentSeason, Competitor, Season
 from ...serializers import UserPicksSerializer
 from .picks_util import update_members_points
-from .picks_validators import generate_validate_user_picks_data
+from .picks_validators import generate_validate_user_picks_data, WriteUserPicksSerializer
 from ..standings_view.standings_util import sort_standings
 
 def get_user_picks(request):
@@ -64,13 +64,12 @@ def set_user_picks(request):
         return JsonResponse(response, status=400)
         
     #validate with serializer
-    serializer = UserPicksSerializer(data=response["new_data"])
+    serializer = WriteUserPicksSerializer(data=response["new_data"])
 
     if not serializer.is_valid():
         response.pop("new_data")
-        print(serializer.errors)
         return JsonResponse(response, status=400)
-
+    
     #save
     serializer.save()
     if user_has_picks:

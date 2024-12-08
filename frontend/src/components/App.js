@@ -3,7 +3,15 @@ import { Routes, Route } from "react-router-dom";
 
 import { useApplicationContext } from "./ApplicationContext.js";
 
-import Admin from "./admin-page-components/AdminPage.js";
+//import SeasonEdit from "./admin-page-components/season-edit-components/SeasonEdit.js";
+//import Admin from "./admin-page-components/AdminPage.js";
+//import UserPicksSelector from "./UserPicksSelector.js";
+//import UserSettings from "./user-settings-page-components/UserSettingsPage.js";
+const Admin = React.lazy(() => import("./admin-page-components/AdminPage.js"));
+const SeasonEdit = React.lazy(() => import("./admin-page-components/season-edit-components/SeasonEdit.js"));
+const UserPicksSelector = React.lazy(() => import("./UserPicksSelector.js"));
+const UserSettings = React.lazy(() => import("./user-settings-page-components/UserSettingsPage.js"));
+
 import UsersIndexPage from './UsersIndexPage.js';
 import HomePage from './HomePage.js';
 import PageNotFound from './PageNotFound.js';
@@ -11,7 +19,6 @@ import LayoutPage from './layout-page-components/LayoutPage.js';
 import LoginPage from './LoginPage.js';
 import RaceResults from "./RaceResultsPage.js";
 import RegisterPage from "./RegisterPage.js";
-import SeasonEdit from "./admin-page-components/season-edit-components/SeasonEdit.js";
 import StandingsPage from "./StandingsPage.js";
 import UserPage from "./UserPage.js";
 import Announcements from "./AnnouncementsPage.js";
@@ -19,12 +26,10 @@ import AccountActivation from "./AccountActivationPage.js";
 import FindAccount from "./FindAccountPage.js";
 import ContactAdmin from "./ContactAdminPage.js";
 import ChangePassword from "./ChangePasswordPage.js";
-import UserSettings from "./user-settings-page-components/UserSettingsPage.js";
 import EmailActivation from "./EmailActivationPage.js";
 import Announcement from "./announcement-page-components/Announcement.js";
 import SeasonContextProvider from "./admin-page-components/season-edit-components/SeasonContext.js";
 import AnnouncementContextProvider from "./announcement-page-components/AnnouncementContext.js";
-import UserPicksSelector from "./UserPicksSelector.js";
 import SeasonCreateContextProvider from "./admin-page-components/SeasonCreateContext.js";
 
 export default function App() {
