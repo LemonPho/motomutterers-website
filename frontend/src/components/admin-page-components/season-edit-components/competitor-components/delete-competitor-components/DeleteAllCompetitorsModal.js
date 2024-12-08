@@ -38,7 +38,7 @@ export default function DeleteAllCompetitorsModal(){
             {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
             {loadingMessage && <div className="alert alert-secondary"><small>{loadingMessage}</small></div>}
             <div className="custom-modal-body justify-content-center">
-            <h5><strong>Are you sure you want to delete all the competitors?</strong></h5>
+            <h5><strong>Are you sure you want to delete all the riders?</strong></h5>
             </div>
             <hr />
             <div className="custom-modal-footer">

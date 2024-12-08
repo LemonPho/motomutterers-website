@@ -51,7 +51,7 @@ export default function CompetitorCreateAutomatic(){
     return (
         <div id="competitor-create-standings-modal" className="custom-modal hidden" onClick={(e) => e.stopPropagation()}>
             <div className="custom-modal-header justify-content-center">
-                <h5>Create competitor automatic</h5>
+                <h5>Create rider automatic</h5>
             </div>
 
             <hr />

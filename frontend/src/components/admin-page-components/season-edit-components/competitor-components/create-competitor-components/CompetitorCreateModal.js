@@ -59,21 +59,21 @@ export default function CompetitorCreateModal(){
                     <div className="card rounded-15 clickable mb-2" onClick={(e) => {resetApplicationMessages();toggleModal("competitor-create-standings-modal", e)}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
-                                <strong>Retrieve season competitors through motogp standings page</strong>
+                                <strong>Retrieve season riders through motogp standings page</strong>
                             </div>
                         </div>
                     </div>
                     <div className="card rounded-15 clickable mb-2" onClick={retrieveCompetitorsRiderList}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
-                                <strong>Retrieve season competitors through motogp rider list</strong>
+                                <strong>Retrieve season riders through motogp rider list</strong>
                             </div>
                         </div>
                     </div>
                     <div className="card rounded-15 clickable" onClick={(e) => {resetApplicationMessages();toggleModal("competitor-create-manual-modal", e)}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
-                                <strong>Create competitor manually</strong>
+                                <strong>Create riders manually</strong>
                             </div>
                         </div>
                     </div>

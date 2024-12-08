@@ -11,7 +11,7 @@ export default function CompetitorDeleteModal(){
                 <div className="card rounded-15 clickable mb-2" onClick={(e) => {toggleModal("delete-all-competitors-modal", e)}}>
                     <div className="card-body">
                         <div className="d-flex justify-content-center">
-                            <strong>Delete all competitors</strong>
+                            <strong>Delete all riders</strong>
                         </div>
                     </div>
                 </div>
@@ -19,7 +19,7 @@ export default function CompetitorDeleteModal(){
                 <div className="card rounded-15 clickable" onClick={(e) => {toggleModal("select-competitors-delete-modal", e)}}>
                     <div className="card-body">
                         <div className="d-flex justify-content-center">
-                            <strong>Select competitors to delete</strong>
+                            <strong>Select riders to delete</strong>
                         </div>
                     </div>
                 </div>
