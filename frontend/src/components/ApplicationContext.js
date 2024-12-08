@@ -13,9 +13,8 @@ export function ApplicationContextProvider({children}){
     const [selectPicksState, setSelectPicksState] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState(false);
-    const [secondaryErrorMessage, setSecondaryErrorMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
-    const [secondarySuccessMessage, setSecondarySuccessMessage] = useState(false);
+    const [informationMessage, setInformationMessage] = useState(false);
     const [modalErrorMessage, setModalErrorMessage] = useState(false);
     const [modalSuccessMessage, setModalSuccessMessage] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState(false);
@@ -24,9 +23,8 @@ export function ApplicationContextProvider({children}){
 
     function resetApplicationMessages(){
         setErrorMessage(false);
-        setSecondaryErrorMessage(false);
-        setSecondarySuccessMessage(false);
         setSuccessMessage(false);
+        setInformationMessage(false);
         setModalErrorMessage(false);
         setModalSuccessMessage(false);
         setLoadingMessage(false);
@@ -102,10 +100,11 @@ export function ApplicationContextProvider({children}){
     }
 
     return (
-        <ApplicationContext.Provider value={{   user, loggedIn, contextLoading, retrieveApplicationContextData, retrieveUserData, setLogout, currentSeason, competitorsSortedNumber, retrieveCurrentSeason,
-                                                errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, loadingMessage, selectPicksState,
-                                                setErrorMessage, addErrorMessage, setSuccessMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
-                                                resetApplicationMessages }}>
+        <ApplicationContext.Provider value={{   
+            user, loggedIn, contextLoading, retrieveApplicationContextData, retrieveUserData, setLogout, currentSeason, competitorsSortedNumber, retrieveCurrentSeason,
+            errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, loadingMessage, selectPicksState, informationMessage,
+            setErrorMessage, addErrorMessage, setSuccessMessage, setInformationMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
+            resetApplicationMessages }}>
             {children}
         </ApplicationContext.Provider>
     );

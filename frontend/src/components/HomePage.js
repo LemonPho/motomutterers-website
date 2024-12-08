@@ -15,7 +15,7 @@ export default function HomePage(){
     }
 
     return (
-        <div>
+        <div style={{ width: "100%" }}>
             <div className="row my-2">
                 {
                 currentSeason.year && 
