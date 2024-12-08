@@ -20,6 +20,7 @@ export default function CompetitorsManagement(){
     const [competitorFirst, setCompetitorFirst] = useState("");
     const [competitorLast, setCompetitorLast] = useState("");
     const [competitorIndependent, setCompetitorIndependent] = useState(false);
+    const [competitorRookie, setCompetitorRookie] = useState(false);
 
     function handleCompetitorData(event){
         const id = event.currentTarget.id;
@@ -34,6 +35,8 @@ export default function CompetitorsManagement(){
             setCompetitorFirst(event.currentTarget.innerHTML);
         } else if(id == "competitor-edit-last" || id == "competitor-create-last"){
             setCompetitorLast(event.currentTarget.innerHTML);
+        } else if(id == "competitor-edit-rookie" || id == "competitor-create-rooie"){
+            setCompetitorRookie(event.currentTarget.checked);
         }
     }
 
@@ -64,6 +67,7 @@ export default function CompetitorsManagement(){
         setCompetitorFirst(competitorResponse.competitor.competitor_points.competitor.first);
         setCompetitorLast(competitorResponse.competitor.competitor_points.competitor.last);
         setCompetitorIndependent(competitorResponse.competitor.independent);
+        setCompetitorRookie(competitorResponse.competitor.rookie);
         document.getElementById("competitor-edit-first").innerHTML = competitorResponse.competitor.competitor_points.competitor.first;
         document.getElementById("competitor-edit-last").innerHTML = competitorResponse.competitor.competitor_points.competitor.last;
     }
@@ -85,6 +89,7 @@ export default function CompetitorsManagement(){
             id: null,
             competitorPoints: newCompetitorPoints,
             independent: null,
+            rookie: null,
         }
 
         newCompetitor.first = competitorFirst;
@@ -96,9 +101,7 @@ export default function CompetitorsManagement(){
         newCompetitorPosition.id = tempCompetitor.id;
         newCompetitorPosition.competitorPoints = newCompetitorPoints;
         newCompetitorPosition.independent = competitorIndependent;
-
-        console.log(tempCompetitor);
-        console.log(newCompetitorPosition);
+        newCompetitorPosition.rookie = competitorRookie;
         
         const result = await editSeasonCompetitor(newCompetitorPosition);
 
@@ -200,8 +203,16 @@ export default function CompetitorsManagement(){
                         <input id="competitor-edit-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" value={competitorNumber} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
                         <input id="competitor-edit-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" value={competitorPoints} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
                     </div>
-                    <input id="competitor-edit-independent" type="checkbox" className="form-check-input" checked={competitorIndependent} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
-                    <label className="form-check-label ms-1" htmlFor="competitor-edit-independent">Independent Rider</label>
+                    <form className="form-check">
+                        <input id="competitor-edit-independent" type="checkbox" className="form-check-input" checked={competitorIndependent} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
+                        <label className="form-check-label ms-1" htmlFor="competitor-edit-independent">Independent Rider</label>
+                    </form>
+
+                    <form className="form-check">
+                        <input id="competitor-edit-rookie" type="checkbox" className="form-check-input" checked={competitorRookie} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
+                        <label className="form-check-label ms-1" htmlFor="competitor-edit-rookie">Rookie</label>
+                    </form>
+                    
                 </div>
                 <div className="custom-modal-footer">
                     <button id="competitor-edit-button" className="btn btn-primary me-auto rounded-15" onClick={editCompetitor}>Save Changes</button>

@@ -127,6 +127,7 @@ def generate_competitor_table_data(url, season):
     options.add_argument("--disable-gpu")
 
     browser = webdriver.Chrome(service=service, options=options)
+    #browser = webdriver.Chrome()
     browser.get(url)
     delay = 10
 

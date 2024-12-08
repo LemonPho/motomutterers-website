@@ -692,6 +692,7 @@ export async function submitEditSeasonCompetitor(newCompetitorPosition){
                 competitor_points: newCompetitorPosition.competitorPoints,
                 id: newCompetitorPosition.id,
                 independent: newCompetitorPosition.independent,
+                rookie: newCompetitorPosition.rookie,
             }),
         });
 

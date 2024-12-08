@@ -149,7 +149,7 @@ def create_competitor(request):
 
     if result["season_not_found"] or result["rider_exists"]:
         return JsonResponse(result, status=400)
-        
+            
     serializer = SeasonCompetitorPositionSerializer(data=data)
 
     if not serializer.is_valid():
@@ -157,52 +157,6 @@ def create_competitor(request):
         return JsonResponse(result, status=400)
     
     competitor_position = serializer.save()
-
-    '''
-    #create competitor
-    serializer = CompetitorSerializer(data=data["competitor_points"]["competitor"])
-    if not serializer.is_valid():
-        return JsonResponse(result, status=400)
-    
-    competitor = serializer.save()
-
-    #create competitor points
-    competitor_points_data = generate_competitor_points_data(competitor, int(data["competitor_points"]["points"]))
-    result["competitor_not_found"] = competitor_points_data.pop("competitor_not_found")
-    result["points_not_valid"] = competitor_points_data.pop("points_not_valid")
-
-    if result.get("competitor_not_found") or result.get("points_not_valid"):
-        return JsonResponse(result, status=400)
-    
-    serializer = CompetitorPointsSerializer(data=competitor_points_data)
-    if not serializer.is_valid():
-        print(serializer.errors)
-        competitor.delete()
-        return JsonResponse(result, status=400)
-    competitor_points = serializer.save()
-    
-    #create competitor position for the season
-    competitor_position_data = generate_season_competitor_position_data(competitor_points, year, independent)
-    result["season_not_found"] = competitor_position_data.pop("season_not_found")
-    result["competitor_points_not_found"] = competitor_position_data.pop("competitor_points_not_found")
-    if result["season_not_found"] or result["competitor_points_not_found"]:
-        return JsonResponse(result, status=400)
-    
-    serializer = SeasonCompetitorPositionSerializer(data=competitor_position_data)
-
-    if not serializer.is_valid():
-        print("season competitor position data invalid")
-        competitor_points.delete()
-        competitor.delete()
-        return JsonResponse(competitor_position_data, status=400)
-        
-    competitor_position = serializer.save()
-    
-    try:
-        season = Season.objects.filter(visible=True).get(year=year)
-    except Season.DoesNotExist:
-        season = None
-    '''
     #save competitor position to season
     season.competitors.add(competitor_position)
     season.save()

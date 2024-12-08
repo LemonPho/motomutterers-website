@@ -300,7 +300,7 @@ class SeasonCompetitorPositionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SeasonCompetitorPosition
-        fields = ["id", "competitor_points", "competitor_points_id", "independent", "season"]
+        fields = ["id", "competitor_points", "competitor_points_id", "independent", "rookie", "season"]
 
     def update(self, instance, validated_data):
         competitor_points_data = validated_data.get("competitor_points")
@@ -315,6 +315,7 @@ class SeasonCompetitorPositionSerializer(serializers.ModelSerializer):
         instance.competitor_points = competitor_points_serializer.save()
         
         instance.independent = validated_data.get("independent", instance.independent)
+        instance.rookie = validated_data.get("rookie", instance.rookie)
         instance.save()
         return instance
     

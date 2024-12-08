@@ -505,10 +505,11 @@ export async function getUserPicks(season_id){
         
         if(apiResult.user_picks != null){
             response.userPicks = apiResult.user_picks.picks;
-            response.userPicks.push(apiResult.user_picks.independent_pick); 
+            response.independentPick = apiResult.user_picks.independent_pick;
+            response.rookiePick = apiResult.user_picks.rookie_pick;
+            response.season = apiResult.user_picks.season;
         }
         
-        response.season = apiResult.user_picks.season;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

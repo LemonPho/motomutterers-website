@@ -10,7 +10,8 @@ export default function CreateCompetitorManual(){
 
     const [competitorFirst, setCompetitorFirst] = useState("");
     const [competitorLast, setCompetitorLast] = useState("");
-    const [competitorIndependent, setcompetitorIndependent] = useState(false);
+    const [competitorIndependent, setCompetitorIndependent] = useState(false);
+    const [competitorRookie, setCompetitorRookie] = useState(false);
     const [competitorNumber, setCompetitorNumber] = useState(1);
     const [competitorPoints, setCompetitorPoints] = useState(0);
 
@@ -22,11 +23,13 @@ export default function CreateCompetitorManual(){
         } else if(id == "competitor-edit-points" || id == "competitor-create-points") {
             setCompetitorPoints(event.currentTarget.value);
         } else if(id == "competitor-edit-independent" || id == "competitor-create-independent"){
-            setcompetitorIndependent(event.currentTarget.checked);
+            setCompetitorIndependent(event.currentTarget.checked);
         } else if(id == "competitor-edit-first" || id == "competitor-create-first"){
             setCompetitorFirst(event.currentTarget.innerHTML);
         } else if(id == "competitor-edit-last" || id == "competitor-create-last"){
             setCompetitorLast(event.currentTarget.innerHTML);
+        } else if(id == "competitor-edit-rookie" || id == "competitor-create-rookie"){
+            setCompetitorRookie(event.currentTarget.checked);
         }
     }
 
@@ -47,6 +50,7 @@ export default function CreateCompetitorManual(){
         let newCompetitorPosition = {
             competitor_points: newCompetitorPoints,
             independent: null,
+            rookie: null,
             season: season.year,
         }
 
@@ -58,6 +62,7 @@ export default function CreateCompetitorManual(){
         newCompetitorPoints.competitor = newCompetitor;
 
         newCompetitorPosition.independent = competitorIndependent;
+        newCompetitorPosition.rookie = competitorRookie;
         newCompetitorPosition.competitor_points = newCompetitorPoints;
 
         const result = await createSeasonCompetitor(newCompetitorPosition); 
@@ -83,8 +88,14 @@ export default function CreateCompetitorManual(){
                     <input id="competitor-create-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
                     <input id="competitor-create-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
                 </div>
-                <input id="competitor-create-independent" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
-                <label className="form-check-label ms-1" htmlFor="competitor-create-independent">Independent Rider</label>
+                <form className="form-check">
+                    <input id="competitor-create-independent" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
+                    <label className="form-check-label ms-1" htmlFor="competitor-create-independent">Independent Rider</label>
+                </form>
+                <form className="form-check">
+                    <input id="competitor-create-rookie" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
+                    <label className="form-check-label ms-1" htmlFor="competitor-create-rookie">Rookie Rider</label>
+                </form>
             </div>
             <div className="custom-modal-footer">
                 <button id="competitor-create-button" className="btn btn-primary me-auto rounded-15" onClick={createCompetitor}>Create rider</button>

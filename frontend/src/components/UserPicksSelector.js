@@ -196,7 +196,7 @@ export default function UserPicksSelector(){
                         </div>
                     )
                 ))}
-                {userIndependentPick != null && 
+                {currentSeason.top_independent && 
                 <div className="col d-flex justify-content-center" key={`independent-pick-dropdown-div`}>
                     <div className="card text-center mb-2">
                         <div className="card-header">
@@ -219,7 +219,7 @@ export default function UserPicksSelector(){
                                 
                                 <ul className="dropdown-menu" id={`independent-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
                                     {competitorsSortedNumber.map((competitor) => (
-                                        <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
+                                        competitor.independent && <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
                                     ))}
                                 </ul>
                             </div>
@@ -227,7 +227,7 @@ export default function UserPicksSelector(){
                     </div>
                 </div>}
 
-                {userRookiePick != null && 
+                {currentSeason.top_rookie && 
                 <div className="col d-flex justify-content-center" key={`rookie-pick-dropdown-div`}>
                     <div className="card text-center mb-2">
                         <div className="card-header">
@@ -250,7 +250,7 @@ export default function UserPicksSelector(){
                                 
                                 <ul className="dropdown-menu" id={`rookie-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
                                     {competitorsSortedNumber.map((competitor) => (
-                                        <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
+                                        competitor.rookie && <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
                                     ))}
                                 </ul>
                             </div>
