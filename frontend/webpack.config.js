@@ -1,13 +1,17 @@
 const path = require("path");
 const webpack = require("webpack");
+const BundleTracker = require("webpack-bundle-tracker")
 
 module.exports = {
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "./static/frontend"),
+    path: path.resolve(__dirname, "static/frontend"),
     filename: "[name].[contenthash].js",
     clean: true,
   },
+  plugins: [
+    new BundleTracker({ filename: path.join("./webpack-stats.json") }), 
+  ],
   module: {
     rules: [
       {
