@@ -7,14 +7,15 @@ import { submitUserPicks } from "./fetch-utils/fetchPost";
 export default function UserPicksSelector(){
     const { setErrorMessage, addErrorMessage, setSuccessMessage, setLoadingMessage, currentSeason, competitorsSortedNumber, loggedIn, user, contextLoading, selectPicksState } = useApplicationContext();
 
-    const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0, 0])
+    const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0, 0, 0])
     const [loading, setLoading] = useState(true);
-    const [userPicks, setUserPicks] = useState([0, 0, 0, 0, 0, 0]);
-    const [userPicksIds, setUserPicksIds] = useState([0, 0, 0, 0, 0, 0]);
-    const [picksWords, setPicksWords] = useState(["1st", "2nd", "3rd", "4th", "5th", "Independent"])
+    const [userPicks, setUserPicks] = useState([0, 0, 0, 0, 0]);
+    const [userIndependentPick, setUserIndependentPick] = useState(null);
+    const [userRookiePick, setUserRookiePick] = useState(null);
+    const [picksWords, setPicksWords] = useState(["1st", "2nd", "3rd", "4th", "5th"]);
 
     function resetInvalidPicks(){
-        setInvalidPicks([0, 0, 0, 0, 0, 0]);
+        setInvalidPicks([0, 0, 0, 0, 0, 0, 0]);
     }
 
     function addUserPick(position, competitor) {
@@ -25,12 +26,6 @@ export default function UserPicksSelector(){
         
             return newUserPicks;
         });
-
-        setUserPicksIds((prevUserPicksIds) => {
-            const newUserPicksIds = [...prevUserPicksIds];
-            newUserPicksIds[position] = competitor.id;
-            return newUserPicksIds;
-        })
     }
 
     function addInvalidPicks(invalidPicks){
@@ -42,9 +37,8 @@ export default function UserPicksSelector(){
 
     async function submitPicks(){
         setLoadingMessage("Loading...");
-        let picks = userPicksIds.slice(0, 5);
-        let independentPick = userPicksIds[5];
-        const picksResponse = await submitUserPicks(picks, independentPick);
+        let picks = userPicks.map(pick => pick.id);
+        const picksResponse = await submitUserPicks(picks, userIndependentPick.id, userRookiePick.id);
         resetInvalidPicks();
         setLoadingMessage(false);
 
@@ -77,7 +71,7 @@ export default function UserPicksSelector(){
 
             if(picksResponse.invalidIndependent){
                 if(!picksResponse.invalidPicks){
-                    addInvalidPicks([false, false, false, false, false, true])
+                    addInvalidPicks([false, false, false, false, false, true, false])
                 } else {
                     picksResponse.invalidPicks.push(true);
                     addInvalidPicks(picksResponse.invalidPicks);
@@ -86,14 +80,23 @@ export default function UserPicksSelector(){
                 return;
             }
 
+            if(picksResponse.invalidRookie){
+                if(!picksResponse.invalidPicks){
+                    addInvalidPicks([false, false, false, false, false, false, true])
+                } else {
+                    picksResponse.invalidPicks.push(true);
+                    addInvalidPicks(picksResponse.invalidPicks);
+                }
+                addErrorMessage("Selected rookie is not rookie");
+                return;
+            }
+
             setErrorMessage("There was an error submiting the picks");
         }
-
-        
     }
     
     async function retrieveUserPicks(){
-        const userPicksResponse = await getUserPicks();
+        const userPicksResponse = await getUserPicks(currentSeason.id);
 
         if(userPicksResponse.error){
             setErrorMessage("There has been an error loading the selected picks");
@@ -101,10 +104,7 @@ export default function UserPicksSelector(){
             return;
         }
 
-        console.log(userPicksResponse);
-        console.log(currentSeason);
-
-        if(userPicksResponse.userPicks != null && userPicksResponse.season == currentSeason.id){
+        if(userPicksResponse.userPicks != null){
             let tempUserPicks = [];
             //sorting the picks based on position, they dont arrive sorted
             for(let i = 0; i < 6; i++){
@@ -115,12 +115,12 @@ export default function UserPicksSelector(){
                 }
             }
             setUserPicks(tempUserPicks);
-            setUserPicksIds([userPicksResponse.userPicks[0].competitor_points.competitor.id,
-                            userPicksResponse.userPicks[1].competitor_points.competitor.id,
-                            userPicksResponse.userPicks[2].competitor_points.competitor.id,
-                            userPicksResponse.userPicks[3].competitor_points.competitor.id,
-                            userPicksResponse.userPicks[4].competitor_points.competitor.id,
-                            userPicksResponse.userPicks[5].competitor_points.competitor.id])
+            if(userPicksResponse.independentPick != null){
+                setUserIndependentPick(userPicksResponse.independentPick.competitor_points.competitor);
+            }
+            if(userPicksResponse.rookiePick != null){
+                setUserRookiePick(userPicksResponse.rookiePick.competitor_points.competitor);
+            }
         }
     }
 
@@ -150,7 +150,6 @@ export default function UserPicksSelector(){
             </div>
 
             <div className="card-body">
-                
                 {userPicks.map((userPick, i) => (
                     invalidPicks[i] == true ? (
                         <div className="col d-flex justify-content-center" key={`${picksWords[i]}-pick-dropdown-div`}>
@@ -160,7 +159,7 @@ export default function UserPicksSelector(){
                                 </div>
                                 <div className="card-body" style={{padding: "8px"}}>
                                     <div className="dropdown p-2">
-                                        <button className="btn btn-outline-danger dropdown-toggle" onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
+                                        <button className="btn btn-outline-danger dropdown-toggle" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].first} {userPicks[i].last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
                                         </button>
@@ -182,7 +181,7 @@ export default function UserPicksSelector(){
 
                                 <div className="card-body" style={{padding: "8px"}}>
                                     <div className="dropdown p-2">
-                                        <button className="btn btn-outline-secondary dropdown-toggle" onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
+                                        <button className="btn btn-outline-secondary dropdown-toggle" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].first} {userPicks[i].last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
                                         </button>
@@ -196,7 +195,68 @@ export default function UserPicksSelector(){
                             </div>
                         </div>
                     )
-                ))}  
+                ))}
+                {userIndependentPick != null && 
+                <div className="col d-flex justify-content-center" key={`independent-pick-dropdown-div`}>
+                    <div className="card text-center mb-2">
+                        <div className="card-header">
+                            <h5 className="card-title text-muted">Independent Pick</h5>
+                        </div>
+
+                        <div className="card-body" style={{padding: "8px"}}>
+                            <div className="dropdown p-2">
+                                {invalidPicks[5] && 
+                                <button className="btn btn-outline-danger dropdown-toggle" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
+                                    {userIndependentPick && <span>{userIndependentPick.first} {userIndependentPick.last}</span>}
+                                    {!userIndependentPick && <span>Independent Pick</span>}
+                                </button>}
+
+                                {!invalidPicks[5] &&
+                                <button className="btn btn-outline-secondary dropdown-toggle" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
+                                    {userIndependentPick && <span>{userIndependentPick.first} {userIndependentPick.last}</span>}
+                                    {!userIndependentPick && <span>Independent Pick</span>}
+                                </button>}
+                                
+                                <ul className="dropdown-menu" id={`independent-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
+                                    {competitorsSortedNumber.map((competitor) => (
+                                        <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
+
+                {userRookiePick != null && 
+                <div className="col d-flex justify-content-center" key={`rookie-pick-dropdown-div`}>
+                    <div className="card text-center mb-2">
+                        <div className="card-header">
+                            <h5 className="card-title text-muted">Rookie Pick</h5>
+                        </div>
+
+                        <div className="card-body" style={{padding: "8px"}}>
+                            <div className="dropdown p-2">
+                                {invalidPicks[6] && 
+                                <button className="btn btn-outline-danger dropdown-toggle" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
+                                    {userRookiePick && <span>{userRookiePick.first} {userRookiePick.last}</span>}
+                                    {!userRookiePick && <span>Rookie Pick</span>}
+                                </button>}
+
+                                {!invalidPicks[6] &&
+                                <button className="btn btn-outline-secondary dropdown-toggle" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
+                                    {userRookiePick && <span>{userRookiePick.first} {userRookiePick.last}</span>}
+                                    {!userRookiePick && <span>Rookie Pick</span>}
+                                </button>}
+                                
+                                <ul className="dropdown-menu" id={`rookie-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
+                                    {competitorsSortedNumber.map((competitor) => (
+                                        <li key={`competitor-${competitor.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor.competitor_points.competitor)}}><small>#{competitor.competitor_points.competitor.number}</small> {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</a></li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
             </div>
             
             

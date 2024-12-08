@@ -4,41 +4,23 @@ import ApplicationContext, { useApplicationContext } from "../ApplicationContext
 import { getCompetitors, getSeasons } from "../fetch-utils/fetchGet";
 import { submitCurrentSeason, submitDeleteSeason, submitSeason } from "../fetch-utils/fetchPost";
 import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal } from "../utils";
+import SeasonCreateModal from "./SeasonCreateModal";
+import { useSeasonCreateContext } from "./SeasonCreateContext";
 
 export default function SeasonsSettings(){
-    const currentYear = new Date().getFullYear();
 
     const { errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, 
             setErrorMessage, setSuccessMessage, setModalErrorMessage, setModalSuccesMessage,
             resetApplicationMessages } = useApplicationContext();
     const {user, isLoggedIn, contextLoading} = useApplicationContext();
 
+    const { seasons, seasonsLoading, retrieveSeasons } = useSeasonCreateContext();
+
     const [selectedSeason, setSelectedSeason] = useState();
-    const [seasons, setSeasons] = useState([]);
-    const [seasonsLoading, setSeasonsLoading] = useState(true);
-    const [seasonYearCreation, setSeasonYearCreation] = useState(currentYear);
-
-    async function retrieveSeasons(){
-        let seasonsResponse = await getSeasons();
-
-        if(seasonsResponse.error){
-            console.log(seasonsResponse.error);
-            setErrorMessage("There was an error loading the seasons");
-            return;
-        }
-
-        setSeasons(seasonsResponse.seasons);
-        setSeasonsLoading(false);
-    }
-
-    function handleYearChange(event){
-        const year = event.target.value;
-        setSeasonYearCreation(year);
-    }
 
     function openDeleteModal(event, seasonId){
         setSelectedSeason(seasonId);
-        toggleModal("season-delete-modal", event, isLoggedIn);
+        toggleModal("season-delete-modal", event, isLoggedIn, user.is_admin);
     }
 
     async function setCurrentSeason(year){
@@ -50,27 +32,6 @@ export default function SeasonsSettings(){
             return;
         }
 
-        retrieveSeasons();
-    }
-
-    async function postSeason(){
-        resetApplicationMessages();
-        let seasonResponse = await submitSeason(seasonYearCreation);
-
-        if(seasonResponse.error){
-            console.log(error);
-            setModalErrorMessage("There was an error creating the season");
-            return;
-        }
-
-        if(seasonResponse.status !== 200){
-            setModalErrorMessage("Be sure the year of the season is unique");
-            return;
-        }
-
-        setSuccessMessage("Season created");
-        closeModals();
-        setSeasonYearCreation(currentYear);
         retrieveSeasons();
     }
 
@@ -143,23 +104,6 @@ export default function SeasonsSettings(){
                     </div>
                 </div>
 
-                <div className="custom-modal hidden" id="season-create-modal" onClick={(e) => {e.stopPropagation();}}>
-                    {modalErrorMessage != "" && <div className="alert alert-danger my-2"><small>{modalErrorMessage}</small></div>}
-                    {modalSuccessMessage != "" && <div className="alert alert-success my-2"><small>{modalSuccessMessage}</small></div>}
-                    <div className="custom-modal-header justify-content-center">  
-                        <h5>Create season</h5>
-                    </div>   
-                    <div className="custom-modal-body">
-                        <hr />
-                        <div className="d-flex justify-content-center w-100">
-                            <input className="input-field" type="number" min="1900" max="2099" step="1" value={seasonYearCreation} onChange={(e) => handleYearChange(e)} id="season-year" onKeyUp={(e) => enterKeySubmit(e, postSeason)} />
-                        </div>
-                    </div>
-                    <div className="custom-modal-footer">
-                        <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postSeason}>Create season</button>
-                    </div>
-                </div>
-
                 <div className="custom-modal hidden" id="season-delete-modal" onClick={(e) => {e.stopPropagation();}}>
                     {modalErrorMessage != "" && <div className="alert alert-danger my-2"><small>{modalErrorMessage}</small></div>}
                     {modalSuccessMessage != "" && <div className="alert alert-success my-2"><small>{modalSuccessMessage}</small></div>}
@@ -193,6 +137,8 @@ export default function SeasonsSettings(){
                         </div>
                     </div>
                 ))}
+
+                <SeasonCreateModal/>
 
             </div>
         );

@@ -710,8 +710,6 @@ export async function submitDeleteCompetitor(competitorId, seasonId){
         status: null,
     };
 
-    console.log(seasonId);
-
     try{
         const csrfToken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/delete-competitor/`, {
@@ -736,7 +734,36 @@ export async function submitDeleteCompetitor(competitorId, seasonId){
     return response;
 }
 
-export async function submitSeason(year){
+export async function submitDeleteAllCompetitors(seasonId){
+    let response = {
+        error: false,
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/delete-all-competitors/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                season_id: seasonId,
+            }),
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    };
+
+    return response;
+}
+
+export async function submitSeason(year, topIndependent, topRookie){
     let response = {
         error: false,
         status: null,
@@ -753,6 +780,8 @@ export async function submitSeason(year){
             mode: "same-origin",
             body: JSON.stringify({
                 year: year,
+                top_independent: topIndependent,
+                top_rookie: topRookie,
             }),
         });
 

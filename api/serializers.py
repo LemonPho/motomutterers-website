@@ -408,12 +408,14 @@ class SeasonSerializer(serializers.ModelSerializer):
     races = serializers.SerializerMethodField(read_only=True)
     current = serializers.SerializerMethodField(read_only=True)
     visible = serializers.BooleanField(read_only=True)
+    top_independent = serializers.BooleanField()
+    top_rookie = serializers.BooleanField()
     finalized = serializers.BooleanField(read_only=True)
     id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Season
-        fields = ["id", "year", "competitors", "races", "visible", "current", "finalized"]
+        fields = ["id", "year", "competitors", "races", "visible", "current", "top_independent" , "top_rookie", "finalized"]
 
     def get_races(self, season):
         races = season.races.all()
@@ -434,26 +436,52 @@ class SeasonSerializer(serializers.ModelSerializer):
 class UserPicksSerializer(serializers.ModelSerializer):
     picks = CompetitorPositionSerializer(many=True, required=False)
     independent_pick = CompetitorPositionSerializer(required=False)
+    rookie_pick = CompetitorPositionSerializer(required=False)
     user = UserSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(write_only=True, source="user", queryset=get_user_model().objects.all())
     class Meta:
         model = UserPicks
-        fields = ["picks", "independent_pick", "points", "user", "user_id", "season"]
+        fields = ["picks", "independent_pick", "rookie_pick", "points", "user", "user_id", "season"]
     #for updating a users picks, just creating a new instance and deleting the old one is the easiest way
 
     def create(self, validated_data):
         picks = validated_data.pop("picks")
+        season_id = validated_data.get("season")
+
+        try:
+            season_instance = Season.objects.get(pk=season_id)
+        except Season.DoesNotExist:
+            raise serializers.ValidationError("Season was not found")
+        
+
+
         picks_instances = []
         for pick in picks:
             competitor_points_instance = pick.pop("competitor_points_id")
             picks_instances.append(CompetitorPosition.objects.create(competitor_points=competitor_points_instance, **pick))
 
-        independent_pick = validated_data.pop("independent_pick")
-        competitor_points_instance = independent_pick.pop("competitor_points_id")
-        independent_pick_instance = CompetitorPosition.objects.create(competitor_points=competitor_points_instance, **independent_pick)
+        independent_pick = validated_data.pop("independent_pick", False)
+        rookie_pick = validated_data.pop("rookie_pick", False)
+        if season_instance.top_independent:
+            competitor_points_instance = independent_pick.pop("competitor_points_id")
+            independent_pick_instance = CompetitorPosition.objects.create(competitor_points=competitor_points_instance, **independent_pick)
+        else:
+            independent_pick_instance = None
 
-        user_picks = UserPicks.objects.create(independent_pick=independent_pick_instance, points=0, **validated_data)
-        points = user_picks.independent_pick.competitor_points.points
+        if season_instance.top_rookie:
+            competitor_points_instance = rookie_pick.pop("competitor_points_id")
+            rookie_pick_instance = CompetitorPosition.objects.create(competitor_points=competitor_points_instance, **rookie_pick)
+        else:
+            rookie_pick_instance = None
+
+        user_picks = UserPicks.objects.create(independent_pick=independent_pick_instance, rookie_pick=rookie_pick_instance, points=0, **validated_data)
+        
+        points = 0
+        if season_instance.top_independent:
+            points += user_picks.independent_pick.competitor_points.points
+        if season_instance.top_rookie:
+            points += user_picks.rookie_pick.competitor_points.points
+
         for pick_instance in picks_instances:
             user_picks.picks.add(pick_instance)
             points += pick_instance.competitor_points.points

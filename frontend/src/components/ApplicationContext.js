@@ -104,7 +104,7 @@ export function ApplicationContextProvider({children}){
     return (
         <ApplicationContext.Provider value={{   user, loggedIn, contextLoading, retrieveApplicationContextData, retrieveUserData, setLogout, currentSeason, competitorsSortedNumber, retrieveCurrentSeason,
                                                 errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, loadingMessage, selectPicksState,
-                                                setErrorMessage, addErrorMessage, setSuccessMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage,
+                                                setErrorMessage, addErrorMessage, setSuccessMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
                                                 resetApplicationMessages }}>
             {children}
         </ApplicationContext.Provider>

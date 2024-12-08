@@ -25,6 +25,7 @@ import Announcement from "./announcement-page-components/Announcement.js";
 import SeasonContextProvider from "./admin-page-components/season-edit-components/SeasonContext.js";
 import AnnouncementContextProvider from "./announcement-page-components/AnnouncementContext.js";
 import UserPicksSelector from "./UserPicksSelector.js";
+import SeasonCreateContextProvider from "./admin-page-components/SeasonCreateContext.js";
 
 export default function App() {
     const { retrieveApplicationContextData, contextLoading } = useApplicationContext();
@@ -42,7 +43,9 @@ export default function App() {
             <Route path="/" element={<LayoutPage />}>
                 <Route index element={<HomePage />}/>
                 <Route path="activate" element={<AccountActivation />}/>
-                <Route path="administration" element={<Admin />}/>
+                <Route path="administration" element={<SeasonCreateContextProvider />}>
+                    <Route index element={<Admin />}/>
+                </Route>
                 <Route path="administration/seasons/:seasonYear" element={<SeasonContextProvider/>}>
                     <Route index element={<SeasonEdit />}/>
                 </Route>

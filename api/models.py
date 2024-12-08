@@ -61,6 +61,7 @@ class CompetitorPosition(models.Model):
 class SeasonCompetitorPosition(models.Model):
     competitor_points = models.ForeignKey(CompetitorPoints, on_delete=models.CASCADE, related_name="season_competitor_position", null=True, blank=True)
     independent = models.BooleanField(default=False)
+    rookie = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-competitor_points__points"]
@@ -99,7 +100,8 @@ class User(AbstractUser):
 class UserPicks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="picks")
     picks = models.ManyToManyField(CompetitorPosition, related_name="picks", blank=True)
-    independent_pick = models.ForeignKey(CompetitorPosition, on_delete=models.CASCADE, related_name="independant_pick", blank=True, null=True)
+    independent_pick = models.ForeignKey(CompetitorPosition, on_delete=models.CASCADE, related_name="independent_pick", blank=True, null=True)
+    rookie_pick = models.ForeignKey(CompetitorPosition, on_delete=models.CASCADE, related_name="rookie_pick", blank=True, null=True)
     points = models.FloatField(default=0)
     season = models.ForeignKey("Season", on_delete=models.CASCADE, related_name="picks", null=True)
     position = models.PositiveIntegerField(default=1)
@@ -143,6 +145,8 @@ class Season(models.Model):
     races = models.ManyToManyField(Race, related_name="season", blank=True)
     visible = models.BooleanField(default=True)
     selection_open = models.BooleanField(default=False)
+    top_independent = models.BooleanField(default=True)
+    top_rookie = models.BooleanField(default=True)
     finalized = models.BooleanField(default=False)
 
 class CurrentSeason(models.Model):

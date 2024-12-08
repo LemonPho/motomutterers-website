@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
+from .views.users_view import user_view
+
 from .views.seasons_view import seasons_view
 
 from .views.announcements_view import announcements_view
@@ -9,7 +11,7 @@ from .views.competitors_view import competitors_view
 
 from .views.standings_view import standings_view
 
-from .views import activation_view, authentication_view, user_view, utils_view, notification_view
+from .views import activation_view, authentication_view, utils_view, notification_view
 from .views.picks_view import picks_view
 from .views.standings_view import standings_view
 from .views.races_view import races_view
@@ -39,7 +41,7 @@ urlpatterns = [
     path('get-token/', utils_view.get_token),
     path('get-user-comments', user_view.get_user_comments),
     path('get-user/', user_view.get_user),
-    path('get-user-picks/', picks_view.get_user_picks),
+    path('get-user-picks', picks_view.get_user_picks),
     path('get-users-picks-state/', seasons_view.get_users_picks_state),
 
     #post
@@ -56,6 +58,7 @@ urlpatterns = [
     path('create-race-link/', races_view.create_race_link),
     path('delete-announcement/', announcements_view.delete_announcement),
     path('delete-announcement-comment/', announcements_view.delete_comment),
+    path('delete-all-competitors/', competitors_view.delete_all_competitors),
     path('delete-competitor/', competitors_view.delete_competitor),
     path('delete-race/', races_view.delete_race),
     path('delete-season/', seasons_view.delete_season),

@@ -14,10 +14,10 @@ from io import BytesIO
 import json
 import datetime
 
-from ..tokens import account_activation_token
-from ..utils import is_username_valid, is_email_valid
-from ..forms import ProfilePictureForm
-from ..serializers import UserSerializer, AnnouncementCommentSerializer
+from ...tokens import account_activation_token
+from ...utils import is_username_valid, is_email_valid
+from ...forms import ProfilePictureForm
+from ...serializers import UserSerializer, AnnouncementCommentSerializer
 
 def get_user(request):
     if request.method != "POST":

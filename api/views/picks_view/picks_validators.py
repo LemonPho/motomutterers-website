@@ -1,8 +1,6 @@
 from ...models import CurrentSeason, Competitor, CompetitorPosition, UserPicks, SeasonCompetitorPosition
 from ...serializers import UserSerializer, CompetitorPointsSerializer
 
-LENGTH_USER_PICKS = 5
-
 #new_picks should be an array of the competitors id's
 def check_picks_conflict(new_picks, independent_pick, current_season):
     users_picks = UserPicks.objects.filter(season=current_season.season).all()
@@ -30,9 +28,13 @@ def check_duplicate_picks(sorted_picks_ids):
     return invalid_picks
 
 def generate_validate_user_picks_data(data, request):
+    current_season = CurrentSeason.objects.first()
+    length_user_picks = current_season.season.top_independent + current_season.season.top_rookie + 4
+
     result = {
-        "invalid_picks": [False]*LENGTH_USER_PICKS,
+        "invalid_picks": [False]*length_user_picks,
         "invalid_independent": False,
+        "invalid_rookie": False,
         "picks_already_selected": False,
         "invalid_season": False,
         "new_data": {
@@ -45,10 +47,10 @@ def generate_validate_user_picks_data(data, request):
 
     picks_ids = data.get("picks_ids")
     independent_pick_id = int(data.get("independent_pick_id"))
-    current_season = CurrentSeason.objects.first()
+    rookie_pick_id = int(data.get("rookie_pick_id"))
 
     result["invalid_picks"] = check_duplicate_picks(sorted(picks_ids))
-    result["picks_already_selected"] = check_picks_conflict(picks_ids, independent_pick_id, current_season)
+    result["picks_already_selected"] = check_picks_conflict(picks_ids, independent_pick_id, rookie_pick_id, current_season)
 
     #check for problems
     if current_season is None:
@@ -65,6 +67,7 @@ def generate_validate_user_picks_data(data, request):
 
     user_picks_data = build_user_picks(picks_ids)
     user_independent_pick_data = build_independent_pick(independent_pick_id)
+    user_rookie_pick_data = build_rookie_pick(rookie_pick_id)
     result["invalid_picks"] = user_picks_data["invalid_picks"]
     result["invalid_independent"] = user_independent_pick_data["invalid_independent"]
 
@@ -113,6 +116,34 @@ def build_user_picks(picks_ids):
 
     return result
 
+def build_rookie_pick(rookie_pick_id):
+    result = {
+        "invalid_rookie": False,
+        "new_data": {
+            "rookie_pick": {
+                "competitor_points_id": None,
+                "position": 0,
+            },
+        }
+    }
+
+    current_season = CurrentSeason.objects.first()
+
+    try:
+        rookie_competitor = Competitor.objects.get(pk=rookie_pick_id)
+    except Competitor.DoesNotExist:
+        result["invalid_rookie"] = True
+        return result
+    
+    try:
+        rookie_competitor_position = SeasonCompetitorPosition.objects.filter(season=current_season.season).filter(rookie=True).get(competitor_points__competitor=rookie_competitor)
+    except SeasonCompetitorPosition.DoesNotExist:
+        result["invalid_rookie"] = True
+        return result
+    
+    result["new_data"]["rookie_pick"]["competitor_points_id"] = rookie_competitor_position.competitor_points.id
+
+    return result    
 
 def build_independent_pick(independent_pick_id):
     result = {

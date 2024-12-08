@@ -181,7 +181,7 @@ export default function SeasonContextProvider(){
     }
 
     return(
-        <SeasonContext.Provider value={{ season, seasonLoading, retrieveSeason, 
+        <SeasonContext.Provider value={{ season, seasonLoading, retrieveSeason,
                                         createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace,
                                         createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, }}>
             <Outlet/>

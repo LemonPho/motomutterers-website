@@ -267,3 +267,22 @@ def delete_competitor(request):
     competitor.delete()
 
     return HttpResponse(status=200)
+
+def delete_all_competitors(request):
+    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=405)
+    
+    data = json.loads(request.body)
+    season_id = int(data.get("season_id", False))
+
+    if not season_id:
+        return HttpResponse(status=400)
+    
+    try:
+        season = Season.objects.get(pk=season_id)
+    except Season.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    season.competitors.all().delete()
+
+    return HttpResponse(status=200)

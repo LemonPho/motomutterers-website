@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 import json
 
-from ...models import UserPicks, CurrentSeason, Competitor
+from ...models import UserPicks, CurrentSeason, Competitor, Season
 from ...serializers import UserPicksSerializer
 from .picks_util import update_members_points
 from .picks_validators import generate_validate_user_picks_data
@@ -13,8 +13,22 @@ def get_user_picks(request):
     if request.method != "GET" or not request.user.is_authenticated:
         return HttpResponse(status=400)
     
+    season_id = request.GET.get("season", -1)
+
+    if season_id == -1:
+        return JsonResponse({
+            "user_picks": None,
+        }, status=400)
+    
     try:
-        user_picks = UserPicks.objects.get(user=request.user)
+        season = Season.objects.get(pk=season_id)
+    except Season.DoesNotExist:
+        return JsonResponse({
+            "user_picks": None,
+        }, status=400)
+    
+    try:
+        user_picks = UserPicks.objects.filter(season=season).get(user=request.user)
     except UserPicks.DoesNotExist:
         return JsonResponse({
             "user_picks": None,

@@ -23,3 +23,4 @@ def is_email_valid(email):
         return True
     else:
         return False
+    

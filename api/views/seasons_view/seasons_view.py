@@ -112,8 +112,10 @@ def create_season(request):
     data = json.loads(request.body)
 
     year = int(data.get("year", False))
+    top_independent = bool(data.get("top_independent", -1))
+    top_rookie = bool(data.get("top_rookie", -1))
 
-    if not year:
+    if not year or top_independent == -1 or top_rookie == -1:
         return HttpResponse(status=400)
     
     try:
