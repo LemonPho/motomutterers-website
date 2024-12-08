@@ -96,7 +96,7 @@ export default function RegisterPage() {
 
                 {createUserLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
-                    <button className="btn btn-primary w-100" disabled>Sign up</button>    
+                    <button className="btn btn-primary w-100" disabled>Loading...</button>    
                 </div>}
 
                 {!createUserLoading && 

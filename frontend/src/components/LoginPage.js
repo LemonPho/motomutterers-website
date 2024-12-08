@@ -82,7 +82,7 @@ function LoginPage() {
                 
                 {loginLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
-                    <button type="submit" className="btn btn-primary w-100" disabled>Login</button>
+                    <button type="submit" className="btn btn-primary w-100" disabled>Loading...</button>
                 </div>}
                 {!loginLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
