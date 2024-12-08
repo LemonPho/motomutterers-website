@@ -8,7 +8,7 @@ import { useApplicationContext } from "./ApplicationContext";
 import { enterKeySubmit } from "./utils";
 
 export default function RegisterPage() {
-    const {loggedIn, contextLoading, setErrorMessage, setSuccessMessage, setLoadingMessage} = useApplicationContext();
+    const {loggedIn, contextLoading, setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages} = useApplicationContext();
 
     const [createUserLoading, setCreateUserLoading] = useState(false);
 
@@ -17,6 +17,7 @@ export default function RegisterPage() {
             return;
         }
 
+        resetApplicationMessages();
         setCreateUserLoading(true);
         setLoadingMessage("Loading...");
         const username = document.getElementById("username").value;
