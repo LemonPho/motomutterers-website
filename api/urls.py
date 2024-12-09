@@ -78,6 +78,7 @@ urlpatterns = [
     path('toggle-users-picks/', seasons_view.toggle_users_picks),
 
     #other
+    path('request-activation-token/', activation_view.request_activation_token),
     path('activate', activation_view.activate_account),
     path('activate-email', activation_view.activate_email),
     path('login/', authentication_view.login_view),

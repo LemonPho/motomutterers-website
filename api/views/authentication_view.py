@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -10,7 +9,7 @@ import json
 from ..backends import EmailBackend
 from ..forms import UserRegistrationForm
 from ..tokens import account_activation_token
-from ..utils import is_username_valid, is_email_valid
+from ..utils import is_username_valid, is_email_valid, send_email
 
 def register(request):
     if request.method != "POST":
@@ -84,7 +83,7 @@ def register(request):
     protocol = 'https' if request.is_secure() else 'http'
     email_subject = "Activate your motomutterers fantasy league account"
     email_body = f"Hello {user.username},\nPlease activate your account with this link, it will be valid for 15 minutes: {protocol}://{domain}/activate?uid={uid}&token={token}"
-    email = EmailMessage(email_subject, email_body, to=[email])
+    email = send_email(email, email_subject, email_body)
     if email.send():
         return HttpResponse(json_context, status=200)
     else:

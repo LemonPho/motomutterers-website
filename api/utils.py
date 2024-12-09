@@ -1,3 +1,7 @@
+from django.contrib.sites.shortcuts import get_current_site
+from django_ratelimit.decorators import ratelimit
+from django.core.mail import EmailMessage
+
 import os
 import re
 
@@ -23,4 +27,8 @@ def is_email_valid(email):
         return True
     else:
         return False
+
+#@ratelimit(key='ip', rate='10/h', block=True) 
+def send_email(recipient, subject, body):
+    return EmailMessage(subject, body, to=[recipient])
     

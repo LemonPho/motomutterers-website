@@ -97,6 +97,36 @@ export async function submitLogin(isUsername, loginKey, password){
     return response;
 }
 
+export async function requestAccountActivationToken(uid){
+    let response = {
+        error: false,
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/request-activation-token/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                uid: uid,
+            }),
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+
+}
+
 //used for when user clicks on account activation link
 export async function submitAccountActivation(uid, token){
     let response = {
