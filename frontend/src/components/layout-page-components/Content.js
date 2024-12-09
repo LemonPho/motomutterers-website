@@ -7,7 +7,7 @@ export default function Content(){
 
     return(
         <div className="content">
-            <div className="inner-content">
+            <div className="inner-content px-3">
                 {errorMessage && <div className="alert alert-danger my-2" style={{whiteSpace: "pre-line"}}>{errorMessage}</div>}
                 {successMessage && <div className="alert alert-success my-2" style={{whiteSpace: "pre-line"}}>{successMessage}</div>}
                 {loadingMessage && <div className="alert alert-secondary my-2" style={{whiteSpace: "pre-line"}}>{loadingMessage}</div>}
