@@ -165,15 +165,14 @@ def change_username(request):
         "new_username_unique": new_username_unique,
         "user_can_change_username": user_can_change_username,
     }
-    json_context = json.dumps(context)
 
     if current_password_correct and new_username_valid and new_username_unique and user_can_change_username:
         user.username = new_username
         user.date_username_edited = datetime.datetime.now()
         user.save()
-        return HttpResponse(json_context, status=200)
+        return JsonResponse(context, status=200)
     else:
-        return HttpResponse(json_context, status=400)
+        return JsonResponse(context, status=400)
 
 def change_email(request):
     if request.method != "POST" or not request.user.is_authenticated:

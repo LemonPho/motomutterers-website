@@ -192,12 +192,10 @@ export async function submitChangePassword(token, currentPassword, newPassword){
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
-        const apiResult = apiResponse.status === 200 || apiResponse.status === 400 ? await apiResponse.json() : false;
+        const apiResult = await apiResponse.json();
 
-        if(apiResult){
-            response.currentPasswordCorrect = apiResult.current_password_correct;
-            response.newPasswordValid = apiResult.new_password_valid;
-        }
+        response.currentPasswordCorrect = apiResult.current_password_correct;
+        response.newPasswordValid = apiResult.new_password_valid;
     } catch(error){
         response.error = error;
     }
@@ -233,14 +231,12 @@ export async function submitChangeUsername(currentPassword, newUsername){
 
         response.status = apiResponse.status;
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        const apiResult = apiResponse.status === 200 || apiResponse.status === 400 ? apiResponse.json() : false;
+        const apiResult = await apiResponse.json();
 
-        if(apiResult){
-            response.currentPasswordCorrect = apiResult.current_password_correct;
-            response.newUsernameValid = apiResult.new_username_valid;
-            response.newUsernameUnique = apiResult.new_username_unique;
-            response.userCanChangeUsername = apiResult.user_can_change_username;
-        }
+        response.currentPasswordCorrect = apiResult.current_password_correct;
+        response.newUsernameValid = apiResult.new_username_valid;
+        response.newUsernameUnique = apiResult.new_username_unique;
+        response.userCanChangeUsername = apiResult.user_can_change_username;
     } catch(error){
         response.error = error;
     }
@@ -276,12 +272,10 @@ export async function submitChangeEmail(currentPassword, newEmail){
         response.status = apiResponse.status;
         response.error = apiResponse.status === 500 ? apiResponse : false;
 
-        const apiResult = apiResponse.status === 200 || apiResponse.status === 400 ? await apiResponse.json() : false;
-        if(apiResult){
-            response.currentPasswordCorrect = apiResult.current_password_correct;
-            response.newEmailValid = apiResult.new_email_valid;
-            response.newEmailUnique = apiResult.new_email_unique;
-        }
+        const apiResult = await apiResponse.json();
+        response.currentPasswordCorrect = apiResult.current_password_correct;
+        response.newEmailValid = apiResult.new_email_valid;
+        response.newEmailUnique = apiResult.new_email_unique;
     } catch(error){
         response.error = error;
     }
