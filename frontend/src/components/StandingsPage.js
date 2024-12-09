@@ -5,7 +5,7 @@ import { getSeasons, getSeason, getUsersStandings } from "./fetch-utils/fetchGet
 import { toggleDropdown } from "./utils";
 
 export default function Standings(){
-    const { setErrorMessage, setLoadingMessage, modalErrorMessage, setModalErrorMessage, contextLoading } = useApplicationContext();
+    const { setErrorMessage, setLoadingMessage, modalErrorMessage, setModalErrorMessage } = useApplicationContext();
 
     const [seasonYear, setSeasonYear] = useState();
 
@@ -121,7 +121,10 @@ export default function Standings(){
                         {standing.picks.map((pick) => (
                             <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${standing.user.id}-pick-${pick.id}`}><strong>{pick.competitor_points.competitor.first[0]}. {pick.competitor_points.competitor.last.slice(0,3)}</strong> - {pick.competitor_points.points}</div>
                         ))}
-                        <div className="me-1" style={{fontSize: "0.75rem"}}><strong>{standing.independent_pick.competitor_points.competitor.first[0]}. {standing.independent_pick.competitor_points.competitor.last.slice(0,3)}</strong> - {standing.independent_pick.competitor_points.points}</div>
+
+                        {selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {standing.independent_pick.competitor_points.competitor.first[0]}. {standing.independent_pick.competitor_points.competitor.last.slice(0,3)}</strong> - {standing.independent_pick.competitor_points.points}</div>}
+                        {selectedSeason.top_rookie && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {standing.rookie_pick.competitor_points.competitor.first[0]}. {standing.rookie_pick.competitor_points.competitor.last.slice(0,3)}</strong> - {standing.rookie_pick.competitor_points.points}</div>}
+                        
                     </div>
                     <hr />
                 </a>
