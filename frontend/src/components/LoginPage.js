@@ -28,25 +28,22 @@ function LoginPage() {
 
         const loginResponse = await submitLogin(isUsername, usernameEmail, password);
 
+        setLoadingMessage(false);
+        setLoginLoading(false);
+
         if(loginResponse.error){
             setErrorMessage("Error logging in");
             console.log(loginResponse.error);
-            setLoadingMessage(false);
-            setLoginLoading(false);
             return;
         }
 
         if(loginResponse.status == 400){
             setErrorMessage("Invalid credentials");
-            setLoadingMessage(false);
-            setLoginLoading(false);
             return;
         }
 
         if(loginResponse.status === 403){
-            setLoadingMessage(false);
-            setErrorMessage("Error logging in");
-            setLoginLoading(false);
+            setErrorMessage("Your account isn't activated, check your spam to make sure it isn't there. If the link expired, you can still open it and request a new activation email.");
             return;
         }
 

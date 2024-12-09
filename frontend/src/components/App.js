@@ -24,7 +24,7 @@ import UserPage from "./UserPage.js";
 import Announcements from "./AnnouncementsPage.js";
 import AccountActivation from "./AccountActivationPage.js";
 import FindAccount from "./FindAccountPage.js";
-import ContactAdmin from "./ContactAdminPage.js";
+import Contact from "./ContactPage.js";
 import ChangePassword from "./ChangePasswordPage.js";
 import EmailActivation from "./EmailActivationPage.js";
 import Announcement from "./announcement-page-components/Announcement.js";
@@ -58,7 +58,7 @@ export default function App() {
                 <Route path="announcements/:announcementId" element={<AnnouncementContextProvider />}>
                     <Route index element={<Announcement />}/>
                 </Route>
-                <Route path="contact" element={<ContactAdmin />}/>
+                <Route path="contact" element={<Contact />}/>
                 <Route path="change-password" element={<ChangePassword />}/>
                 <Route path="change-email" element={<EmailActivation />}/>
                 <Route path="find-account" element={<FindAccount />}/>

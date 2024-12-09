@@ -16,7 +16,7 @@ export default function Footer(){
 
     return(
         <div className="footer">
-            <button className="btn btn-link link-no-decorations" onClick={(e) => {EmailClicked(); e.stopPropagation();}}><small>Feedback</small></button>
+            <a href="/contact"><small>Contact us</small></a>
         </div>
     );
 }

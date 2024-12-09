@@ -107,6 +107,9 @@ def login_view(request):
     else:
         user = email_backend.authenticate_email(request, email=login_key, password=password)
 
+    if not user.is_active:
+        return HttpResponse(status=403)
+
     #checks if login was successful
     if user is not None:
         login(request, user)
