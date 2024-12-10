@@ -3,44 +3,58 @@ from pillow_heif import register_heif_opener, from_bytes
 from io import BytesIO
 from PIL import Image
 
+import base64
+
 ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "ico", "svg", "heic", "heif"]
 
+class UserSimple():
+    def __init__(self, username=None, id=None):
+        self.username = username
+        self.id = id
+
+class UserSimpleProfilePicture():
+    def __init__(self, username=None, id=None, profile_picture=None):
+        self.username = username
+        self.id = id
+        self.profile_picture = profile_picture
+
 class ProfilePictureSerializer(serializers.Serializer):
-    profile_picture = serializers.ImageField()
+    profile_picture_format = serializers.SerializerMethodField()
+    profile_picture_data = serializers.SerializerMethodField()
 
-    def validate_profile_picture(self, value):
-        profile_picture = value
-        profile_picture_name = value.name
+    class Meta:
+        fields = ["profile_picture_format", "profile_picture_data"]
 
-        if not profile_picture_name.lower().endswith(tuple(ALLOWED_EXTENSIONS)):
-            raise serializers.ValidationError("File extension is not supported")
+    def get_profile_picture_data(self, profile_picture):
+        if profile_picture:
+            with open(profile_picture.path, 'rb') as profile_picture_file:
+                profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
+                return profile_picture_data
+        else:
+            default_profile_picture_path = "media/profile_pictures/default.webp"
+            with open(default_profile_picture_path, 'rb') as profile_picture_file:
+                profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
+                return profile_picture_data
+        
+    def get_profile_picture_format(self, profile_picture):
+        if profile_picture:
+            return profile_picture.name.split('.')[-1].lower()
+        else:
+            return ".webp"
 
-        if profile_picture_name.lower().endswith(("heic", "heif")):
-            # Read the HEIC/HEIF image into a Pillow image
-            heif_image = from_bytes(value.read())
-            image = Image.frombytes(
-                heif_image.mode, heif_image.size, heif_image.data, "raw"
-            )
 
-            # Convert to JPG
-            jpg_io = BytesIO()
-            image.save(jpg_io, format="JPEG")
-            jpg_io.seek(0)
+class UserSimpleSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    id = serializers.IntegerField()
 
-            # Create a new file-like object with the converted JPG
-            profile_picture = serializers.ImageField().to_internal_value({
-                'name': profile_picture_name.rsplit('.', 1)[0] + ".jpg",
-                'content': jpg_io,
-            })
+    class Meta:
+        fields = ["username", "id"]
 
-        return profile_picture
+class UserSimpleProfilePictureSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    profile_picture = ProfilePictureSerializer()
+    id = serializers.IntegerField()
 
-class UsernameSerializer(serializers.Serializer):
-    pass
-
-class EmailSerializer(serializers.Serializer):
-    pass
-
-class PasswordSerializer(serializers.Serializer):
-    pass
-
+    class Meta:
+        fields = ["username", "profile_picture", "id"]
+        

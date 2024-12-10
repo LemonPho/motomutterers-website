@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
 
 from ...models import Season, UserPicks
-from ...serializers import UserPicksSerializer
+from .standings_serializers import UserPicksSimpleSerializer
 from .standings_util import points_based_tie_breaker, competitor_based_tie_breaker, sort_standings
 from ..picks_view.picks_util import update_members_points
 
@@ -21,7 +21,9 @@ def get_standings(request):
         return HttpResponse(status=404)
         
     picks = season.picks.order_by("position")
-    serializer = UserPicksSerializer(picks, many=True)
+    serializer = UserPicksSimpleSerializer(picks, many=True)
+
+    print(serializer.data)
 
     if picks.count() == 0:
         return JsonResponse({

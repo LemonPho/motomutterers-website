@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
-
 from .utils import generate_image_path, is_email_valid, is_username_valid
 from .storage import OverwriteStorage
 

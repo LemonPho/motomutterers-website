@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from "react"
 import { Outlet } from "react-router-dom";
-import { getSeasons } from "../fetch-utils/fetchGet";
+import { getSeasonsSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 
 const SeasonCreateContext = createContext();
@@ -13,7 +13,7 @@ export default function SeasonCreateContextProvider(){
     const [seasons, setSeasons] = useState([]);
 
     async function retrieveSeasons(){
-        let seasonsResponse = await getSeasons();
+        let seasonsResponse = await getSeasonsSimple();
 
         if(seasonsResponse.error){
             console.log(seasonsResponse.error);

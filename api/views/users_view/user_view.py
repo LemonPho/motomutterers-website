@@ -11,6 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from PIL import Image
 from io import BytesIO
 
+import os
 import json
 import datetime
 
@@ -18,6 +19,7 @@ from ...tokens import account_activation_token
 from ...utils import is_username_valid, is_email_valid
 from ...forms import ProfilePictureForm
 from ...serializers import UserSerializer, AnnouncementCommentSerializer
+from .user_serializers import ProfilePictureSerializer, UserSimpleProfilePicture, UserSimpleProfilePictureSerializer
 
 def get_user(request):
     if request.method != "POST":
@@ -42,6 +44,49 @@ def get_user(request):
     serializer = UserSerializer(user)
 
     return JsonResponse(serializer.data, status=200)
+
+def get_default_profile_picture(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    picture = Image.open("../../../../media/profile_picutres/default.webp")
+
+    serializer = ProfilePictureSerializer(picture)
+
+    return JsonResponse(serializer.data, status=200)
+
+def get_profile_pictures(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    
+    data = json.loads(request.body)
+    users = data.get("users", False)
+    User = get_user_model()
+    new_users = []
+
+    if not users:
+        return HttpResponse(status=400)
+    
+    for user in users:
+        try:
+            temp_user = User.objects.get(pk=user["id"])
+        except User.DoesNotExist:
+            temp_user = None
+        
+        if temp_user is not None:
+            new_user = UserSimpleProfilePicture()
+            new_user.username = temp_user.username
+            new_user.id = temp_user.id
+            new_user.profile_picture = temp_user.profile_picture
+            new_users.append(new_user)
+
+    serializer = UserSimpleProfilePictureSerializer(new_users, many=True)
+
+    context = {
+        "users": serializer.data,
+    }
+
+    return JsonResponse(context, status=200)
     
 def get_current_user(request):
     #getting user data

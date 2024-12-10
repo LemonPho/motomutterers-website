@@ -46,6 +46,27 @@ html, body {
     min-height: 100%;
 }
 
+/* Base styling for the circle */
+.fading-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #0000007f; /* Circle color (e.g., blue) */
+    border-radius: 50%;        /* Makes the element a circle */
+    opacity: 1;                /* Starting opacity */
+    animation: fadeInOut 2s infinite ease-in-out;
+}
+  
+/* Keyframes for the opacity animation */
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 1;  /* Fully visible */
+    }
+    50% {
+        opacity: 0.1;  /* Fully transparent */
+    }
+}
+      
+
 .rounded-15{
     border-radius: 15px !important;
 }

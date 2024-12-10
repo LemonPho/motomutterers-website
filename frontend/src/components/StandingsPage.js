@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 
 import { useApplicationContext } from "./ApplicationContext";
-import { getSeasons, getSeason, getUsersStandings } from "./fetch-utils/fetchGet";
+import { getSeasonsSimple, getSeason, getUsersStandings, getUsersProfilePictures } from "./fetch-utils/fetchGet";
 import { toggleDropdown } from "./utils";
 
+import ProfilePictureLazyLoader from "./util-components/ProfilePictureLazyLoader";
+
 export default function Standings(){
-    const { setErrorMessage, setLoadingMessage, modalErrorMessage, setModalErrorMessage } = useApplicationContext();
+    const { setErrorMessage, setLoadingMessage, modalErrorMessage, setModalErrorMessage, resetApplicationMessages } = useApplicationContext();
 
     const [seasonYear, setSeasonYear] = useState();
 
     const [selectedSeason, setSelectedSeason] = useState([]);
     const [seasons, setSeasons] = useState([]);
-    const [standings, setStandings] = useState({});
+    const [standings, setStandings] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -50,7 +52,7 @@ export default function Standings(){
     }
 
     async function retrieveSeasons(){
-        let seasonsResponse = await getSeasons();
+        let seasonsResponse = await getSeasonsSimple();
 
         if(seasonsResponse.error){
             console.log(seasonsResponse.error);
@@ -61,20 +63,46 @@ export default function Standings(){
         setSeasons(seasonsResponse.seasons);
     }
 
+    async function retrieveProfilePictures(){
+        if(standings.length == 0 || loading){
+            return;
+        }
+
+        const users = standings.map(standing => standing.user);
+        const profilePicturesResponse = await getUsersProfilePictures(users);
+
+        if(profilePicturesResponse.status !== 200){
+            setErrorMessage("There was an error loading the profile pictures");
+            return;
+        }
+
+        let tempStandings = standings;
+        for(let i = 0; i < tempStandings.length; i++){
+            tempStandings[i].user = profilePicturesResponse.users[i];
+        }
+        setStandings(tempStandings);
+    }
+
     useEffect(() => {
         async function fetchData(){
-            setLoadingMessage("Loading...");
             await retrieveStandings();
             await retrieveSeasons();
-            setLoading(false);
-            setLoadingMessage(false);
         }
 
         fetchData();
+        setLoading(false);
     }, [])
 
+    useEffect(() => {
+        async function fetchProfilePictures(){
+            await retrieveProfilePictures();
+        }
+
+        fetchProfilePictures();
+    }, [loading, standings]);
+
     if(loading){
-        return;
+        return<div>Loading...</div>;
     }
 
     return (
@@ -114,16 +142,17 @@ export default function Standings(){
             (standings.map((standing, i) => (
                 <a className="mb-2 link-no-decorations" key={`standings-user-${standing.user.username}`} href={`/users/${standing.user.username}?page=1`}>
                     <div className="d-flex align-items-center">
-                        <img className="rounded-circle" style={{width: "3.5rem", height: "3.5rem"}} src={`data: image/${standing.user.profile_picture_format}; base64, ${standing.user.profile_picture_data}`} alt="" />
+                        {standing.user.profile_picture == undefined && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={false} base64={false}/>}
+                        {standing.user.profile_picture != undefined && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={standing.user.profile_picture.profile_picture_format} base64={standing.user.profile_picture.profile_picture_data}/>}
                         <div className="ms-1"><strong>{i+1}. {standing.user.username} - {standing.points}</strong></div>
                     </div>
                     <div className="d-flex align-items-center">
                         {standing.picks.map((pick) => (
-                            <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${standing.user.id}-pick-${pick.id}`}><strong>{pick.competitor_points.competitor.first[0]}. {pick.competitor_points.competitor.last.slice(0,3)}</strong> - {pick.competitor_points.points}</div>
+                            <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${standing.user.id}-pick-${pick.id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
                         ))}
 
-                        {selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {standing.independent_pick.competitor_points.competitor.first[0]}. {standing.independent_pick.competitor_points.competitor.last.slice(0,3)}</strong> - {standing.independent_pick.competitor_points.points}</div>}
-                        {selectedSeason.top_rookie && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {standing.rookie_pick.competitor_points.competitor.first[0]}. {standing.rookie_pick.competitor_points.competitor.last.slice(0,3)}</strong> - {standing.rookie_pick.competitor_points.points}</div>}
+                        {selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {standing.independent_pick.first[0]}. {standing.independent_pick.last.slice(0,3)}</strong> - {standing.independent_pick.points}</div>}
+                        {selectedSeason.top_rookie && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {standing.rookie_pick.first[0]}. {standing.rookie_pick.last.slice(0,3)}</strong> - {standing.rookie_pick.points}</div>}
                         
                     </div>
                     <hr />

@@ -71,6 +71,38 @@ export async function getUser(username){
     return response;
 }
 
+export async function getUsersProfilePictures(users){
+    let response = {
+        error: false,
+        users: [],
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/get-profile-pictures/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                users: users,
+            }),
+        });
+
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.users = apiResponse.status === 200 ? apiResult.users : null;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response
+}
+
 export async function getUserComments(username, page){
     let response = {
         error: false,
@@ -307,7 +339,7 @@ export async function getToken(){
     return response;
 }
 
-export async function getSeasons(){
+export async function getSeasonsSimple(){
     let response = {
         error: false,
         seasons: [],
@@ -315,7 +347,7 @@ export async function getSeasons(){
     };
 
     try{
-        const apiResponse = await fetch("/api/get-seasons/");
+        const apiResponse = await fetch("/api/get-seasons-simple/");
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse: false;

@@ -443,4 +443,3 @@ class UserPicksSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPicks
         fields = ["picks", "independent_pick", "rookie_pick", "points", "user", "season"]
-    #for updating a users picks, just creating a new instance and deleting the old one is the easiest way

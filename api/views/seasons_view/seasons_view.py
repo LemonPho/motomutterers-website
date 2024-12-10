@@ -2,7 +2,8 @@ from django.http import HttpResponse, JsonResponse
 
 from ...models import Season, CurrentSeason
 from ...serializers import SeasonSerializer, CompetitorSerializer, SeasonCompetitorPositionSerializer
-from .seasons_util import get_competitors_sorted_number, finalize_members_points
+from .seasons_util import get_competitors_sorted_number, finalize_members_points, build_season_simple_list
+from .seasons_serializers import SeasonSimpleSerializer
 from ..standings_view.standings_util import sort_standings
 
 import json
@@ -33,7 +34,7 @@ def get_season(request):
         "competitors_sorted_number": competitors_sorted_number_serializer.data,
     }, status=200)
 
-def get_seasons(request):
+def get_seasons_simple(request):
     if request.method != "GET":
         return HttpResponse(status=405)
 
@@ -41,8 +42,10 @@ def get_seasons(request):
         seasons = Season.objects.filter(visible=True).order_by("-year")
     except Season.DoesNotExist:
         return HttpResponse(status=404)
+    
+    seasons = build_season_simple_list(seasons)
         
-    serializer = SeasonSerializer(seasons, many=True)
+    serializer = SeasonSimpleSerializer(seasons, many=True)
     return JsonResponse({
         "seasons": serializer.data,
     })

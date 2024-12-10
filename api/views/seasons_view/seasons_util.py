@@ -1,3 +1,5 @@
+from .seasons_serializers import SeasonSimple
+
 def get_competitors_sorted_number(season):
     return season.competitors.order_by("competitor_points__competitor__number")
 
@@ -14,3 +16,20 @@ def finalize_members_points(season):
                 print(picks[j].competitor_points.points * additional_points[j])
                 user_picks[i].points += picks[j].competitor_points.points * additional_points[j]
                 user_picks[i].save()
+
+def build_season_simple_list(seasons):
+    seasons_simple = []
+    for season in seasons:
+        temp_season = build_season_simple(season)
+        seasons_simple.append(temp_season)
+
+    return seasons_simple
+
+def build_season_simple(season):
+    temp_season = SeasonSimple()
+    temp_season.id = season.id
+    temp_season.year = season.year
+    temp_season.top_independent = season.top_independent
+    temp_season.top_rookie = season.top_rookie
+
+    return temp_season

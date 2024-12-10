@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import { getRaceResults, getSeasonRaces, getSeasons } from "./fetch-utils/fetchGet";
+import { getRaceResults, getSeasonRaces, getSeasonsSimple } from "./fetch-utils/fetchGet";
 import { useApplicationContext } from "./ApplicationContext";
 import { toggleDropdown, toggleModal } from "./utils";
 
@@ -42,7 +42,7 @@ export default function RaceResults(){
     }
 
     async function retrieveSeasons(){
-        let seasonsResponse = await getSeasons();
+        let seasonsResponse = await getSeasonsSimple();
 
         if(seasonsResponse.error){
             console.log(seasonsResponse.error);
