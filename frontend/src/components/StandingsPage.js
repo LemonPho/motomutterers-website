@@ -14,6 +14,7 @@ export default function Standings(){
     const [selectedSeason, setSelectedSeason] = useState([]);
     const [seasons, setSeasons] = useState([]);
     const [standings, setStandings] = useState([]);
+    const [standingsWithPictures, setStandingsWithPictures] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -64,7 +65,7 @@ export default function Standings(){
     }
 
     async function retrieveProfilePictures(){
-        if(standings.length == 0 || loading){
+        if(standings.length == 0){
             return;
         }
 
@@ -76,11 +77,18 @@ export default function Standings(){
             return;
         }
 
-        let tempStandings = standings;
-        for(let i = 0; i < tempStandings.length; i++){
-            tempStandings[i].user = profilePicturesResponse.users[i];
-        }
-        setStandings(tempStandings);
+        const updatedStandings = standings.map((standing, index) => {
+            const updatedUser = {
+              ...standing.user,
+              profile_picture: profilePicturesResponse.users[index].profile_picture,
+            };
+          
+            return {
+              ...standing,
+              user: updatedUser,
+            };
+        });
+        setStandingsWithPictures(updatedStandings);
     }
 
     useEffect(() => {
@@ -99,7 +107,7 @@ export default function Standings(){
         }
 
         fetchProfilePictures();
-    }, [loading, standings]);
+    }, [standings]);
 
     if(loading){
         return<div>Loading...</div>;
@@ -142,8 +150,8 @@ export default function Standings(){
             (standings.map((standing, i) => (
                 <a className="mb-2 link-no-decorations" key={`standings-user-${standing.user.username}`} href={`/users/${standing.user.username}?page=1`}>
                     <div className="d-flex align-items-center">
-                        {standing.user.profile_picture == undefined && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={false} base64={false}/>}
-                        {standing.user.profile_picture != undefined && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={standing.user.profile_picture.profile_picture_format} base64={standing.user.profile_picture.profile_picture_data}/>}
+                        {standingsWithPictures.length == 0 && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={false} base64={false}/>}
+                        {standingsWithPictures.length != 0 && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={standingsWithPictures[i].user.profile_picture.profile_picture_format} base64={standingsWithPictures[i].user.profile_picture.profile_picture_data}/>}
                         <div className="ms-1"><strong>{i+1}. {standing.user.username} - {standing.points}</strong></div>
                     </div>
                     <div className="d-flex align-items-center">

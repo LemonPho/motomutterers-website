@@ -23,8 +23,6 @@ def get_standings(request):
     picks = season.picks.order_by("position")
     serializer = UserPicksSimpleSerializer(picks, many=True)
 
-    print(serializer.data)
-
     if picks.count() == 0:
         return JsonResponse({
             "users": False,
