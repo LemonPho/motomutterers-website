@@ -10,35 +10,39 @@ from .picks_validators import generate_validate_user_picks_data, WriteUserPicksS
 from ..standings_view.standings_util import sort_standings
 
 def get_user_picks(request):
-    if request.method != "GET" or not request.user.is_authenticated:
-        return HttpResponse(status=400)
+    if request.method != "GET":
+        return HttpResponse(status=405)
     
-    season_id = request.GET.get("season", -1)
+    season_id = request.GET.get("season")
+    uid = request.GET.get("uid")
+    User = get_user_model()
 
-    if season_id == -1:
-        return JsonResponse({
-            "user_picks": None,
-        }, status=400)
-    
     try:
-        season = Season.objects.get(pk=season_id)
+        season = Season.objects.filter(visible=True).get(pk=season_id)
     except Season.DoesNotExist:
-        return JsonResponse({
-            "user_picks": None,
-        }, status=400)
+        print("didnt find season")
+        return HttpResponse(status=404)
     
     try:
-        user_picks = UserPicks.objects.filter(season=season).get(user=request.user)
+        user = User.objects.get(pk=uid)
+    except User.DoesNotExist:
+        print("didnt find user")
+        return HttpResponse(status=404)
+    
+    try:
+        user_picks = UserPicks.objects.filter(season=season).get(user=user)
     except UserPicks.DoesNotExist:
-        return JsonResponse({
-            "user_picks": None,
-        }, status=200)
-        
+        print("didn't find user picks")
+        return HttpResponse(status=404)
+    
     serializer = UserPicksSerializer(user_picks)
 
-    return JsonResponse({
+    context = {
         "user_picks": serializer.data,
-    }, status=200)
+    }
+
+    return JsonResponse(context, status=200)
+
 
 def set_user_picks(request):
     current_season = CurrentSeason.objects.first()

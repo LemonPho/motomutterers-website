@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
 from ..users_view.user_serializers import UserSimple, UserSimpleSerializer
+from ..seasons_view.seasons_serializers import SeasonSimpleSerializer
 from ...models import UserPicks
+from ...serializers import CompetitorPositionSerializer
 
 class PickSimple:
     def __init__(self, first=None, last=None, number=None, points=None, position=None, id=None):
@@ -91,3 +93,13 @@ class UserPicksSimpleSerializer(serializers.ModelSerializer):
         rookie_pick_serializer = PickSimpleSerializer(temp_rookie_pick)
         
         return rookie_pick_serializer.data
+
+class UserPicksSerializer(serializers.ModelSerializer):
+    picks = CompetitorPositionSerializer(many=True, read_only=True)
+    independent_pick = CompetitorPositionSerializer(read_only=True)
+    rookie_pick = CompetitorPositionSerializer(read_only=True)
+    user = UserSimpleSerializer(read_only=True)
+    season = SeasonSimpleSerializer(read_only=True)
+    class Meta:
+        model = UserPicks
+        fields = ["picks", "independent_pick", "rookie_pick", "points", "user", "season"]

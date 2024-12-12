@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 
 from ...models import Season, CurrentSeason
 from ...serializers import SeasonSerializer, CompetitorSerializer, SeasonCompetitorPositionSerializer
-from .seasons_util import get_competitors_sorted_number, finalize_members_points, build_season_simple_list
-from .seasons_serializers import SeasonSimpleSerializer
+from .seasons_util import get_competitors_sorted_number, finalize_members_points
+from .seasons_serializers import SeasonSimpleSerializer, SeasonSimpleYearSerializer
 from ..standings_view.standings_util import sort_standings
 
 import json
@@ -34,6 +34,24 @@ def get_season(request):
         "competitors_sorted_number": competitors_sorted_number_serializer.data,
     }, status=200)
 
+def get_season_simple(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    season_year = request.GET.get("season", -1)
+
+    if season_year == -1:
+        return HttpResponse(status=400)
+    
+    try:
+        season = Season.objects.filter(visible=True).get(year=season_year)
+    except Season.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    serializer = SeasonSimpleSerializer(season)
+
+    return JsonResponse({"season": serializer.data}, status=200)
+
 def get_seasons_simple(request):
     if request.method != "GET":
         return HttpResponse(status=405)
@@ -42,13 +60,20 @@ def get_seasons_simple(request):
         seasons = Season.objects.filter(visible=True).order_by("-year")
     except Season.DoesNotExist:
         return HttpResponse(status=404)
-    
-    seasons = build_season_simple_list(seasons)
-        
+            
     serializer = SeasonSimpleSerializer(seasons, many=True)
     return JsonResponse({
         "seasons": serializer.data,
     })
+
+def get_seasons_simple_year(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    seasons = Season.objects.filter(visible=True).order_by("-year")
+    serializer = SeasonSimpleYearSerializer(seasons, many=True)
+
+    return JsonResponse({"seasons": serializer.data}, status=200)
 
 def get_current_season(request):
     if request.method != "GET":

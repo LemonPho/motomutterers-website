@@ -385,6 +385,48 @@ export async function getSeason(seasonYear){
     return response;
 }
 
+export async function getSeasonSimple(seasonYear){
+    let response = {
+        error: false,
+        season: null,
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-season-simple?season=${seasonYear}`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.season = apiResponse.status === 200 ? apiResult.season : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function getSeasonsSimpleYear(){
+    let response = {
+        error: false,
+        seasons: null,
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-seasons-simple-year/`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.seasons = apiResponse.status === 200 ? apiResult.seasons : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getCurrentSeason(){
     let response = {
         error: false,
@@ -519,26 +561,22 @@ export async function getSeasonRaces(year){
     return response;
 }
 
-export async function getUserPicks(season_id){
+export async function getUserPicks(seasonId, userId){
     let response = {
         error: false,
         userPicks: null,
-        independentPick: null,
-        rookiePick: null,
         season: null,
         status: null,
     }
 
     try{
-        const apiResponse = await fetch(`/api/get-user-picks?season=${season_id}`);
+        const apiResponse = await fetch(`/api/get-user-picks?season=${seasonId}&uid=${userId}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
         
         if(apiResult.user_picks != null){
-            response.userPicks = apiResult.user_picks.picks;
-            response.independentPick = apiResult.user_picks.independent_pick;
-            response.rookiePick = apiResult.user_picks.rookie_pick;
+            response.userPicks = apiResult.user_picks;
             response.season = apiResult.user_picks.season;
         }
         

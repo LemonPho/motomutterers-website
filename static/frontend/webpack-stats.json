@@ -1,9 +1,9 @@
 {
   "status": "done",
   "assets": {
-    "105.1f740d2830cdb6e706b4.js": {
-      "name": "105.1f740d2830cdb6e706b4.js",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\105.1f740d2830cdb6e706b4.js"
+    "105.35f075e2df359c7ab3f6.js": {
+      "name": "105.35f075e2df359c7ab3f6.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\105.35f075e2df359c7ab3f6.js"
     },
     "114.e79c629f850a03c6b7b3.js": {
       "name": "114.e79c629f850a03c6b7b3.js",
@@ -17,18 +17,22 @@
       "name": "631.418f0f0ce52517669260.js",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\631.418f0f0ce52517669260.js"
     },
-    "main.c2f5715fc4845b0bb95e.js": {
-      "name": "main.c2f5715fc4845b0bb95e.js",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.c2f5715fc4845b0bb95e.js"
+    "944.450840d727173937b798.js": {
+      "name": "944.450840d727173937b798.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\944.450840d727173937b798.js"
     },
-    "main.c2f5715fc4845b0bb95e.js.LICENSE.txt": {
-      "name": "main.c2f5715fc4845b0bb95e.js.LICENSE.txt",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.c2f5715fc4845b0bb95e.js.LICENSE.txt"
+    "main.19395b09b5fe5a855b5d.js": {
+      "name": "main.19395b09b5fe5a855b5d.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.19395b09b5fe5a855b5d.js"
+    },
+    "main.19395b09b5fe5a855b5d.js.LICENSE.txt": {
+      "name": "main.19395b09b5fe5a855b5d.js.LICENSE.txt",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.19395b09b5fe5a855b5d.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.c2f5715fc4845b0bb95e.js"
+      "main.19395b09b5fe5a855b5d.js"
     ]
   }
 }

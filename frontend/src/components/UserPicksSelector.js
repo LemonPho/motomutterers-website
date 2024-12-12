@@ -86,7 +86,7 @@ export default function UserPicksSelector(){
     }
     
     async function retrieveUserPicks(){
-        const userPicksResponse = await getUserPicks(currentSeason.id);
+        const userPicksResponse = await getUserPicks(currentSeason.id, user.id);
 
         if(userPicksResponse.error){
             setErrorMessage("There has been an error loading the selected picks");
@@ -94,17 +94,17 @@ export default function UserPicksSelector(){
             return;
         }
 
+        console.log(userPicksResponse);
+
         if(userPicksResponse.userPicks != null){
             // Sort the userPicks based on the 'position' field
-            const sortedUserPicks = userPicksResponse.userPicks
-            .sort((a, b) => a.position - b.position)
-            .map(pick => pick.competitor_points.competitor);
+            const sortedUserPicks = userPicksResponse.userPicks.picks.sort((a, b) => a.position - b.position).map(pick => pick.competitor_points.competitor);
             setUserPicks(sortedUserPicks);
-            if(userPicksResponse.independentPick != null){
-                setUserIndependentPick(userPicksResponse.independentPick.competitor_points.competitor);
+            if(userPicksResponse.userPicks.independent_pick != null){
+                setUserIndependentPick(userPicksResponse.userPicks.independent_pick.competitor_points.competitor);
             }
-            if(userPicksResponse.rookiePick != null){
-                setUserRookiePick(userPicksResponse.rookiePick.competitor_points.competitor);
+            if(userPicksResponse.userPicks.rookie_pick != null){
+                setUserRookiePick(userPicksResponse.userPicks.rookie_pick.competitor_points.competitor);
             }
         }
     }
