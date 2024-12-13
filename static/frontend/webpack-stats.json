@@ -1,9 +1,9 @@
 {
   "status": "done",
   "assets": {
-    "105.7e7fd7bf1de3881d8773.js": {
-      "name": "105.7e7fd7bf1de3881d8773.js",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\105.7e7fd7bf1de3881d8773.js"
+    "105.3cc75847bd5fed31d9aa.js": {
+      "name": "105.3cc75847bd5fed31d9aa.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\105.3cc75847bd5fed31d9aa.js"
     },
     "114.bc64216d72d51a02c1f3.js": {
       "name": "114.bc64216d72d51a02c1f3.js",
@@ -105,18 +105,18 @@
       "name": "985.eb7aeb2471bf0c77626f.js",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\985.eb7aeb2471bf0c77626f.js"
     },
-    "main.17a660fa253321394672.js": {
-      "name": "main.17a660fa253321394672.js",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.17a660fa253321394672.js"
+    "main.52335f2a27932d601b25.js": {
+      "name": "main.52335f2a27932d601b25.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.52335f2a27932d601b25.js"
     },
-    "main.17a660fa253321394672.js.LICENSE.txt": {
-      "name": "main.17a660fa253321394672.js.LICENSE.txt",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.17a660fa253321394672.js.LICENSE.txt"
+    "main.52335f2a27932d601b25.js.LICENSE.txt": {
+      "name": "main.52335f2a27932d601b25.js.LICENSE.txt",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.52335f2a27932d601b25.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.17a660fa253321394672.js"
+      "main.52335f2a27932d601b25.js"
     ]
   }
 }
