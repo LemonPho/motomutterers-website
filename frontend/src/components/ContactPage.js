@@ -12,7 +12,9 @@ export default function Contact(){
                 <p></p>
                 <span><strong>Email:</strong> motomutterersfantasyleague@gmail.com</span>
                 <hr />
-                
+                <span>Donations:</span>
+                <p></p>
+                <span><strong>Paypal link: </strong><a href="https://www.paypal.com/donate/?hosted_button_id=X5DS62EXQ8RDY">https://www.paypal.com/donate/?hosted_button_id=X5DS62EXQ8RDY</a></span>
             </div>
         </div>
     )

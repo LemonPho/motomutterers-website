@@ -94,8 +94,6 @@ export default function UserPicksSelector(){
             return;
         }
 
-        console.log(userPicksResponse);
-
         if(userPicksResponse.userPicks != null){
             // Sort the userPicks based on the 'position' field
             const sortedUserPicks = userPicksResponse.userPicks.picks.sort((a, b) => a.position - b.position).map(pick => pick.competitor_points.competitor);

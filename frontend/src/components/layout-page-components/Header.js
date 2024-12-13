@@ -51,7 +51,7 @@ export default function Header(){
                 </div>) 
                 : 
                 (<div className="d-flex align-items-center">
-                    <a href="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</a>   
+                    <a href="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</a>
                     {!currentSeason && <span className="menu-bar-item ps-2">No current season</span>}
                     {currentSeason && <a href={`/raceresults?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Races</a>}
                     <a href="/announcements?page=1" className="menu-bar-item link-no-decorations ps-2">Announcements</a>
