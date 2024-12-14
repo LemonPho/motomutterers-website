@@ -235,4 +235,5 @@ class WriteUserPicksSerializer(serializers.ModelSerializer):
             points += pick_instance.competitor_points.points
         user_picks.points = points
         user_picks.save()
+        season_instance.standings.users_picks.add(user_picks)
         return user_picks

@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getUsersProfilePictures, getUsersStandings } from "../fetch-utils/fetchGet";
+import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getUsersProfilePictures, getSeasonStandings } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 
 const StandingsContext = createContext();
@@ -8,7 +8,7 @@ const StandingsContext = createContext();
 export default function StandingsContextProvider(){
     const { setErrorMessage } = useApplicationContext();
 
-    const [standings, setStandings] = useState([]);
+    const [standings, setStandings] = useState({});
     const [standingsLoading, setStandingsLoading] = useState(true);
     const [profilePicturesLoading, setProfilePicturesLoading] = useState(true);
     const [userPicksDetailed, setUserPicksDetailed] = useState({});
@@ -24,7 +24,7 @@ export default function StandingsContextProvider(){
         const params = new URLSearchParams(location.search);
         const seasonYear = params.get("season");
 
-        const usersStandingsResponse = await getUsersStandings(seasonYear);
+        const usersStandingsResponse = await getSeasonStandings(seasonYear);
 
         if(usersStandingsResponse.error){
             setErrorMessage("There was an error retrieving the standings");
@@ -32,17 +32,17 @@ export default function StandingsContextProvider(){
         }
 
         if(usersStandingsResponse.status === 200){
-            setStandings(usersStandingsResponse.users);
+            setStandings(usersStandingsResponse.standings);
             setStandingsLoading(false);
         }
     }
 
     async function retrieveProfilePictures(){
-        if(standings.length == 0){
+        if(Object.keys(standings).length == 0){
             return;
         }
 
-        const users = standings.map(standing => standing.user);
+        const users = standings.users_picks.map(user_picks => user_picks.user);
         const profilePicturesResponse = await getUsersProfilePictures(users);
 
         if(profilePicturesResponse.status !== 200){
@@ -50,17 +50,20 @@ export default function StandingsContextProvider(){
             return;
         }
 
-        const updatedStandings = standings.map((standing, index) => {
+        const updatedUsersPicks = standings.users_picks.map((userPicks, index) => {
             const updatedUser = {
-              ...standing.user,
+              ...userPicks.user,
               profile_picture: profilePicturesResponse.users[index].profile_picture,
             };
           
             return {
-              ...standing,
+              ...userPicks,
               user: updatedUser,
             };
         });
+        let updatedStandings = standings;
+        updatedStandings.users_picks = updatedUsersPicks;
+        
         setStandings(updatedStandings);
         setProfilePicturesLoading(false);
     }

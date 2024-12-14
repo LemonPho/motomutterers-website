@@ -609,10 +609,10 @@ export async function getSelectPicksState(){
     return response;
 } 
 
-export async function getUsersStandings(year){
+export async function getSeasonStandings(year){
     let response = {
         error: false,
-        users: false,
+        standings: false,
         status: null,
     }
 
@@ -621,7 +621,7 @@ export async function getUsersStandings(year){
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.users = apiResponse.status === 200 ? apiResult.users : null;
+        response.standings = apiResponse.status === 200 ? apiResult.standings : null;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

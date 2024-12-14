@@ -2,20 +2,6 @@ from rest_framework import serializers
 
 from ...models import Season
 
-class SeasonSimpleYear():
-    def __init__(self, year=None, id=None):
-        self.year = year    
-        self.id = id    
-
-class SeasonSimple():
-    def __init__(self, year=None, id=None, top_independent=None, top_rookie=None, finalized=None, selection_open=None):
-        self.year = year
-        self.id = id
-        self.top_independent = top_independent
-        self.top_rookie = top_rookie
-        self.finalized = finalized
-        self.selection_open = selection_open
-
 class SeasonSimpleSerializer(serializers.ModelSerializer):
     year = serializers.IntegerField()
     id = serializers.IntegerField()

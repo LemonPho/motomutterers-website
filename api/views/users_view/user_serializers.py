@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from pillow_heif import register_heif_opener, from_bytes
 from io import BytesIO
 from PIL import Image
@@ -7,16 +8,7 @@ import base64
 
 ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "ico", "svg", "heic", "heif"]
 
-class UserSimple():
-    def __init__(self, username=None, id=None):
-        self.username = username
-        self.id = id
-
-class UserSimpleProfilePicture():
-    def __init__(self, username=None, id=None, profile_picture=None):
-        self.username = username
-        self.id = id
-        self.profile_picture = profile_picture
+User = get_user_model()
 
 class ProfilePictureSerializer(serializers.Serializer):
     profile_picture_format = serializers.SerializerMethodField()
@@ -43,18 +35,20 @@ class ProfilePictureSerializer(serializers.Serializer):
             return ".webp"
 
 
-class UserSimpleSerializer(serializers.Serializer):
+class UserSimpleSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     id = serializers.IntegerField()
 
     class Meta:
+        model = User
         fields = ["username", "id"]
 
-class UserSimpleProfilePictureSerializer(serializers.Serializer):
+class UserSimpleProfilePictureSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     profile_picture = ProfilePictureSerializer()
     id = serializers.IntegerField()
 
     class Meta:
+        model = User
         fields = ["username", "profile_picture", "id"]
         

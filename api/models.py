@@ -102,11 +102,15 @@ class UserPicks(models.Model):
     independent_pick = models.ForeignKey(CompetitorPosition, on_delete=models.CASCADE, related_name="independent_pick", blank=True, null=True)
     rookie_pick = models.ForeignKey(CompetitorPosition, on_delete=models.CASCADE, related_name="rookie_pick", blank=True, null=True)
     points = models.FloatField(default=0)
-    season = models.ForeignKey("Season", on_delete=models.CASCADE, related_name="picks", null=True)
+    season = models.ForeignKey("Season", on_delete=models.CASCADE, related_name="picks", null=True, blank=True)
     position = models.PositiveIntegerField(default=1)
+    position_change = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
-        ordering = ['-points']
+        ordering = ['position']
+
+class Standings(models.Model):
+    users_picks = models.ManyToManyField(UserPicks)
     
 class Announcement(models.Model):
     title = models.TextField(max_length=128)
@@ -134,6 +138,7 @@ class Race(models.Model):
     is_sprint = models.BooleanField()
     finalized = models.BooleanField(default=False)
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="race")
+    new_standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ["timestamp"]
@@ -147,6 +152,7 @@ class Season(models.Model):
     top_independent = models.BooleanField(default=True)
     top_rookie = models.BooleanField(default=True)
     finalized = models.BooleanField(default=False)
+    standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True, blank=True)
 
 class CurrentSeason(models.Model):
     season = models.OneToOneField(Season, on_delete=models.CASCADE, related_name="current_season")

@@ -1,5 +1,3 @@
-from .seasons_serializers import SeasonSimple
-
 def get_competitors_sorted_number(season):
     return season.competitors.order_by("competitor_points__competitor__number")
 

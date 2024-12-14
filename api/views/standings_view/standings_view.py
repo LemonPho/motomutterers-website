@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
 
 from ...models import Season, UserPicks
+from .standings_serializers import StandingsSimpleSerializer
 from ..picks_view.picks_serializers import UserPicksSimpleSerializer, UserPicksSerializer
 from .standings_util import points_based_tie_breaker, competitor_based_tie_breaker, sort_standings
 from ..picks_view.picks_util import update_members_points
@@ -20,16 +21,16 @@ def get_standings(request):
     except Season.DoesNotExist:
         return HttpResponse(status=404)
         
-    picks = season.picks.order_by("position")
-    serializer = UserPicksSimpleSerializer(picks, many=True)
+    standings = season.standings
+    serializer = StandingsSimpleSerializer(standings)
 
-    if picks.count() == 0:
+    if standings == None:
         return JsonResponse({
-            "users": False,
+            "standings": False,
         }, status=200)
         
     return JsonResponse({
-        "users": serializer.data,
+        "standings": serializer.data,
     }, status=200)
 
 def get_standing(request):

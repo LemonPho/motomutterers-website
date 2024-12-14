@@ -60,24 +60,25 @@ export default function Standings(){
                 </div>
             </div>
         </div>
+        {console.log(standings)}
         <div className="card-body">
             {!standings ? 
             (<div>There are no standings for this season</div>) : 
-            (!standingsLoading && standings.map((standing, i) => (
-                <div key={`standings-user-${standing.user.username}`}>
-                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); toggleModal("user-picks-detailed-modal", e); retrieveUserPicks(standing.user.id)}}>
+            (standingsLoading == 0 && standings.users_picks.map((user_picks, i) => (
+                <div key={`standings-user-${user_picks.user.username}`}>
+                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); toggleModal("user-picks-detailed-modal", e); retrieveUserPicks(user_picks.user.id)}}>
                         <div className="d-flex align-items-center">
                             {profilePicturesLoading && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={false} base64={false}/>}
-                            {!profilePicturesLoading && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={standing.user.profile_picture.profile_picture_format} base64={standing.user.profile_picture.profile_picture_data}/>}
-                            <div className="ms-1"><strong>{i+1}. {standing.user.username} - {standing.points}</strong></div>
+                            {!profilePicturesLoading && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={user_picks.user.profile_picture.profile_picture_format} base64={user_picks.user.profile_picture.profile_picture_data}/>}
+                            <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
                         </div>
                         <div className="d-flex align-items-center">
-                            {standing.picks.map((pick) => (
-                                <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${standing.user.id}-pick-${pick.id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
+                            {user_picks.picks.map((pick) => (
+                                <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
                             ))}
 
-                            {!selectedSeasonLoading && selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {standing.independent_pick.first[0]}. {standing.independent_pick.last.slice(0,3)}</strong> - {standing.independent_pick.points}</div>}
-                            {!selectedSeasonLoading && selectedSeason.top_rookie && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {standing.rookie_pick.first[0]}. {standing.rookie_pick.last.slice(0,3)}</strong> - {standing.rookie_pick.points}</div>}
+                            {!selectedSeasonLoading && selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}
+                            {!selectedSeasonLoading && selectedSeason.top_rookie && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {user_picks.rookie_pick.first[0]}. {user_picks.rookie_pick.last.slice(0,3)}</strong> - {user_picks.rookie_pick.points}</div>}
                             
                         </div>
                     </div>

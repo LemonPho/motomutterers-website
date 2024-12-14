@@ -19,7 +19,7 @@ from ...tokens import account_activation_token
 from ...utils import is_username_valid, is_email_valid
 from ...forms import ProfilePictureForm
 from ...serializers import UserSerializer, AnnouncementCommentSerializer
-from .user_serializers import ProfilePictureSerializer, UserSimpleProfilePicture, UserSimpleProfilePictureSerializer
+from .user_serializers import ProfilePictureSerializer, UserSimpleProfilePictureSerializer
 
 def get_user(request):
     if request.method != "POST":
@@ -74,11 +74,7 @@ def get_profile_pictures(request):
             temp_user = None
         
         if temp_user is not None:
-            new_user = UserSimpleProfilePicture()
-            new_user.username = temp_user.username
-            new_user.id = temp_user.id
-            new_user.profile_picture = temp_user.profile_picture
-            new_users.append(new_user)
+            new_users.append(temp_user)
 
     serializer = UserSimpleProfilePictureSerializer(new_users, many=True)
 
