@@ -43,7 +43,7 @@ function LoginPage() {
         }
 
         if(loginResponse.status === 403){
-            setErrorMessage("Your account isn't activated, check your spam to make sure it isn't there. If the link expired, you can still open it and request a new activation email.");
+            setErrorMessage("Your account is not active");
             return;
         }
 

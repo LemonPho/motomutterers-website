@@ -107,15 +107,14 @@ def login_view(request):
     else:
         user = email_backend.authenticate_email(request, email=login_key, password=password)
 
+    if user is None:
+        return HttpResponse(status=400)
+
     if not user.is_active:
         return HttpResponse(status=403)
 
-    #checks if login was successful
-    if user is not None:
-        login(request, user)
-        return HttpResponse(status=200)
-    else:
-        return HttpResponse(status=400)
+    login(request, user)
+    return HttpResponse(status=200)
     
 def logout_view(request):
     logout(request)
