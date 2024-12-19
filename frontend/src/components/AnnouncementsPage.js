@@ -103,85 +103,82 @@ export default function Anouncements(){
         );
     } else {
         return(
-            <div>
-                {user.is_admin === true && 
-                <div className='d-flex justify-content-center mt-3'>
-                    <button id="announcement-button" className='btn btn-primary rounded-15' onClick={(e) => toggleModal("announcement-create-modal", e, undefined, user.is_admin)}>Create announcement</button>
-                    <div className="custom-modal hidden" id="announcement-create-modal" style={{width: "50%"}} onClick={(e) => {e.stopPropagation();}}>
-                        <div className="custom-modal-header justify-content-center">                                
-                            <h5 className='m-0'>Create announcement</h5>
-                        </div>
-                        <div className="custom-modal-body">
-                            <hr className='m-1' />
-                            {announcementCreationLoading && <div className='alert alert-secondary'><small>Loading...</small></div>}
-                            {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                            <div className='d-flex align-items-center'>
-                                <img className="rounded-circle" style={{width: "3rem", height: "3rem", marginRight: "0.5rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt=''/>
-                                <strong>{user.username}</strong>
-                            </div>
-                            <div id="announcement-title" className='input-field mt-2' contentEditable={true} data-placeholder="Title..." data-category="input-field"></div>
-                            <div id="break-line-text" className='input-field mt-2' contentEditable={true} data-placeholder="Text..." data-category="input-field"></div>
-                        </div>
-                        <div className="custom-modal-footer">
-                            <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postAnnouncement}>Post announcement</button>
-                        </div>
-                    </div>
-                </div>}
-    
-                <div id='announcements-view'>
-                    {announcements.length == 0 && 
-                    <div>
-                        No announcements posted yet.    
-                    </div>}
-                    {announcements.lenght != 0 && announcements.map((announcement) => (
-                        <div className="clickable card mx-auto my-3 rounded-15 w-100 element-background-color element-border-color" key={announcement.id}>
-                            <a className='link-no-decorations' href={`/announcements/${announcement.id}`}>
-                                <div className='p-3' id={`announcement-${announcement.id}`}>
-                                    <div className='d-flex'>
-                                        <small>
-                                            <img className="rounded-circle" style={{width: "2rem", height: "2rem", marginRight: "0.5rem"}} src={`data: image/${announcement.user.profile_picture_format}; base64, ${announcement.user.profile_picture_data}`} alt=''/>
-                                            {announcement.user.username}
-                                        </small>
-                                        <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
-                                    </div>
-                                    
-                                    <div className='d-flex w-100'>
-                                        <h5 className='mt-1'>{announcement.title}</h5>
-                                    </div>
-                                    
-                                    <hr className='mt-2 mb-1'/>
-                                    <p>{announcement.text}</p>
-                                </div>
-                            </a>
-                        </div>
-                    ))}
+            <div className='card element-background-color element-border-color rounded-15'>
+                <div className='card-header d-flex align-items-center'>
+                    <h5>Announcements</h5>
+                    {user.is_admin && <button className='btn btn-primary ms-auto rounded-15' onClick={(e) => toggleModal("announcement-create-modal", e, undefined, user.is_admin)}>Create Announcement</button>}
                 </div>
-                {pages && 
-                <nav id="pagination-view ">
-                    <ul className='pagination justify-content-center'>
-                        <li id='previous-page' className={`${previousPage}`}>
-                            <a id='previous-page-link' href={`announcements?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</a>
-                        </li>
-                        {pageNumbers.map((page) => (
-                            parseInt(currentPage) !== page ?
-                            ( 
-                            <li id={`page-${page}`} key={`page-${page}`} className="page-item">
-                                <a id={`page-link-${page}`} href={`announcements?page=${page}`} className='page-link'>{page}</a>
+                <div className='card-body'>
+                {announcements.lenghth != 0 && announcements.map((announcement) => (
+                    <div className="clickable card mx-auto my-3 rounded-15 element-background-color" key={announcement.id}>
+                        <a className='link-no-decorations' href={`/announcements/${announcement.id}`}>
+                            <div className='p-3' id={`announcement-${announcement.id}`}>
+                                <div className='d-flex'>
+                                    <small>
+                                        <img className="rounded-circle" style={{width: "2rem", height: "2rem", marginRight: "0.5rem"}} src={`data: image/${announcement.user.profile_picture_format}; base64, ${announcement.user.profile_picture_data}`} alt=''/>
+                                        {announcement.user.username}
+                                    </small>
+                                    <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
+                                </div>
+                                
+                                <div className='d-flex'>
+                                    <h5 className='mt-1'>{announcement.title}</h5>
+                                </div>
+                                
+                                <hr className='mt-2 mb-1'/>
+                                <p>{announcement.text}</p>
+                            </div>
+                        </a>
+                    </div>
+                ))}
+                </div>
+                <div className='card-footer'>
+                    {pages && 
+                    <nav id="pagination-view ">
+                        <ul className='pagination justify-content-center'>
+                            <li id='previous-page' className={`${previousPage}`}>
+                                <a id='previous-page-link' href={`announcements?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</a>
                             </li>
-                            )
-                            :
-                            (
-                            <li id={`page-${page}`} key={`page-${page}`} className="page-item disabled">
-                                <a id={`page-link-${page}`} href={`announcements?page=${page}`} className='page-link'>{page}</a>
+                            {pageNumbers.map((page) => (
+                                parseInt(currentPage) !== page ?
+                                ( 
+                                <li id={`page-${page}`} key={`page-${page}`} className="page-item">
+                                    <a id={`page-link-${page}`} href={`announcements?page=${page}`} className='page-link'>{page}</a>
+                                </li>
+                                )
+                                :
+                                (
+                                <li id={`page-${page}`} key={`page-${page}`} className="page-item disabled">
+                                    <a id={`page-link-${page}`} href={`announcements?page=${page}`} className='page-link'>{page}</a>
+                                </li>
+                                )
+                            ))}
+                            <li id='next-page' className={`${nextPage}`}>
+                                <a id='next-page-link' href={`announcements?page=${parseInt(currentPage)+1}`} className='page-link'>Next</a>
                             </li>
-                            )
-                        ))}
-                        <li id='next-page' className={`${nextPage}`}>
-                            <a id='next-page-link' href={`announcements?page=${parseInt(currentPage)+1}`} className='page-link'>Next</a>
-                        </li>
-                    </ul>
-                </nav>
-                }
+                        </ul>
+                    </nav>}
+                </div>
+
+                <div className="custom-modal hidden" id="announcement-create-modal" style={{width: "50%"}} onClick={(e) => {e.stopPropagation();}}>
+                    <div className="custom-modal-header justify-content-center">                                
+                        <h5 className='m-0'>Create announcement</h5>
+                    </div>
+                    <div className="custom-modal-body">
+                        <hr className='m-1' />
+                        {announcementCreationLoading && <div className='alert alert-secondary'><small>Loading...</small></div>}
+                        {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
+                        <div className='d-flex align-items-center'>
+                            <img className="rounded-circle" style={{width: "3rem", height: "3rem", marginRight: "0.5rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt=''/>
+                            <strong>{user.username}</strong>
+                        </div>
+                        <div id="announcement-title" className='input-field mt-2' contentEditable={true} data-placeholder="Title..." data-category="input-field"></div>
+                        <div id="break-line-text" className='input-field mt-2' contentEditable={true} data-placeholder="Text..." data-category="input-field"></div>
+                    </div>
+                    <div className="custom-modal-footer">
+                        <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postAnnouncement}>Post announcement</button>
+                    </div>
+                </div>
             </div>
         );
     }

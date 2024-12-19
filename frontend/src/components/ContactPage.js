@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Contact(){
     return(
-        <div className="card my-2 rounded-15">
+        <div className="card my-2 rounded-15 element-background-color element-border-color">
             <div className="card-header">
                 <h5>Contact us</h5>
             </div>

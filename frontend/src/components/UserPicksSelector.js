@@ -9,6 +9,7 @@ export default function UserPicksSelector(){
 
     const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0])
     const [loading, setLoading] = useState(true);
+    const [newUserPicksLoading, setNewUserPicksLoading] = useState(false);
     const [userPicks, setUserPicks] = useState([0, 0, 0, 0, 0]);
     const [userIndependentPick, setUserIndependentPick] = useState(false);
     const [invalidIndependent, setInvalidIndependent] = useState(false);
@@ -40,11 +41,11 @@ export default function UserPicksSelector(){
     }
 
     async function submitPicks(){
-        setLoadingMessage("Loading...");
+        setNewUserPicksLoading(true);
         let picks = userPicks.map(pick => pick.competitor_id);
         const picksResponse = await submitUserPicks(picks, userIndependentPick.competitor_id, userRookiePick.competitor_id);
         resetInvalidPicks();
-        setLoadingMessage(false);
+        setNewUserPicksLoading(false);
 
         if(picksResponse.error){
             setErrorMessage("There has been an error submiting the picks.");
@@ -116,10 +117,6 @@ export default function UserPicksSelector(){
         setLoadingMessage(false);
     }, []);
 
-    if(loading || contextLoading){
-        return null;
-    }
-
     if(!loggedIn){
         return <div>You need to be logged in to select your picks.</div>
     }
@@ -135,7 +132,7 @@ export default function UserPicksSelector(){
             </div>
 
             <div className="card-body">
-                {userPicks.map((userPick, i) => (
+                {(!loading) && userPicks.map((userPick, i) => (
                     invalidPicks[i] == true ? (
                         <div className="col d-flex justify-content-center" key={`${picksWords[i]}-pick-dropdown-div`}>
                             <div className="card text-center mb-2">
@@ -181,7 +178,7 @@ export default function UserPicksSelector(){
                         </div>
                     )
                 ))}
-                {currentSeason.top_independent && 
+                {(!loading) && currentSeason.top_independent && 
                 <div className="col d-flex justify-content-center" key={`independent-pick-dropdown-div`}>
                     <div className="card text-center mb-2">
                         <div className="card-header">
@@ -212,7 +209,7 @@ export default function UserPicksSelector(){
                     </div>
                 </div>}
 
-                {currentSeason.top_rookie && 
+                {(!loading) && currentSeason.top_rookie && 
                 <div className="col d-flex justify-content-center" key={`rookie-pick-dropdown-div`}>
                     <div className="card text-center mb-2">
                         <div className="card-header">
@@ -244,9 +241,9 @@ export default function UserPicksSelector(){
                 </div>}
             </div>
             
-            
            <div className="card-footer d-flex justify-content-center">
-                <button className="btn btn-primary" onClick={() => submitPicks()}>Submit</button>
+                {newUserPicksLoading && <button className="btn btn-primary" disabled>Loading...</button>}
+                {!newUserPicksLoading && <button className="btn btn-primary" onClick={() => submitPicks()}>Submit</button>}
             </div>
         </div>
     );

@@ -106,7 +106,7 @@ export default function UserPage(){
         <div>
             <div className="row">
                 <div className="col-md-4">
-                    <div id="user-view" className="card rounded-15 my-3 p-3 element-background-color element-border-color">
+                    <div id="user-view" className="card rounded-15 p-3 element-background-color element-border-color">
                         <div className="d-flex align-items-center justify-content-center">
                             {displayUser.profile_picture_data != "" && <img className="rounded-circle" style={{width: "7rem", height: "7rem"}} src={`data: image/${displayUser.profile_picture_format}; base64, ${displayUser.profile_picture_data}`} alt="" />} 
                         </div>

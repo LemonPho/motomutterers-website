@@ -27,6 +27,16 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.alert-positioning {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 10in;
+    width: 100%;
+    z-index: 10;
+}
+
 .inner-content{
     width: 100%;
 }
