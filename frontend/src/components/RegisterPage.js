@@ -74,7 +74,7 @@ export default function RegisterPage() {
 
     return (
         <div> 
-            <div className="card shadow mx-auto my-5 rounded-15" style={{width: "21rem"}}>
+            <div className="card shadow mx-auto my-5 rounded-15 element-background-color element-border-color" style={{width: "21rem"}}>
                 <div className="my-3" style={{display: "flex"}}> 
                     <h6 style={{margin: "auto", fontSize: "40px"}}>Sign up</h6>
                 </div>
