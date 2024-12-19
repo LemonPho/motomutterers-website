@@ -5,10 +5,6 @@ from django.core.exceptions import ValidationError
 
 from api.views.picks_view.picks_validators import check_picks_conflict
 
-from .models import Announcement, AnnouncementComment, Notification, CurrentSeason, Season, Competitor, Race, CompetitorPosition, UserPicks
-
-import re
-
 ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "ico", "svg", "heic", "heif"]
 
 class UserRegistrationForm(UserCreationForm):

@@ -57,7 +57,7 @@ export default function AnnouncementContent(){
     return(
         <div>
             { announcementEditLoading && <div className="alert alert-secondary">Loading...</div>}
-            <div className="card rounded-15" id="announcement-card">
+            <div className="card rounded-15 element-background-color element-border-color" id="announcement-card">
                 <div className="p-3">
                     <div className="d-flex align-items-center">
                         <h3 id="announcement-title" className="" contentEditable={false}>{announcement.title}</h3>

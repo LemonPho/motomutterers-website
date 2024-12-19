@@ -173,3 +173,7 @@ export function focusDiv(divId){
         div.focus();
     }
 }
+
+export async function getProfilePictures(users){
+    
+}

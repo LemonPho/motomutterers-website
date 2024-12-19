@@ -179,7 +179,7 @@ export async function getNotifications(){
     return response;
 }
 
-export async function getRaceResults(page){
+export async function getRaceResults(seasonYear){
     let response = {
         error: false,
         raceResults: {},
@@ -188,12 +188,11 @@ export async function getRaceResults(page){
     };
 
     try{
-        const apiResponse = await fetch(`/api/get-race-results?page=${page}`);
+        const apiResponse = await fetch(`/api/get-race-results?season=${seasonYear}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.raceResults = apiResult.race_results;
-        response.amountRaceResults = apiResult.amount_race_results;
+        response.raceResults = apiResult.races;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;
@@ -365,7 +364,6 @@ export async function getSeason(seasonYear){
         error: false,
         season: null,
         competitorsSortedNumber: null,
-        competitorsSortedPoints: null,
         status: null,
     }
 
@@ -376,7 +374,6 @@ export async function getSeason(seasonYear){
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.season = apiResponse.status === 200 ? apiResult.season : false;
         response.competitorsSortedNumber = apiResponse.status === 200 ? apiResult.competitors_sorted_number !== undefined ? apiResult.competitors_sorted_number : false : false;
-        response.competitorsSortedPoints = apiResponse.status === 200 ? apiResult.competitors_sorted_points !== undefined ? apiResult.competitors_sorted_points : false : false;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;
@@ -565,7 +562,6 @@ export async function getUserPicks(seasonId, userId){
     let response = {
         error: false,
         userPicks: null,
-        season: null,
         status: null,
     }
 
@@ -574,18 +570,34 @@ export async function getUserPicks(seasonId, userId){
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        
-        if(apiResult.user_picks != null){
-            response.userPicks = apiResult.user_picks;
-            response.season = apiResult.user_picks.season;
-        }
-        
+        response.userPicks = apiResponse.status === 200 ? apiResult.user_picks : false;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;
     }
 
     return response;
+}
+
+export async function getUserPicksSimple(seasonId, userId){
+    let response = {
+        error: false,
+        userPicks:null,
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-user-picks-simple?season=${seasonId}&uid=${userId}`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.userPicks = apiResponse.status === 200 ? apiResult.user_picks : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response
 }
 
 export async function getSelectPicksState(){
@@ -621,7 +633,7 @@ export async function getSeasonStandings(year){
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.standings = apiResponse.status === 200 ? apiResult.standings : null;
+        response.standings = apiResponse.status === 200 && apiResult.standings.users_picks.length != 0 ? apiResult.standings : null;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

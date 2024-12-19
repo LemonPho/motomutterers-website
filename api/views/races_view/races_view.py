@@ -1,10 +1,11 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_table_race_data, validate_generate_competitors_positions
+from .races_validators import validate_race_link_data, generate_table_race_data, validate_generate_competitors_positions, validate_race_upcoming_link_data
 from .races_util import add_points_to_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
-from ...serializers import RaceSerializer, CompetitorPositionSerializer
+from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer
 
 from ..picks_view.picks_util import update_members_points
 from ..standings_view.standings_util import sort_standings
@@ -33,7 +34,7 @@ def get_race(request):
     except Race.DoesNotExist:
         return HttpResponse(status=404)
     
-    serializer = RaceSerializer(race)
+    serializer = RaceSimpleSerializer(race)
 
     return JsonResponse({
         "race": serializer.data,
@@ -55,7 +56,7 @@ def get_season_races(request):
     
     races = season.races.order_by("-timestamp")
 
-    serializer = RaceSerializer(races, many=True)
+    serializer = RaceSimpleSerializer(races, many=True)
 
     return JsonResponse({
         "races": serializer.data,
@@ -94,13 +95,13 @@ def create_complete_race(request):
     if any(response["invalid_competitors_positions_spacing"]) or any(response["competitors_not_found"]):
         return JsonResponse(response, status=400)
     
-    race_serializer = RaceSerializer(data=data["race"])
+    race_serializer = RaceWriteSerializer(data=data["race"])
 
     if not race_serializer.is_valid():
         response["invalid_race_data"] = True
         return JsonResponse(response, status=400)
     
-    competitors_positions_serializer = CompetitorPositionSerializer(data=validated_competitors_positions_data["new_competitors_positions_data"], many=True)
+    competitors_positions_serializer = CompetitorPositionWriteSerializer(data=validated_competitors_positions_data["new_competitors_positions_data"], many=True)
 
     if not competitors_positions_serializer.is_valid():
         response["invalid_competitors_positions"] = True
@@ -123,7 +124,7 @@ def create_complete_race(request):
         race.remove()
 
     update_members_points()
-    sort_standings()
+    sort_standings(season)
 
     return JsonResponse(response, status=201)
     
@@ -143,7 +144,7 @@ def create_race(request):
     if season.finalized:
         return HttpResponse(status=400)
 
-    serializer = RaceSerializer(data)
+    serializer = RaceWriteSerializer(data)
 
     if not serializer.is_valid() or not season_year:
         return HttpResponse(status=400)
@@ -153,6 +154,20 @@ def create_race(request):
     season.races.add(race)
 
     return HttpResponse(status=200)
+
+def create_upcoming_race_link(request):
+    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=405)
+    
+    response = {
+        "invalid_link": False,
+        "invalid_season": False,
+        "timeout": False,
+    }
+
+    data = json.loads(request.body)
+    
+    validated_data_response = validate_race_upcoming_link_data(data)
 
 def create_race_link(request):
     if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
@@ -165,16 +180,6 @@ def create_race_link(request):
     }
 
     data = json.loads(request.body)
-
-    season_year = data.get("season_year")
-
-    try:
-        season = Season.objects.filter(visible=True).get(year=season_year)
-    except Season.DoesNotExist:
-        season = None
-
-    if season == None or season.finalized:
-        return HttpResponse(status=400)
 
     validated_data_response = validate_race_link_data(data)
     response["invalidLink"] = validated_data_response["invalidLink"]
@@ -195,7 +200,7 @@ def create_race_link(request):
 
     competitors_positions_data = race_result_data["data"].pop("competitors_positions")
 
-    serializer = RaceSerializer(data=race_result_data["data"])
+    serializer = RaceWriteSerializer(data=race_result_data["data"])
 
     if not serializer.is_valid():
         print(serializer.errors)
@@ -203,7 +208,7 @@ def create_race_link(request):
     
     race = serializer.save()
 
-    serializer = CompetitorPositionSerializer(data=competitors_positions_data,many=True)
+    serializer = CompetitorPositionWriteSerializer(data=competitors_positions_data,many=True)
 
     if not serializer.is_valid():
         return JsonResponse(validated_data_response, status=400)
@@ -223,7 +228,7 @@ def create_race_link(request):
         return JsonResponse(response, status=400)
 
     update_members_points()
-    sort_standings()
+    sort_standings(season)
     
     return JsonResponse(response, status=201)
 
@@ -278,13 +283,13 @@ def add_race_results(request):
         prev_competitor = competitor_position
 
     for final_competitor_position in final_competitors_positions:
-        serializer = CompetitorPositionSerializer(final_competitor_position)
+        serializer = CompetitorPositionWriteSerializer(final_competitor_position)
 
         if not serializer.is_valid():
             return HttpResponse(status=400)
 
     for final_competitor_position in final_competitors_positions:
-        serializer = CompetitorPositionSerializer(final_competitor_position)
+        serializer = CompetitorPositionWriteSerializer(final_competitor_position)
         serializer.save()
 
     j = len(points_list)
@@ -300,7 +305,7 @@ def add_race_results(request):
     race.save()
 
     update_members_points()
-    sort_standings()
+    sort_standings(race.season)
 
     return HttpResponse(status=200) 
 
@@ -320,7 +325,7 @@ def edit_race(request):
     except Race.DoesNotExist:
         return HttpResponse(status=404)
 
-    serializer = RaceSerializer(data=data, instance=race)
+    serializer = RaceWriteSerializer(data=data, instance=race)
     if not serializer.is_valid():
         return HttpResponse(status=400)
 
@@ -385,5 +390,5 @@ def delete_race(request):
 
     race.delete()
     update_members_points()
-    sort_standings()
+    sort_standings(season)
     return HttpResponse(status=200)

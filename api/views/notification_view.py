@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 
 from ..models import Notification
-from ..serializers import NotificationSerializer
+from ..serializers.notification_serializers import NotificationSerializer
 
 import json
 

@@ -1,5 +1,5 @@
 from ...models import Season, Competitor, CompetitorPoints
-from ...serializers import sanitize_html
+from ...serializers.serializers_util import sanitize_html
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -126,8 +126,8 @@ def generate_competitor_table_data(url, season):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
 
-    browser = webdriver.Chrome(service=service, options=options)
-    #browser = webdriver.Chrome()
+    #browser = webdriver.Chrome(service=service, options=options)
+    browser = webdriver.Chrome()
     browser.get(url)
     delay = 10
 

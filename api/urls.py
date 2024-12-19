@@ -46,6 +46,7 @@ urlpatterns = [
     path('get-profile-pictures/', user_view.get_profile_pictures),
     path('get-default-pfp/', user_view.get_default_profile_picture),
     path('get-user-picks', picks_view.get_user_picks),
+    path('get-user-picks-simple', picks_view.get_user_picks_simple),
     path('get-users-picks-state/', seasons_view.get_users_picks_state),
 
     #post

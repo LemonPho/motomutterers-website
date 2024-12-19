@@ -13,7 +13,6 @@ const UsersIndexPage = React.lazy(() => import("./UsersIndexPage.js"));
 const HomePage = React.lazy(() => import("./HomePage.js"));
 const PageNotFound = React.lazy(() => import("./PageNotFound.js"));
 const LoginPage = React.lazy(() => import("./LoginPage.js"));
-const RaceResults = React.lazy(() => import("./RaceResultsPage.js"));
 const RegisterPage = React.lazy(() => import("./RegisterPage.js"));
 const StandingsPage = React.lazy(() => import("./standings-page-components/StandingsPage.js"));
 const UserPage = React.lazy(() => import("./UserPage.js"));
@@ -27,6 +26,8 @@ const Announcement = React.lazy(() => import("./announcement-page-components/Ann
 const SeasonContextProvider = React.lazy(() => import("./admin-page-components/season-edit-components/SeasonContext.js"));
 const AnnouncementContextProvider = React.lazy(() => import("./announcement-page-components/AnnouncementContext.js"));
 const SeasonCreateContextProvider = React.lazy(() => import("./admin-page-components/SeasonCreateContext.js"));
+const RaceResultsContextProvider = React.lazy(() => import("./race-results-components/RaceResultsContext.js"));
+const RaceResultsHandler = React.lazy(() => import("./race-results-components/RaceResultsHandler.js"));
 
 //import StandingsContextProvider from "./standings-page-components/StandingsContext.js";
 //import UsersIndexPage from './UsersIndexPage.js';
@@ -79,7 +80,10 @@ export default function App() {
                 <Route path="change-email" element={<EmailActivation />}/>
                 <Route path="find-account" element={<FindAccount />}/>
                 <Route path="login" element={<LoginPage />} />
-                <Route path="raceresults" element={<RaceResults />}/>
+                <Route path="raceresults" element={<RaceResultsContextProvider/>}>
+                    <Route index element={<RaceResultsHandler />}/>
+                    <Route path=":raceId" element={<RaceResultsHandler/>}/>
+                </Route>
                 <Route path="register" element={<RegisterPage />} />
                 <Route path="select-picks" element={<UserPicksSelector />}/>
                 <Route path="settings" element={<UserSettings />}/>

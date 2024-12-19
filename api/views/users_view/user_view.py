@@ -10,6 +10,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from PIL import Image
 from io import BytesIO
+from pillow_heif import register_heif_opener, from_bytes
 
 import os
 import json
@@ -18,8 +19,9 @@ import datetime
 from ...tokens import account_activation_token
 from ...utils import is_username_valid, is_email_valid
 from ...forms import ProfilePictureForm
-from ...serializers import UserSerializer, AnnouncementCommentSerializer
-from .user_serializers import ProfilePictureSerializer, UserSimpleProfilePictureSerializer
+from ...serializers.user_serializers import UserSerializer
+from ...serializers.announcements_serializers import AnnouncementCommentSerializer
+from ...serializers.user_serializers import ProfilePictureSerializer, UserSimpleProfilePictureSerializer
 
 def get_user(request):
     if request.method != "POST":
@@ -67,14 +69,22 @@ def get_profile_pictures(request):
     if not users:
         return HttpResponse(status=400)
     
-    for user in users:
+    if isinstance(users, dict):
         try:
-            temp_user = User.objects.get(pk=user["id"])
+            temp_user = User.objects.get(pk=users["id"])
         except User.DoesNotExist:
-            temp_user = None
+            return HttpResponse(status=404)
         
-        if temp_user is not None:
-            new_users.append(temp_user)
+        new_users.append(temp_user)
+    else:
+        for user in users:
+            try:
+                temp_user = User.objects.get(pk=user["id"])
+            except User.DoesNotExist:
+                temp_user = None
+            
+            if temp_user is not None:
+                new_users.append(temp_user)
 
     serializer = UserSimpleProfilePictureSerializer(new_users, many=True)
 
@@ -261,15 +271,28 @@ def change_profile_picture(request):
     user = request.user
 
     if form.is_valid():
-        profiel_picture_base = form.cleaned_data["profile_picture"]
-        profile_picture = Image.open(profiel_picture_base)
-        profile_picture_format = profiel_picture_base.name.split('.')[-1].lower()
+        profile_picture_base = form.cleaned_data["profile_picture"]
+        profile_picture_format = profile_picture_base.name.split('.')[-1].lower()
+
+        if profile_picture_format == ".heif" or profile_picture_format == ".heic":
+            register_heif_opener()
+            heif_image = from_bytes(profile_picture_base.read())
+            profile_picture = Image.frombytes(
+                heif_image.mode,
+                heif_image.size,
+                heif_image.data,
+                "raw",
+                heif_image.mode)
+            profile_picture_format = "jpeg"
+        else:
+            profile_picture = Image.open(profile_picture_base)
+
 
         profile_picture_resized = profile_picture.resize((250, 250))
         profile_picture_buffer = BytesIO()
         profile_picture_resized.save(profile_picture_buffer, format=profile_picture_format.upper(), quality=100)
         profile_picture_file = InMemoryUploadedFile(
-            profile_picture_buffer, None, profiel_picture_base.name, f"image/{profile_picture_format}", profile_picture_buffer.tell(), None
+            profile_picture_buffer, None, profile_picture_base.name, f"image/{profile_picture_format}", profile_picture_buffer.tell(), None
             )
 
         user.profile_picture = profile_picture_file

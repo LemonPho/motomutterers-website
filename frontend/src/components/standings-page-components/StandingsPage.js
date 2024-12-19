@@ -30,7 +30,7 @@ export default function Standings(){
     }, [standingsLoading])
 
     return (
-    <div className="card rounded-15 my-2 mt-4 align-middle">
+    <div className="card rounded-15 my-2 mt-4 align-middle element-background-color element-border-color">
         <div className="rounded-15-top card-header">
             <div className="d-flex align-items-center">
                 <h5 className="m-0">
@@ -39,14 +39,14 @@ export default function Standings(){
                 {!selectedSeasonLoading && selectedSeason.finalized &&
                     <small>‎ (finalized)</small>
                 }
-                <div className="ms-auto dropdown">
-                    <button className="btn btn-outline-secondary dropdown-toggle" type="button" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
+                <div className="ms-auto btn-group">
+                    <button className="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="false" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
                         {selectedSeason.year}
                     </button>
-                    <ul className="dropdown-menu" id="season-selector-dropdown">
+                    <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>
                     {!seasonListLoading && seasonList.map((season) => (
-                        <li className="ms-2" key={`${season.year}`}>
-                            <a className="d-flex align-items-center" href={`/standings?season=${season.year}`} id={`${season.year}`}>
+                        <li key={`${season.year}`}>
+                            <a className="dropdown-item" href={`/standings?season=${season.year}`} id={`${season.year}`}>
                                 {season.year}
                                 {season.year == selectedSeason.year && (
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
@@ -60,7 +60,6 @@ export default function Standings(){
                 </div>
             </div>
         </div>
-        {console.log(standings)}
         <div className="card-body">
             {!standings ? 
             (<div>There are no standings for this season</div>) : 
@@ -74,7 +73,7 @@ export default function Standings(){
                         </div>
                         <div className="d-flex align-items-center">
                             {user_picks.picks.map((pick) => (
-                                <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
+                                <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
                             ))}
 
                             {!selectedSeasonLoading && selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}

@@ -2,7 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.db import transaction
 
 from ...models import Competitor, Season, CompetitorPosition, SeasonCompetitorPosition, CurrentSeason
-from ...serializers import CompetitorSerializer, CompetitorPositionSerializer, SeasonCompetitorPositionSerializer, CompetitorPointsSerializer
+from ...serializers.competitors_serializers import CompetitorWriteSerializer, CompetitorPositionWriteSerializer, CompetitorPointsWriteSerializer, CompetitorPositionSimpleSerializer
+from ...serializers.seasons_serializers import SeasonCompetitorPositionWriteSerializer, SeasonCompetitorPositionSimpleSerializer
 from .competitors_validators import validate_competitor_data, generate_season_competitor_position_data, generate_competitor_table_data, validate_season_competitors_data, generate_competitor_points_data
 
 from selenium import webdriver
@@ -26,7 +27,7 @@ def get_competitor_position(request):
         except CompetitorPosition.DoesNotExist:
             return HttpResponse(status=404)
         
-    serializer = CompetitorPositionSerializer(competitor)
+    serializer = CompetitorPositionSimpleSerializer(competitor)
 
     return JsonResponse({
         "competitorPosition": serializer.data,
@@ -44,7 +45,7 @@ def get_season_competitor(request):
         except SeasonCompetitorPosition.DoesNotExist:
             return HttpResponse(status=404)
         
-    serializer = SeasonCompetitorPositionSerializer(competitor)
+    serializer = SeasonCompetitorPositionSimpleSerializer(competitor)
 
     return JsonResponse({
         "competitor": serializer.data,
@@ -56,7 +57,7 @@ def get_all_competitors(request):
     
     try:
         competitors = CompetitorPosition.objects.all()
-        serializer = CompetitorPositionSerializer(competitors, many=True)
+        serializer = CompetitorPositionSimpleSerializer(competitors, many=True)
     except Competitor.DoesNotExist:
         serializer = None
     
@@ -83,7 +84,7 @@ def get_season_competitors(request):
     
     try:
         competitors = season.competitors.order_by("-points")
-        serializer = CompetitorPositionSerializer(competitors, many=True)
+        serializer = CompetitorPositionSimpleSerializer(competitors, many=True)
     except CompetitorPosition.DoesNotExist:
         serializer = None
 
@@ -115,7 +116,7 @@ def create_season_competitors_link(request):
         return JsonResponse(response, status=400)
     
     #serializer validation and creation of competitor positions
-    serializer = SeasonCompetitorPositionSerializer(data=table_data_response["data"], many=True)
+    serializer = SeasonCompetitorPositionWriteSerializer(data=table_data_response["data"], many=True)
 
     if not serializer.is_valid():
         print(serializer.errors)
@@ -150,7 +151,7 @@ def create_competitor(request):
     if result["season_not_found"] or result["rider_exists"]:
         return JsonResponse(result, status=400)
             
-    serializer = SeasonCompetitorPositionSerializer(data=data)
+    serializer = SeasonCompetitorPositionWriteSerializer(data=data)
 
     if not serializer.is_valid():
         print(serializer.errors)
@@ -181,7 +182,7 @@ def edit_season_competitor(request):
     if competitor_position.season.first().finalized:
         return HttpResponse(status=400)
         
-    serializer = SeasonCompetitorPositionSerializer(data=data, instance=competitor_position)
+    serializer = SeasonCompetitorPositionWriteSerializer(data=data, instance=competitor_position)
     
     if not serializer.is_valid():
         print(serializer.errors)

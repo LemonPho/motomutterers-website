@@ -4,9 +4,9 @@ from django.contrib.auth import get_user_model
 import json
 
 from ...models import UserPicks, CurrentSeason, Competitor, Season
-from ...serializers import UserPicksSerializer
+from ...serializers.picks_serializers import UserPicksSerializer, UserPicksWriteSerializer, UserPicksSimpleSerializer
 from .picks_util import update_members_points
-from .picks_validators import generate_validate_user_picks_data, WriteUserPicksSerializer
+from .picks_validators import generate_validate_user_picks_data
 from ..standings_view.standings_util import sort_standings
 
 def get_user_picks(request):
@@ -20,19 +20,16 @@ def get_user_picks(request):
     try:
         season = Season.objects.filter(visible=True).get(pk=season_id)
     except Season.DoesNotExist:
-        print("didnt find season")
         return HttpResponse(status=404)
     
     try:
         user = User.objects.get(pk=uid)
     except User.DoesNotExist:
-        print("didnt find user")
         return HttpResponse(status=404)
     
     try:
         user_picks = UserPicks.objects.filter(season=season).get(user=user)
     except UserPicks.DoesNotExist:
-        print("didn't find user picks")
         return HttpResponse(status=404)
     
     serializer = UserPicksSerializer(user_picks)
@@ -43,6 +40,36 @@ def get_user_picks(request):
 
     return JsonResponse(context, status=200)
 
+def get_user_picks_simple(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    season_id = request.GET.get("season")
+    uid = request.GET.get("uid")
+    User = get_user_model()
+
+    try:
+        season = Season.objects.filter(visible=True).get(pk=season_id)
+    except Season.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    try:
+        user = User.objects.get(pk=uid)
+    except User.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    try:
+        user_picks = UserPicks.objects.filter(season=season).get(user=user)
+    except UserPicks.DoesNotExist:
+        return HttpResponse(status=404)
+
+    serializer = UserPicksSimpleSerializer(user_picks)
+
+    context = {
+        "user_picks": serializer.data,
+    }
+
+    return JsonResponse(context, status=200)
 
 def set_user_picks(request):
     current_season = CurrentSeason.objects.first()
@@ -53,7 +80,7 @@ def set_user_picks(request):
     user_has_picks = True
 
     try:
-        user_picks = UserPicks.objects.get(user=request.user)
+        user_picks = current_season.season.standings.users_picks.get(user=request.user)
     except UserPicks.DoesNotExist:
         user_has_picks = False
 
@@ -68,17 +95,19 @@ def set_user_picks(request):
         return JsonResponse(response, status=400)
         
     #validate with serializer
-    serializer = WriteUserPicksSerializer(data=response["new_data"])
+    serializer = UserPicksWriteSerializer(data=response["new_data"])
 
     if not serializer.is_valid():
+        print(serializer.errors)
         response.pop("new_data")
         return JsonResponse(response, status=400)
     
     #save
-    serializer.save()
+    new_user_picks = serializer.save()
+    current_season.season.standings.users_picks.add(new_user_picks)
     if user_has_picks:
         user_picks.delete()
     update_members_points()
-    sort_standings()
+    sort_standings(current_season.season)
 
     return HttpResponse(status=201)

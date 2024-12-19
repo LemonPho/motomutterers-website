@@ -33,12 +33,12 @@ export default function SeasonFinalize() {
     return (
         <div className="d-flex align-items-center w-100">
             <strong>Finalize Season</strong>
-            {seasonFinalizeState && 
+            {seasonFinalizeState || !season.current && 
             <div className="form-check form-switch ms-auto mb-0">
                 <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} disabled/>
             </div>
             }
-            {!seasonFinalizeState && 
+            {!seasonFinalizeState && season.current && 
             <div className="form-check form-switch ms-auto mb-0">
                 <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} onChange={(e) => {toggleModal("finalize-season-modal", e)}}/>
             </div>

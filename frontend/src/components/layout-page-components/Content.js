@@ -6,7 +6,7 @@ export default function Content(){
     const { errorMessage, successMessage, loadingMessage, informationMessage } = useApplicationContext();
 
     return(
-        <div className="inner-content px-3">
+        <div className="inner-content px-3 mt-4">
             <Outlet />
         </div>
     );

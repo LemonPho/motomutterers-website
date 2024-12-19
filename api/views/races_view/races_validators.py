@@ -1,5 +1,5 @@
 from ...models import Season, CompetitorPosition, Competitor, SeasonCompetitorPosition
-from ...serializers import sanitize_html
+from ...serializers.serializers_util import sanitize_html
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -10,11 +10,17 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
+def validate_race_upcoming_link_data(data):
+    response = {
+        "invalid_link": False,
+        "invalid_season": False,
+        "season": None,
+    }
+
 def validate_race_link_data(data):
     response = {
         "invalidLink": False,
         "invalidSeason": False,
-        "season": None,
         "is_sprint": False,
     }
 
@@ -54,7 +60,7 @@ def generate_table_race_data(data, season, is_sprint):
     url = sanitize_html(url)
 
     #start browser
-    service = Service("/usr/bin/chromedriver")
+    #service = Service("/usr/bin/chromedriver")
 
     options = webdriver.ChromeOptions()
     options.add_argument('--disable-blink-features=AutomationControlled')
@@ -64,7 +70,8 @@ def generate_table_race_data(data, season, is_sprint):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
 
-    browser = webdriver.Chrome(service=service, options=options)
+    #browser = webdriver.Chrome(service=service, options=options)
+    browser = webdriver.Chrome(options=options)
     browser.get(url)
     delay = 10
 
@@ -72,12 +79,14 @@ def generate_table_race_data(data, season, is_sprint):
         table = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-table.ms-table--result")))
     except TimeoutException:
         response["timeout"] = True
+        browser.quit()
         return response
         
     try:
-        title = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-select__option.ms-select__option--event.ms-select__option--header"))).get_attribute("data-selection-title")
+        title = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".msnt-select__option.msnt-select__option--event.msnt-select__option--header"))).get_attribute("data-selection-title")
     except TimeoutException:
         response["timeout"] = True
+        browser.quit()
         return response
 
         
@@ -125,6 +134,10 @@ def generate_table_race_data(data, season, is_sprint):
 
     return response
 
+#generates standings after race
+def generate_race_standings():
+    pass
+
 #this function expects the competitors positions to arrive sorted!!
 def validate_generate_competitors_positions(data, is_sprint):
     response = {
@@ -150,12 +163,12 @@ def validate_generate_competitors_positions(data, is_sprint):
 
         if data[i]["position"] == 0:
             response["new_competitors_positions_data"].append({
-                                                                "competitor_points": {
-                                                                   "competitor_id": data[i]["competitor_id"],
-                                                                   "points": 0,    
-                                                                },
-                                                                "position": data[i]["position"],
-                                                            })
+                "competitor_points": {
+                    "competitor_id": data[i]["competitor_id"],
+                    "points": 0,    
+                },
+                "position": data[i]["position"],
+            })
         else:
             if data[i]["position"] - prev_competitor_position["position"] != 1:
                 response["invalid_competitors_positions_spacing"].append(data[i]["competitor_id"])
@@ -163,20 +176,20 @@ def validate_generate_competitors_positions(data, is_sprint):
             else:
                 if data[i]["position"] <= len(points):
                     response["new_competitors_positions_data"].append({ 
-                                                                        "competitor_points": {
-                                                                            "competitor_id": data[i]["competitor_id"],
-                                                                            "points": points[data[i]["position"]-1],
-                                                                        },
-                                                                        "position": data[i]["position"],
-                                                                        })
+                        "competitor_points": {
+                            "competitor_id": data[i]["competitor_id"],
+                            "points": points[data[i]["position"]-1],
+                        },
+                        "position": data[i]["position"],
+                        })
                 else:
                     response["new_competitors_positions_data"].append({ 
-                                                                        "competitor_points": {
-                                                                            "competitor_id": data[i]["competitor_id"],
-                                                                            "points": 0
-                                                                        },
-                                                                        "position": data[i]["position"],
-                                                                        })
+                        "competitor_points": {
+                            "competitor_id": data[i]["competitor_id"],
+                            "points": 0
+                        },
+                        "position": data[i]["position"],
+                        })
                 
         prev_competitor_position = data[i]
 

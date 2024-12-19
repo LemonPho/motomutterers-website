@@ -39,14 +39,15 @@ export default function MemberPicks() {
     return (
         <div className="d-flex align-items-center w-100">
             <strong>Enable member picks</strong>
-            {!season.finalized && 
+            {console.log(season)}
+            {!season.finalized && season.current &&
             <div className="form-check form-switch ms-auto mb-0">
                 <input className="form-check-input" type="checkbox" checked={memberPicksCheckboxState} onChange={handleToggleUsersPicks}/>
             </div>
             }
-            {season.finalized && 
+            {season.finalized || !season.current && 
             <div className="form-check form-switch ms-auto mb-0">
-                <input className="form-check-input" type="checkbox" checked={memberPicksCheckboxState} disabled/>
+                <input className="form-check-input" type="checkbox" checked={false} disabled/>
             </div>
             }
             

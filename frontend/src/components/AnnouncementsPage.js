@@ -134,7 +134,7 @@ export default function Anouncements(){
                         No announcements posted yet.    
                     </div>}
                     {announcements.lenght != 0 && announcements.map((announcement) => (
-                        <div className="clickable card mx-auto my-3 rounded-15 w-100" key={announcement.id}>
+                        <div className="clickable card mx-auto my-3 rounded-15 w-100 element-background-color element-border-color" key={announcement.id}>
                             <a className='link-no-decorations' href={`/announcements/${announcement.id}`}>
                                 <div className='p-3' id={`announcement-${announcement.id}`}>
                                     <div className='d-flex'>
@@ -157,7 +157,7 @@ export default function Anouncements(){
                     ))}
                 </div>
                 {pages && 
-                <nav id="pagination-view">
+                <nav id="pagination-view ">
                     <ul className='pagination justify-content-center'>
                         <li id='previous-page' className={`${previousPage}`}>
                             <a id='previous-page-link' href={`announcements?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</a>

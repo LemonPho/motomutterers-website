@@ -107,7 +107,7 @@ class UserPicks(models.Model):
     position_change = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
-        ordering = ['position']
+        ordering = ['-points']
 
 class Standings(models.Model):
     users_picks = models.ManyToManyField(UserPicks)
@@ -155,7 +155,7 @@ class Season(models.Model):
     standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True, blank=True)
 
 class CurrentSeason(models.Model):
-    season = models.OneToOneField(Season, on_delete=models.CASCADE, related_name="current_season")
+    season = models.OneToOneField(Season, on_delete=models.CASCADE, related_name="current")
 
     def save(self, *args, **kwargs):
         if CurrentSeason.objects.exists() and not self.pk:

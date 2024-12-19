@@ -25,7 +25,7 @@ export default function UserSettings(){
 
     return(
         <div>
-            <div className="card rounded-15 my-3">
+            <div className="card rounded-15 my-3 element-background-color element-border-color">
                 <ProfilePictureSettings />
                 <hr />
                 <UsernameSettings />

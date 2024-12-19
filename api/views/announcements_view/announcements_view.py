@@ -4,7 +4,7 @@ import json
 
 from ...models import Announcement, AnnouncementComment
 from ..notification_view import create_announcement_notification, create_announcement_comment_notification, create_comment_response_notification
-from ...serializers import AnnouncementSerializer, AnnouncementCommentSerializer, UserSerializer
+from ...serializers.announcements_serializers import AnnouncementSerializer, AnnouncementCommentSerializer
 
 #retrieving the 10 announcements of this page
 def get_announcements(request):
@@ -93,8 +93,6 @@ def edit_comment(request):
     data = json.loads(request.body)
     comment_id = data.get("commentId", -1)
     data.pop("commentId")
-
-    print(data)
     
     try:
         comment = AnnouncementComment.objects.get(pk=comment_id)
@@ -124,7 +122,7 @@ def delete_comment(request):
     except AnnouncementComment.DoesNotExist:
         return HttpResponse(status=400)
     
-    if comment.user.id != request.user.id:
+    if comment.user.id != request.user.id and not request.user.is_admin:
         return HttpResponse(status=403)
     
     comment.delete()

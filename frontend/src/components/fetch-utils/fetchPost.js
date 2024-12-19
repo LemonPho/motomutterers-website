@@ -1160,6 +1160,7 @@ export async function submitUserPicks(picks, independentPick, rookiePick){
     }
 
     try{
+        console.log(picks, independentPick, rookiePick);
         const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch("/api/set-user-picks/", {
             method: "POST",

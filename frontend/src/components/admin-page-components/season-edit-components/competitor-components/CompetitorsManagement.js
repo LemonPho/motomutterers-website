@@ -166,6 +166,7 @@ export default function CompetitorsManagement(){
                         <span className="col-3">Points</span>
                     </div>
                 }
+                {console.log(season)}
                 {
                     season.competitors.map((competitorPosition) => (
                         <div className="row" key={`competitor-${competitorPosition.id}`}>

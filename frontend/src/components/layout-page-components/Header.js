@@ -22,31 +22,22 @@ export default function Header(){
     }, [screenWidth]);
 
     return(
-        <div className="header menu-div d-flex">
+        <div className="header menu-div d-flex align-items-center">
                 {screenWidth < 500 ? 
                 (
-                <div className="menu-dropdown-div">
-                    <div id="menu-dropdown-button" onClick={(e) => toggleDropdown("menu-dropdown-content", e)}>
+                <div className="btn-group d-flex align-items-center">
+                    <button className="btn btn-link link-no-decorations" onClick={(e) => toggleDropdown("menu-dropdown-content", e)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24" fill="none">
                             <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <a href="/" className="navbar-brand link-no-decorations my-1 ms-1">Home</a>
-                    </div>
-                    <div id="menu-dropdown-content" className="menu-dropdown-content">
-                        <div>
-                            {!currentSeason && <span className="navbar-text w-100">No current season</span>}
-                            {currentSeason && <a href={`/raceresults?season=${currentSeason.year}`} className="navbar-text link-no-decorations w-100">Races</a> }       
-                        </div>
-                        <div>
-                            <a href="/announcements?page=1" className="navbar-text link-no-decorations w-100">Announcements</a>
-                        </div>
-                        <div>
-                            {currentSeason && <a href={`/standings?season=${currentSeason.year}`} className="navbar-text link-no-decorations w-100">Standings</a>}
-                            
-                        </div>
-                        <div>
-                            {selectPicksState && loggedIn && <a href="/select-picks" className="navbar-text link-no-decorations w-100">Select your picks!</a>}
-                        </div>
+                    </button>
+                    <a href="/" className="navbar-brand link-no-decorations my-1 ms-1">Home</a>
+                    <div id="menu-dropdown-content" className="dropdown-menu" style={{top: "100%", left: "0"}}>
+                        {!currentSeason && <span className="navbar-text dropdown-item">No current season</span>}
+                        {currentSeason && <a href={`/raceresults?season=${currentSeason.year}`} className="navbar-text dropdown-item">Races</a> }       
+                        <a href="/announcements?page=1" className="navbar-text dropdown-item">Announcements</a>
+                        {currentSeason && <a href={`/standings?season=${currentSeason.year}`} className="navbar-text dropdown-item">Standings</a>}
+                        {selectPicksState && loggedIn && <a href="/select-picks" className="navbar-text dropdown-item">Select your picks!</a>}
                     </div>
                 </div>) 
                 : 

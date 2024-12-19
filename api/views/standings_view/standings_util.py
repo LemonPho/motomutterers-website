@@ -6,14 +6,10 @@ than the other users pick.
 
 from ...models import CurrentSeason
 
-def sort_standings():
-    current_season = CurrentSeason.objects.first()
+def sort_standings(season):
 
-    if current_season is None:
-        return
-
-    standings = list(current_season.season.picks.all())
-    competitors = list(current_season.season.competitors.all().order_by("-competitor_points__points"))
+    standings = list(season.standings.users_picks.all())
+    competitors = list(season.competitors.all().order_by("-competitor_points__points"))
 
     i = 0
     while i < len(standings):

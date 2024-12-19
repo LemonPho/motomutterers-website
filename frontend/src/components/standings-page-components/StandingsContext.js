@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getUsersProfilePictures, getSeasonStandings } from "../fetch-utils/fetchGet";
+import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getUsersProfilePictures, getSeasonStandings, getUserPicksSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 
 const StandingsContext = createContext();
@@ -38,7 +38,7 @@ export default function StandingsContextProvider(){
     }
 
     async function retrieveProfilePictures(){
-        if(Object.keys(standings).length == 0){
+        if(!standings || Object.keys(standings).length == 0 || standings.users_picks.length == 0){
             return;
         }
 
@@ -63,7 +63,7 @@ export default function StandingsContextProvider(){
         });
         let updatedStandings = standings;
         updatedStandings.users_picks = updatedUsersPicks;
-        
+
         setStandings(updatedStandings);
         setProfilePicturesLoading(false);
     }
@@ -104,7 +104,7 @@ export default function StandingsContextProvider(){
 
     async function retrieveUserPicks(userId){
         setUserPicksDetailedLoading(true);
-        const userPicksResponse = await getUserPicks(selectedSeason.id, userId);
+        const userPicksResponse = await getUserPicksSimple(selectedSeason.id, userId);
 
         if(userPicksResponse.error){
             setErrorMessage("There was an error retrieving the user picks");
@@ -117,8 +117,24 @@ export default function StandingsContextProvider(){
         }
 
         if(userPicksResponse.status == 200){
-            setUserPicksDetailed(userPicksResponse.userPicks);
-            setUserPicksDetailedLoading(false);
+            const profilePictureResponse = await getUsersProfilePictures(userPicksResponse.userPicks.user);
+
+            if(profilePictureResponse.error){
+                setErrorMessage("There was an error loading the profile picture");
+                return;
+            }
+
+            if(profilePictureResponse.status == 404){
+                setErrorMessage("User profile picture was not found");
+                return;
+            }
+
+            if(profilePictureResponse.status == 200){
+                userPicksResponse.userPicks.user.profile_picture = profilePictureResponse.users[0].profile_picture;
+                setUserPicksDetailed(userPicksResponse.userPicks);
+                setUserPicksDetailedLoading(false);
+            }
+           
         }
     }
     

@@ -14,7 +14,7 @@ export default function Admin(){
     if(user.is_admin){
         return(
             <div className="d-flex">
-                <div className="card m-2 rounded-15 flex-grow-1">
+                <div className="card m-2 rounded-15 flex-grow-1 element-background-color element-border-color">
                     <SeasonsSettings/>
                 </div>
             </div>

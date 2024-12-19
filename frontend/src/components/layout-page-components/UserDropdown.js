@@ -39,7 +39,7 @@ export default function UserDropdown(){
             <div id="user-dropdown-button">
                 {user.profile_picture_data != "" ? (<img className="rounded-circle ml-auto mt-2 mb-2" style={{width: "2rem", height: "2rem"}} onClick={(e) => toggleDropdown("user-dropdown-content", e, loggedIn)} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt={user.username}></img>) : (<div onClick={(e) => toggleDropdown("user-dropdown-content", e, loggedIn)}>{user.username}</div>)}
             </div>
-            <ul id="user-dropdown-content" className="dropdown-menu">
+            <ul id="user-dropdown-content" className="dropdown-menu" style={{top: "100%", right: "0"}}>
                 {errorOcurred && <div className="alert alert-danger m-2"><small className="dropdown-item">There was an error loading the user dropdown menu</small></div>}
                 <li>
                     <a href={`/users/${user.username}?page=1`} className="d-flex align-items-center py-2 link-no-decorations">

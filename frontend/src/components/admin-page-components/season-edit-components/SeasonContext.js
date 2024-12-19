@@ -32,7 +32,6 @@ export default function SeasonContextProvider(){
 
         tempSeason = seasonResponse.season;
         tempSeason.competitorsSortedNumber = seasonResponse.competitorsSortedNumber;
-        tempSeason.competitorsSortedPoints = seasonResponse.competitorsSortedPoints;
 
         setSeason(tempSeason);
         setSeasonLoading(false);

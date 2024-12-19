@@ -1,9 +1,10 @@
 from django.http import HttpResponse, JsonResponse
 
 from ...models import Season, CurrentSeason
-from ...serializers import SeasonSerializer, CompetitorSerializer, SeasonCompetitorPositionSerializer
+from ...serializers.seasons_serializers import SeasonCompetitorPositionSimpleSerializer, SeasonCompetitorPositionSerializer
+
 from .seasons_util import get_competitors_sorted_number, finalize_members_points
-from .seasons_serializers import SeasonSimpleSerializer, SeasonSimpleYearSerializer
+from ...serializers.seasons_serializers import SeasonSimpleSerializer, SeasonSimpleYearSerializer, SeasonWriteSerializer, SeasonSerializer
 from ..standings_view.standings_util import sort_standings
 
 import json
@@ -84,9 +85,9 @@ def get_current_season(request):
     if current_season == None or current_season.season == None:
         return HttpResponse(status=404)
     
-    season_serializer = SeasonSerializer(current_season.season)
+    season_serializer = SeasonSimpleSerializer(current_season.season)
     competitors = get_competitors_sorted_number(current_season.season)
-    competitors_serializer = SeasonCompetitorPositionSerializer(competitors, many=True)
+    competitors_serializer = SeasonCompetitorPositionSimpleSerializer(competitors, many=True)
     
     return JsonResponse({
         "current_season": season_serializer.data,
@@ -154,11 +155,13 @@ def create_season(request):
     if seasons is not None:
         return HttpResponse(status=400)
     
-    serializer = SeasonSerializer(data=data)
+    data["standings"] = None
+                
+    serializer = SeasonWriteSerializer(data=data)
 
     if not serializer.is_valid():
         return HttpResponse(status=400)
-
+    
     season = serializer.save()
 
     current_season = CurrentSeason.objects.first()
@@ -255,7 +258,7 @@ def finalize_season(request):
         return HttpResponse(status=400)
     
     finalize_members_points(season)
-    sort_standings()
+    sort_standings(season)
 
     season.selection_open = False
     season.finalized = True

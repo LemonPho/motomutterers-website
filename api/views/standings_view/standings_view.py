@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
 
 from ...models import Season, UserPicks
-from .standings_serializers import StandingsSimpleSerializer
-from ..picks_view.picks_serializers import UserPicksSimpleSerializer, UserPicksSerializer
+from ...serializers.standings_serializers import StandingsSimpleSerializer
+from ...serializers.picks_serializers import UserPicksSimpleSerializer, UserPicksSerializer
 from .standings_util import points_based_tie_breaker, competitor_based_tie_breaker, sort_standings
 from ..picks_view.picks_util import update_members_points
 

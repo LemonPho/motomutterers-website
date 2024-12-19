@@ -1,6 +1,12 @@
-html, body {
+body {
     height: 100%;           
-    margin: 0;             
+    margin: 0;
+    background-image: 
+        url("./background-image.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .main{
@@ -25,16 +31,6 @@ html, body {
     width: 100%;
 }
 
-.footer{
-    min-width: 100%;
-    display: flex;
-    height: 38px;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(221, 221, 221);
-    box-shadow: rgba(0, 0, 0, 0.15) 1.95px -1.95px 2.6px;
-}
-
 .flex-box{
     display: flex;
 }
@@ -46,30 +42,18 @@ html, body {
     min-height: 100%;
 }
 
-/* Base styling for the circle */
 .fading-circle {
-    width: 100px;
-    height: 100px;
-    background-color: #0000007f; /* Circle color (e.g., blue) */
-    border-radius: 50%;        /* Makes the element a circle */
-    opacity: 1;                /* Starting opacity */
+    background-color: #0000007f; 
+    border-radius: 50%;        
+    opacity: 0.8;                
     animation: fadeInOut 2s infinite ease-in-out;
-}
-  
-/* Keyframes for the opacity animation */
-@keyframes fadeInOut {
-    0%, 100% {
-        opacity: 1;  /* Fully visible */
-    }
-    50% {
-        opacity: 0.1;  /* Fully transparent */
-    }
+    aspect-ratio: 1/1;
 }
 
 .fade-in-out{
     opacity: 0.8;
     background-color: #0000007f;
-    animation: fadeInOut 2s linear;
+    animation: fadeInOut 2s infinite ease-in-out;
 }
 
 @keyframes fadeInOut{
@@ -100,23 +84,43 @@ html, body {
     width: 100%;
 }
 
+.element-background-color{
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.element-border-color{
+    border-color: rgba(0, 0, 0, 0.5);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 7px 2px;
+}
+
+.footer{
+    min-width: 100%;
+    display: flex;
+    height: 38px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 7px 2px;
+}
+
+
 .menu-div{
-    background-color: rgb(221, 221, 221);
+    background-color: rgba(255, 255, 255, 0.9);
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     height: 50px;
-    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border: 0.8px solid rgba(0, 0, 0, 0.176);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 7px 2px;
 }
 
 .menu-dropdown-div{
     position: relative;
-    top: 10px;
 }
 
 .menu-dropdown-content{
     display: none;
     position: relative;
-    top: 8px;
+    top: 20px;
     right: 7px;
     padding-left: 5px;
     background-color: rgb(220, 220, 220);
@@ -323,6 +327,7 @@ input[type="file"]{
 }
 
 .clickable:hover{
+    background-color: rgba(255, 255, 255, 1);
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     transition: 0.2s;
     cursor: pointer;
