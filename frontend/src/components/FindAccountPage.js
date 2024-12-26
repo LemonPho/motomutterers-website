@@ -25,10 +25,8 @@ export default function FindAccount() {
             const searchResponse = await fetch(queryString);
             if(searchResponse.ok){
                 const response = await searchResponse.json();
-                console.log(response);
                 setAccountUsername(response.username);
                 setAccountFound(true);
-                console.log(accountUsername);
             } else {
                 setAccountFound(false);
             }

@@ -127,8 +127,6 @@ export default function AnnouncementContextProvider(){
         resetAnnouncementsMessages();
         const commentResponse = await submitEditAnnouncementComment(text, commentId);
 
-        console.log(commentResponse);
-
         if(commentResponse.error){
             setCommentsErrorMessage("There was an error editing the comment");
             console.log(commentResponse.error);

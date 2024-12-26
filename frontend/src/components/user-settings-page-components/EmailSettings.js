@@ -38,8 +38,6 @@ export default function EmailSettings(){
         message += emailResponse.currentPasswordCorrect ? "" : "Password is not correct\n";
         setModalErrorMessage(message);
 
-        console.log(message);
-
         setChangeEmailLoading(false);
     }
 

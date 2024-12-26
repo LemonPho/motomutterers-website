@@ -3,6 +3,7 @@ from rest_framework import serializers
 from . import competitors_serializers, races_serializers
 
 from ..models import Season, SeasonCompetitorPosition, CompetitorPoints, Standings
+from ..views.seasons_view.seasons_util import get_competitors_sorted_number
 
 import importlib
 
@@ -89,7 +90,7 @@ class SeasonCompetitorPositionSerializer(serializers.ModelSerializer):
         fields = ["independent", "rookie", "id", "competitor_points"]
    
 class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
-    competitor_points = serializers.SerializerMethodField()
+    competitor_points = serializers.JSONField()
     season = serializers.PrimaryKeyRelatedField(queryset=Season.objects.all(), write_only=True, required=False)
 
     class Meta:
@@ -116,6 +117,7 @@ class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError("competitor points given was not a valid data type (int, dict)")
 
     def update(self, instance, validated_data):
+        print(validated_data)
         
         competitor_points = validated_data.pop("competitor_points", False)
 
@@ -163,13 +165,19 @@ class SeasonSerializer(serializers.ModelSerializer):
     finalized = serializers.BooleanField()
     current = serializers.SerializerMethodField()
     standings = importlib.import_module("api.serializers.standings_serializers").StandingsSimpleSerializer()
+    competitors_sorted_number = serializers.SerializerMethodField()
 
     class Meta:
         model = Season
-        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "standings"]
+        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "standings", "competitors_sorted_number"]
 
     def get_current(self, season):
         if hasattr(season, 'current'):
             return True
         else:
             return False
+        
+    def get_competitors_sorted_number(self, season):
+        competitors_sorted_number = get_competitors_sorted_number(season)
+        competitors_sorted_number_serializer = SeasonCompetitorPositionSerializer(competitors_sorted_number, many=True)
+        return competitors_sorted_number_serializer.data

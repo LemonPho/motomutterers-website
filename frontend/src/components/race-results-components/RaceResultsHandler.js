@@ -22,7 +22,7 @@ export default function RaceResultsHandler(){
             }
     
             fetchData();
-        }, [])
+        }, []);
     
         useEffect(() => {
             if(seasonListLoading || seasonList == undefined){
@@ -34,7 +34,7 @@ export default function RaceResultsHandler(){
                     setSelectedSeason(seasonList[i]);
                 }
             }
-        }, [seasonList])
+        }, [seasonList]);
     
         if(!selectedSeason){
             return <PageNotFound/>

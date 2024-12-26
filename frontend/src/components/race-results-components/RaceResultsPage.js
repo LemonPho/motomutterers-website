@@ -20,7 +20,7 @@ export default function RaceResultsPage({ seasonYear }){
 
     return(
         <div>
-            <div className="card rounded-15 mt-4 element-background-color element-border-color">
+            <div className="card rounded-15 element-background-color element-border-color">
                 <div className="card-header d-flex align-items-center">
                     <h5>Race results</h5>
                     <div className="dropdown ms-auto">

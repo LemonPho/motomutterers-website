@@ -16,9 +16,6 @@ function EmailActivation(){
         const newEmail = params.get("email");
 
         async function activateEmail(){
-            console.log("uid: ", uid);
-            console.log("token: ", token);
-            console.log("new email: ", newEmail);
             const activateEmailResponse = await submitEmailActivation(uid, token, newEmail);
 
             setErrorOcurred(activateEmailResponse.error);

@@ -3,7 +3,7 @@ from django.db import transaction
 
 from ...models import Competitor, Season, CompetitorPosition, SeasonCompetitorPosition, CurrentSeason
 from ...serializers.competitors_serializers import CompetitorWriteSerializer, CompetitorPositionWriteSerializer, CompetitorPointsWriteSerializer, CompetitorPositionSimpleSerializer
-from ...serializers.seasons_serializers import SeasonCompetitorPositionWriteSerializer, SeasonCompetitorPositionSimpleSerializer
+from ...serializers.seasons_serializers import SeasonCompetitorPositionWriteSerializer, SeasonCompetitorPositionSerializer
 from .competitors_validators import validate_competitor_data, generate_season_competitor_position_data, generate_competitor_table_data, validate_season_competitors_data, generate_competitor_points_data
 
 from selenium import webdriver
@@ -45,7 +45,7 @@ def get_season_competitor(request):
         except SeasonCompetitorPosition.DoesNotExist:
             return HttpResponse(status=404)
         
-    serializer = SeasonCompetitorPositionSimpleSerializer(competitor)
+    serializer = SeasonCompetitorPositionSerializer(competitor)
 
     return JsonResponse({
         "competitor": serializer.data,
@@ -169,6 +169,7 @@ def edit_season_competitor(request):
         return HttpResponse(status=405)
         
     data = json.loads(request.body)
+    print(data)
     competitor_position_id = int(data.get("id", False))
 
     if not competitor_position_id:

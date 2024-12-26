@@ -30,7 +30,7 @@ export default function Standings(){
     }, [standingsLoading])
 
     return (
-    <div className="card rounded-15 my-2 mt-4 align-middle element-background-color element-border-color">
+    <div className="card rounded-15 align-middle element-background-color element-border-color">
         <div className="rounded-15-top card-header">
             <div className="d-flex align-items-center">
                 <h5 className="m-0">

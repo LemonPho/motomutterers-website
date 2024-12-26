@@ -57,9 +57,10 @@ class UserSerializer(serializers.ModelSerializer):
     profile_picture_format = serializers.SerializerMethodField()
     is_admin = serializers.SerializerMethodField()
     is_active = serializers.SerializerMethodField()
+    is_logged_in = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "notifications"]
+        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications"]
 
     #get functions
     def get_is_admin(self, user):
@@ -67,6 +68,9 @@ class UserSerializer(serializers.ModelSerializer):
     
     def get_is_active(self, user):
         return user.is_active
+    
+    def get_is_logged_in(self, user):
+        return user.is_authenticated
 
     def get_profile_picture_data(self, user):
         if user.profile_picture:

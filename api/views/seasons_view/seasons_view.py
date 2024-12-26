@@ -23,16 +23,10 @@ def get_season(request):
     except Season.DoesNotExist:
         return HttpResponse(status=404)
     
-    #add lists of the competitors sorted based on attributes
-    competitors_sorted_number = get_competitors_sorted_number(season)
-
-    competitors_sorted_number_serializer = SeasonCompetitorPositionSerializer(competitors_sorted_number, many=True)
-    
     serializer = SeasonSerializer(season)
 
     return JsonResponse({
         "season": serializer.data,
-        "competitors_sorted_number": competitors_sorted_number_serializer.data,
     }, status=200)
 
 def get_season_simple(request):

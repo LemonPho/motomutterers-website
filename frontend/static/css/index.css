@@ -27,14 +27,24 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.alert-container {
+    display: flex;
+    flex-direction: column; 
+    position: fixed; 
+    top: 10px; 
+    right: 10px; 
+    gap: 10px; 
+    z-index: 1000; 
+}
+
 .alert-positioning {
     position: fixed;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    max-width: 10in;
-    width: 100%;
-    z-index: 10;
+    max-width: 8in;
+    width: 80%;
+    z-index: 1000;
 }
 
 .inner-content{

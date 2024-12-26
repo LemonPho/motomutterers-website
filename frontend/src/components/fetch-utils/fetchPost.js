@@ -348,7 +348,6 @@ export async function submitChangeProfilePicture(newProfilePictureForm){
         });
         response.status = apiResponse.status;
     } catch(error){
-        console.log(error);
         response.error = error;
     }
     return response;
@@ -492,8 +491,6 @@ export async function submitEditAnnouncementComment(text, commentId){
                 commentId: commentId,
             }),
         });
-
-        console.log(apiResponse);
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
@@ -1160,7 +1157,6 @@ export async function submitUserPicks(picks, independentPick, rookiePick){
     }
 
     try{
-        console.log(picks, independentPick, rookiePick);
         const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch("/api/set-user-picks/", {
             method: "POST",

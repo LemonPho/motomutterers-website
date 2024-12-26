@@ -29,8 +29,6 @@ export default function RaceResultsContextProvider(){
 
         const raceResultsResponse = await getRaceResults(seasonYear);
 
-        console.log(raceResultsResponse);
-
         if(raceResultsResponse.error){
             setErrorMessage("There was an error loading the race results");
             return;

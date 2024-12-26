@@ -13,10 +13,8 @@ export default function RaceEditModal(){
 
     useEffect(() => {
         if(!raceEditLoading){
-            if(track != "" && title != ""){
-                document.getElementById("race-edit-track").innerHTML = track;
-                document.getElementById("race-edit-title").innerHTML = title;
-            }
+            document.getElementById("race-edit-track").innerHTML = track;
+            document.getElementById("race-edit-title").innerHTML = title;
         }
     }, [raceEditLoading])
 
@@ -37,7 +35,7 @@ export default function RaceEditModal(){
                     <input id="race-edit-date" type="date" className="input-field flex-grow-1 mt-2" value={timestamp} onChange={(e) => setTimestamp(e.currentTarget.value)} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                 </div>
                 <div className="form-check mt-1">
-                    <input id="race-edit-sprint" type="checkbox" className="form-check-input" checked={isSprint} onChange={() => {setIsSprint(!isSprint);console.log(isSprint)}} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
+                    <input id="race-edit-sprint" type="checkbox" className="form-check-input" checked={isSprint} onChange={() => {setIsSprint(!isSprint)}} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                     <label className="form-check-label" htmlFor="race-edit-sprint">Sprint Race</label>
                 </div>
             </div>

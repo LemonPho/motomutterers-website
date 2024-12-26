@@ -25,8 +25,6 @@ export default function RaceCreateAutomatic(){
         let raceResponse = await submitRaceResultLink(link, raceDate, season.year);
         setLoadingMessage(false);
 
-        console.log(raceResponse);
-
         if(raceResponse.error){
             setModalErrorMessage("There was an error processing the link.");
             console.log(raceResponse.error);

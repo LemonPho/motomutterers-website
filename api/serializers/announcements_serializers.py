@@ -7,7 +7,7 @@ from .serializers_util import sanitize_html
 
 from ..models import Announcement, AnnouncementComment, CompetitorPoints, CompetitorPosition, Competitor
 
-class AnnouncementWriteSerializer(serializers.ModelField):
+class AnnouncementWriteSerializer(serializers.ModelSerializer):
     text = serializers.CharField(write_only=True)
     title = serializers.CharField(write_only=True)
 

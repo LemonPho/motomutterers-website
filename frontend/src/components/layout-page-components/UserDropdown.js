@@ -10,7 +10,7 @@ import { toggleDropdown } from "../utils";
 export default function UserDropdown(){
     const [errorOcurred, setErrorOcurred] = useState(false);
 
-    const { user, loggedIn, contextLoading, setLogout } = useApplicationContext();
+    const { user, userLoading, setLogout } = useApplicationContext();
 
     async function sendLogout(){
         const loggedOutResponse = await submitLogout();
@@ -21,11 +21,11 @@ export default function UserDropdown(){
         setLogout();
     };
 
-    if(contextLoading){
+    if(userLoading){
         return null;
     }
 
-    if(!loggedIn){
+    if(!user.is_logged_in){
         return(
             <div className="d-flex align-items-center">
                 <a className="navbar-text link-no-decorations" href="/login">Login</a>
@@ -37,7 +37,7 @@ export default function UserDropdown(){
     return(
         <div className="dropdown-div">
             <div id="user-dropdown-button">
-                {user.profile_picture_data != "" ? (<img className="rounded-circle ml-auto mt-2 mb-2" style={{width: "2rem", height: "2rem"}} onClick={(e) => toggleDropdown("user-dropdown-content", e, loggedIn)} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt={user.username}></img>) : (<div onClick={(e) => toggleDropdown("user-dropdown-content", e, loggedIn)}>{user.username}</div>)}
+                {user.profile_picture_data != "" ? (<img className="rounded-circle ml-auto mt-2 mb-2" style={{width: "2rem", height: "2rem"}} onClick={(e) => toggleDropdown("user-dropdown-content", e, user.is_logged_in)} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt={user.username}></img>) : (<div onClick={(e) => toggleDropdown("user-dropdown-content", e, user.is_logged_in)}>{user.username}</div>)}
             </div>
             <ul id="user-dropdown-content" className="dropdown-menu" style={{top: "100%", right: "0"}}>
                 {errorOcurred && <div className="alert alert-danger m-2"><small className="dropdown-item">There was an error loading the user dropdown menu</small></div>}

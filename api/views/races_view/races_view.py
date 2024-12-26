@@ -168,6 +168,9 @@ def create_upcoming_race_link(request):
     data = json.loads(request.body)
     
     validated_data_response = validate_race_upcoming_link_data(data)
+    response["invalid_link"] = validated_data_response["invalid_link"]
+    response["invalid_season"] = validated_data_response["invalid_season"]
+    season = validated_data_response.pop("season")
 
 def create_race_link(request):
     if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:

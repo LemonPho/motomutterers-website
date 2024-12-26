@@ -4,7 +4,7 @@ import json
 
 from ...models import Announcement, AnnouncementComment
 from ..notification_view import create_announcement_notification, create_announcement_comment_notification, create_comment_response_notification
-from ...serializers.announcements_serializers import AnnouncementSerializer, AnnouncementCommentSerializer
+from ...serializers.announcements_serializers import AnnouncementWriteSerializer, AnnouncementCommentSerializer, AnnouncementSerializer
 
 #retrieving the 10 announcements of this page
 def get_announcements(request):
@@ -160,7 +160,7 @@ def post_announcement(request):
     
     
     data = json.loads(request.body)
-    serializer = AnnouncementSerializer(data=data, context={'request': request})
+    serializer = AnnouncementWriteSerializer(data=data, context={'request': request})
 
     if not serializer.is_valid():
         return HttpResponse(status=400)

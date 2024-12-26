@@ -27,8 +27,6 @@ export default function ChangePassword(){
 
         const changePasswordResponse = await submitNewPassword(password1, password2, uid, token);
 
-        console.log(changePasswordResponse);
-
         if(changePasswordResponse.error){
             setErrorMessage("There was an error when submiting the new password");
             setChangePasswordLoading(false);

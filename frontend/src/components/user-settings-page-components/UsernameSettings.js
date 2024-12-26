@@ -34,7 +34,6 @@ export default function UsernameSettings(){
         }
 
         if(usernameResponse.status === 400){
-            console.log(usernameResponse);
             let message = usernameResponse.newUsernameValid ? "" : "Username is not valid, make sure to only use numbers and letters\n";
             message += usernameResponse.newUsernameUnique ? "" : "Username is already in use\n";
             message += usernameResponse.userCanChangeUsername ? "" : "You must wait 30 days in between switching usernames\n";

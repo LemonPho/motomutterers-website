@@ -9,7 +9,7 @@ import { useAnnouncementContext } from "./AnnouncementContext";
 import { toggleDropdown, focusDiv } from "../utils";
 
 export default function AnnouncementComments(){
-    const { user, loggedIn, contextLoading } = useApplicationContext();
+    const { user, contextLoading } = useApplicationContext();
     const { comments, retrieveComment, announcementLoading, commentsErrorMessage, setCommentsErrorMessage, resetAnnouncementMessages,
             editComment, createCommentReply, createComment, deleteComment } = useAnnouncementContext();
 
@@ -48,7 +48,6 @@ export default function AnnouncementComments(){
 
     function toggleReplyBox(commentId){
         if(commentId === null){
-            console.log("commentid is null");
             return;
         }
         document.getElementById(`comment-reply-div-${commentId}`).classList.toggle("hidden");
@@ -174,8 +173,6 @@ export default function AnnouncementComments(){
         if(commentId !== null){
             const commentDiv = document.getElementById(`comment-${commentId}`);
 
-            console.log(commentDiv);
-
             if(commentDiv == null){
                 return;
             }
@@ -218,7 +215,7 @@ export default function AnnouncementComments(){
                 <h5>Comments</h5>
                 <hr />
                 <div id="comments-view">
-                    {loggedIn === true ? 
+                    {user.is_logged_in === true ? 
                     (
                         <div className="flex-box align-items-center">
                             {user.profile_picture_data ?
@@ -278,7 +275,7 @@ export default function AnnouncementComments(){
                                         }
                                         <div className="d-flex mb-3">
                                             {parseInt(comment.amount_replies) > 0 && <button className="btn btn-link link-no-decorations p-0 pe-1" style={{color: "blue"}} onClick={() => toggleReplies(comment.id)}><small>Show {comment.amount_replies} replies</small></button>}
-                                            {loggedIn === true ? (<button className="btn btn-link link-no-decorations p-0" onClick={() => toggleReplyBox(comment.id)}><small>Reply</small></button>) : (<div className="my-2"></div>)}
+                                            {user.is_logged_in === true ? (<button className="btn btn-link link-no-decorations p-0" onClick={() => toggleReplyBox(comment.id)}><small>Reply</small></button>) : (<div className="my-2"></div>)}
                                         </div>
                                     </div>
                                 </div>

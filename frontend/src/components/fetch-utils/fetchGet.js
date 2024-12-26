@@ -363,7 +363,6 @@ export async function getSeason(seasonYear){
     let response = {
         error: false,
         season: null,
-        competitorsSortedNumber: null,
         status: null,
     }
 
@@ -373,7 +372,6 @@ export async function getSeason(seasonYear){
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.season = apiResponse.status === 200 ? apiResult.season : false;
-        response.competitorsSortedNumber = apiResponse.status === 200 ? apiResult.competitors_sorted_number !== undefined ? apiResult.competitors_sorted_number : false : false;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

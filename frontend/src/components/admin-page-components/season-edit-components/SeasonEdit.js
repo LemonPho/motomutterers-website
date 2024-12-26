@@ -17,7 +17,7 @@ export default function SeasonEdit(){
         retrieveSeason();
     }, [])
 
-    if((seasonLoading || contextLoading || !season) && user.is_admin){
+    if(seasonLoading || contextLoading || !season){
         return (
             <div className="container" style={{padding: "0px"}}>
                 <div className="row">
@@ -42,10 +42,10 @@ export default function SeasonEdit(){
             <div>
                 <div className="container" style={{padding: "0px"}}>
                     <div className="row">
-                        <div className="card rounded-15 col-md me-2 mt-2 element-background-color element-border-color" style={{padding: "0px"}}>
+                        <div className="card rounded-15 col-md me-2 element-background-color element-border-color" style={{padding: "0px"}}>
                             <CompetitorsManagement/>
                         </div>
-                        <div className="card rounded-15 col-md mt-2 element-background-color element-border-color" style={{padding: "0px"}}>
+                        <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "0px"}}>
                             <RacesManagement/>
                         </div>
                     </div>

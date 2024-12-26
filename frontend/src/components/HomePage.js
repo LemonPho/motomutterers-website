@@ -8,7 +8,7 @@ import { useSeasonContext } from "./admin-page-components/season-edit-components
 
 
 export default function HomePage(){
-    const { user, loggedIn, retrieveUserData, setLogout, setErrorMessage, currentSeason, selectPicksState, contextLoading } = useApplicationContext();
+    const { user, retrieveUserData, setLogout, setErrorMessage, currentSeason, selectPicksState, contextLoading } = useApplicationContext();
 
     if(contextLoading){
         return;
@@ -16,7 +16,7 @@ export default function HomePage(){
 
     return (
         <div style={{ width: "100%" }}>
-            <div className="row my-2">
+            <div className="row">
                 {
                 currentSeason.year && 
                     <a className="col card rounded-15 clickable link-no-decorations me-1 element-background-color element-border-color" href={`/raceresults?season=${currentSeason.year}`}>
@@ -43,7 +43,7 @@ export default function HomePage(){
                 }
                     
             </div>
-            {loggedIn && selectPicksState && 
+            {user.is_logged_in && selectPicksState && 
             <div className="row my-2">
                 <a className="col card rounded-15 clickable link-no-decorations element-background-color element-border-color" href="/select-picks">
                     <div className="card-body">

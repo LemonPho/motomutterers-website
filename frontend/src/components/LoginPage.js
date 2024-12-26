@@ -6,9 +6,10 @@ import { useApplicationContext } from "./ApplicationContext";
 import { enterKeySubmit } from "./utils";
 
 function LoginPage() {
-    const {loggedIn, contextLoading, setLoadingMessage, retrieveUserData, setErrorMessage} = useApplicationContext();
+    const { user, userLoading, contextLoading, setLoadingMessage, retrieveUserData, setErrorMessage} = useApplicationContext();
 
     const [loginLoading, setLoginLoading] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     async function login(){
         if(loginLoading){
@@ -49,18 +50,24 @@ function LoginPage() {
 
         if(loginResponse.status === 200){
             retrieveUserData();
-        }
-
-        setLoadingMessage(false);
-        setLoginLoading(false);
+            setLoadingMessage(false);
+            setLoginLoading(false);
+            return;
+        }        
     }
+
+    useEffect(() => {
+        if(!userLoading){
+            setLoggedIn(user.is_logged_in);
+        }
+    }, [userLoading])
 
     if(contextLoading){
         return null;
     }
 
     if(loggedIn){
-        return(<Navigate to="/" replace={true}/>);
+        return <Navigate to="/" replace={true}/>;
     }
 
     return (

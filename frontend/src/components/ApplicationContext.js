@@ -1,16 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { getLoggedIn, getCurrentUser, getCurrentSeason, getSelectPicksState } from "./fetch-utils/fetchGet";
+import { getCurrentUser, getLoggedIn, getCurrentSeason, getSelectPicksState } from "./fetch-utils/fetchGet";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationContext = createContext();
 
 export function ApplicationContextProvider({children}){
     const [user, setUser] = useState(null);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [userLoading, setUserLoading] = useState(true);
     const [currentSeason, setCurrentSeason] = useState();
-    const [competitorsSortedNumber, setCompetitorsSortedNumber] = useState();
+    const [currentSeasonLoading, setCurrentSeasonLoading] = useState(true);
     const [contextLoading, setContextLoading] = useState(true);
     const [selectPicksState, setSelectPicksState] = useState(false);
+    const [selectPicksStateLoading, setSelectPicksStateLoading] = useState(true);
 
     const [errorMessage, setErrorMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
@@ -43,6 +44,7 @@ export function ApplicationContextProvider({children}){
     }
 
     async function retrievePicksState(){
+        setSelectPicksStateLoading(true);
         const selectPicksStateResponse = await getSelectPicksState();
 
         if(selectPicksStateResponse.error){
@@ -52,26 +54,28 @@ export function ApplicationContextProvider({children}){
         }
 
         setSelectPicksState(selectPicksStateResponse.selectPicksState);
+        setSelectPicksStateLoading(false);
     }
 
     async function retrieveCurrentSeason(){
+        setCurrentSeasonLoading(true);
         const currentSeasonResponse = await getCurrentSeason();
 
         if(currentSeasonResponse.status == 200 || currentSeasonResponse.status == 404){
             setCurrentSeason(currentSeasonResponse.season);
-            setCompetitorsSortedNumber(currentSeasonResponse.competitorsSortedNumber);
+            setCurrentSeasonLoading(false);
         } else {
             setErrorMessage("Error loading the current season");
         }
     }
 
     async function retrieveUserData(){
+        setUserLoading(true);
         const userResponse = await getCurrentUser();
-        const loginResponse = await getLoggedIn();
 
-        if(userResponse.status === 200 && (loginResponse.status === 200 || loginResponse.status === 204)){
+        if(userResponse.status === 200){
             setUser(userResponse.user);
-            setLoggedIn(loginResponse.loggedIn);
+            setUserLoading(false);
         } else {
             setErrorMessage("Error loading user data");
         }
@@ -86,23 +90,20 @@ export function ApplicationContextProvider({children}){
     }
 
     async function setLogout(){
-        setContextLoading(true);
-        setLoadingMessage("Loading...");
+        setUserLoading(true);
         const loginResponse = await getLoggedIn();
 
         if(!loginResponse.loggedIn){
-            setUser(null);
-            setLoggedIn(false);
+            await retrieveUserData();
             navigate("/login", {replace: true});
+            setUserLoading(false);
         }
-        setLoadingMessage(false);
-        setContextLoading(false);
     }
 
     return (
         <ApplicationContext.Provider value={{   
-            user, loggedIn, contextLoading, retrieveApplicationContextData, retrieveUserData, setLogout, currentSeason, competitorsSortedNumber, retrieveCurrentSeason,
-            errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, loadingMessage, selectPicksState, informationMessage,
+            user, userLoading, contextLoading, retrieveApplicationContextData, retrieveUserData, setLogout, currentSeason, currentSeasonLoading, retrieveCurrentSeason,
+            errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, loadingMessage, selectPicksState, selectPicksStateLoading, informationMessage,
             setErrorMessage, addErrorMessage, setSuccessMessage, setInformationMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
             resetApplicationMessages }}>
             {children}

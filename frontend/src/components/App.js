@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Router } from "react-router-dom";
 
+import LayoutPage from "./layout-page-components/LayoutPage.js";
 import { useApplicationContext } from "./ApplicationContext.js";
 
 const Admin = React.lazy(() => import("./admin-page-components/AdminPage.js"));
 const SeasonEdit = React.lazy(() => import("./admin-page-components/season-edit-components/SeasonEdit.js"));
 const UserPicksSelector = React.lazy(() => import("./UserPicksSelector.js"));
 const UserSettings = React.lazy(() => import("./user-settings-page-components/UserSettingsPage.js"));
-const LayoutPage = React.lazy(() => import("./layout-page-components/LayoutPage.js"));
 const StandingsContextProvider = React.lazy(() => import("./standings-page-components/StandingsContext.js"));
 const UsersIndexPage = React.lazy(() => import("./UsersIndexPage.js"));
 const HomePage = React.lazy(() => import("./HomePage.js"));
@@ -50,16 +50,12 @@ const RaceResultsHandler = React.lazy(() => import("./race-results-components/Ra
 //import SeasonCreateContextProvider from "./admin-page-components/SeasonCreateContext.js";
 
 export default function App() {
-    const { retrieveApplicationContextData, contextLoading } = useApplicationContext();
+    const { retrieveApplicationContextData } = useApplicationContext();
 
     useEffect(() => {
         retrieveApplicationContextData();
-    }, [])
-
-    if(contextLoading){
-        return null;
-    }
-
+    }, []);
+    
     return (
         <Routes>
             <Route path="/" element={<LayoutPage />}>

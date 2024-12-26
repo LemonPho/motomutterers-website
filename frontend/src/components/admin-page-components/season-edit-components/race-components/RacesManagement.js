@@ -70,10 +70,10 @@ export default function RacesManagement(){
                         </div>
                         {openedRaceResult && 
                             openedRaceResult.competitors_positions.map((competitor_position) => (
-                                <div className="row g-0" key={`competitor-${competitor_position.competitor_points.competitor.id}`} style={{marginRight: "0px"}}>   
+                                <div className="row g-0" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>   
                                     {competitor_position.position == 0 && <span className="col-2">DNF</span>}
                                     {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>} 
-                                    <span className="col-6"><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</span>
+                                    <span className="col-6"><small>#{competitor_position.number}</small> {competitor_position.first} {competitor_position.last}</span>
                                 </div>
                             ))}
                     </div>

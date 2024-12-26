@@ -9,13 +9,13 @@ import PasswordSettings from "./PasswordSettings";
 import { useApplicationContext } from "../ApplicationContext";
 
 export default function UserSettings(){
-    const {loggedIn, contextLoading} = useApplicationContext();
+    const {user, userLoading, contextLoading} = useApplicationContext();
 
-    if(contextLoading){
+    if(userLoading){
         return null;
     }
 
-    if(!loggedIn){
+    if(!userLoading && !user.is_logged_in){
         return(
             <div>
                 <Navigate replace to="/login"/>
@@ -25,7 +25,7 @@ export default function UserSettings(){
 
     return(
         <div>
-            <div className="card rounded-15 my-3 element-background-color element-border-color">
+            <div className="card rounded-15 element-background-color element-border-color">
                 <ProfilePictureSettings />
                 <hr />
                 <UsernameSettings />
