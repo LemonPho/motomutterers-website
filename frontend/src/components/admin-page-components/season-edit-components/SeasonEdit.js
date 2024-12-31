@@ -8,6 +8,8 @@ import RacesManagement from "./race-components/RacesManagement";
 import MemberPicks from "./MemberPicks";
 import SeasonFinalize from "./SeasonFinalize";
 import { useApplicationContext } from "../../ApplicationContext";
+import SetCurrentSeason from "./SetCurrentSeason";
+import DeleteSeason from "./DeleteSeason";
 
 export default function SeasonEdit(){
     const { retrieveSeason, season, seasonLoading } = useSeasonContext();
@@ -51,14 +53,16 @@ export default function SeasonEdit(){
                     </div>
                     <div className="row">
                         <div className="card rounded-15 col-md my-2 element-background-color element-border-color" style={{padding: "10px"}}>
-                            <div className="ps-1">
-                                <MemberPicks />
-                            </div>
+                            <MemberPicks />
                             
                             <hr />
-                            <div className="ps-1">
-                                <SeasonFinalize />
-                            </div>
+                            <SeasonFinalize />
+
+                            <hr />
+                            <SetCurrentSeason />
+
+                            <hr />
+                            <DeleteSeason />
                         </div> 
                     </div>
                             

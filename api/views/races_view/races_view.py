@@ -63,8 +63,11 @@ def get_season_races(request):
     }, status=200)
 
 def create_complete_race(request):
-    if request.method != 'POST' or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != 'POST':
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     response = {
         "competitors_not_found": [],
@@ -130,8 +133,11 @@ def create_complete_race(request):
     
 
 def create_race(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     season_year = data.get("seasonYear", False)
@@ -156,8 +162,11 @@ def create_race(request):
     return HttpResponse(status=200)
 
 def create_upcoming_race_link(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     response = {
         "invalid_link": False,
@@ -173,8 +182,11 @@ def create_upcoming_race_link(request):
     season = validated_data_response.pop("season")
 
 def create_race_link(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     response = {
         "invalidLink": False,
@@ -237,8 +249,11 @@ def create_race_link(request):
 
 #this is for when the admin adds a race result manually
 def add_race_results(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     competitors_positions = data.get("competitors_positions")
@@ -314,8 +329,11 @@ def add_race_results(request):
 
 
 def edit_race(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     race_id = int(data.get("raceId", -1))
@@ -337,8 +355,11 @@ def edit_race(request):
     return HttpResponse(status=201)
 
 def delete_race(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     race_id = data.get("raceId", -1)

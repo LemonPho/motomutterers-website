@@ -23,18 +23,6 @@ export default function SeasonsSettings(){
         toggleModal("season-delete-modal", event, isLoggedIn, user.is_admin);
     }
 
-    async function setCurrentSeason(year){
-        let currentSeasonResponse = await submitCurrentSeason(year);
-
-        if(currentSeasonResponse.error){
-            console.log(currentSeasonResponse.error);
-            setErrorMessage("There was an error submiting the current season");
-            return;
-        }
-
-        retrieveSeasons();
-    }
-
     async function deleteSeason(event){
         resetApplicationMessages();
         event.stopPropagation();
@@ -73,28 +61,6 @@ export default function SeasonsSettings(){
                 <div className="card-header rounded-15-top">
                     <div className="d-flex align-items-center">                        
                         <h3 className="m-0">Seasons editor</h3>
-
-                        {seasons.length > 0 && (
-                            <div className="dropdown ms-auto">
-                                <button className="btn btn-outline-secondary dropdown-toggle" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
-                                    Current Season
-                                </button>
-                                <ul className="dropdown-menu" id="season-selector-dropdown">
-                                    {seasons.map((season) => (
-                                        <li className="ms-2" key={`${season.year}`}>
-                                            <a className="link-button d-flex align-items-center" id={`${season.year}`} onClick={() => {setCurrentSeason(season.year)}}>
-                                                {season.year}
-                                                {season.current && (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
-                                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                                                    </svg>
-                                                )}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
 
                         <button className="ms-2 btn btn-outline-secondary ms-auto" id="season-modal-button" onClick={(e) => toggleModal("season-create-modal", e, isLoggedIn, user.is_admin)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="grey" className="bi bi-plus" viewBox="0 0 16 16">

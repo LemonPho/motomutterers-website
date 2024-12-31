@@ -103,8 +103,11 @@ def get_users_picks_state(request):
     }, status=200)
 
 def delete_season(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     season_id = data.get("seasonId", False)
@@ -129,8 +132,11 @@ def delete_season(request):
     return HttpResponse(status=200)
 
 def create_season(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
 
@@ -177,8 +183,11 @@ def create_season(request):
     return HttpResponse(status=200)
 
 def set_current_season(request):
-    if request.method != "PUT" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "PUT":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     year = int(data.get("year", False))
@@ -215,8 +224,11 @@ def set_current_season(request):
 def toggle_users_picks(request):
     current_season = CurrentSeason.objects.first()
 
-    if request.method != "PUT" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "PUT":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     if current_season == None or current_season.season == None or current_season.season.finalized:
         return HttpResponse(status=400)
@@ -237,8 +249,11 @@ def toggle_users_picks(request):
     return HttpResponse(status=200)
 
 def finalize_season(request):
-    if request.method != "PUT" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "PUT":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     year = data.get("year")

@@ -26,15 +26,11 @@ export default function SeasonFinalize() {
         setErrorMessage("There was a problem finalizing the season");
     }
 
-    if(contextLoading){
-        return null;
-    }
-
     return (
-        <div className="d-flex align-items-center w-100">
-            <strong>Finalize Season</strong>
+        <div className="d-flex align-items-center w-100 ps-1">
+            <strong>Finalize season</strong>
             {seasonFinalizeState || !season.current && 
-            <div className="form-check form-switch ms-auto mb-0">
+            <div className="form-check form-switch ms-auto mb-0" onClick={(e) => {e.stopPropagation();setErrorMessage("You need to set this season as the current season to enable picks or finalize")}}>
                 <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} disabled/>
             </div>
             }

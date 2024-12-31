@@ -5,9 +5,9 @@ import { useApplicationContext } from "../../ApplicationContext";
 import { submitToggleUsersPicksState } from "../../fetch-utils/fetchPost";
 
 export default function MemberPicks() {
-    const { season } = useSeasonContext();
-    const { setErrorMessage, setSuccessMessage, selectPicksState, contextLoading, retrievePicksState } = useApplicationContext();
-    const [memberPicksCheckboxState, setMemberPicksCheckboxState] = useState(selectPicksState);
+    const { season, retrieveSeason } = useSeasonContext();
+    const { setErrorMessage, setSuccessMessage, contextLoading, retrievePicksState } = useApplicationContext();
+    const [memberPicksCheckboxState, setMemberPicksCheckboxState] = useState(season.selection_open);
 
     async function handleToggleUsersPicks() {
         if(season.competitors.length == 0){
@@ -23,8 +23,9 @@ export default function MemberPicks() {
         }
 
         if (memberPicksResponse.status === 200) {
-            setSuccessMessage(`Member picks successfully ${selectPicksState ? 'disabled' : 'enabled'}.`);
-            setMemberPicksCheckboxState(!selectPicksState);
+            retrieveSeason();
+            setSuccessMessage(`Member picks successfully ${season.selection_open ? 'disabled' : 'enabled'}.`);
+            setMemberPicksCheckboxState(!season.selection_open);
             retrievePicksState();
             return;
         }
@@ -32,20 +33,16 @@ export default function MemberPicks() {
         setErrorMessage("It was not possible to enable member picks");
     }
 
-    if(contextLoading){
-        return;
-    }
-
     return (
-        <div className="d-flex align-items-center w-100">
+        <div className="d-flex align-items-center w-100 ps-1">
             <strong>Enable member picks</strong>
-            {!season.finalized && season.current &&
+            {(!season.finalized && season.current) &&
             <div className="form-check form-switch ms-auto mb-0">
                 <input className="form-check-input" type="checkbox" checked={memberPicksCheckboxState} onChange={handleToggleUsersPicks}/>
             </div>
             }
-            {season.finalized || !season.current && 
-            <div className="form-check form-switch ms-auto mb-0">
+            {(season.finalized || !season.current) && 
+            <div className="form-check form-switch ms-auto mb-0"onClick={(e) => {e.stopPropagation();setErrorMessage("You need to set this season as the current season to enable picks or finalize");}}>
                 <input className="form-check-input" type="checkbox" checked={false} disabled/>
             </div>
             }

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getSeason } from "../../fetch-utils/fetchGet";
 import { Outlet, useParams } from "react-router-dom";
-import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults } from "../../fetch-utils/fetchPost";
+import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults, submitDeleteSeason } from "../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../ApplicationContext";
 
 const SeasonContext = createContext();
@@ -20,6 +20,7 @@ export default function SeasonContextProvider(){
         if(seasonResponse.status === 404){
             setSeason(false);
             setSeasonLoading(false);
+            setErrorMessage("Season not found");
             return;
         }
 
@@ -35,6 +36,18 @@ export default function SeasonContextProvider(){
 
         setSeason(tempSeason);
         setSeasonLoading(false);
+    }
+
+    async function deleteSeason(){
+        const seasonResponse = await submitDeleteSeason(season.id);
+
+        if(seasonResponse.status != 200 || seasonResponse.error){
+            setErrorMessage("There was an error deleting the season");
+            return;
+        }
+
+        setSuccessMessage("Season deleted");
+        setSeason(null);
     }
 
     //-------------------------------------RACES--------------------------------------------//
@@ -180,7 +193,7 @@ export default function SeasonContextProvider(){
     }
 
     return(
-        <SeasonContext.Provider value={{ season, seasonLoading, retrieveSeason,
+        <SeasonContext.Provider value={{ season, seasonLoading, retrieveSeason, deleteSeason,
                                         createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace,
                                         createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, }}>
             <Outlet/>

@@ -111,8 +111,11 @@ def edit_comment(request):
     return HttpResponse(status=200)
 
 def delete_comment(request):
-    if request.method != "POST" or not request.user.is_authenticated:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     comment_id = data.get("commentId", -1)
@@ -155,8 +158,11 @@ def retrieve_one_announcement(id):
 
 #post announcement, checks if user is admin and verifies post integrity  
 def post_announcement(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     
     data = json.loads(request.body)
@@ -178,8 +184,11 @@ def post_announcement(request):
     return HttpResponse(status=200)
 
 def edit_announcement(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     announcement_id = data.get("announcementId", -1)
@@ -200,8 +209,11 @@ def edit_announcement(request):
     return HttpResponse(status=200)
 
 def delete_announcement(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     announcement_id = data.get("announcementId", -1)

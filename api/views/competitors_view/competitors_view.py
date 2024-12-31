@@ -96,8 +96,11 @@ def get_season_competitors(request):
     }, status=200)
 
 def create_season_competitors_link(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     #initializing variables
     data = json.loads(request.body)
