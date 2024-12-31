@@ -10,6 +10,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
+import os
+
 def validate_race_upcoming_link_data(data):
     response = {
         "invalid_link": False,
@@ -60,8 +62,6 @@ def generate_table_race_data(data, season, is_sprint):
     url = sanitize_html(url)
 
     #start browser
-    #service = Service("/usr/bin/chromedriver")
-
     options = webdriver.ChromeOptions()
     options.add_argument('--disable-blink-features=AutomationControlled')
 
@@ -70,8 +70,15 @@ def generate_table_race_data(data, season, is_sprint):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
 
-    #browser = webdriver.Chrome(service=service, options=options)
-    browser = webdriver.Chrome(options=options)
+    #windows
+    if os.name == "nt":
+        browser = webdriver.Chrome(options=options)
+    #linux
+    else:
+        service = Service("/usr/bin/chromedriver")
+        browser = webdriver.Chrome(service=service, options=options)
+
+
     browser.get(url)
     delay = 10
 

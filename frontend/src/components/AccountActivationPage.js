@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { getLoggedIn } from "./fetch-utils/fetchGet";
 import { requestAccountActivationToken, submitAccountActivation } from "./fetch-utils/fetchPost";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useApplicationContext } from "./ApplicationContext";
 
 function AccountActivation(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const { setSuccessMessage, setErrorMessage, setLoadingMessage } = useApplicationContext();
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [errorOcurred, setErrorOcurred] = useState(false);
+    const [uid, setUid] = useState(new URLSearchParams(location.search).get("uid"));
+    const [token, setToken] = useState(new URLSearchParams(location.search).get("token"));
 
     const [accountActivated, setAccountActivated] = useState(null);
-
-    const [uid, setUid] = useState(new URLSearchParams(location.search).get("uid"));
-    const [token, setToken] = useState(new URLSearchParams(location.search).get("token"))
 
 
     async function requestNewActivationToken(){
@@ -48,32 +46,32 @@ function AccountActivation(){
     async function activateAccount(){
         const activateAccountResponse = await submitAccountActivation(uid, token);
 
-        setErrorOcurred(activateAccountResponse.error);
-        setAccountActivated(activateAccountResponse.status === 200);
-    }
+        if(activateAccountResponse.status != 200 || activateAccountResponse.error){
+            setErrorMessage(`There was an error activating the account`);
+            setAccountActivated(false);
+            return;
+        }
 
-    async function retrieveLoggedIn(){
-        const loggedInResponse = await getLoggedIn();
-        setIsLoggedIn(loggedInResponse.loggedIn);
+        setSuccessMessage("Account activated");
+        navigate("/");
     }
 
     useEffect(() => {
         async function fetchData(){
             await activateAccount();
-            await retrieveLoggedIn();
         }
         fetchData();
     }, []);
     
 
-    if(isLoggedIn === true){
+    if(!accountActivated){
         return(
-            <div>Account successfully activated!</div>
+            <div className="card w-100">
+                <div className="card-body">
+                    <button className="btn btn-link" onClick={requestNewActivationToken}>Request new activation link</button>
+                </div>
+            </div>
         );
-    } else {
-        return(
-            <div>Activation link expired, <button className="btn btn-link" onClick={requestNewActivationToken}>resend activation email</button></div>
-        )
     }
 }
 

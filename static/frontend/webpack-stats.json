@@ -25,9 +25,9 @@
       "name": "192.ecc6ab7c9639f2ff9c7f.js",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\192.ecc6ab7c9639f2ff9c7f.js"
     },
-    "195.ec4cd433abf9e6d5efd0.js": {
-      "name": "195.ec4cd433abf9e6d5efd0.js",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\195.ec4cd433abf9e6d5efd0.js"
+    "195.1840b1d1d7dd526331d6.js": {
+      "name": "195.1840b1d1d7dd526331d6.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\195.1840b1d1d7dd526331d6.js"
     },
     "247.97df133caf7f2a13ee73.js": {
       "name": "247.97df133caf7f2a13ee73.js",
@@ -97,18 +97,18 @@
       "name": "985.e8e03bfe0ebf0863e697.js",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\985.e8e03bfe0ebf0863e697.js"
     },
-    "main.15ad065a69104ec04ce2.js": {
-      "name": "main.15ad065a69104ec04ce2.js",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.15ad065a69104ec04ce2.js"
+    "main.cc5ba95494823b743658.js": {
+      "name": "main.cc5ba95494823b743658.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.cc5ba95494823b743658.js"
     },
-    "main.15ad065a69104ec04ce2.js.LICENSE.txt": {
-      "name": "main.15ad065a69104ec04ce2.js.LICENSE.txt",
-      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.15ad065a69104ec04ce2.js.LICENSE.txt"
+    "main.cc5ba95494823b743658.js.LICENSE.txt": {
+      "name": "main.cc5ba95494823b743658.js.LICENSE.txt",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.cc5ba95494823b743658.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.15ad065a69104ec04ce2.js"
+      "main.cc5ba95494823b743658.js"
     ]
   }
 }

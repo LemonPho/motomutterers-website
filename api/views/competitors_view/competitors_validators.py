@@ -10,6 +10,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.service import Service
 
 import re
+import os
 
 
 def validate_competitor_data(data):
@@ -117,17 +118,20 @@ def generate_competitor_table_data(url, season):
         "data": [],
     }
 
-    #linux chromium
-    service = Service("/usr/bin/chromedriver")
-
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
 
-    #browser = webdriver.Chrome(service=service, options=options)
-    browser = webdriver.Chrome()
+    #windows
+    if os.name == "nt":
+        browser = webdriver.Chrome()
+    #raspberry pi
+    else:
+        service = Service("/usr/bin/chromedriver")
+        browser = webdriver.Chrome(service=service, options=options)
+
     browser.get(url)
     delay = 10
 
