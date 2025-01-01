@@ -365,3 +365,21 @@ def reset_password(request):
         return HttpResponse(json_context, status=200)
     
     return HttpResponse(json_context, status=400)
+
+def delete_account(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
+    
+    User = get_user_model()
+    
+    try:
+        user = User.objects.get(username=request.user.username)
+    except User.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    user.delete()
+
+    return HttpResponse(status=200)

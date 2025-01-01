@@ -48,11 +48,11 @@ export default function EmailSettings(){
     return(
         <div>
             <div className="p-3 d-flex justify-content-center">
-                <div className="container">
+                <div>
                     <strong style={{fontSize: "20px"}}>Email</strong>
                     <div>{user.email}</div>
                 </div>
-                <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ml-auto" onClick={(e) => {toggleModal("email-modal", e);}}>Change</button>
+                <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {toggleModal("email-modal", e);}}>Change</button>
                 <div className="custom-modal hidden" id="email-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change email</h5>

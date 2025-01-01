@@ -61,6 +61,7 @@ urlpatterns = [
     path('create-race/', races_view.create_race),
     path('create-complete-race/', races_view.create_complete_race),
     path('create-race-link/', races_view.create_race_link),
+    path('delete-account/', user_view.delete_account),
     path('delete-announcement/', announcements_view.delete_announcement),
     path('delete-announcement-comment/', announcements_view.delete_comment),
     path('delete-all-competitors/', competitors_view.delete_all_competitors),

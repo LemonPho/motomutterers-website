@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import ProfilePictureSettings from "./ProfilePictureSettings";
 import UsernameSettings from "./UsernameSettings";
@@ -7,20 +7,18 @@ import EmailSettings from "./EmailSettings";
 import PasswordSettings from "./PasswordSettings";
 
 import { useApplicationContext } from "../ApplicationContext";
+import DeleteAccount from "./DeleteAccount";
 
 export default function UserSettings(){
-    const {user, userLoading, contextLoading} = useApplicationContext();
+    const {user, userLoading, setErrorMessage} = useApplicationContext();
 
     if(userLoading){
         return null;
     }
 
     if(!userLoading && !user.is_logged_in){
-        return(
-            <div>
-                <Navigate replace to="/login"/>
-            </div>
-        );
+        setErrorMessage("You must be logged in to use this page");
+        return null;
     }
 
     return(
@@ -33,6 +31,9 @@ export default function UserSettings(){
                 <EmailSettings />
                 <hr />
                 <PasswordSettings />
+                <hr />
+                <DeleteAccount />
+                <hr />
             </div>
         </div>
     );

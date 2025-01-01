@@ -8,7 +8,7 @@ function AccountActivation(){
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { setSuccessMessage, setErrorMessage, setLoadingMessage } = useApplicationContext();
+    const { setSuccessMessage, setErrorMessage, setLoadingMessage, retrieveUserData } = useApplicationContext();
 
     const [uid, setUid] = useState(new URLSearchParams(location.search).get("uid"));
     const [token, setToken] = useState(new URLSearchParams(location.search).get("token"));
@@ -53,6 +53,7 @@ function AccountActivation(){
         }
 
         setSuccessMessage("Account activated");
+        retrieveUserData();
         navigate("/");
     }
 

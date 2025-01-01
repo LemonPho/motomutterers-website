@@ -353,6 +353,32 @@ export async function submitChangeProfilePicture(newProfilePictureForm){
     return response;
 }
 
+export async function submitDeleteAccount(){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch("/api/delete-account/", {
+            method: "POST",
+            mode: "same-origin",
+            headers: {
+                "Content-type": "application/json",
+                "X-CSRFToken": csrftoken,
+            },
+        });
+
+        response.status = apiResponse.status;
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function submitAnnouncement(title, text){
     let response = {
         error: false,

@@ -112,7 +112,7 @@ export default function ProfilePictureSettings(){
     return(
         <div>
             <div className="p-3 d-flex justify-content-center">
-                <div className="container">
+                <div>
                     <div>
                         <strong style={{fontSize: "20px"}}>Profile photo</strong>
                     </div>
@@ -120,7 +120,7 @@ export default function ProfilePictureSettings(){
                         {user.profile_picture_data != "" && <img id="profile-picture-div" style={{width: "7rem", height: "7rem"}} className="rounded-circle" src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt={user.username} />}
                     </div>
                 </div>
-                <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center" onClick={(e) => {resetApplicationMessages();toggleModal("profile-picture-modal", e)}}>Change</button>
+                <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();toggleModal("profile-picture-modal", e)}}>Change</button>
                 <div className="custom-modal hidden" id="profile-picture-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">
                         <h5>Change profile picture</h5>

@@ -63,11 +63,11 @@ export default function PasswordSettings(){
     return(
         <div>
             <div className="p-3 d-flex justify-content-center">
-                <div className="container">
+                <div>
                     <strong style={{fontSize: "20px"}}>Password</strong>
                     <div>••••••••••</div>
                 </div>
-                <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ml-auto" onClick={(e) => {resetApplicationMessages();toggleModal("password-modal", e)}}>Change</button>
+                <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();toggleModal("password-modal", e)}}>Change</button>
                 <div className="custom-modal hidden" id="password-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change password</h5>
