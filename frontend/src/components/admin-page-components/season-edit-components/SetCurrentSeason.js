@@ -25,12 +25,12 @@ export default function SetCurrentSeason(){
             <strong>Set as current season</strong>
             <div className="ms-auto">
                 {(!season.current && !season.finalized) && 
-                <button className="btn btn-outline-primary" onClick={setCurrentSeason}>
+                <button className="btn btn-outline-primary rounded-15" onClick={setCurrentSeason}>
                     Set as current season
                 </button>
                 }
                 {(season.current || season.finalized) && 
-                <button className="btn btn-outline-secondary" disabled>
+                <button className="btn btn-outline-secondary rounded-15" disabled>
                     Already current season
                 </button>
                 }

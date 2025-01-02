@@ -43,7 +43,7 @@ export default function DeleteAccount(){
         <div>
             <div className="p-3 d-flex align-items-center">
                 <strong style={{fontSize: "20px"}}>Delete Account</strong>
-                <button className="ms-auto btn btn-outline-danger" onClick={(e) => {toggleModal("delete-account-modal", e, user.is_logged_in);}}>Delete Account</button>
+                <button className="ms-auto btn btn-outline-danger rounded-15" onClick={(e) => {toggleModal("delete-account-modal", e, user.is_logged_in);}}>Delete Account</button>
             </div>
             <div className="custom-modal hidden" id="delete-account-modal" onClick={(e) => {e.stopPropagation();}}>
                 <div className="custom-modal-header justify-content-center">
@@ -53,8 +53,8 @@ export default function DeleteAccount(){
                     <input type="text" className="input-field w-100" placeholder="Write your username here" value={username} onChange={(e) => {handleUsernameChange(e)}}/>
                 </div>
                 <div className="custom-modal-footer justify-content-center" style={{flexDirection: "column"}}>
-                    <button className="btn btn-danger w-100" onClick={deleteAccount}>Delete Account</button>
-                    <button className="btn btn-light mt-2">Cancel</button>
+                    <button className="btn btn-danger w-100 rounded-15" onClick={deleteAccount}>Delete Account</button>
+                    <button className="btn btn-light mt-2 rounded-15" onClick={closeModals}>Cancel</button>
                 </div>
             </div>
         </div>
