@@ -7,20 +7,22 @@ import ApplicationContext, { useApplicationContext } from "../ApplicationContext
 import { closeModals, enterKeySubmit, toggleModal } from "../utils";
 
 export default function EmailSettings(){
-    const [changeEmailLoading, setChangeEmailLoading] = useState(null);
-    const {user, contextLoading, setModalErrorMessage, modalErrorMessage, setSuccessMessage, retrieveUserData, resetApplicationMessages} = useApplicationContext();
+    const [ newEmail, setNewEmail ] = useState("");
+    const [ passwordInput, setPasswordInput ] = useState("");
+    const {user, contextLoading, setErrorMessage, setSuccessMessage, retrieveUserData, resetApplicationMessages} = useApplicationContext();
+
+    function resetVariables(){
+        setNewEmail("");
+        setPasswordInput("");
+    }
 
     async function postNewEmail(){
         resetApplicationMessages();
-        setChangeEmailLoading(true);
-        const newEmail = document.getElementById("email-input").value;
-        const currentPassword = document.getElementById("password-email-input").value;
-
-        const emailResponse = await submitChangeEmail(currentPassword, newEmail);
+        setLoadingMessage("Loading...");
+        const emailResponse = await submitChangeEmail(passwordInput, newEmail);
 
         if(emailResponse.error){
-            setModalErrorMessage("There was an error while submiting the new email");
-            setChangeEmailLoading(false);
+            setErrorMessage("There was an error while submiting the new email");
             return;
         }
 
@@ -29,16 +31,21 @@ export default function EmailSettings(){
         if(emailResponse.status === 200){
             setSuccessMessage("Email changed, check your inbox for the verification link");
             closeModals();
-            setChangeEmailLoading(false);
             return;
         }
 
         let message = emailResponse.newEmailUnique ? "" : "Email is not unique\n";
         message += emailResponse.newEmailValid ? "" : "Email is not valid\n";
         message += emailResponse.currentPasswordCorrect ? "" : "Password is not correct\n";
-        setModalErrorMessage(message);
+        setErrorMessage(message);
+    }
 
-        setChangeEmailLoading(false);
+    function handleNewEmailChange(event){
+        setNewEmail(event.target.value);
+    }
+
+    function handlePasswordInputChange(event){
+        setPasswordInput(event.target.value);
     }
 
     if(contextLoading){
@@ -52,7 +59,7 @@ export default function EmailSettings(){
                     <strong style={{fontSize: "20px"}}>Email</strong>
                     <div>{user.email}</div>
                 </div>
-                <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {toggleModal("email-modal", e);}}>Change</button>
+                <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {toggleModal("email-modal", e);resetVariables();}}>Change</button>
                 <div className="custom-modal hidden" id="email-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change email</h5>
@@ -61,10 +68,8 @@ export default function EmailSettings(){
                         </button>
                     </div>
                     <div className="custom-modal-body">
-                        {modalErrorMessage && <div className="alert alert-danger" style={{whiteSpace: "pre-line"}}>{modalErrorMessage}</div>}
-                        {changeEmailLoading === true && <div className="alert alert-secondary"><div className="d-flex justify-content-center align-items-center">Loading...</div></div>}
-                        <input type="password" placeholder="Current password" className="form-control" id="password-email-input" onKeyUp={(e) => enterKeySubmit(e, postNewEmail)}/>
-                        <input type="text" placeholder="New email" className="form-control mt-2" id="email-input" onKeyUp={(e) => enterKeySubmit(e, postNewEmail)}/>
+                        <input type="password" data-category="input-field" placeholder="Current password" className="form-control" id="password-email-input" onChange={(e) => {handlePasswordInputChange(e)}} onKeyUp={(e) => enterKeySubmit(e, postNewEmail)}/>
+                        <input type="text" data-category="input-field" placeholder="New email" className="form-control mt-2" id="email-input" onChange={(e) => {handleNewEmailChange(e)}} onKeyUp={(e) => enterKeySubmit(e, postNewEmail)}/>
                     </div>
                     <div className="custom-modal-footer">
                         <button id="submit-data" className="btn btn-primary mr-auto" onClick={(e) => {e.stopPropagation(); postNewEmail();}}>Save changes</button>

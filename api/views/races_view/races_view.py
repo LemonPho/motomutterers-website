@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_table_race_data, validate_generate_competitors_positions, validate_race_upcoming_link_data
+from .races_validators import validate_race_link_data, generate_table_race_data, validate_generate_complete_manual_race, validate_race_upcoming_link_data
 from .races_util import add_points_to_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
@@ -89,32 +89,22 @@ def create_complete_race(request):
     if season.finalized:
         return HttpResponse(status=405)
     
-    competitors_positions_data = data.pop("competitors_positions")
-    validated_competitors_positions_data = validate_generate_competitors_positions(competitors_positions_data, data["race"]["is_sprint"])
+    validated_race_data = validate_generate_complete_manual_race(data)
 
-    response["invalid_competitors_positions_spacing"] = validated_competitors_positions_data.pop("invalid_competitors_positions_spacing")
-    response["competitors_not_found"] = validated_competitors_positions_data.pop("competitors_not_found")
+    response["invalid_competitors_positions_spacing"] = validated_race_data.pop("invalid_competitors_positions_spacing")
+    response["competitors_not_found"] = validated_race_data.pop("competitors_not_found")
 
     if any(response["invalid_competitors_positions_spacing"]) or any(response["competitors_not_found"]):
         return JsonResponse(response, status=400)
-    
-    race_serializer = RaceWriteSerializer(data=data["race"])
+        
+    race_serializer = RaceWriteSerializer(data=validated_race_data["race"])
 
     if not race_serializer.is_valid():
+        print(race_serializer.errors)
         response["invalid_race_data"] = True
         return JsonResponse(response, status=400)
     
-    competitors_positions_serializer = CompetitorPositionWriteSerializer(data=validated_competitors_positions_data["new_competitors_positions_data"], many=True)
-
-    if not competitors_positions_serializer.is_valid():
-        response["invalid_competitors_positions"] = True
-        return JsonResponse(response, status=400)
-
     race = race_serializer.save()
-    competitors_positions = competitors_positions_serializer.save()
-
-    race.competitors_positions.add(*competitors_positions)
-    race.save()
 
     season.races.add(race)
     season.save()
@@ -154,7 +144,6 @@ def create_race(request):
 
     if not serializer.is_valid() or not season_year:
         return HttpResponse(status=400)
-    
     
     race = serializer.save()
     season.races.add(race)
@@ -213,8 +202,6 @@ def create_race_link(request):
     if response["timeout"] or any(response["competitors_not_found"]):
         return JsonResponse(response, status=400)
 
-    competitors_positions_data = race_result_data["data"].pop("competitors_positions")
-
     serializer = RaceWriteSerializer(data=race_result_data["data"])
 
     if not serializer.is_valid():
@@ -223,18 +210,7 @@ def create_race_link(request):
     
     race = serializer.save()
 
-    serializer = CompetitorPositionWriteSerializer(data=competitors_positions_data,many=True)
-
-    if not serializer.is_valid():
-        return JsonResponse(validated_data_response, status=400)
-    
-    competitors_positions = serializer.save()
-        
-    #save race result
-    race.competitors_positions.add(*competitors_positions)
-    race.save()
     season.races.add(race)
-
     add_points = add_points_to_season_competitors(season, race)
 
     if not add_points:
@@ -386,7 +362,7 @@ def delete_race(request):
 
     if race.finalized:
         try:
-            competitors_positions = CompetitorPosition.objects.filter(race=race)
+            competitors_positions = CompetitorPosition.objects.filter(final_race=race)
         except CompetitorPosition.DoesNotExist:
             return HttpResponse(status=400)
         

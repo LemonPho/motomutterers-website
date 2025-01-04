@@ -8,7 +8,7 @@ import { useSeasonCreateContext } from "../SeasonCreateContext";
 const SeasonContext = createContext();
 
 export default function SeasonContextProvider(){
-    const { setErrorMessage, setSuccessMessage, setModalErrorMessage, resetApplicationMessages } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
 
     const seasonYear = useParams().seasonYear;
     const [season, setSeason] = useState(null);
@@ -58,7 +58,7 @@ export default function SeasonContextProvider(){
         const raceResponse = await submitRace(newRace);
 
         if(raceResponse.error || raceResponse.status != 200){
-            setModalErrorMessage("There was an error creating the race");
+            setErrorMessage("There was an error creating the race");
             console.log(raceResponse.error)
             return false;
         }
@@ -74,13 +74,13 @@ export default function SeasonContextProvider(){
         const raceResponse = await submitRaceResults(newRace);
 
         if(raceResponse.error){
-            setModalErrorMessage("There was an error adding the results");
+            setErrorMessage("There was an error adding the results");
             console.log(raceResponse.error);
             return false;
         }
 
         if(raceResponse.status != 200){
-            setModalErrorMessage("Be sure that the information inputted is correct");
+            setErrorMessage("Be sure that the information inputted is correct");
             return false;
         }
 
@@ -94,13 +94,13 @@ export default function SeasonContextProvider(){
         let raceResponse = await submitEditRace(newRace);
 
         if(raceResponse.error){
-            setModalErrorMessage("There was an error editing the race")
+            setErrorMessage("There was an error editing the race")
             console.log(raceResponse.error)
             return false;
         }
 
         if(raceResponse.status != 200){
-            setModalErrorMessage("Be sure the information is valid");
+            setErrorMessage("Be sure the information is valid");
             return false;
         }
 
@@ -111,15 +111,17 @@ export default function SeasonContextProvider(){
 
     async function deleteSeasonRace(raceId){
         resetApplicationMessages();
+        setLoadingMessage("Loading...");
         let raceResponse = await submitDeleteRace(raceId, seasonYear);
 
         if(raceResponse.error || raceResponse.status != 200){
             console.log(raceResponse.error);
-            setModalErrorMessage("There was an error deleting the race");
+            setErrorMessage("There was an error deleting the race");
             setErrorMessage("There was an error deleting the race");
             return;
         }
 
+        setLoadingMessage(false);
         setSuccessMessage("Race deleted");
         retrieveSeason();
 
@@ -133,23 +135,23 @@ export default function SeasonContextProvider(){
         const competitorResponse = await submitCompetitor(newCompetitorPosition);
 
         if(competitorResponse.error){
-            setModalErrorMessage("There was an error submiting the competitor");
+            setErrorMessage("There was an error submiting the competitor");
             console.log(competitorResponse.error);
             return false;
         }
 
         if(competitorResponse.riderExists){
-            setModalErrorMessage("A rider with that number already exists");
+            setErrorMessage("A rider with that number already exists");
             return false;
         }
 
         if(competitorResponse.seasonNotFound){
-            setModalErrorMessage("The season was not found of which you want to add the competitor")
+            setErrorMessage("The season was not found of which you want to add the competitor")
             return false;
         }
 
         if(competitorResponse.status != 201){
-            setModalErrorMessage("Make sure the information is correct and valid");
+            setErrorMessage("Make sure the information is correct and valid");
             return false;
         }
 
@@ -164,12 +166,12 @@ export default function SeasonContextProvider(){
 
         if(competitorResponse.error){
             console.log(competitorResponse.error);
-            setModalErrorMessage("There was an error editing the rider");
+            setErrorMessage("There was an error editing the rider");
             return false;
         }
 
         if(competitorResponse.status != 200){
-            setModalErrorMessage("Make sure the information is valid");
+            setErrorMessage("Make sure the information is valid");
             return false;
         }
 
@@ -183,7 +185,7 @@ export default function SeasonContextProvider(){
         const competitorResponse = await submitDeleteCompetitor(competitorId, seasonId);
 
         if(competitorResponse.error || competitorResponse.status != 200){
-            setModalErrorMessage("There was an error deleting the rider");
+            setErrorMessage("There was an error deleting the rider");
             console.log(competitorResponse.error);
             return false;
         }

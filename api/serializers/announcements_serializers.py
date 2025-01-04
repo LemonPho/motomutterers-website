@@ -42,9 +42,13 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     edited = serializers.BooleanField(read_only=True)
     date_created = serializers.DateTimeField(read_only=True)
     date_edited = serializers.DateTimeField(read_only=True)
+    amount_comments = serializers.SerializerMethodField()
     class Meta:
         model = Announcement
-        fields = ["id", "title", "text", "user", "edited", "date_created", "date_edited"]        
+        fields = ["id", "title", "text", "user", "edited", "date_created", "date_edited", "amount_comments"]
+
+    def get_amount_comments(self, announcement):
+        return announcement.comments.count()
 
 class AnnouncementParentCommentSerializer(serializers.ModelSerializer):
     announcement = AnnouncementSerializer()

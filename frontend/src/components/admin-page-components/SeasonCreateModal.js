@@ -68,11 +68,11 @@ export default function SeasonCreateModal(){
                     <input className="input-field" type="number" min="1900" max="2099" step="1" value={seasonYear} onChange={(e) => handleYearChange(e)} id="season-year" onKeyUp={(e) => enterKeySubmit(e, postSeason)} />
                     <div className="ms-2">
                         <div className="form-check">
-                            <input className="form-check-input" id="season-top-independent" type="checkbox" value={seasonTopIndependent} onChange={(e) => handleTopIndependentChange(e)}/>
+                            <input className="form-check-input" id="season-top-independent" type="checkbox" data-category="input-field" onChange={(e) => handleTopIndependentChange(e)}/>
                             <label className="form-check-label" htmlFor="season-top-independent">Top Independent</label>
                         </div>
                         <div className="form-check">
-                            <input className="form-check-input" id="season-top-rookie" type="checkbox" value={seasonTopRookie} onChange={(e) => handleTopRookieChange(e)}/>
+                            <input className="form-check-input" id="season-top-rookie" type="checkbox" data-category="input-field" onChange={(e) => handleTopRookieChange(e)}/>
                             <label className="form-check-label" htmlFor="season-top-rookie">Top Rookie</label>
                         </div>
                     </div>

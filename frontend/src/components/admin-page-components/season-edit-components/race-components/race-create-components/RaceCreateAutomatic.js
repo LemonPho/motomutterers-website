@@ -7,10 +7,10 @@ import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";
 
 
 export default function RaceCreateAutomatic(){
-    const { modalErrorMessage, setModalErrorMessage, setSuccessMessage, setLoadingMessage, loadingMessage, resetApplicationMessages } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
     const { season, retrieveSeason } = useSeasonContext();
 
-    const[raceDate, setRaceDate] = useState();
+    const [raceDate, setRaceDate] = useState();
 
     function handleDateChange(event){
         const newDate = event.target.value;
@@ -26,13 +26,13 @@ export default function RaceCreateAutomatic(){
         setLoadingMessage(false);
 
         if(raceResponse.error){
-            setModalErrorMessage("There was an error processing the link.");
+            setErrorMessage("There was an error processing the link.");
             console.log(raceResponse.error);
             return;
         }
 
         if(raceResponse.invalidLink){
-            setModalErrorMessage("The link is invalid or website didn't load.");
+            setErrorMessage("The link is invalid or website didn't load.");
             return;
         }
 
@@ -45,22 +45,22 @@ export default function RaceCreateAutomatic(){
 
             string += "were not found in the database";
 
-            setModalErrorMessage(string);
+            setErrorMessage(string);
             return;
         }
 
         if(raceResponse.timeout){
-            setModalErrorMessage("Motosport website didn't load, try again later");
+            setErrorMessage("Motosport website didn't load, try again later");
             return;
         }
 
         if(raceResponse.invalidSeason){
-            setModalErrorMessage("Season was not found in the database")
+            setErrorMessage("Season was not found in the database")
             return;
         }
 
         if(raceResponse.status != 201){
-            setModalErrorMessage("There was an error processing the link.");
+            setErrorMessage("There was an error processing the link.");
             return;
         }
 
@@ -79,8 +79,6 @@ export default function RaceCreateAutomatic(){
             <hr />
             
             <div className="custom-modal-body">
-                {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                {loadingMessage && <div className="alert alert-secondary"><small>{loadingMessage}</small></div>}
                 <div className="alert alert-info"><small>Open the race result on motorsport.com and then paste the link into the textbox</small></div>
                 <div className="input-field" id="race-automatic-link" contentEditable={true} role="textbox" data-placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("race-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}></div>
                 <div className="d-flex justify-content-center align-items-center mt-2">

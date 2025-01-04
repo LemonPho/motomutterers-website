@@ -29,13 +29,13 @@ export default function RaceEditModal(){
             {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 
             <div className="custom-modal-body">
-                <div id="race-edit-track" className='input-field mt-2' contentEditable={true} data-placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.innerHTML)}}></div>
-                <div id="race-edit-title" className='input-field mt-2' contentEditable={true} data-placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.innerHTML)}}></div>
+                <div id="race-edit-track" className='input-field mt-2' data-category="input-field" contentEditable={true} data-placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.innerHTML)}}></div>
+                <div id="race-edit-title" className='input-field mt-2' data-category="input-field" contentEditable={true} data-placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.innerHTML)}}></div>
                 <div className="d-flex justify-content-center">
-                    <input id="race-edit-date" type="date" className="input-field flex-grow-1 mt-2" value={timestamp} onChange={(e) => setTimestamp(e.currentTarget.value)} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
+                    <input id="race-edit-date" type="date" data-category="input-field" className="input-field flex-grow-1 mt-2" value={timestamp} onChange={(e) => setTimestamp(e.currentTarget.value)} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                 </div>
                 <div className="form-check mt-1">
-                    <input id="race-edit-sprint" type="checkbox" className="form-check-input" checked={isSprint} onChange={() => {setIsSprint(!isSprint)}} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
+                    <input id="race-edit-sprint" type="checkbox" className="form-check-input" data-category="input-field" checked={isSprint} onChange={() => {setIsSprint(!isSprint)}} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                     <label className="form-check-label" htmlFor="race-edit-sprint">Sprint Race</label>
                 </div>
             </div>

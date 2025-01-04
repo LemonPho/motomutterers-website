@@ -9,10 +9,6 @@ body {
     background-attachment: fixed;
 }
 
-h5 {
-    padding: 0;
-}
-
 .main{
     display: flex;
     flex-direction: column;
@@ -127,6 +123,12 @@ h5 {
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 7px 2px;
 }
 
+.announcement-card-body{
+    max-height: 50vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
 
 .menu-div{
     background-color: rgba(255, 255, 255, 0.9);

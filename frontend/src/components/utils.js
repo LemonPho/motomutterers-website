@@ -76,7 +76,7 @@ export function getScreenDimensions(){
     return result
 }
 
-export function closeModals(){
+export function closeModals(clearInputFields){
     const modals = document.getElementsByClassName("custom-modal");
     const backgroundBlur = document.getElementById("background-blur");
     const inputFields = document.querySelectorAll('[data-category="input-field"]');
@@ -89,33 +89,35 @@ export function closeModals(){
     });
 
     //Erasing all inputs
-    Array.prototype.forEach.call(inputFields, (inputField) => {
-        if(inputField.tagName === "INPUT"){
-            inputField.value = null;
-            inputField.checked = false;
-        } else {
-            inputField.innerHTML = "";
-        }
-    })
-
+    if(clearInputFields || clearInputFields == undefined){
+        Array.prototype.forEach.call(inputFields, (inputField) => {
+            if(inputField.tagName === "INPUT"){
+                inputField.value = null;
+                inputField.checked = false;
+            } else {
+                inputField.innerHTML = "";
+            }
+        })
+    }
+    
     if(!backgroundBlur.classList.contains("hidden")){
         backgroundBlur.classList.toggle("hidden");
     }
 }
 
-export function toggleModal(elementId, event, isLoggedIn, isAdmin){
+export function toggleModal(elementId, event, isLoggedIn, isAdmin, clearInputFields){
     const modal = document.getElementById(elementId);
     const backgroundBlur = document.getElementById("background-blur");
     event.stopPropagation();
 
     if(!modal.classList.contains("hidden")){
-        closeModals();
+        closeModals(clearInputFields);
         return;
     }
 
     if((isLoggedIn === undefined || isLoggedIn === true) && (isAdmin === undefined || isAdmin === true)){
         closeDropdowns();
-        closeModals();
+        closeModals(clearInputFields);
 
         modal.classList.toggle("hidden");
         backgroundBlur.classList.toggle("hidden");

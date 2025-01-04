@@ -1,4 +1,4 @@
-import React, { useEffect, useState, startTransition } from "react";
+import React, { useEffect, useState } from "react";
 import { useSeasonContext } from "./SeasonContext";
 import { closeModals, toggleModal } from "../../utils";
 import { useApplicationContext } from "../../ApplicationContext";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function DeleteSeason(){
     const { season, deleteSeason } = useSeasonContext();
-    const { user, setErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { user, setErrorMessage, retrieveCurrentSeason } = useApplicationContext();
 
     const [ seasonYearInput, setSeasonYearInput ] = useState("");
 
@@ -33,7 +33,7 @@ export default function DeleteSeason(){
             <div className="d-flex align-items-center w-100 ps-1">
                 <strong>Delete season</strong>
                 <div className="ms-auto">
-                    <button className="btn btn-outline-danger rounded-15" onClick={(e) => {toggleModal("season-delete-modal", e, user.is_logged_in, user.is_admin)}}>
+                    <button className="btn btn-outline-danger rounded-15" onClick={(e) => {toggleModal("season-delete-modal", e, user.is_logged_in, user.is_admin);setSeasonYearInput("")}}>
                         Delete season
                     </button>
                 </div>
@@ -47,7 +47,7 @@ export default function DeleteSeason(){
                 </div>
                 <div className="custom-modal-footer d-flex flex-column">
                     <button className="btn btn-danger w-100 rounded-15" onClick={deleteSeasonConfirm}>Delete Season</button>
-                    <button className="btn btn-light w-100 rounded-15" onClick={closeModals}>Cancel</button>
+                    <button className="btn btn-light w-100 rounded-15 mt-2" onClick={closeModals}>Cancel</button>
                 </div>
             </div>
         </>    

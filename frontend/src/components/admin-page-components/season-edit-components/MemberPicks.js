@@ -6,7 +6,7 @@ import { submitToggleUsersPicksState } from "../../fetch-utils/fetchPost";
 
 export default function MemberPicks() {
     const { season, retrieveSeason } = useSeasonContext();
-    const { setErrorMessage, setSuccessMessage, contextLoading, retrievePicksState } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, retrieveCurrentSeason, retrievePicksState } = useApplicationContext();
     const [memberPicksCheckboxState, setMemberPicksCheckboxState] = useState(season.selection_open);
 
     async function handleToggleUsersPicks() {
@@ -23,10 +23,11 @@ export default function MemberPicks() {
         }
 
         if (memberPicksResponse.status === 200) {
-            retrieveSeason();
+            await retrieveSeason();
+            await retrieveCurrentSeason();
             setSuccessMessage(`Member picks successfully ${season.selection_open ? 'disabled' : 'enabled'}.`);
             setMemberPicksCheckboxState(!season.selection_open);
-            retrievePicksState();
+            await retrievePicksState();
             return;
         }
 

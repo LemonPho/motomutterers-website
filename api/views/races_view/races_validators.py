@@ -131,7 +131,7 @@ def generate_table_race_data(data, season, is_sprint):
         else:
             response["data"]["competitors_positions"].append({
                 "competitor_points": {
-                    "competitor_id": season_competitor_position.competitor_points.competitor.id,
+                    "competitor": season_competitor_position.competitor_points.competitor.id,
                     "points": points,
                 },
                 "position": position,
@@ -146,58 +146,65 @@ def generate_race_standings():
     pass
 
 #this function expects the competitors positions to arrive sorted!!
-def validate_generate_competitors_positions(data, is_sprint):
+def validate_generate_complete_manual_race(data):
     response = {
-        "invalid_competitors_positions_spacing": [],
+        "race": {
+            "title": data["race"]["title"],
+            "track": data["race"]["track"],
+            "timestamp": data["race"]["timestamp"],
+            "is_sprint": data["race"]["is_sprint"],
+            "finalized": data["race"]["finalized"],
+            "competitors_positions": [],
+        },
         "competitors_not_found": [],
-        "new_competitors_positions_data": [],
+        "invalid_competitors_positions_spacing": [],
     }
 
-    points = [12, 9, 7, 6, 5, 4, 3, 2, 1] if is_sprint else [25, 20, 16, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    points = [12, 9, 7, 6, 5, 4, 3, 2, 1] if data["race"]["is_sprint"] else [25, 20, 16, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
     prev_competitor_position = {
         "competitor_points":{
-            "competitor_id": None,
+            "competitor": None,
             "points": 0
         },
         "position": 0,
     }
 
-    for i in range(0, len(data)):
+    for i in range(0, len(data["competitors_positions"])):
         try:
-            Competitor.objects.get(pk=data[i]["competitor_id"])
+            Competitor.objects.get(pk=data["competitors_positions"][i]["competitor_id"])
         except Competitor.DoesNotExist:
-            response["competitors_not_found"].append(data[i]["competitor_id"])
+            response["competitors_not_found"].append(data["competitors_positions"][i]["competitor_id"])
 
-        if data[i]["position"] == 0:
-            response["new_competitors_positions_data"].append({
+        if data["competitors_positions"][i]["position"] == 0:
+            response["race"]["competitors_positions"].append({
                 "competitor_points": {
-                    "competitor_id": data[i]["competitor_id"],
+                    "competitor": data["competitors_positions"][i]["competitor_id"],
                     "points": 0,    
                 },
-                "position": data[i]["position"],
+                "position": data["competitors_positions"][i]["position"],
             })
         else:
-            if data[i]["position"] - prev_competitor_position["position"] != 1:
-                response["invalid_competitors_positions_spacing"].append(data[i]["competitor_id"])
+            if data["competitors_positions"][i]["position"] - prev_competitor_position["position"] != 1:
+                response["invalid_competitors_positions_spacing"].append(data["competitors_positions"][i]["competitor_id"])
                 response['invalid_competitors_positions_spacing'].append(prev_competitor_position["competitor_id"])
             else:
-                if data[i]["position"] <= len(points):
-                    response["new_competitors_positions_data"].append({ 
+                if data["competitors_positions"][i]["position"] <= len(points):
+                    response["race"]["competitors_positions"].append({ 
                         "competitor_points": {
-                            "competitor_id": data[i]["competitor_id"],
-                            "points": points[data[i]["position"]-1],
+                            "competitor": data["competitors_positions"][i]["competitor_id"],
+                            "points": points[data["competitors_positions"][i]["position"]-1],
                         },
-                        "position": data[i]["position"],
+                        "position": data["competitors_positions"][i]["position"],
                         })
                 else:
-                    response["new_competitors_positions_data"].append({ 
+                    response["race"]["competitors_positions"].append({ 
                         "competitor_points": {
-                            "competitor_id": data[i]["competitor_id"],
+                            "competitor": data["competitors_positions"][i]["competitor_id"],
                             "points": 0
                         },
-                        "position": data[i]["position"],
+                        "position": data["competitors_positions"][i]["position"],
                         })
                 
-        prev_competitor_position = data[i]
+        prev_competitor_position = data["competitors_positions"][i]
 
     return response

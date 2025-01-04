@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSeasonContext } from "../../../SeasonContext";
 import { useApplicationContext } from "../../../../../ApplicationContext";
-import { useRaceCreateContext } from "./RaceCreateContext";
+import { useRaceCreateContext } from "../RaceCreateContext";
 import { toggleModal } from "../../../../../utils";
 
 export default function RaceResultsCreateModal(){
     const { season, seasonLoading } = useSeasonContext();
-    const { modalErrorMessage, loggedIn, user } = useApplicationContext();
+    const { user, resetApplicationMessages, setLoadingMessage } = useApplicationContext();
     const { createRace, invalidCompetitors, selectedCompetitors, competitorsPositions, setCompetitorsPositions } = useRaceCreateContext();
 
     const [competitors, setCompetitors] = useState([]);
@@ -36,11 +36,13 @@ export default function RaceResultsCreateModal(){
     }
 
     async function handleCreateRace(){
+        resetApplicationMessages();
         let sortedCompetitorsPositions = competitorsPositions;
         sortedCompetitorsPositions.sort((a, b) => {
             return a.position - b.position;
         });
         setCompetitorsPositions(sortedCompetitorsPositions);
+        
         await createRace();
     }
 
@@ -60,8 +62,6 @@ export default function RaceResultsCreateModal(){
                 <h5>Race Create Manual</h5>
             </div>
             <div className="alert alert-info"><small>Input the final positions of the riders, 0 for DNF</small></div>
-            { modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div> }
-
             <hr />
 
             <div className="custom-modal-body">
@@ -73,14 +73,14 @@ export default function RaceResultsCreateModal(){
                                 invalidCompetitors.some((element) => element == competitor.competitor.id ) ? 
                                 (
                                     <form>
-                                        <input className="input-field me-2" id={`competitor-position-${competitor.competitor_points.competitor.number}`} type="number" max={99} min={0} defaultValue={0} onChange={(e) => handleCompetitorPositionChange(e, i)}/>
+                                        <input className="input-field me-2" data-category="input-field" id={`competitor-position-${competitor.competitor_points.competitor.number}`} type="number" max={99} min={0} defaultValue={0} onChange={(e) => handleCompetitorPositionChange(e, i)}/>
                                         <label className="text-danger" htmlFor={`competitor-position-${competitor.competitor_points.competitor.number}`}>#{competitor.competitor_points.competitor.number} {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</label>
                                     </form>
                                 )
                                 :
                                 (
                                     <form >
-                                        <input className="input-field me-2" id={`competitor-position-${competitor.competitor_points.competitor.number}`} type="number" max={99} min={0} defaultValue={0} onChange={(e) => handleCompetitorPositionChange(e, i)}/>
+                                        <input className="input-field me-2" data-category="input-field" id={`competitor-position-${competitor.competitor_points.competitor.number}`} type="number" max={99} min={0} defaultValue={0} onChange={(e) => handleCompetitorPositionChange(e, i)}/>
                                         <label htmlFor={`competitor-position-${competitor.competitor_points.competitor.number}`}>#{competitor.competitor_points.competitor.number} {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</label>
                                     </form>
                                 ) 
@@ -89,7 +89,7 @@ export default function RaceResultsCreateModal(){
                             :
                             (
                                 <form>
-                                    <input className="input-field me-2" id={`competitor-position-${competitor.competitor_points.competitor.number}`} type="number" max={99} min={0} defaultValue={0} onChange={(e) => handleCompetitorPositionChange(e, i)}/>
+                                    <input className="input-field me-2" data-category="input-field" id={`competitor-position-${competitor.competitor_points.competitor.number}`} type="number" max={99} min={0} defaultValue={0} onChange={(e) => handleCompetitorPositionChange(e, i)}/>
                                     <label htmlFor={`competitor-position-${competitor.competitor_points.competitor.number}`}>#{competitor.competitor_points.competitor.number} {competitor.competitor_points.competitor.first} {competitor.competitor_points.competitor.last}</label>
                                 </form>
                             )}
@@ -99,7 +99,7 @@ export default function RaceResultsCreateModal(){
             </div>
 
             <div className="custom-modal-footer">
-                <button className="btn btn-primary rounded-15" onClick={(e) => {toggleModal("competitors-select-modal", e, loggedIn, user.is_admin)}}>Back</button>
+                <button className="btn btn-primary rounded-15" onClick={(e) => {toggleModal("competitors-select-modal", e, user.is_logged_in, user.is_admin, false)}}>Back</button>
                 <button className="btn btn-primary rounded-15 ms-auto" onClick={handleCreateRace}>Save race result</button>
             </div>
         </div>

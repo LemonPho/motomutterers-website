@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { submitFullRace } from "../../../../../fetch-utils/fetchPost";
-import { useApplicationContext } from "../../../../../ApplicationContext";
-import { closeModals } from "../../../../../utils";
-import { useSeasonContext } from "../../../SeasonContext";
+import { submitFullRace } from "../../../../fetch-utils/fetchPost";
+import { useApplicationContext } from "../../../../ApplicationContext";
+import { closeModals } from "../../../../utils";
+import { useSeasonContext } from "../../SeasonContext";
 
 const RaceCreateContext = createContext();
 
@@ -18,20 +18,21 @@ export default function RaceCreateContextProvider({children}){
     //create race responses
     const [invalidCompetitors, setInvalidCompetitors] = useState([]);
 
-    const { setModalErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, setLoadingMessage } = useApplicationContext();
     const { season, retrieveSeason } = useSeasonContext();
 
     function resetVariables(){
         setTrack("");
         setTitle("");
         setTimestamp("");
-        setIsSprint("");
+        setIsSprint(false);
         setSelectedCompetitors([]);
         setCompetitorsPositions([]);
         setInvalidCompetitors([]);
     }
 
     async function createRace(){
+        setLoadingMessage("Loading...");
         setInvalidCompetitors([]);
 
         let newRace = {
@@ -49,43 +50,44 @@ export default function RaceCreateContextProvider({children}){
 
         if(raceResponse.error){
             console.log(raceResponse);
-            setModalErrorMessage("There was an error submiting the race");
+            setErrorMessage("There was an error submiting the race");
             return;
         }
 
         if(raceResponse.competitorsNotFound.includes(true)){
-            setModalErrorMessage("Highlighted competitors were not found in the database");
+            setErrorMessage("Highlighted competitors were not found in the database");
             setInvalidCompetitors(raceResponse.competitorsNotFound);
             return;
         }
 
         if(raceResponse.invalidCompetitorsPositionsSpacing.length != 0){
-            setModalErrorMessage("Highlighted competitors have invalid spacing (positions) between them");
+            setErrorMessage("Highlighted competitors have invalid spacing (positions) between them");
             setInvalidCompetitors(raceResponse.invalidCompetitorsPositionsSpacing);
             return;
         }
 
         if(raceResponse.invalidCompetitorsPositions){
-            setModalErrorMessage("Some or all competitor positions could not be created");
+            setErrorMessage("Some or all competitor positions could not be created");
             return;
         }
 
         if(raceResponse.invalidSeason){
-            setModalErrorMessage("There was an error retrieving the season from the database or it doesn't exist");
+            setErrorMessage("There was an error retrieving the season from the database or it doesn't exist");
             return;
         }
 
         if(raceResponse.invalidRaceData){
-            setModalErrorMessage("Some or all of the details of the race are bad (title, track, date, etc)")
+            setErrorMessage("Some or all of the details of the race are bad (title, track, date, etc)")
             return;
         }
 
         if(raceResponse.status === 400){
-            setModalErrorMessage("There was an error submiting the race");
+            setErrorMessage("There was an error submiting the race");
             return;
         }
 
         resetVariables();
+        setLoadingMessage(false);
         setSuccessMessage("Race successfully added");
         closeModals();
         retrieveSeason();
@@ -94,7 +96,7 @@ export default function RaceCreateContextProvider({children}){
 
     return (
         <RaceCreateContext.Provider value = {{  track, title, timestamp, isSprint, setTrack, setTitle, setIsSprint, setTimestamp, setSelectedCompetitors, setCompetitorsPositions, competitorsPositions, selectedCompetitors,
-                                                createRace, invalidCompetitors }}>
+                                                createRace, invalidCompetitors, resetVariables }}>
 
             {children}
         </RaceCreateContext.Provider>

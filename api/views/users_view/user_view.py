@@ -118,7 +118,6 @@ def get_current_user(request):
 
 def get_user_comments(request):
     if request.method != "POST":
-        print("method not post")
         return HttpResponse(status=405)
     
     data = json.loads(request.body)

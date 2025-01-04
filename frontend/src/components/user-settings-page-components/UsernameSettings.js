@@ -7,29 +7,26 @@ import ApplicationContext, { useApplicationContext } from "../ApplicationContext
 import { toggleModal, closeModals, enterKeySubmit } from "../utils";
 
 export default function UsernameSettings(){
-    const [errorOcurred, setErrorOcurred] = useState(false);
+    const {user, contextLoading, setErrorMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages, retrieveUserData} = useApplicationContext();
 
-    const [newUsernameValid, setNewUsernameValid] = useState(null);
-    const [newUsernameUnique, setNewUsernameUnique] = useState(null);
-    const [userCanChangeUsername, setUserCanChangeUsername] = useState(null);
-    const [changeUsernameSuccess, setChangeUsernameSuccess] = useState(null);
-    const [changeUsernameLoading, setChangeUsernameLoading] = useState(false);
+    const [newUsername, setNewUsername] = useState("");
+    const [passwordInput, setPasswordInput] = useState("");
 
-    const {user, contextLoading, modalErrorMessage, setErrorMessage, setModalErrorMessage, setSuccessMessage, resetApplicationMessages, retrieveUserData} = useApplicationContext();
+    function resetVariables(){
+        setNewUsername("");
+        setPasswordInput("");
+    }
 
-    const [currentPasswordCorrect, setCurrentPasswordCorrect] = useState(null);
-    
     async function postNewUsername(){
-        setChangeUsernameLoading(true);
-        
+        setLoadingMessage("Loading...");     
         const newUsername = document.getElementById("username-input").value;
         const currentPassword = document.getElementById("password-username-input").value;
 
         const usernameResponse = await submitChangeUsername(currentPassword, newUsername);
 
         if(usernameResponse.error){
-            setModalErrorMessage("There was an error while submiting the new username");
-            setChangeUsernameLoading(false);
+            setErrorMessage("There was an error while submiting the new username");
+            setLoadingMessage(false);
             return;
         }
 
@@ -38,25 +35,32 @@ export default function UsernameSettings(){
             message += usernameResponse.newUsernameUnique ? "" : "Username is already in use\n";
             message += usernameResponse.userCanChangeUsername ? "" : "You must wait 30 days in between switching usernames\n";
             message += usernameResponse.currentPasswordCorrect ? "" : "Password is incorrect\n";
-            setChangeUsernameLoading(false);
-            setModalErrorMessage(message);
+            setLoadingMessage(false);
+            setErrorMessage(message);
             return;
         }
 
         if(usernameResponse.status === 200){
             setSuccessMessage("The new username has been saved");
-            setChangeUsernameLoading(false);
+            setLoadingMessage(false);
             closeModals();
             retrieveUserData();
             return;
         }
 
-        setModalErrorMessage("There has been an error while submiting the new username");
-        setChangeUsernameLoading(false);
+        setErrorMessage("There has been an error while submiting the new username");
+        setLoadingMessage(false);
+    }
+
+    function handleNewUsernameChange(event){
+        setNewUsername(event.target.value);
+    }
+
+    function handlePasswordInputChange(event){
+        setPasswordInput(event.target.value);
     }
 
     if(contextLoading){return null;}
-
 
     return(
         <div>
@@ -65,7 +69,7 @@ export default function UsernameSettings(){
                     <strong style={{fontSize: "20px"}}>Username</strong>
                     <div>{user.username}</div>
                 </div>
-                <button id="username-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => toggleModal("username-modal", e)}>Change</button>
+                <button id="username-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetVariables();toggleModal("username-modal", e)}}>Change</button>
                 <div className="custom-modal hidden" id="username-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change username</h5>
@@ -74,10 +78,8 @@ export default function UsernameSettings(){
                         </button>
                     </div>
                     <div className="custom-modal-body">
-                        {modalErrorMessage && <div className="alert alert-danger" style={{whiteSpace: "pre-line"}}><small>{modalErrorMessage}</small></div>}
-                        {changeUsernameLoading === true && <div className="alert alert-secondary"><div className="d-flex justify-content-center align-items-center">Loading...</div></div>}
-                        <input type="password" placeholder="Current password" className="form-control" id="password-username-input" onKeyUp={(e) => enterKeySubmit(e, postNewUsername)}/>
-                        <input type="text" placeholder="New username" className="form-control mt-2" id="username-input" onKeyUp={(e) => enterKeySubmit(e, postNewUsername)}/>
+                        <input data-category="input-field" type="password" placeholder="Current password" className="form-control" id="password-username-input" onChange={(e) => {handlePasswordInputChange(e);}} onKeyUp={(e) => enterKeySubmit(e, postNewUsername)}/>
+                        <input data-category="input-field" type="text" placeholder="New username" className="form-control mt-2" id="username-input" onChange={(e) => {handleNewUsernameChange(e)}} onKeyUp={(e) => enterKeySubmit(e, postNewUsername)}/>
                     </div>
                     <div className="custom-modal-footer">
                         <button id="submit-data" className="btn btn-primary mr-auto" onClick={(e) => {e.stopPropagation(); resetApplicationMessages(); postNewUsername();}}>Save changes</button>

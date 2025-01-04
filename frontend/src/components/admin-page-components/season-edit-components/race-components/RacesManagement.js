@@ -9,6 +9,7 @@ import { useApplicationContext } from "../../../ApplicationContext";
 import RaceCreateModal from "./race-create-components/RaceCreateModal";
 import RaceEditContextProvider from "./race-edit-components/RaceEditContext";
 import RaceEditModal from "./race-edit-components/RaceEditModal";
+import RaceCreateContextProvider from "./race-create-components/RaceCreateContext";
 
 export default function RacesManagement(){
     const { season, seasonLoading, retrieveSeason, editSeasonRace, deleteSeasonRace, createSeasonRace, addSeasonRaceResults } = useSeasonContext();
@@ -48,7 +49,10 @@ export default function RacesManagement(){
 
     return (
         <div>
-            <RaceCreateModal/>
+            <RaceCreateContextProvider>
+                <RaceCreateModal/>
+            </RaceCreateContextProvider>
+
             <RaceEditContextProvider raceId={editRaceId}>
                 <RaceEditModal/>
             </RaceEditContextProvider>

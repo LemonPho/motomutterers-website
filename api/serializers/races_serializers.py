@@ -41,9 +41,35 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
         
         serializer = competitors_serializers.CompetitorPositionSimpleSerializer(competitors_positions, many=True)
         return serializer.data
+    
+class UpcomingRaceWriteSerializer(serializers.ModelSerializer):
+    qualifying_positions = competitors_serializers.CompetitorPositionWriteSerializer(many=True)
+    class Meta:
+        model = Race
+        fields = ["id", "title", "track", "timestamp", "is_sprint", "finalized", "qualifying_positions"]
+
+    def validate_track(self, value):
+        value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
+        return value
+    
+    def validate_title(self, value):
+        value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
+        return value
+
+    def create(self, instance, validated_data):
+        qualifying_positions = validated_data.pop("qualifying_positions", False)
+
+        if not qualifying_positions:
+            raise serializers.ValidationError("Qualifying positions must be included in upcoming race")
+        
+        instance.qualifying_positions.add(*qualifying_positions)
+        instance.save()
+
+        return instance
 
 class RaceWriteSerializer(serializers.ModelSerializer):
-    competitors_positions = serializers.SerializerMethodField()
+    competitors_positions = serializers.JSONField()
+
     class Meta:
         model = Race
         fields = ["id", "title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions"]
@@ -55,6 +81,30 @@ class RaceWriteSerializer(serializers.ModelSerializer):
     def validate_title(self, value):
         value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
         return value
+    
+    def validate_competitors_positions(self, competitors_positions):
+        serializer = competitors_serializers.CompetitorPositionWriteSerializer(data=competitors_positions, many=True)
+
+        if not serializer.is_valid():
+            raise serializers.ValidationError(f"Could not create competitors positions: {serializer.errors}")
+        
+        instances = serializer.save()
+        return instances
+    
+    def create(self, validated_data):
+        competitors_positions = validated_data.pop("competitors_positions", False)
+
+        #print(competitors_positions)
+
+        if not competitors_positions:
+            raise serializers.ValidationError("Competitors positions must be included in final race serializer")
+        
+        instance = Race.objects.create(**validated_data)
+        
+        instance.competitors_positions.add(*competitors_positions)
+        instance.save()
+
+        return instance
 
 class RaceParentCommentSerializer(serializers.ModelSerializer):
     user = user_serializers.UserSerializer()

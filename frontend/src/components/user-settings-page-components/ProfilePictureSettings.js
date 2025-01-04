@@ -7,8 +7,6 @@ import { getCurrentUser } from "../fetch-utils/fetchGet";
 import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
 
 export default function ProfilePictureSettings(){
-    const [errorOcurred, setErrorOcurred] = useState(null);
-
     const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [photoPreview, setPhotoPreview] = useState();
     const [changeProfilePictureLoading, setChangeProfilePictureLoading] = useState(null);

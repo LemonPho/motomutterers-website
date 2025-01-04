@@ -6,6 +6,7 @@ import ApplicationContext, { useApplicationContext } from './ApplicationContext'
 import { getAnnouncements } from './fetch-utils/fetchGet';
 import { submitAnnouncement } from './fetch-utils/fetchPost';
 import { closeModals, pagination, toggleModal } from './utils';
+import ProfilePictureLazyLoader from './util-components/ProfilePictureLazyLoader';
 
 export default function Anouncements(){
     const [announcements, setAnnouncements] = useState([]);
@@ -22,6 +23,14 @@ export default function Anouncements(){
     const [pageNumbers, setPageNumbers] = useState([]);
 
     const location = useLocation();
+
+    const [newAnnouncementText, setNewAnnouncementText] = useState("");
+    const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
+
+    function resetNewAnnouncementVariables(){
+        setNewAnnouncementText("");
+        setNewAnnouncementTitle("");
+    }
 
     async function retrieveAnnouncements(){
         const params = new URLSearchParams(location.search);
@@ -59,10 +68,7 @@ export default function Anouncements(){
             return;
         }
 
-        let title = document.getElementById("announcement-title").innerHTML;
-        let text = document.getElementById("break-line-text").innerHTML;
-
-        const announcementResponse = await submitAnnouncement(title, text);
+        const announcementResponse = await submitAnnouncement(newAnnouncementTitle, newAnnouncementText);
 
         if(announcementResponse.error){
             setErrorMessage("There was an error submiting the announcement");
@@ -86,6 +92,14 @@ export default function Anouncements(){
         return;
     }
 
+    function handleAnnouncementTextChange(event){
+        setNewAnnouncementText(event.target.innerHTML);
+    }
+
+    function handleAnnouncementTitleChange(event){
+        setNewAnnouncementTitle(event.target.innerHTML);
+    }
+
     useEffect(() => {
         retrieveAnnouncements();
         setAnnouncementsLoading(false);
@@ -97,30 +111,27 @@ export default function Anouncements(){
         <div className='card element-background-color element-border-color rounded-15'>
             <div className='card-header d-flex align-items-center'>
                 <h5>Announcements</h5>
-                {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={(e) => toggleModal("announcement-create-modal", e, undefined, user.is_admin)}>Create Announcement</button>}
+                {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={(e) => {resetNewAnnouncementVariables();toggleModal("announcement-create-modal", e, undefined, user.is_admin)}}>Create Announcement</button>}
             </div>
             <div className='card-body'>
             {(!announcementsLoading && announcements.length != 0) && announcements.map((announcement) => (
-                <div className="clickable card mx-auto my-3 rounded-15 element-background-color" key={announcement.id}>
-                    <a className='link-no-decorations' href={`/announcements/${announcement.id}`}>
-                        <div className='p-3' id={`announcement-${announcement.id}`}>
-                            <div className='d-flex'>
-                                <small>
-                                    <img className="rounded-circle" style={{width: "2rem", height: "2rem", marginRight: "0.5rem"}} src={`data: image/${announcement.user.profile_picture_format}; base64, ${announcement.user.profile_picture_data}`} alt=''/>
-                                    {announcement.user.username}
-                                </small>
-                                <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
-                            </div>
-                            
-                            <div className='d-flex'>
-                                <h5 className='mt-1'>{announcement.title}</h5>
-                            </div>
-                            
-                            <hr className='mt-2 mb-1'/>
-                            <p>{announcement.text}</p>
-                        </div>
-                    </a>
-                </div>
+                <a className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' href={`/announcements/${announcement.id}`} key={announcement.id}>
+                    
+                    <div className='card-header d-flex align-items-center'>
+                        <ProfilePictureLazyLoader width={"2rem"} height="2rem" format={announcement.user.profile_picture_format} base64={announcement.user.profile_picture_data}/>
+                        <small className='ms-2'>{announcement.user.username}</small>
+                        <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
+                    </div>
+                    
+                    <div className='card-body announcement-card-body'>
+                        <h5>{announcement.title}</h5>
+                        <span>{announcement.text}</span>
+                    </div>
+
+                    <div className='card-footer'>
+                        <small>Comments: {announcement.amount_comments}</small>
+                    </div>                 
+                </a>
             ))}
             </div>
             <div className='card-footer'>
@@ -161,8 +172,8 @@ export default function Anouncements(){
                         {!userLoading && <img className="rounded-circle" style={{width: "3rem", height: "3rem", marginRight: "0.5rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt=''/>}
                         {!userLoading && <strong>{user.username}</strong>}
                     </div>
-                    <div id="announcement-title" className='input-field mt-2' contentEditable={true} data-placeholder="Title..." data-category="input-field"></div>
-                    <div id="break-line-text" className='input-field mt-2' contentEditable={true} data-placeholder="Text..." data-category="input-field"></div>
+                    <div id="announcement-title" className='input-field mt-2' contentEditable={true} data-placeholder="Title..." data-category="input-field" onInput={(e) => {handleAnnouncementTextChange(e)}}></div>
+                    <div id="break-line-text" className='input-field mt-2' contentEditable={true} data-placeholder="Text..." data-category="input-field" onInput={(e) => {handleAnnouncementTitleChange(e)}}></div>
                 </div>
                 <div className="custom-modal-footer">
                     <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postAnnouncement}>Post announcement</button>

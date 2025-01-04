@@ -5,11 +5,12 @@ import { useApplicationContext } from "../../../../ApplicationContext.js";
 import RaceCreateAutomatic from "./RaceCreateAutomatic.js";
 import RaceCreateManual from "./race-create-manual-components/RaceCreateManual.js";
 import { useSeasonContext } from "../../SeasonContext.js";
-import RaceCreateContextProvider from "./race-create-manual-components/RaceCreateContext.js";
+import RaceCreateContextProvider, { useRaceCreateContext } from "./RaceCreateContext.js";
 
 export default function RaceCreateModal(){
     const { season, seasonLoading } = useSeasonContext();
     const { modalErrorMessage, setModalErrorMessage, resetApplicationMessages, loggedIn, user } = useApplicationContext();
+    const { resetVariables } = useRaceCreateContext();
 
     const [ canCreateRace, setCanCreateRace ] = useState(() => {
         if(!seasonLoading){
@@ -41,7 +42,7 @@ export default function RaceCreateModal(){
                                 </div>
                             </div>
                         </div>
-                        <div className="card rounded-15 clickable" onClick={(e) => {resetApplicationMessages();toggleModal("create-race-details-manual-modal", e, loggedIn, user.is_admin)}}>
+                        <div className="card rounded-15 clickable" onClick={(e) => {resetVariables();toggleModal("create-race-details-manual-modal", e, loggedIn, user.is_admin)}}>
                             <div className="card-body">
                                 <div className="d-flex justify-content-center">
                                     <strong>Create race manually</strong>
@@ -54,10 +55,7 @@ export default function RaceCreateModal(){
             </div>
 
             <RaceCreateAutomatic />
-
-            <RaceCreateContextProvider>
-                <RaceCreateManual />
-            </RaceCreateContextProvider>
+            <RaceCreateManual />
             
         </div>
     )

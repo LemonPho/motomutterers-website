@@ -137,7 +137,8 @@ class Race(models.Model):
     timestamp = models.DateField()
     is_sprint = models.BooleanField()
     finalized = models.BooleanField(default=False)
-    competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="race")
+    qualifying_positions = models.ManyToManyField(CompetitorPosition, related_name="qualifying_race")
+    competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
     new_standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True)
 
     class Meta:

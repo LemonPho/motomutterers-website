@@ -134,7 +134,6 @@ class CompetitorPositionWriteSerializer(serializers.ModelSerializer):
         return position
 
     def validate_competitor_points(self, competitor_points):
-        print(competitor_points)
         if isinstance(competitor_points, int):
             try:
                 instance = CompetitorPoints.objects.get(pk=competitor_points)
@@ -176,5 +175,7 @@ class CompetitorPositionWriteSerializer(serializers.ModelSerializer):
 
         competitor_position_instance = CompetitorPosition.objects.create(competitor_points=competitor_points, **validated_data)
         competitor_position_instance.save()
+
+        print(f"Created competitor position instance: {competitor_position_instance.competitor_points.competitor.first} {competitor_position_instance.competitor_points.competitor.last}")
 
         return competitor_position_instance
