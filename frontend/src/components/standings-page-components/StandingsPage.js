@@ -40,7 +40,7 @@ export default function Standings(){
                     <small>‎ (finalized)</small>
                 }
                 <div className="ms-auto btn-group">
-                    <button className="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="false" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
+                    <button className="btn btn-outline-secondary dropdown-toggle rounded-15" data-bs-toggle="dropdown" type="button" aria-expanded="false" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
                         {selectedSeason.year}
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>

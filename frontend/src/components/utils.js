@@ -94,6 +94,8 @@ export function closeModals(clearInputFields){
             if(inputField.tagName === "INPUT"){
                 inputField.value = null;
                 inputField.checked = false;
+            } else if(inputField.nodeName == 'SELECT'){
+                inputField.value = 1;
             } else {
                 inputField.innerHTML = "";
             }
@@ -174,8 +176,4 @@ export function focusDiv(divId){
     if(div){
         div.focus();
     }
-}
-
-export async function getProfilePictures(users){
-    
 }

@@ -7,10 +7,16 @@ import { useSeasonContext } from "../../SeasonContext";
 const RaceCreateContext = createContext();
 
 export default function RaceCreateContextProvider({children}){
+    //manual creation
     const [track, setTrack] = useState("");
     const [title, setTitle] = useState("");
     const [timestamp, setTimestamp] = useState("");
     const [isSprint, setIsSprint] = useState(false);
+
+    //automatic creation
+    const [link, setLink] = useState("");
+    const [raceDate, setRaceDate] = useState("");
+    const [raceType, setRaceType] = useState(1);
 
     const [selectedCompetitors, setSelectedCompetitors] = useState([]);
     const [competitorsPositions, setCompetitorsPositions] = useState([]);
@@ -29,6 +35,9 @@ export default function RaceCreateContextProvider({children}){
         setSelectedCompetitors([]);
         setCompetitorsPositions([]);
         setInvalidCompetitors([]);
+        setLink("");
+        setRaceDate("");
+        setRaceType(1);
     }
 
     async function createRace(){
@@ -95,8 +104,10 @@ export default function RaceCreateContextProvider({children}){
     }
 
     return (
-        <RaceCreateContext.Provider value = {{  track, title, timestamp, isSprint, setTrack, setTitle, setIsSprint, setTimestamp, setSelectedCompetitors, setCompetitorsPositions, competitorsPositions, selectedCompetitors,
-                                                createRace, invalidCompetitors, resetVariables }}>
+        <RaceCreateContext.Provider value = {{  
+            track, title, timestamp, isSprint, setTrack, setTitle, setIsSprint, setTimestamp, setSelectedCompetitors, setCompetitorsPositions, competitorsPositions, selectedCompetitors,
+            link, setLink, raceDate, setRaceDate, raceType, setRaceType,
+            createRace, invalidCompetitors, resetVariables }}>
 
             {children}
         </RaceCreateContext.Provider>

@@ -24,7 +24,7 @@ export default function RaceResultsPage({ seasonYear }){
                 <div className="card-header d-flex align-items-center">
                     <h5>Race results</h5>
                     <div className="dropdown ms-auto">
-                        <button className="btn btn-outline-secondary dropdown-toggle" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
+                        <button className="btn btn-outline-secondary dropdown-toggle rounded-15" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
                             {seasonYear}
                         </button>
                         <ul className="dropdown-menu" id="season-selector-dropdown">
@@ -49,6 +49,7 @@ export default function RaceResultsPage({ seasonYear }){
                     )}
             
                     {(!raceResultsLoading && raceResults != undefined) && (raceResults.map((raceResult) => (
+                    <>
                     <div className="p-2 clickable rounded-15" key={`race-result-${raceResult.id}`}>
                         <a className="link-no-decorations" href={`/raceresults/${raceResult.id}`}>
                             <div>
@@ -65,27 +66,10 @@ export default function RaceResultsPage({ seasonYear }){
                                     </div>
                                 </div>
                             </div>
-                            <div className="card-body">
-                                {raceResult.finalized && (
-                                    <div>
-                                        <div className="row g-0" style={{marginRight: "0px", padding: "0px"}}>
-                                            <strong className="col-2">Pos.</strong>
-                                            <strong className="col-2">#</strong>
-                                            <strong className="col-6">Name</strong>
-                                        </div>
-                                        {raceResult.competitors_positions.map((competitor_position) => (
-                                            <div className="row g-0" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
-                                                {competitor_position.position == 0 && <span className="col-2">-</span>}
-                                                {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>}
-                                                <span className="col-2"><small><strong>#{competitor_position.number}</strong></small></span>           
-                                                <span className="col-6">{competitor_position.first} {competitor_position.last}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
                         </a>
                     </div>
+                    <hr />
+                    </>
                     )))}
                 </div>
             </div>

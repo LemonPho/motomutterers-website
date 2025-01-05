@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_table_race_data, validate_generate_complete_manual_race, validate_race_upcoming_link_data
+from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result
+from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
 from .races_util import add_points_to_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
@@ -121,7 +122,6 @@ def create_complete_race(request):
 
     return JsonResponse(response, status=201)
     
-
 def create_race(request):
     if request.method != "POST":
         return HttpResponse(status=405)
@@ -150,7 +150,7 @@ def create_race(request):
 
     return HttpResponse(status=200)
 
-def create_upcoming_race_link(request):
+def create_race_link(request):
     if request.method != "POST":
         return HttpResponse(status=405)
     
@@ -160,49 +160,34 @@ def create_upcoming_race_link(request):
     response = {
         "invalid_link": False,
         "invalid_season": False,
-        "timeout": False,
-    }
-
-    data = json.loads(request.body)
-    
-    validated_data_response = validate_race_upcoming_link_data(data)
-    response["invalid_link"] = validated_data_response["invalid_link"]
-    response["invalid_season"] = validated_data_response["invalid_season"]
-    season = validated_data_response.pop("season")
-
-def create_race_link(request):
-    if request.method != "POST":
-        return HttpResponse(status=405)
-    
-    if not request.user.is_authenticated or not request.user.is_admin:
-        return HttpResponse(status=403)
-    
-    response = {
-        "invalidLink": False,
-        "invalidSeason": False,
+        "invalid_type": False,
         "timeout": False,
     }
 
     data = json.loads(request.body)
 
     validated_data_response = validate_race_link_data(data)
-    response["invalidLink"] = validated_data_response["invalidLink"]
-    response["invalidSeason"] = validated_data_response["invalidSeason"]
+    response["invalid_link"] = validated_data_response["invalid_link"]
+    response["invalid_season"] = validated_data_response["invalid_season"]
+    response["invalid_type"] = validated_data_response["invalid_type"]
+    data["link"] = validated_data_response["link"]
     season = validated_data_response.pop("season")
-    is_sprint = validated_data_response.pop("is_sprint")
+    race_type = int(data.pop("race_type"))
+    is_sprint = race_type == RACE_TYPE_SPRINT
+    is_final = race_type == RACE_TYPE_FINAL
 
-    if response["invalidLink"] or response["invalidSeason"]:
+    if response["invalid_link"] or response["invalid_season"] or response["invalid_type"]:
         return JsonResponse(response, status=400)
     
-    race_result_data = generate_table_race_data(data, season, is_sprint)
+    race_data = generate_link_race_data(data, season, is_sprint, is_final)
 
-    response["timeout"] = race_result_data["timeout"]
-    response["competitors_not_found"] = race_result_data["competitors_not_found"]
+    response["timeout"] = race_data["timeout"]
+    response["competitors_not_found"] = race_data["competitors_not_found"]
     
     if response["timeout"] or any(response["competitors_not_found"]):
         return JsonResponse(response, status=400)
-
-    serializer = RaceWriteSerializer(data=race_result_data["data"])
+        
+    serializer = RaceWriteSerializer(data=race_data["data"])
 
     if not serializer.is_valid():
         print(serializer.errors)
@@ -222,6 +207,52 @@ def create_race_link(request):
     sort_standings(season)
     
     return JsonResponse(response, status=201)
+
+def retrieve_race_result(request):
+    if request.method != "PUT":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    race_id = data.get("race_id", -1)
+
+    if race_id == -1:
+        return HttpResponse(status=400)
+    
+    try:
+        race = Race.objects.get(pk=race_id)
+    except Race.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    if race.finalized or race.url is None:
+        return HttpResponse(status=400)
+    
+    positions_data = process_retrieve_race_result(race)
+
+    if positions_data["timeout"]:
+        return HttpResponse(status=408)
+    
+    serializer = CompetitorPositionWriteSerializer(data=positions_data["data"]["competitors_positions"], many=True)
+
+    if not serializer.is_valid():
+        return HttpResponse(status=422)
+
+    competitors_positions = serializer.save()
+
+    race.competitors_positions.add(*competitors_positions)
+    race.finalized = True
+    race.save()
+
+    season = race.season.first()
+    add_points = add_points_to_season_competitors(race=race, season=season)
+    season.save()
+
+    update_members_points()
+    sort_standings(season)
+
+    return HttpResponse(status=201)
 
 #this is for when the admin adds a race result manually
 def add_race_results(request):

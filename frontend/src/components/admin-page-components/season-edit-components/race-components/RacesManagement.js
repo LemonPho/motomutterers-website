@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 import { getCompetitor, getRace, getSeasonCompetitors, getSeasonRaces } from "../../../fetch-utils/fetchGet";
-import { submitDeleteRace, submitEditRace, submitRace, submitRaceResults } from "../../../fetch-utils/fetchPost";
+import { retrieveRaceResult, submitDeleteRace, submitEditRace, submitRace, submitRaceResults } from "../../../fetch-utils/fetchPost";
 import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
@@ -13,7 +13,7 @@ import RaceCreateContextProvider from "./race-create-components/RaceCreateContex
 
 export default function RacesManagement(){
     const { season, seasonLoading, retrieveSeason, editSeasonRace, deleteSeasonRace, createSeasonRace, addSeasonRaceResults } = useSeasonContext();
-    const { modalErrorMessage, setModalErrorMessage, resetApplicationMessages, loggedIn, user, successMessage } = useApplicationContext();
+    const { setErrorMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages, loggedIn, user, successMessage } = useApplicationContext();
 
     const [ editRaceId, setEditRaceId ] = useState(null)
     const [ viewRaceTitle, setViewRaceTitle ] = useState(null);
@@ -34,7 +34,7 @@ export default function RacesManagement(){
 
         if(raceResponse.error || raceResponse.status != 200){
             console.log(raceResponse);
-            setModalErrorMessage("There was an error loading the race");
+            setErrorMessage("There was an error loading the race");
             return;
         }
 
@@ -42,6 +42,57 @@ export default function RacesManagement(){
         toggleModal("race-result-modal", e, loggedIn, user.is_admin);
     }
 
+    async function retrieveResults(raceIndex){
+        if(!season.races[raceIndex].has_url){
+            setErrorMessage("The race has no url associated to it");
+            return;
+        }
+
+        setLoadingMessage("Loading...");
+
+        const raceResultResponse = await retrieveRaceResult(season.races[raceIndex].id);
+
+        if(raceResultResponse.error){
+            setErrorMessage("There was an error retrieving the race result");
+            setLoadingMessage(false);
+            return;
+        }
+
+        if(raceResultResponse.status == 400){
+            setErrorMessage("Be sure the race isn't already final");
+            setLoadingMessage(false);
+            return;
+        }
+
+        if(raceResultResponse.status == 404){
+            setErrorMessage("The race was not found");
+            setLoadingMessage(false);
+            return;
+        }
+
+        if(raceResultResponse.status == 408){
+            setErrorMessage("motorsport.com took too long to load");
+            setLoadingMessage(false);
+            return;
+        }
+
+        if(raceResultResponse.status == 422){
+            setErrorMessage("The server could not process the race result");
+            setLoadingMessage(false);
+            return;
+        }
+
+        if(raceResultResponse.status != 201){
+            setErrorMessage("There was an error retrieving the race result");
+            setLoadingMessage(false);
+            return;
+        }
+
+        setSuccessMessage("Results successfully retrieved");
+        setLoadingMessage(false);
+        await retrieveSeason();
+        return;
+    }
 
     if(seasonLoading){
         return(<div className="p-3">Loading...</div>);
@@ -61,8 +112,6 @@ export default function RacesManagement(){
                 <div className="custom-modal-header">
                     {openedRaceResult && <h5>{openedRaceResult.title}</h5>}
                 </div>
-
-                {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 
                 <hr />
 
@@ -102,7 +151,7 @@ export default function RacesManagement(){
             </div>
             <div className="card-body">
             {
-                season.races.map((race) => (
+                season.races.map((race, i) => (
                     <div className="container card rounded-15 clickable my-1" id={`race-${race.id}`} key={`race-${race.id}`} onClick={(e) => openViewResultsModal(e, race.id)}>
                         <div className="d-flex align-items-center">
                             <div className="container" style={{padding: "0px"}}>
@@ -119,7 +168,8 @@ export default function RacesManagement(){
                                 </div>
                                 <ul id={`dropdown-race-${race.id}`} className="dropdown-menu">
                                     <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);toggleModal("race-edit-modal", e, loggedIn, user.is_admin)}}>Edit</button></li>
-                                    {!race.finalized && <li><button id="add-results-race-button" className="dropdown-item" onClick={(e) => {openSelectCompetitorsModal(e)}}>Add Results</button></li>}
+                                    {(!race.finalized && !race.has_url) && <li><button id="add-results-race-button" className="dropdown-item" onClick={(e) => {openSelectCompetitorsModal(e)}}>Add Results</button></li>}
+                                    {(!race.finalized && race.has_url) && <li><button id="retrieve-results-race-button" className="dropdown-item" onClick={(e) => {retrieveResults(i)}}>Retrieve Results</button></li>}
                                     {race.finalized && <li><button id="view-race-results-button" className="dropdown-item" onClick={(e) => openViewResultsModal(e, race.id)}>View Race Results</button></li>}
                                     <li><button className="dropdown-item" onClick={() => deleteSeasonRace(race.id)}>Delete</button></li>
                                 </ul>

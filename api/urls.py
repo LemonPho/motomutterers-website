@@ -78,6 +78,7 @@ urlpatterns = [
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),
+    path('retrieve-race-result/', races_view.retrieve_race_result),
     path('set-current-season/', seasons_view.set_current_season),
     path('set-user-picks/', picks_view.set_user_picks),
     path('finalize-season/', seasons_view.finalize_season),

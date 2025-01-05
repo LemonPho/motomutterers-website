@@ -6,12 +6,12 @@ import { closeDropdowns, closeModals, enterKeySubmit, toggleModal } from "../../
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import CompetitorCreateModal from "./create-competitor-components/CompetitorCreateModal";
-import CompetitorDeleteModal from "./delete-competitor-components/CompetitorDeleteModal";
+import CompetitorDeleteModal from "./CompetitorDeleteModal";
 
 
 export default function CompetitorsManagement(){
     const { season, seasonLoading, createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, retrieveSeason } = useSeasonContext()    
-    const { resetApplicationMessages, modalErrorMessage, setModalErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage } = useApplicationContext();
+    const { resetApplicationMessages, modalErrorMessage, setModalErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, user } = useApplicationContext();
 
     const [tempCompetitor, setTempCompetitor] = useState({});
 
@@ -21,6 +21,8 @@ export default function CompetitorsManagement(){
     const [competitorLast, setCompetitorLast] = useState("");
     const [competitorIndependent, setCompetitorIndependent] = useState(false);
     const [competitorRookie, setCompetitorRookie] = useState(false);
+
+    const [resetDeleteModal, setResetDeleteModal] = useState(false);
 
     function handleCompetitorData(event){
         const id = event.currentTarget.id;
@@ -120,6 +122,12 @@ export default function CompetitorsManagement(){
         }
     }
 
+    function openDeleteModal(event){
+        setResetDeleteModal(true);
+        toggleModal("competitor-delete-modal", event, user.is_logged_in, user.is_admin);
+        setTimeout(() => setResetDeleteModal(false), 0);
+    }
+
 
     if(seasonLoading){
         return(<div className="p-3">Loading...</div>)
@@ -139,7 +147,7 @@ export default function CompetitorsManagement(){
                                 </svg>
                             </button>
                             <button className="btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" className="bi bi-trash" viewBox="0 0 16 16" onClick={(e) => toggleModal("competitor-delete-modal", e)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" className="bi bi-trash" viewBox="0 0 16 16" onClick={(e) => openDeleteModal(e)}>
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
                                 </svg>
@@ -187,7 +195,7 @@ export default function CompetitorsManagement(){
             </div>
 
             <CompetitorCreateModal/>
-            <CompetitorDeleteModal/>
+            <CompetitorDeleteModal reset={resetDeleteModal}/>
 
             <div className="custom-modal hidden" id="competitor-edit-modal" onClick={(e) => {e.stopPropagation();}}>
                 

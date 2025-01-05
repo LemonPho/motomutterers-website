@@ -4,25 +4,32 @@ import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModa
 import { useApplicationContext } from "../../../../ApplicationContext.js";
 import { useSeasonContext } from "../../SeasonContext.js"; 
 import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";
+import { useRaceCreateContext } from "./RaceCreateContext.js";
 
 
 export default function RaceCreateAutomatic(){
     const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
     const { season, retrieveSeason } = useSeasonContext();
-
-    const [raceDate, setRaceDate] = useState();
+    const { link, raceDate, raceType, setLink, setRaceDate, setRaceType } = useRaceCreateContext();
 
     function handleDateChange(event){
         const newDate = event.target.value;
         setRaceDate(newDate);
     }
 
+    function handleRaceTypeChange(event){
+        setRaceType(event.target.value);
+    }
+
+    function handleLinkChange(event){
+        setLink(event.target.innerHTML);
+    }
+
     async function submitLink(){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
 
-        let link = document.getElementById("race-automatic-link").innerHTML;
-        let raceResponse = await submitRaceResultLink(link, raceDate, season.year);
+        let raceResponse = await submitRaceResultLink(link, raceDate, raceType, season.year);
         setLoadingMessage(false);
 
         if(raceResponse.error){
@@ -55,7 +62,12 @@ export default function RaceCreateAutomatic(){
         }
 
         if(raceResponse.invalidSeason){
-            setErrorMessage("Season was not found in the database")
+            setErrorMessage("Season was not found in the database");
+            return;
+        }
+
+        if(raceResponse.invalidType){
+            setErrorMessage("Race type was not valid (Upcoming, Final, Sprint)");
             return;
         }
 
@@ -80,9 +92,14 @@ export default function RaceCreateAutomatic(){
             
             <div className="custom-modal-body">
                 <div className="alert alert-info"><small>Open the race result on motorsport.com and then paste the link into the textbox</small></div>
-                <div className="input-field" id="race-automatic-link" contentEditable={true} role="textbox" data-placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("race-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}></div>
+                <div className="input-field" id="race-automatic-link" contentEditable={true} role="textbox" data-placeholder="Link..." data-category="input-field" onInput={(e) => {handleLinkChange(e)}} onClick={(e) => {focusDiv("race-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}></div>
                 <div className="d-flex justify-content-center align-items-center mt-2">
                     <input id="race-automatic-date" type="date" className="input-field" data-category="input-field" onChange={(e) => handleDateChange(e)} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}/>
+                    <select className="input-field ms-2" data-category="input-field" onChange={(e) => {handleRaceTypeChange(e)}}>
+                        <option value={1}>Upcoming Race</option>
+                        <option value={2}>Finalized Race</option>
+                        <option value={3}>Sprint Race</option>
+                    </select>
                 </div>
                 
             </div>

@@ -4,6 +4,8 @@ from . import competitors_serializers, user_serializers
 
 from ..models import Race, RaceComment
 
+from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
+
 import importlib
 
 class RaceSimpleSerializer(serializers.ModelSerializer):
@@ -14,10 +16,11 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
     finalized = serializers.BooleanField()
     competitors_positions = serializers.SerializerMethodField()
     id = serializers.IntegerField()
+    has_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Race
-        fields = ["title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "id"]
+        fields = ["title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "id", "has_url"]
 
     def get_competitors_positions(self, race):
         if race.finalized:
@@ -42,37 +45,17 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
         serializer = competitors_serializers.CompetitorPositionSimpleSerializer(competitors_positions, many=True)
         return serializer.data
     
-class UpcomingRaceWriteSerializer(serializers.ModelSerializer):
-    qualifying_positions = competitors_serializers.CompetitorPositionWriteSerializer(many=True)
-    class Meta:
-        model = Race
-        fields = ["id", "title", "track", "timestamp", "is_sprint", "finalized", "qualifying_positions"]
-
-    def validate_track(self, value):
-        value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
-        return value
-    
-    def validate_title(self, value):
-        value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
-        return value
-
-    def create(self, instance, validated_data):
-        qualifying_positions = validated_data.pop("qualifying_positions", False)
-
-        if not qualifying_positions:
-            raise serializers.ValidationError("Qualifying positions must be included in upcoming race")
-        
-        instance.qualifying_positions.add(*qualifying_positions)
-        instance.save()
-
-        return instance
+    def get_has_url(self, race):
+        return race.url is not None
 
 class RaceWriteSerializer(serializers.ModelSerializer):
-    competitors_positions = serializers.JSONField()
+    competitors_positions = serializers.JSONField(required=False)
+    qualifying_positions = serializers.JSONField(required=False)
+    url = serializers.URLField(required=False)
 
     class Meta:
         model = Race
-        fields = ["id", "title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions"]
+        fields = ["id", "title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "qualifying_positions", "url"]
     
     def validate_track(self, value):
         value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
@@ -91,17 +74,26 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         instances = serializer.save()
         return instances
     
+    def validate_qualifying_positions(self, qualifying_positions):
+        serializer = competitors_serializers.CompetitorPositionWriteSerializer(data=qualifying_positions, many=True)
+
+        if not serializer.is_valid():
+            raise serializers.ValidationError(f"Could not create qualifying positions: {serializer.errors}")
+        
+        instances = serializer.save()
+
+        return instances
+    
     def create(self, validated_data):
+        qualifying_positions = validated_data.pop("qualifying_positions", False)
         competitors_positions = validated_data.pop("competitors_positions", False)
-
-        #print(competitors_positions)
-
-        if not competitors_positions:
-            raise serializers.ValidationError("Competitors positions must be included in final race serializer")
-        
         instance = Race.objects.create(**validated_data)
-        
-        instance.competitors_positions.add(*competitors_positions)
+
+        if qualifying_positions:
+            instance.qualifying_positions.add(*qualifying_positions)
+        if competitors_positions:
+            instance.competitors_positions.add(*competitors_positions)
+              
         instance.save()
 
         return instance

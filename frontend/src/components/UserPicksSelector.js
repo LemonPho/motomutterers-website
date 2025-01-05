@@ -160,13 +160,13 @@ export default function UserPicksSelector(){
                 {(!loading) && userPicks.map((userPick, i) => (
                     invalidPicks[i] == true ? (
                         <div className="col d-flex justify-content-center" key={`${picksWords[i]}-pick-dropdown-div`}>
-                            <div className="card text-center mb-2">
+                            <div className="card text-center mb-2 rounded-15">
                                 <div className="card-header">
                                     <h5 className="card-title text-muted">{picksWords[i]} Pick</h5>
                                 </div>
                                 <div className="card-body" style={{padding: "8px"}}>
                                     <div className="dropdown p-2">
-                                        <button className="btn btn-outline-danger dropdown-toggle" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
+                                        <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].competitor_points.competitor.first} {userPicks[i].competitor_points.competitor.last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
                                         </button>
@@ -181,14 +181,14 @@ export default function UserPicksSelector(){
                         </div>
                     ) : (
                         <div className="col d-flex justify-content-center" key={`${picksWords[i]}-pick-dropdown-div`}>
-                            <div className="card text-center mb-2">
+                            <div className="card text-center mb-2 rounded-15">
                                 <div className="card-header">
                                     <h5 className="card-title text-muted">{picksWords[i]} Pick</h5>
                                 </div>
 
                                 <div className="card-body" style={{padding: "8px"}}>
                                     <div className="dropdown p-2">
-                                        <button className="btn btn-outline-secondary dropdown-toggle" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
+                                        <button className="btn btn-outline-secondary dropdown-toggle rounded-15" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].competitor_points.competitor.first} {userPicks[i].competitor_points.competitor.last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
                                         </button>
@@ -205,7 +205,7 @@ export default function UserPicksSelector(){
                 ))}
                 {(!loading) && currentSeason.top_independent && 
                 <div className="col d-flex justify-content-center" key={`independent-pick-dropdown-div`}>
-                    <div className="card text-center mb-2">
+                    <div className="card text-center mb-2 rounded-15">
                         <div className="card-header">
                             <h5 className="card-title text-muted">Independent Pick</h5>
                         </div>
@@ -213,13 +213,13 @@ export default function UserPicksSelector(){
                         <div className="card-body" style={{padding: "8px"}}>
                             <div className="dropdown p-2">
                                 {invalidIndependent == true && 
-                                <button className="btn btn-outline-danger dropdown-toggle" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
+                                <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
                                     {userIndependentPick != 0 && <span>{userIndependentPick.competitor_points.competitor.first} {userIndependentPick.competitor_points.competitor.last}</span>}
                                     {userIndependentPick == 0 && <span>Independent Pick</span>}
                                 </button>}
 
                                 {invalidIndependent == false &&
-                                <button className="btn btn-outline-secondary dropdown-toggle" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
+                                <button className="btn btn-outline-secondary dropdown-toggle rounded-15" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
                                     {userIndependentPick != 0 && <span>{userIndependentPick.competitor_points.competitor.first} {userIndependentPick.competitor_points.competitor.last}</span>}
                                     {userIndependentPick == 0 && <span>Independent Pick</span>}
                                 </button>}
@@ -236,7 +236,7 @@ export default function UserPicksSelector(){
 
                 {(!loading) && currentSeason.top_rookie && 
                 <div className="col d-flex justify-content-center" key={`rookie-pick-dropdown-div`}>
-                    <div className="card text-center mb-2">
+                    <div className="card text-center mb-2 rounded-15">
                         <div className="card-header">
                             <h5 className="card-title text-muted">Rookie Pick</h5>
                         </div>
@@ -244,13 +244,13 @@ export default function UserPicksSelector(){
                         <div className="card-body" style={{padding: "8px"}}>
                             <div className="dropdown p-2">
                                 {invalidRookie == true && 
-                                <button className="btn btn-outline-danger dropdown-toggle" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
+                                <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
                                     {userRookiePick != 0 && <span>{userRookiePick.competitor_points.competitor.first} {userRookiePick.competitor_points.competitor.last}</span>}
                                     {userRookiePick == 0 && <span>Rookie Pick</span>}
                                 </button>}
 
                                 {invalidRookie == false &&
-                                <button className="btn btn-outline-secondary dropdown-toggle" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
+                                <button className="btn btn-outline-secondary dropdown-toggle rounded-15" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
                                     {userRookiePick != 0 && <span>{userRookiePick.competitor_points.competitor.first} {userRookiePick.competitor_points.competitor.last}</span>}
                                     {userRookiePick == 0 && <span>Rookie Pick</span>}
                                 </button>}
@@ -267,8 +267,8 @@ export default function UserPicksSelector(){
             </div>
             
            <div className="card-footer d-flex justify-content-center">
-                {newUserPicksLoading && <button className="btn btn-primary" disabled>Loading...</button>}
-                {!newUserPicksLoading && <button className="btn btn-primary" onClick={() => submitPicks()}>Submit</button>}
+                {newUserPicksLoading && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
+                {!newUserPicksLoading && <button className="btn btn-primary rounded-15" onClick={() => submitPicks()}>Submit</button>}
             </div>
         </div>
     );

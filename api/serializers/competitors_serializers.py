@@ -176,6 +176,4 @@ class CompetitorPositionWriteSerializer(serializers.ModelSerializer):
         competitor_position_instance = CompetitorPosition.objects.create(competitor_points=competitor_points, **validated_data)
         competitor_position_instance.save()
 
-        print(f"Created competitor position instance: {competitor_position_instance.competitor_points.competitor.first} {competitor_position_instance.competitor_points.competitor.last}")
-
         return competitor_position_instance

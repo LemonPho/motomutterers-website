@@ -140,6 +140,7 @@ class Race(models.Model):
     qualifying_positions = models.ManyToManyField(CompetitorPosition, related_name="qualifying_race")
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
     new_standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True)
+    url = models.URLField(null=True, blank=True)
 
     class Meta:
         ordering = ["timestamp"]

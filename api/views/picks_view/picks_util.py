@@ -13,6 +13,11 @@ def update_members_points():
         for pick in user_picks.picks.all():
             points += pick.competitor_points.points
 
-        points += user_picks.independent_pick.competitor_points.points
+        if current_season.season.top_independent:   
+            points += user_picks.independent_pick.competitor_points.points
+
+        if current_season.season.top_rookie:
+            points += user_picks.rookie_pick.competitor_points.points
+
         user_picks.points = points
         user_picks.save()

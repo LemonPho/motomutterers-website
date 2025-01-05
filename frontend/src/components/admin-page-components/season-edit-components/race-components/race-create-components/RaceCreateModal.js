@@ -35,7 +35,7 @@ export default function RaceCreateModal(){
                     {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 
                     <div className="custom-modal-body">
-                        <div className="card rounded-15 clickable mb-2" onClick={(e) => {resetApplicationMessages();toggleModal("race-create-automatic-modal", e, loggedIn, user.is_admin)}}>
+                        <div className="card rounded-15 clickable mb-2" onClick={(e) => {resetVariables();toggleModal("race-create-automatic-modal", e, loggedIn, user.is_admin)}}>
                             <div className="card-body">
                                 <div className="d-flex justify-content-center">
                                     <strong>Create race automatically with motorsport link</strong>

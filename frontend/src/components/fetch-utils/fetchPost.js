@@ -932,13 +932,44 @@ export async function submitRace(newRace){
     return response;
 }
 
-export async function submitRaceResultLink(link, raceDate, seasonYear){
+export async function retrieveRaceResult(raceId){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        let csrftoken = getCookie("csrftoken");
+        let apiResponse = await fetch("/api/retrieve-race-result/", {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                race_id: raceId,
+            })
+        });
+
+        response.error = apiResponse.status == 500 ? apiResponse : false;
+        response.status = apiResponse.status;
+
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitRaceResultLink(link, raceDate, raceType, seasonYear){
     let response = {
         error: false,
         competitorNumbersNotFound: [],
         invalidLink: false,
         timeout: false,
         invalidSeason: false,
+        invalidType: false,
         status: null,
     }
 
@@ -954,6 +985,7 @@ export async function submitRaceResultLink(link, raceDate, seasonYear){
             body: JSON.stringify({
                 link: link,
                 timestamp: raceDate,
+                race_type: raceType,
                 season_year: seasonYear,
             }),
         });
@@ -963,6 +995,7 @@ export async function submitRaceResultLink(link, raceDate, seasonYear){
         response.competitorNumbersNotFound = apiResult.competitors_not_found;
         response.invalidLink = apiResult.invalidLink;
         response.invalidSeason = apiResult.invalidSeason;
+        response.invalidType = apiResult.invalidType;
         response.timeout = apiResult.timeout;
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
