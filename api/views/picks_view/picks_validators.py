@@ -58,8 +58,18 @@ def generate_validate_user_picks_data(data, request):
     }
 
     picks_ids = data.get("picks_ids")
-    independent_pick_id = int(data.get("independent_pick_id"))
-    rookie_pick_id = int(data.get("rookie_pick_id"))
+    independent_pick_id = None
+    rookie_pick_id = None
+
+    if current_season.season.top_independent:
+        independent_pick_id = int(data.get("independent_pick_id"))
+    else:
+        del result["new_data"]["independent_pick"]
+
+    if current_season.season.top_rookie:
+        rookie_pick_id = int(data.get("rookie_pick_id"))
+    else:
+        del result["new_data"]["rookie_pick"]
 
     result["invalid_picks"] = check_duplicate_picks(picks_ids)
     result["picks_already_selected"] = check_picks_conflict(picks_ids, independent_pick_id, rookie_pick_id, current_season)
@@ -78,21 +88,27 @@ def generate_validate_user_picks_data(data, request):
     #build data
 
     user_picks_data = build_user_picks(picks_ids)
-    user_independent_pick_data = build_independent_pick(independent_pick_id)
-    user_rookie_pick_data = build_rookie_pick(rookie_pick_id)
+
+    if current_season.season.top_independent:
+        user_independent_pick_data = build_independent_pick(independent_pick_id)
+        result["invalid_independent"] = user_independent_pick_data["invalid_independent"]
+        result["new_data"]["independent_pick"] = user_independent_pick_data["new_data"]["independent_pick"]
+    if current_season.season.top_rookie:
+        user_rookie_pick_data = build_rookie_pick(rookie_pick_id)
+        result["invalid_rookie"] = user_rookie_pick_data["invalid_rookie"]
+        result["new_data"]["rookie_pick"] = user_rookie_pick_data["new_data"]["rookie_pick"]
+
     result["invalid_picks"] = user_picks_data["invalid_picks"]
-    result["invalid_independent"] = user_independent_pick_data["invalid_independent"]
-    result["invalid_rookie"] = user_rookie_pick_data["invalid_rookie"]
 
     if any(result["invalid_picks"]) or result["invalid_independent"]:
         return result
 
     result["new_data"]["picks"] = user_picks_data["new_data"]["picks"]
-    result["new_data"]["independent_pick"] = user_independent_pick_data["new_data"]["independent_pick"]
-    result["new_data"]["rookie_pick"] = user_rookie_pick_data["new_data"]["rookie_pick"]
 
     result["new_data"]["user"] = int(request.user.id)
     result["new_data"]["season"] = current_season.season.id
+
+    print(result)
     
     return result
 

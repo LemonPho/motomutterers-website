@@ -1,5 +1,6 @@
 from django.http import HttpResponse, JsonResponse
-from django.db import transaction
+from django.db.models import Q
+
 
 from ...models import Competitor, Season, CompetitorPosition, SeasonCompetitorPosition, CurrentSeason
 from ...serializers.competitors_serializers import CompetitorWriteSerializer, CompetitorPositionWriteSerializer, CompetitorPointsWriteSerializer, CompetitorPositionSimpleSerializer
@@ -198,8 +199,11 @@ def edit_season_competitor(request):
 
 
 def delete_competitor(request):
-    if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:
+    if request.method != "POST":
         return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
     
     data = json.loads(request.body)
     competitor_id = int(data.get("competitor_id", False))
@@ -210,7 +214,7 @@ def delete_competitor(request):
     
     try:
         season_competitor = SeasonCompetitorPosition.objects.get(pk=competitor_id)
-    except Competitor.DoesNotExist:
+    except SeasonCompetitorPosition.DoesNotExist:
         return HttpResponse(status=404)
     
     try:
@@ -220,12 +224,85 @@ def delete_competitor(request):
     
     try:
         competitor = Competitor.objects.get(pk=season_competitor.competitor_points.competitor.id)
-    except SeasonCompetitorPosition.DoesNotExist:
+    except Competitor.DoesNotExist:
         return HttpResponse(status=404)
     
+    competitors_picks = CompetitorPosition.objects.filter(
+        Q(picks__isnull=False) |
+        Q(independent_pick__isnull=False) |
+        Q(rookie_pick__isnull=False) |
+        Q(final_race__isnull=False) | 
+        Q(qualifying_race__isnull=False)).distinct()
+
+    for competitor_pick in competitors_picks:
+        if competitor == competitor_pick.competitor_points.competitor:
+            return HttpResponse(status=422)
+
     competitor.delete()
 
     return HttpResponse(status=200)
+
+def delete_competitors(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    competitors_ids = data.pop("competitors_ids", False)
+    season_id = data.pop("season_id", False)
+
+    competitors = []
+
+    if not competitors_ids or not season_id:
+        return HttpResponse(status=400)
+    
+    for competitor_id in competitors_ids:
+        try:
+            season_competitor = SeasonCompetitorPosition.objects.get(pk=competitor_id)
+        except Competitor.DoesNotExist:
+            return HttpResponse(status=404)
+        
+        try:
+            competitor = Competitor.objects.get(pk=season_competitor.competitor_points.competitor.id)
+        except Competitor.DoesNotExist:
+            return HttpResponse(status=404)
+        
+        competitors.append(competitor)
+        
+    try:
+        season = Season.objects.get(pk=season_id)
+    except Season.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    competitors_picks = CompetitorPosition.objects.filter(
+        Q(picks__isnull=False) |
+        Q(independent_pick__isnull=False) |
+        Q(rookie_pick__isnull=False) |
+        Q(final_race__isnull=False) | 
+        Q(qualifying_race__isnull=False)).distinct()
+    
+    status = 201
+
+    competitors_to_delete = []
+    competitor_found = False
+    
+    for competitor in competitors:
+        competitor_found = False
+        for competitor_pick in competitors_picks:
+            if competitor == competitor_pick.competitor_points.competitor:
+                status = 422
+                competitor_found = True
+                break
+
+        if not competitor_found:
+            competitors_to_delete.append(competitor)
+    
+    for competitor_to_delete in competitors_to_delete:
+        competitor_to_delete.delete()
+
+    return HttpResponse(status=status)
 
 def delete_all_competitors(request):
     if request.method != "POST" or not request.user.is_authenticated or not request.user.is_admin:

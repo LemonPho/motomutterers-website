@@ -31,7 +31,7 @@ def get_user_picks(request):
         user_picks = UserPicks.objects.filter(season=season).get(user=user)
     except UserPicks.DoesNotExist:
         return HttpResponse(status=404)
-    
+        
     serializer = UserPicksSerializer(user_picks)
 
     context = {
@@ -62,7 +62,7 @@ def get_user_picks_simple(request):
         user_picks = UserPicks.objects.filter(season=season).get(user=user)
     except UserPicks.DoesNotExist:
         return HttpResponse(status=404)
-
+    
     serializer = UserPicksSimpleSerializer(user_picks)
 
     context = {
@@ -73,6 +73,8 @@ def get_user_picks_simple(request):
 
 def set_user_picks(request):
     current_season = CurrentSeason.objects.first()
+
+    print(current_season)
 
     if request.method != "POST" or not request.user.is_authenticated or not current_season.season.selection_open or current_season is None or current_season.season.finalized:
         return HttpResponse(status=400)

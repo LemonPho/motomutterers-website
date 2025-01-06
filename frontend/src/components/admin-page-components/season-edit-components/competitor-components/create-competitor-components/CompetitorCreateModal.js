@@ -9,7 +9,7 @@ import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost.j
 import { useSeasonContext } from "../../SeasonContext.js";
 
 export default function CompetitorCreateModal(){
-    const { modalErrorMessage, setModalErrorMessage, resetApplicationMessages, setLoadingMessage, loadingMessage, setSuccessMessage } = useApplicationContext();
+    const { modalErrorMessage, setErrorMessage, resetApplicationMessages, setLoadingMessage, loadingMessage, setSuccessMessage } = useApplicationContext();
     const { retrieveSeason, season } = useSeasonContext();
 
     async function retrieveCompetitorsRiderList(){
@@ -21,27 +21,27 @@ export default function CompetitorCreateModal(){
         setLoadingMessage(false);
 
         if(competitorResponse.error){
-            setModalErrorMessage("There was an error processing the riders, try again later");
+            setErrorMessage("There was an error processing the riders, try again later");
             return;
         }
 
         if(competitorResponse.invalidLink){
-            setModalErrorMessage("Incorrect link, be sure its coppied correctly");
+            setErrorMessage("Incorrect link, be sure its coppied correctly");
             return;
         }
 
         if(competitorResponse.invalidSeason){
-            setModalErrorMessage("Could not find the season in the database");
+            setErrorMessage("Could not find the season in the database");
             return;
         }
 
         if(competitorResponse.timeout){
-            setModalErrorMessage("MotoGP website didn't load");
+            setErrorMessage("MotoGP website didn't load");
             return;
         }
 
         if(competitorResponse.status == 400){
-            setModalErrorMessage("There was an error adding the riders");
+            setErrorMessage("There was an error adding the riders");
             return;
         }
 
@@ -55,7 +55,6 @@ export default function CompetitorCreateModal(){
             <div className="custom-modal hidden" id="competitor-create-modal" onClick={(e) => {e.stopPropagation()}}>
                 <div className="custom-modal-body">
                     {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                    {loadingMessage && <div className="alert alert-secondary"><small>{loadingMessage}</small></div>}
                     <div className="card rounded-15 clickable mb-2" onClick={(e) => {resetApplicationMessages();toggleModal("competitor-create-standings-modal", e)}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">

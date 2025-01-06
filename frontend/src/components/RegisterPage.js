@@ -96,17 +96,17 @@ export default function RegisterPage() {
 
                 {createUserLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
-                    <button className="btn btn-primary w-100" disabled>Loading...</button>    
+                    <button className="btn btn-primary w-100 rounded-15" disabled>Loading...</button>    
                 </div>}
 
                 {!createUserLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
-                    <button className="btn btn-primary w-100" onClick={registerAccount}>Sign up</button>
+                    <button className="btn btn-primary w-100 rounded-15" onClick={registerAccount}>Sign up</button>
                 </div>}
 
                 <hr />
                 <div className="input-group mb-3 px-3 mx-auto">
-                    <a href="/login" className="btn btn-success w-100">Login to an account</a>
+                    <a href="/login" className="btn btn-success w-100 rounded-15">Login to an account</a>
                 </div>
             </div>
         </div>

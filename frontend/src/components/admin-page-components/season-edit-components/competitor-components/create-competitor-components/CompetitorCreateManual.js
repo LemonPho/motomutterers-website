@@ -98,7 +98,7 @@ export default function CreateCompetitorManual(){
                 </form>
             </div>
             <div className="custom-modal-footer">
-                <button id="competitor-create-button" className="btn btn-primary me-auto rounded-15" onClick={createCompetitor}>Create rider</button>
+                <button id="competitor-create-button" className="btn btn-primary me-auto rounded-15 w-100" onClick={createCompetitor}>Create rider</button>
             </div>
         </div>
     );

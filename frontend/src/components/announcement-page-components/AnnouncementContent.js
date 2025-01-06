@@ -58,40 +58,37 @@ export default function AnnouncementContent(){
         <div>
             { announcementEditLoading && <div className="alert alert-secondary">Loading...</div>}
             <div className="card rounded-15 element-background-color element-border-color" id="announcement-card">
-                <div className="p-3">
-                    <div className="d-flex align-items-center">
-                        <h3 id="announcement-title" className="" contentEditable={false}>{announcement.title}</h3>
-                        <span className="ms-2 me-2">•</span>
-                        <a href={`/users/${announcement.user.username}?page=1`} className="link-no-decorations">
-                            {announcement.user.profile_picture_data ?
-                            (<img className="rounded-circle" style={{width: "2.75rem", height: "2.75rem"}} src={`data: image/${announcement.user.profile_picture_format}; base64, ${announcement.user.profile_picture_data}`} alt="" />)
-                            :
-                            (<div>Error</div>)}
-                            <span className="ms-2"><strong>{announcement.user.username}</strong></span>
-                        </a>
-                        { 
-                        user.is_admin && 
-                            <div className="ms-auto dropdown-div">
-                                <button id="announcement-dropdown-button" className="btn btn-link link-no-decorations ms-auto" onClick={(e) => toggleDropdown("dropdown-announcement", e)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                                    </svg>
-                                </button>
-                                <div id={`dropdown-announcement`} className="dropdown-menu">
-                                    <li><button className="dropdown-item" onClick={toggleEditAnnouncement}>Edit</button></li>
-                                    <li><a className="dropdown-item" onClick={saveDeleteAnnouncement}>Delete</a></li>
-                                </div>
+                <div className="card-header d-flex align-items-center p-3">
+                    <h3 id="announcement-title" className="" contentEditable={false}>{announcement.title}</h3>
+                    <span className="ms-2 me-2">•</span>
+                    <a href={`/users/${announcement.user.username}?page=1`} className="link-no-decorations">
+                        {announcement.user.profile_picture_data ?
+                        (<img className="rounded-circle" style={{width: "2.75rem", height: "2.75rem"}} src={`data: image/${announcement.user.profile_picture_format}; base64, ${announcement.user.profile_picture_data}`} alt="" />)
+                        :
+                        (<div>Error</div>)}
+                        <span className="ms-2"><strong>{announcement.user.username}</strong></span>
+                    </a>
+                    { 
+                    user.is_admin && 
+                        <div className="ms-auto dropdown-div">
+                            <button id="announcement-dropdown-button" className="btn btn-link link-no-decorations ms-auto" onClick={(e) => toggleDropdown("dropdown-announcement", e)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                </svg>
+                            </button>
+                            <div id={`dropdown-announcement`} className="dropdown-menu">
+                                <li><button className="dropdown-item" onClick={toggleEditAnnouncement}>Edit</button></li>
+                                <li><a className="dropdown-item" onClick={saveDeleteAnnouncement}>Delete</a></li>
                             </div>
-                        }
-                    </div>  
-                    <hr />
-                    <div className="break-line-text">
-                        <div id="announcement-text" className="" contentEditable={false}>{announcement.text}</div>
-                    </div>
-                    <div className="d-flex mt-1">
-                        <button id="save-edit-announcement" className="ms-auto btn btn-primary me-1 hidden" onClick={saveEditAnnouncement}>Save</button>
-                        <button id="cancel-edit-announcement" className="btn btn-secondary hidden" onClick={cancelEditAnnouncement}>Cancel</button>
-                    </div>
+                        </div>
+                    }
+                </div>  
+                <div className="break-line-text card-body">
+                    <div id="announcement-text" className="" contentEditable={false}>{announcement.text}</div>
+                </div>
+                <div className="d-flex mt-1">
+                    <button id="save-edit-announcement" className="btn btn-primary hidden m-2 rounded-15" onClick={saveEditAnnouncement}>Save</button>
+                    <button id="cancel-edit-announcement" className="me-auto btn btn-secondary hidden m-2 rounded-15" onClick={cancelEditAnnouncement}>Cancel</button>
                 </div>
             </div>
         </div>

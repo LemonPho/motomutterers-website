@@ -28,7 +28,7 @@ def get_standings(request):
         return JsonResponse({
             "standings": False,
         }, status=200)
-        
+            
     return JsonResponse({
         "standings": serializer.data,
     }, status=200)

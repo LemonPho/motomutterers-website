@@ -631,7 +631,7 @@ export async function getSeasonStandings(year){
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.standings = apiResponse.status === 200 && apiResult.standings.users_picks.length != 0 ? apiResult.standings : null;
+        response.standings = apiResponse.status === 200 ? apiResult.standings : null;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

@@ -105,7 +105,7 @@ export default function RaceCreateAutomatic(){
             </div>
 
             <div className="custom-modal-footer">
-                <button className="btn btn-primary rounded-15" onClick={submitLink}>Submit</button>
+                <button className="btn btn-primary rounded-15 w-100" onClick={submitLink}>Submit</button>
             </div>
             
         </div>

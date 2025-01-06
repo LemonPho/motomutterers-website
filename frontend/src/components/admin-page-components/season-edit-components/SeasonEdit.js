@@ -44,15 +44,15 @@ export default function SeasonEdit(){
             <div>
                 <div className="container" style={{padding: "0px"}}>
                     <div className="row">
-                        <div className="card rounded-15 col-md me-2 element-background-color element-border-color" style={{padding: "0px"}}>
+                        <div className="card rounded-15 col-md me-2 mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
                             <CompetitorsManagement/>
                         </div>
-                        <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "0px"}}>
+                        <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
                             <RacesManagement/>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="card rounded-15 col-md my-2 element-background-color element-border-color" style={{padding: "10px"}}>
+                        <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "10px"}}>
                             <MemberPicks />
                             
                             <hr />

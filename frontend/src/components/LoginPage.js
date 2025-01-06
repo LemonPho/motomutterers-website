@@ -86,11 +86,11 @@ function LoginPage() {
                 
                 {loginLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
-                    <button type="submit" className="btn btn-primary w-100" disabled>Loading...</button>
+                    <button type="submit" className="btn btn-primary w-100 rounded-15" disabled>Loading...</button>
                 </div>}
                 {!loginLoading && 
                 <div className="input-group mt-3 px-3 mx-auto">
-                    <button type="submit" className="btn btn-primary w-100" onClick={login}>Login</button>
+                    <button type="submit" className="btn btn-primary w-100 rounded-15" onClick={login}>Login</button>
                 </div>}
                 
                 <div className="container d-flex justify-content-center">
@@ -98,7 +98,7 @@ function LoginPage() {
                 </div>
                 <hr className="mt-2"/>
                 <div className="input-group mb-3 px-3 mx-auto">
-                    <a href="/register" className="btn btn-success w-100">Create account</a>
+                    <a href="/register" className="btn btn-success w-100 rounded-15">Create account</a>
                 </div>
             </div>
         </div>

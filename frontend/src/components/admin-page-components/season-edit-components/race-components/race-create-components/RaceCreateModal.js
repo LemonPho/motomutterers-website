@@ -12,16 +12,6 @@ export default function RaceCreateModal(){
     const { modalErrorMessage, setModalErrorMessage, resetApplicationMessages, loggedIn, user } = useApplicationContext();
     const { resetVariables } = useRaceCreateContext();
 
-    const [ canCreateRace, setCanCreateRace ] = useState(() => {
-        if(!seasonLoading){
-            if(season.competitors.length != 0){
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }) 
-
     return (
         <div className="ms-auto">
             <div className="custom-modal hidden" id="race-create-modal" onClick={(e) => {e.stopPropagation()}}>
@@ -29,8 +19,8 @@ export default function RaceCreateModal(){
                     <h5>Create Race</h5>
                 </div>
 
-                {!canCreateRace && <div className="alert alert-danger"><small>You need to have competitors added to create a race</small></div>}
-                {canCreateRace && 
+                {season.competitors.length == 0 && <div className="alert alert-danger"><small>You need to have competitors added to create a race</small></div>}
+                {season.competitors.length != 0 && 
                 <div>
                     {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 

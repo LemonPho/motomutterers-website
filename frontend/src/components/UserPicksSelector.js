@@ -45,7 +45,16 @@ export default function UserPicksSelector(){
     async function submitPicks(){
         setNewUserPicksLoading(true);
         let picks = userPicks.map(pick => pick.competitor_points.competitor.id);
-        const picksResponse = await submitUserPicks(picks, userIndependentPick.competitor_points.competitor.id, userRookiePick.competitor_points.competitor.id);
+        let picksResponse;
+        if(season.top_independent && season.top_rookie){
+            picksResponse = await submitUserPicks(picks, userIndependentPick.competitor_points.competitor.id, userRookiePick.competitor_points.competitor.id);
+        } else if(season.top_independent){
+            picksResponse = await submitUserPicks(picks, userIndependentPick.competitor_points.competitor.id);
+        } else if(season.top_rookie){
+            picksResponse = await submitUserPicks(picks, userRookiePick.competitor_points.competitor.id);
+        } else {
+            picksResponse = await submitUserPicks(picks);
+        }
         resetInvalidPicks();
         setNewUserPicksLoading(false);
 
@@ -119,13 +128,15 @@ export default function UserPicksSelector(){
 
         const userPicksResponse = await getUserPicks(currentSeason.id, user.id);
 
+        console.log(userPicksResponse);
+
         if(userPicksResponse.error){
             setErrorMessage("There has been an error loading the selected picks");
             console.log(userPicksResponse.error);
             return;
         }
 
-        if(userPicksResponse.userPicks != null){
+        if(userPicksResponse.userPicks){
             // Sort the userPicks based on the 'position' field
             const sortedUserPicks = userPicksResponse.userPicks.picks.sort((a, b) => a.position - b.position).map(pick => pick);
             setUserPicks(sortedUserPicks);

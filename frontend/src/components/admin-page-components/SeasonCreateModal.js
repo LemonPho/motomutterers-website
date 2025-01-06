@@ -80,7 +80,7 @@ export default function SeasonCreateModal(){
                 
             </div>
             <div className="custom-modal-footer justify-content-center">
-                <button id="submit-data" className="btn btn-primary rounded-15" onClick={postSeason}>Create season</button>
+                <button id="submit-data" className="btn btn-primary rounded-15 w-100" onClick={postSeason}>Create season</button>
             </div>
         </div>
     );

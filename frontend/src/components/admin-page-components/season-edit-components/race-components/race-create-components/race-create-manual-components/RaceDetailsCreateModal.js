@@ -54,7 +54,7 @@ export default function RaceDetailsCreateModal(){
             </div>
 
             <div className="custom-modal-footer">
-                <button className="btn btn-primary rounded-15 ms-auto" onClick={(e) => {next(e)}}>Next</button>
+                <button className="btn btn-primary rounded-15 w-100" onClick={(e) => {next(e)}}>Next</button>
             </div>
         </div>
     )

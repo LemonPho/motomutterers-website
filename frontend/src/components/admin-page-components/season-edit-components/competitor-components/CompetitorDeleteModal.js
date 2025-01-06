@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react"
 import { closeModals, toggleModal } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
+import { submitDeleteCompetitors } from "../../../fetch-utils/fetchPost";
 
 export default function CompetitorDeleteModal({reset}){
-    const { season, seasonLoading } = useSeasonContext();
+    const { season, seasonLoading, retrieveSeason } = useSeasonContext();
     const { user, setLoadingMessage, loadingMessage, setErrorMessage, setSuccessMessage } = useApplicationContext();
 
     const [selectedCompetitors, setSelectedCompetitors] = useState(season.competitors_sorted_number.map((competitor) => ({competitor: competitor, selected: false})));
@@ -33,6 +34,36 @@ export default function CompetitorDeleteModal({reset}){
 
         setLoadingMessage("Loading...");
 
+        console.log(selectedCompetitors);
+
+        const competitorList = selectedCompetitors
+        .filter((selectedCompetitor) => (selectedCompetitor.selected == true))
+        .map((selectedCompetitor) => (selectedCompetitor.competitor.id));
+        const deleteCompetitorsResponse = await submitDeleteCompetitors(competitorList, season.id);
+
+        setLoadingMessage(false);
+
+        if(deleteCompetitorsResponse.error){
+            setErrorMessage("There was an error deleting the competitors");
+            return;
+        }
+
+        if(deleteCompetitorsResponse.status == 422){
+            setErrorMessage("One or more riders are already included in a race or picks, ones that weren't were deleted");
+            closeModals();
+            retrieveSeason();
+            return;
+        }
+
+        if(deleteCompetitorsResponse.status != 201){
+            setErrorMessage("There was an error deleting the riders");
+            return;
+        }
+
+        setSuccessMessage("Riders deleted");
+        closeModals();
+        retrieveSeason();
+        return;
     }
 
     function handleSelectCompetitor(index){

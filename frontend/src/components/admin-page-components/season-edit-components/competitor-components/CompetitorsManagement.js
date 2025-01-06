@@ -222,9 +222,9 @@ export default function CompetitorsManagement(){
                     </form>
                     
                 </div>
-                <div className="custom-modal-footer">
-                    <button id="competitor-edit-button" className="btn btn-primary me-auto rounded-15" onClick={editCompetitor}>Save Changes</button>
-                    <button id="competitor-delete-button" className="btn btn-danger ms-auto rounded-15" onClick={() => deleteCompetitor(tempCompetitor.id)}>Delete Rider</button>
+                <div className="custom-modal-footer d-flex flex-column">
+                    <button id="competitor-edit-button" className="btn btn-primary rounded-15 w-100" onClick={editCompetitor}>Save Changes</button>
+                    <button id="competitor-delete-button" className="btn btn-outline-danger mt-2 rounded-15 w-100" onClick={() => deleteCompetitor(tempCompetitor.id)}>Delete Rider</button>
                 </div>
             </div>
         </div>

@@ -27,6 +27,7 @@ export default function StandingsContextProvider(){
         const usersStandingsResponse = await getSeasonStandings(seasonYear);
 
         if(usersStandingsResponse.error){
+            console.log(usersStandingsResponse.error);
             setErrorMessage("There was an error retrieving the standings");
             return;
         }

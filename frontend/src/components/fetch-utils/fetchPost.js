@@ -624,11 +624,11 @@ export async function sendNewPasswordEmail(accountUsername){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/send-reset-email?username=${accountUsername}`, {
             method: 'POST',
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -656,11 +656,11 @@ export async function submitCompetitor(newCompetitorPosition){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/create-competitor/`, {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -727,11 +727,11 @@ export async function submitEditSeasonCompetitor(newCompetitorPosition){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/edit-season-competitor/`, {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -759,11 +759,11 @@ export async function submitDeleteCompetitor(competitorId, seasonId){
     };
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/delete-competitor/`, {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -776,6 +776,36 @@ export async function submitDeleteCompetitor(competitorId, seasonId){
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
     } catch(error){
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitDeleteCompetitors(competitorsIds, seasonId){
+    let response = {
+        error: false,
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/delete-competitors/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                competitors_ids: competitorsIds,
+                season_id: seasonId,
+            }),
+        });
+
+        response.error = apiResponse.status == 500 ? apiResponse : false;
+        response.status = apiResponse.status;
+    } catch(error) {
         response.error = error;
     }
 
@@ -818,11 +848,11 @@ export async function submitSeason(year, topIndependent, topRookie){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/create-season/`, {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -849,11 +879,11 @@ export async function submitCurrentSeason(year){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/set-current-season/`, {
             method: "PUT",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -878,11 +908,11 @@ export async function submitDeleteSeason(seasonId){
     };
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/delete-season/`, {
             method: 'POST',
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -907,11 +937,11 @@ export async function submitRace(newRace){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch(`/api/create-race/`, {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json"
             },
             mode: "same-origin",
@@ -1093,11 +1123,11 @@ export async function submitEditRace(newRace){
     }
 
     try{
-        let csrfToken = getCookie("csrftoken");
+        let csrftoken = getCookie("csrftoken");
         let apiResponse = await fetch("/api/edit-race/", {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",
@@ -1127,11 +1157,11 @@ export async function submitDeleteRace(raceId, seasonYear){
     }
 
     try{
-        const csrfToken = getCookie("csrftoken");
+        const csrftoken = getCookie("csrftoken");
         const apiResponse = await fetch("/api/delete-race/", {
             method: "POST",
             headers: {
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrftoken,
                 "Content-type": "application/json",
             },
             mode: "same-origin",

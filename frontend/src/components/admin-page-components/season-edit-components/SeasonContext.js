@@ -184,9 +184,19 @@ export default function SeasonContextProvider(){
         resetApplicationMessages();
         const competitorResponse = await submitDeleteCompetitor(competitorId, seasonId);
 
-        if(competitorResponse.error || competitorResponse.status != 200){
+        if(competitorResponse.error){
             setErrorMessage("There was an error deleting the rider");
             console.log(competitorResponse.error);
+            return false;
+        }
+
+        if(competitorResponse.status == 422){
+            setErrorMessage("The competitor is being used in picks or a race, please edit instead of deleting")
+            return false;
+        }
+
+        if(competitorResponse.status != 200){
+            setErrorMessage("There was an error deleting the competitor");
             return false;
         }
 
