@@ -70,25 +70,32 @@ export default function RaceResultPage({ raceId }){
                     </div>
                     </div>
                 <div className="card-body">
-                    {raceResultDetails.finalized && 
-                    <div>
-                        <div className="row g-0" style={{marginRight: "0"}}>
-                            <strong className="col-2">Pos</strong>
-                            <strong className="col-2">#</strong>
-                            <strong className="col-6">Name</strong>
-                            <strong className="col-2">Points</strong>
+                    <div className="row g-0" style={{marginRight: "0"}}>
+                        <strong className="col-2">Pos</strong>
+                        <strong className="col-2">#</strong>
+                        <strong className="col-6">Name</strong>
+                        <strong className="col-2">Points</strong>
+                    </div>
+
+                    {raceResultDetails.finalized && raceResultDetails.competitors_positions.map((competitor_position) => (
+                        <div className="row g-0" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
+                            {competitor_position.position == 0 && <span className="col-2">-</span>}
+                            {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>}                     
+                            <span className="col-2">#{competitor_position.number}</span>
+                            <span className="col-6">{competitor_position.first} {competitor_position.last}</span>
+                            <span className="col-2">{competitor_position.points}</span>
                         </div>
-                    
-                        {raceResultDetails.competitors_positions.map((competitor_position) => (
-                            <div className="row g-0" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
-                                {competitor_position.position == 0 && <span className="col-2">-</span>}
-                                {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>}                     
-                                <span className="col-2">#{competitor_position.number}</span>
-                                <span className="col-6">{competitor_position.first} {competitor_position.last}</span>
-                                <span className="col-2">{competitor_position.points}</span>
-                            </div>
-                        ))}
-                    </div>} 
+                    ))}
+
+                    {!raceResultDetails.finalized && raceResultDetails.qualifying_positions.map((qualifying_position) => (
+                        <div className="row g-0" key={`competitor-${qualifying_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
+                            {qualifying_position.position == 0 && <span className="col-2">-</span>}
+                            {qualifying_position.position != 0 && <span className="col-2">{qualifying_position.position}</span>}                     
+                            <span className="col-2">#{qualifying_position.number}</span>
+                            <span className="col-6">{qualifying_position.first} {qualifying_position.last}</span>
+                            <span className="col-2">-</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

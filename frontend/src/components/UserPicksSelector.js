@@ -214,7 +214,7 @@ export default function UserPicksSelector(){
                         </div>
                     )
                 ))}
-                {(!loading) && currentSeason.top_independent && 
+                {(!loading && currentSeason.top_independent) && 
                 <div className="col d-flex justify-content-center" key={`independent-pick-dropdown-div`}>
                     <div className="card text-center mb-2 rounded-15">
                         <div className="card-header">
@@ -245,7 +245,7 @@ export default function UserPicksSelector(){
                     </div>
                 </div>}
 
-                {(!loading) && currentSeason.top_rookie && 
+                {(!loading && currentSeason.top_rookie) && 
                 <div className="col d-flex justify-content-center" key={`rookie-pick-dropdown-div`}>
                     <div className="card text-center mb-2 rounded-15">
                         <div className="card-header">

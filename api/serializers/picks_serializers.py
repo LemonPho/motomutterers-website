@@ -47,14 +47,14 @@ class UserPicksSerializer(serializers.ModelSerializer):
         if user_picks.independent_pick is None:
             return
 
-        serializer = competitors_serializers.CompetitorPositionSimpleSerializer(user_picks.independent_pick)
+        serializer = competitors_serializers.CompetitorPositionSerializer(user_picks.independent_pick)
         return serializer.data
     
     def get_rookie_pick(self, user_picks):
         if user_picks.rookie_pick is None:
             return
         
-        serializer = competitors_serializers.CompetitorPositionSimpleSerializer(user_picks.rookie_pick)
+        serializer = competitors_serializers.CompetitorPositionSerializer(user_picks.rookie_pick)
         return serializer.data
 
 class UserPicksWriteSerializer(serializers.ModelSerializer):

@@ -15,12 +15,13 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
     is_sprint = serializers.BooleanField()
     finalized = serializers.BooleanField()
     competitors_positions = serializers.SerializerMethodField()
+    qualifying_positions = serializers.SerializerMethodField()
     id = serializers.IntegerField()
     has_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Race
-        fields = ["title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "id", "has_url"]
+        fields = ["title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "qualifying_positions", "id", "has_url"]
 
     def get_competitors_positions(self, race):
         if race.finalized:
@@ -43,6 +44,11 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
 
         
         serializer = competitors_serializers.CompetitorPositionSimpleSerializer(competitors_positions, many=True)
+        return serializer.data
+    
+    def get_qualifying_positions(self, race):
+        qualifying_positions = race.qualifying_positions.order_by("position")
+        serializer = competitors_serializers.CompetitorPositionSimpleSerializer(qualifying_positions, many=True)
         return serializer.data
     
     def get_has_url(self, race):
