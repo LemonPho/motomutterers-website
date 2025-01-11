@@ -96,6 +96,15 @@ class User(AbstractUser):
     def is_staff(self):
         return self.is_admin
     
+class UserPicksRace(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="simple_picks")
+    points = models.PositiveIntegerField()
+    position = models.PositiveIntegerField()
+    position_change = models.IntegerField()
+
+class StandingsRace(models.Model):
+    users_picks = models.ManyToManyField(UserPicksRace)
+    
 class UserPicks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="picks")
     picks = models.ManyToManyField(CompetitorPosition, related_name="picks", blank=True)
@@ -104,7 +113,6 @@ class UserPicks(models.Model):
     points = models.FloatField(default=0)
     season = models.ForeignKey("Season", on_delete=models.CASCADE, related_name="picks", null=True, blank=True)
     position = models.PositiveIntegerField(default=1)
-    position_change = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         ordering = ['-points']
@@ -139,7 +147,7 @@ class Race(models.Model):
     finalized = models.BooleanField(default=False)
     qualifying_positions = models.ManyToManyField(CompetitorPosition, related_name="qualifying_race")
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
-    new_standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True)
+    standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, related_name="race_standings", null=True, blank=True)
     url = models.URLField(null=True, blank=True)
 
     class Meta:

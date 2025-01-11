@@ -27,7 +27,7 @@ export default function RaceResultsPage({ seasonYear }){
                         <button className="btn btn-outline-secondary dropdown-toggle rounded-15" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
                             {seasonYear}
                         </button>
-                        <ul className="dropdown-menu" id="season-selector-dropdown">
+                        <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown">
                             {!seasonListLoading && (seasonList.map((season) => (
                                 <li className="ms-2" key={`${season.year}`}>
                                     <a className="d-flex align-items-center" href={`/raceresults?season=${season.year}`} id={`${season.year}`}>
