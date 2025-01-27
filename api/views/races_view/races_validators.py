@@ -1,5 +1,6 @@
 from ...models import Season, CompetitorPosition, Competitor, SeasonCompetitorPosition
 from ...serializers.serializers_util import sanitize_html
+from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -221,8 +222,8 @@ def generate_link_upcoming_data(data, season):
     table_body = table.find_element(By.TAG_NAME, "tbody")
     table_rows = table_body.find_elements(By.TAG_NAME, "tr")
 
-    for table_row in table_rows:
-        table_row_response = process_qualifying_row(table_row, season, position)
+    for i in range(2, len(table_rows)):
+        table_row_response = process_qualifying_row(table_rows[i], season, position)
         if table_row_response["competitor_not_found"]:
             response["competitors_not_found"].append(table_row_response["competitor_not_found"])
         else:
@@ -412,6 +413,7 @@ def process_retrieve_race_result(race):
         "competitors_not_found": [],
         "data": {
             "competitors_positions": [],
+            "standings": {},
         }
     }
 
@@ -466,8 +468,77 @@ def process_retrieve_race_result(race):
 
 
 #generates standings after race
-def generate_race_standings():
-    pass
+def generate_race_standings(competitors_positions, season):
+    response = {
+        "data":{
+            "users_picks": [],
+        },
+        "competitor_not_found": False,
+    }
+
+    standings = season.standings
+
+    season_competitors = season.competitors.all()
+
+    for standing in list(standings.users_picks.all()):
+        points = 0
+        for pick in list(standing.picks.all()):
+            try:
+                season_competitor = season_competitors.get(competitor_points__competitor=pick.competitor_points.competitor)
+            except SeasonCompetitorPosition.DoesNotExist:
+                print("did not find season competitor")
+                response["competitor_not_found"] = True
+                return response
+            
+            try:
+                competitor_position = competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+            except CompetitorPosition.DoesNotExist:
+                print("did not find competitor position")
+                response["competitor_not_found"] = True
+                return response
+            
+            points += season_competitor.competitor_points.points + competitor_position.competitor_points.points
+
+        if season.top_independent:
+            try:
+                season_competitor = season_competitors.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
+            except SeasonCompetitorPosition.DoesNotExist:
+                response["competitor_not_found"] = True
+                return response
+            
+            try:
+                competitor_position = competitors_positions.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
+            except CompetitorPosition.DoesNotExist:
+                response["competitor_not_found"] = True
+                return response
+            
+            points += season_competitor.competitor_points.points + competitor_position.competitor_points.points
+            
+        if season.top_rookie:
+            try:
+                season_competitor = season_competitors.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
+            except SeasonCompetitorPosition.DoesNotExist:
+                response["competitor_not_found"] = True
+                return response
+            
+            try:
+                competitor_position = competitors_positions.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
+            except CompetitorPosition.DoesNotExist:
+                response["competitor_not_found"] = True
+                return response
+            
+            points += competitor_position.competitor_points.points + season_competitor.competitor_points.points
+
+        #TODO: will need to figure out position change
+        response["data"]["users_picks"].append({
+            "points": points,
+            "user": standing.user,
+            "position_change": 0,
+        })
+
+    return response
+
+        
 
 # ---------------------// FUNCTIONS RELATED TO GENERATING RACE DATA FOR MANUALLY INPUTTED RACES //--------------------- #
 

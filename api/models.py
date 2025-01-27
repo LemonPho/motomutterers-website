@@ -96,12 +96,14 @@ class User(AbstractUser):
     def is_staff(self):
         return self.is_admin
     
+#Managed in the user picks view
 class UserPicksRace(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="simple_picks")
     points = models.PositiveIntegerField()
     position = models.PositiveIntegerField()
     position_change = models.IntegerField()
 
+#managed in the standings view
 class StandingsRace(models.Model):
     users_picks = models.ManyToManyField(UserPicksRace)
     

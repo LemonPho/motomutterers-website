@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from . import competitors_serializers, user_serializers
 
-from ..models import UserPicks, CompetitorPosition, Season, CompetitorPoints
+from ..models import UserPicks, CompetitorPosition, Season, CompetitorPoints, UserPicksRace
 
 import importlib
 
@@ -101,37 +101,20 @@ class UserPicksWriteSerializer(serializers.ModelSerializer):
         return user_picks
 
 
-class UserPicksRaceSimpleSerializer(serializers.ModelSerializer):
-    picks = competitors_serializers.CompetitorPositionSimpleSerializer(many=True, read_only=True)
-    independent_pick = serializers.SerializerMethodField(read_only=True)
-    rookie_pick = serializers.SerializerMethodField(read_only=True)
+class UserPicksRaceSerializer(serializers.ModelSerializer):
     user = user_serializers.UserSimpleSerializer(read_only=True)
     position_change = serializers.IntegerField(read_only=True)
     position = serializers.IntegerField(read_only=True)
+    points = serializers.IntegerField(read_only=True)
     class Meta:
-        model = UserPicks
-        fields = ["picks", "independent_pick", "rookie_pick", "points", "user", "position_change", "position"]
+        model = UserPicksRace
+        fields = ["points", "user", "position_change", "position"]
     
-    def get_independent_pick(self, independent_pick):
-        if independent_pick is None:
-            return
-
-        serializer = competitors_serializers.CompetitorPositionSimpleSerializer(independent_pick)
-        return serializer.data
-    
-    def get_rookie_pick(self, rookie_pick):
-        if rookie_pick is None:
-            return
-        
-        serializer = competitors_serializers.CompetitorPositionSimpleSerializer(rookie_pick)
-        return serializer.data
-
 class UserPicksRaceWriteSerializer(serializers.ModelSerializer):
-    picks = competitors_serializers.CompetitorPositionWriteSerializer(many=True, write_only=True)
-    independent_pick = competitors_serializers.CompetitorPositionWriteSerializer(write_only=True, required=False)
-    rookie_pick = competitors_serializers.CompetitorPositionWriteSerializer(write_only=True, required=False)
-    user = user_serializers.UserSerializer(write_only=True)
+    user = serializers.PrimaryKeyRelatedField(write_only=True, queryset=get_user_model().objects.all())
+    points = serializers.IntegerField(write_only=True)
+    position_change = serializers.IntegerField(write_only=True)
     class Meta:
-        model=UserPicks
-        fields = ["picks", "independent_pick", "rookie_pick", "points", "user"]
+        model=UserPicksRace
+        fields = ["points", "user", "position_change"]
 

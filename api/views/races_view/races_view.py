@@ -1,12 +1,13 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result
+from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_standings
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
 from .races_util import add_points_to_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
 from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer
+from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
 from ..standings_view.standings_util import sort_standings
@@ -229,24 +230,42 @@ def retrieve_race_result(request):
     if race.finalized or race.url is None:
         return HttpResponse(status=400)
     
+    season = race.season.first()
+    
     positions_data = process_retrieve_race_result(race)
-
+    
     if positions_data["timeout"]:
         return HttpResponse(status=408)
     
-    serializer = CompetitorPositionWriteSerializer(data=positions_data["data"]["competitors_positions"], many=True)
+    competitors_serializer = CompetitorPositionWriteSerializer(data=positions_data["data"]["competitors_positions"], many=True)
 
-    if not serializer.is_valid():
+    if not competitors_serializer.is_valid():
         return HttpResponse(status=422)
-
-    competitors_positions = serializer.save()
-
+    
+    competitors_positions = competitors_serializer.save()
     race.competitors_positions.add(*competitors_positions)
+    competitors_positions = CompetitorPosition.objects.filter(final_race=race)
+
+    race_standings_data = generate_race_standings(competitors_positions, season)
+    print(race_standings_data)
+    standings_serializer = StandingsRaceWriteSerializer(data=race_standings_data["data"])
+
+    if not standings_serializer.is_valid() or race_standings_data["competitor_not_found"]:
+        print(standings_serializer.errors)
+        print(standings_serializer.error_messages)
+        for competitor_position in competitors_positions:
+            competitor_position.delete()
+
+        return HttpResponse(status=400)
+
+    race_standings = standings_serializer.save()
+    print(race_standings)
+
+    race.standings = race_standings
     race.finalized = True
     race.save()
 
-    season = race.season.first()
-    add_points = add_points_to_season_competitors(race=race, season=season)
+    add_points_to_season_competitors(race=race, season=season)
     season.save()
 
     update_members_points()
