@@ -38,7 +38,7 @@ def check_duplicate_picks(picks_ids):
 
     return invalid_picks
 
-def generate_validate_user_picks_data(data, request):
+def generate_validate_user_picks_data(data, request, user_has_picks):
     current_season = CurrentSeason.objects.first()
     length_user_picks = 5
 
@@ -48,6 +48,7 @@ def generate_validate_user_picks_data(data, request):
         "invalid_rookie": False,
         "picks_already_selected": False,
         "invalid_season": False,
+        "cant_select_picks": False,
         "new_data": {
             "picks": [],
             "independent_pick": {},
@@ -108,7 +109,8 @@ def generate_validate_user_picks_data(data, request):
     result["new_data"]["user"] = int(request.user.id)
     result["new_data"]["season"] = current_season.season.id
 
-    print(result)
+    if current_season.season.races.count() != 0 and user_has_picks:
+        result["cant_select_picks"] = True
     
     return result
 

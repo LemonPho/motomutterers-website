@@ -70,6 +70,11 @@ export default function UserPicksSelector(){
         }
 
         if(picksResponse.status === 400){
+            if(picksResponse.cantSelectPicks){
+                setErrorMessage("You already have picks that participated in one or more races!");
+                return;
+            }
+
             if(picksResponse.picksAlreadySelected){
                 setErrorMessage("Another user already has the same picks and order.");
                 return;

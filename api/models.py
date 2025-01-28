@@ -103,6 +103,9 @@ class UserPicksRace(models.Model):
     position = models.PositiveIntegerField()
     position_change = models.IntegerField()
 
+    class Meta:
+        ordering = ["position"]
+
 #managed in the standings view
 class StandingsRace(models.Model):
     users_picks = models.ManyToManyField(UserPicksRace)

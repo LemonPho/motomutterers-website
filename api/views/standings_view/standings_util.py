@@ -4,7 +4,36 @@ if its not successful then the picks based tie breaker is run, where basically c
 than the other users pick.
 '''
 
-from ...models import CurrentSeason
+from ...models import CurrentSeason, UserPicks
+
+def sort_race_standings(standings, season):
+    race_standings = list(standings.users_picks.all())
+    season_standings = season.standings.users_picks.all()
+    i=0
+
+    while i < len(race_standings):
+        swapped = False
+        for j in range(len(race_standings) - 1):
+            if race_standings[j].points < race_standings[j + 1].points:
+                # Swap if the current element is less than the next
+                race_standings[j], race_standings[j + 1] = race_standings[j + 1], race_standings[j]
+                swapped = True
+        if not swapped:
+            # If no swaps were made, the list is sorted
+            break
+        i += 1
+
+    for i, race_standing in enumerate(race_standings):
+        try:
+            season_standing = season_standings.get(user=race_standing.user)
+        except UserPicks.DoesNotExist:
+            race_standing.position_change = 0
+
+        print(f"position change for {race_standing.user.username}: {season_standing.position} - {i+1}")
+
+        race_standing.position_change = season_standing.position - (i+1)
+        race_standing.position = i+1
+        race_standing.save()
 
 def sort_standings(season):
 

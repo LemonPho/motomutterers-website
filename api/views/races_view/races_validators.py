@@ -539,8 +539,6 @@ def generate_race_standings(competitors_positions, season):
             "position": position,
         })
 
-        position += 1
-
     return response
 
         

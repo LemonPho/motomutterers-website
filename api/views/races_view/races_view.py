@@ -10,7 +10,7 @@ from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSeri
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
-from ..standings_view.standings_util import sort_standings
+from ..standings_view.standings_util import sort_standings, sort_race_standings
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -278,7 +278,6 @@ def retrieve_race_result(request):
     competitors_positions = CompetitorPosition.objects.filter(final_race=race)
 
     race_standings_data = generate_race_standings(competitors_positions, season)
-    print(race_standings_data)
     standings_serializer = StandingsRaceWriteSerializer(data=race_standings_data["data"])
 
     if not standings_serializer.is_valid() or race_standings_data["competitor_not_found"]:
@@ -299,6 +298,7 @@ def retrieve_race_result(request):
     season.save()
 
     update_members_points()
+    sort_race_standings(race.standings, season)
     sort_standings(season)
 
     return HttpResponse(status=201)

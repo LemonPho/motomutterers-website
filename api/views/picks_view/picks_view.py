@@ -87,10 +87,10 @@ def set_user_picks(request):
     data = json.loads(request.body)
 
     #generate and validate the user picks data dictionary
-    response = generate_validate_user_picks_data(data, request)
+    response = generate_validate_user_picks_data(data, request, user_has_picks)
 
     #check for problems in picks
-    if any(response["invalid_picks"]) or response["invalid_independent"] or response["picks_already_selected"] or response["invalid_season"]:
+    if any(response["invalid_picks"]) or response["invalid_independent"] or response["picks_already_selected"] or response["invalid_season"] or response["cant_have_picks"]:
         response.pop("new_data")
         return JsonResponse(response, status=400)
         

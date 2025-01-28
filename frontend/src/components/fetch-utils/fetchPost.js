@@ -1243,6 +1243,7 @@ export async function submitUserPicks(picks, independentPick, rookiePick){
         invalidPicks: false,
         invalidIndependent: false,
         invalidRookie: false,
+        cantSelectPicks: false,
     }
 
     try{
@@ -1268,6 +1269,7 @@ export async function submitUserPicks(picks, independentPick, rookiePick){
         response.invalidPicks = apiResponse.status === 400 ? apiResult.invalid_picks : false;
         response.invalidIndependent = apiResponse.status === 400 ? apiResult.invalid_independent : false;
         response.invalidRookie = apiResponse.status === 400 ? apiResult.invalid_rookie : false;
+        response.cantSelectPicks = apiResponse.status === 400 ? apiResult.cant_select_picks : false;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

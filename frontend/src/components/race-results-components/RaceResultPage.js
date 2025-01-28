@@ -21,13 +21,13 @@ export default function RaceResultPage({ raceId }){
     if(raceResultDetailsLoading || !raceResultDetails){
         return(
             <div>
-                <div className="card element-background-color element-border-color mb-2" id="race-result-card">
+                <div className="card element-background-color element-border-color mb-2 rounded-15" id="race-result-card">
                     <div className="card-header loading-placeholder">
                         <h5 className="fade-in-out"></h5>
                     </div>
                 </div>
 
-                <div className="card element-background-color element-border-color mb-2" id="standings-card">
+                <div className="card element-background-color element-border-color mb-2 rounded-15" id="standings-card">
                     <div className="card-header loading-placeholder">
                         <h5 className="fade-in-out"></h5>
                     </div>
