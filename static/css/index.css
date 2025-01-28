@@ -9,6 +9,28 @@ body {
     background-attachment: fixed;
 }
 
+textarea {
+    height: auto;
+}
+
+.textarea-expand {
+    line-height: 1.5;
+    resize: none;
+    overflow: hidden;
+}
+
+.card-body.custom-card-body{
+    max-height: 0px;
+    transition: padding 0.15s ease, max-height 0.15s ease;
+    padding: 0;
+    overflow: hidden;
+}
+
+.card-body.custom-card-body.expanded{
+    max-height: 2000px;
+    padding: 8px;
+}
+
 .main{
     display: flex;
     flex-direction: column;
@@ -62,6 +84,11 @@ body {
     min-height: 100%;
 }
 
+.loading-placeholder {
+    height: 50px;
+    width: 200px;
+}
+
 .fading-circle {
     background-color: #0000007f; 
     border-radius: 50%;        
@@ -71,6 +98,9 @@ body {
 }
 
 .fade-in-out{
+    border-radius: 15px;
+    height: 100%;
+    width: 100%;
     opacity: 0.8;
     background-color: #0000007f;
     animation: fadeInOut 2s infinite ease-in-out;
@@ -405,4 +435,33 @@ input[type="file"]{
 .menu-bar-title{
     font-size: larger;
     font-weight: bold;
+}
+
+.race-standings-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.race-standings-position-change{
+    width: 10px;
+    text-align: center;
+}
+
+.race-standings-position{
+    width: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.race-standings-username{
+    flex: 1;
+    text-align: left;
+}
+
+.race-standings-points{
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+    color: #555;
 }
