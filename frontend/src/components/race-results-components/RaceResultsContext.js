@@ -1,7 +1,7 @@
 import React, { useContext, createContext, useState } from "react";
 import { Outlet, useSearchParams } from "react-router-dom";
 
-import { getRace, getRaceResults, getSeasonsSimple } from "../fetch-utils/fetchGet";
+import { getRace, getRaceComments, getRaceResults, getSeasonsSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 
 const RaceResultsContext = createContext();
@@ -13,6 +13,8 @@ export default function RaceResultsContextProvider(){
     const [raceResultsLoading, setRaceResultsLoading] = useState();
     const [raceResultDetails, setRaceResultDetails] = useState(false);
     const [raceResultDetailsLoading, setRaceResultDetailsLoading] = useState();
+    const [raceResultComments, setRaceResultComments] = useState();
+    const [raceResultCommentsLoading, setRaceResultCommentsLoading] = useState();
     const [seasonList, setSeasonList] = useState();
     const [seasonListLoading, setSeasonListLoading] = useState();
     const [selectedSeason, setSelectedSeason] = useState(false);
@@ -71,6 +73,29 @@ export default function RaceResultsContextProvider(){
         setRaceResultDetailsLoading(false);
     }
 
+    async function retrieveRaceResultComments(id){
+        setRaceResultCommentsLoading(true);
+        const raceResultCommentsResponse = await getRaceComments(id);
+
+        if(raceResultCommentsResponse.error){
+            setErrorMessage("There was an error loading the race result");
+            return;
+        }
+
+        if(raceResultCommentsResponse.status === 404){
+            setErrorMessage("Race result was not found");
+            return;
+        }
+
+        if(raceResultCommentsResponse.status != 200){
+            setErrorMessage("There was an error loading the race comments");
+            return;
+        }
+
+        setRaceResultComments(raceResultCommentsResponse.comments);
+        setRaceResultCommentsLoading(false);
+    }
+
     async function retrieveSeasonList(){
         setSeasonListLoading(true);
         const seasonListResponse = await getSeasonsSimple();
@@ -87,7 +112,8 @@ export default function RaceResultsContextProvider(){
     return(
         <RaceResultsContext.Provider value={{
             raceResults, raceResultsLoading, raceResultDetails, raceResultDetailsLoading, seasonList, seasonListLoading, selectedSeason, setSelectedSeason,
-            retrieveRaceResults, retrieveRaceResultDetails, retrieveSeasonList,
+            raceResultComments, raceResultCommentsLoading,
+            retrieveRaceResults, retrieveRaceResultDetails, retrieveSeasonList, retrieveRaceResultComments,
         }}>
             <Outlet/>
 

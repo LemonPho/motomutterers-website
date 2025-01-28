@@ -114,7 +114,8 @@ class UserPicksRaceWriteSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(write_only=True, queryset=get_user_model().objects.all())
     points = serializers.IntegerField(write_only=True)
     position_change = serializers.IntegerField(write_only=True)
+    position = serializers.IntegerField(write_only=True)
     class Meta:
         model=UserPicksRace
-        fields = ["points", "user", "position_change"]
+        fields = ["points", "user", "position_change", "position"]
 

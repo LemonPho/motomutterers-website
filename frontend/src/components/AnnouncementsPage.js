@@ -5,7 +5,7 @@ import ApplicationContext, { useApplicationContext } from './ApplicationContext'
 
 import { getAnnouncements } from './fetch-utils/fetchGet';
 import { submitAnnouncement } from './fetch-utils/fetchPost';
-import { closeModals, pagination, toggleModal } from './utils';
+import { autoResizeTextarea, closeModals, pagination, toggleModal } from './utils';
 import ProfilePictureLazyLoader from './util-components/ProfilePictureLazyLoader';
 
 export default function Anouncements(){
@@ -93,11 +93,11 @@ export default function Anouncements(){
     }
 
     function handleAnnouncementTextChange(event){
-        setNewAnnouncementText(event.target.innerHTML);
+        setNewAnnouncementText(event.target.value);
     }
 
     function handleAnnouncementTitleChange(event){
-        setNewAnnouncementTitle(event.target.innerHTML);
+        setNewAnnouncementTitle(event.target.value);
     }
 
     useEffect(() => {
@@ -172,8 +172,8 @@ export default function Anouncements(){
                         {!userLoading && <img className="rounded-circle" style={{width: "3rem", height: "3rem", marginRight: "0.5rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt=''/>}
                         {!userLoading && <strong>{user.username}</strong>}
                     </div>
-                    <div id="announcement-title" className='input-field mt-2' contentEditable={true} data-placeholder="Title..." data-category="input-field" onInput={(e) => {handleAnnouncementTextChange(e)}}></div>
-                    <div id="break-line-text" className='input-field mt-2' contentEditable={true} data-placeholder="Text..." data-category="input-field" onInput={(e) => {handleAnnouncementTitleChange(e)}}></div>
+                    <textarea id="announcement-title" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Title..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTextChange(e)}}></textarea>
+                    <textarea id="break-line-text" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Text..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTitleChange(e)}}></textarea>
                 </div>
                 <div className="custom-modal-footer">
                     <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postAnnouncement}>Post announcement</button>

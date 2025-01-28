@@ -59,7 +59,7 @@ export default function RacesManagement(){
         }
 
         if(raceResultResponse.status == 400){
-            setErrorMessage("Be sure the race isn't already final");
+            setErrorMessage("There was an error retrieving the race results");
             setLoadingMessage(false);
             return;
         }
@@ -87,6 +87,8 @@ export default function RacesManagement(){
             setLoadingMessage(false);
             return;
         }
+
+        console.log(raceResultResponse);
 
         setSuccessMessage("Results successfully retrieved");
         setLoadingMessage(false);

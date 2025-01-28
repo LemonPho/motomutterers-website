@@ -16,12 +16,13 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
     finalized = serializers.BooleanField()
     competitors_positions = serializers.SerializerMethodField()
     qualifying_positions = serializers.SerializerMethodField()
+    standings = serializers.SerializerMethodField()
     id = serializers.IntegerField()
     has_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Race
-        fields = ["title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "qualifying_positions", "id", "has_url"]
+        fields = ["title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "qualifying_positions", "id", "has_url", "standings"]
 
     def get_competitors_positions(self, race):
         if race.finalized:
@@ -53,6 +54,11 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
     
     def get_has_url(self, race):
         return race.url is not None
+    
+    def get_standings(self, race):
+        standings = race.standings
+        serializer = importlib.import_module("api.serializers.standings_serializers").StandingsRaceSerializer(standings)
+        return serializer.data
 
 class RaceWriteSerializer(serializers.ModelSerializer):
     competitors_positions = serializers.JSONField(required=False)
@@ -107,25 +113,34 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         return instance
 
 class RaceParentCommentSerializer(serializers.ModelSerializer):
-    user = user_serializers.UserSerializer()
-    race = RaceWriteSerializer()
+    user = user_serializers.UserSimpleSerializer()
 
     class Meta:
         model = RaceComment
-        fields = ["id", "text", "user", "race", "date_created"]
+        fields = ["id", "text", "user", "date_created"]
 
 class RaceCommentSerializer(serializers.ModelSerializer):
-    user = user_serializers.UserSerializer()
-    race = RaceWriteSerializer()
+    user = user_serializers.UserSimpleSerializer()
     parent_comment = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField()
+    amount_replies = serializers.SerializerMethodField()
 
     class Meta:
         model = RaceComment
-        fields = ["id", "text", "user", "race", "parent_comment", "date_created"]
+        fields = ["id", "text", "user", "parent_comment", "replies", "amount_replies", "date_created"]
 
-    def get_parent_comment(self, parent_comment):
-        if parent_comment == None:
+    def get_parent_comment(self, comment):
+        if comment.parent_comment == None:
             return None
         
-        serializer = RaceParentCommentSerializer(parent_comment)
+        serializer = RaceParentCommentSerializer(comment.parent_comment)
         return serializer.data
+    
+    def get_replies(self, comment):
+        replies = comment.replies.all()
+        serializer = RaceCommentSerializer(replies, many=True)
+        return serializer.data
+    
+    def get_amount_replies(self, comment):
+        amount_replies = comment.replies.count()
+        return str(amount_replies)

@@ -18,19 +18,35 @@ export default function StandingDetailed(){
             {userPicksDetailedLoading && 
             <div className="p-2 custom-modal-header d-flex align-items-center">
                 <ProfilePictureLazyLoader width="5rem" height="5rem" format={false} base64={false}/>
-                <h3 className="w-100 ms-4 fade-in-out">                                </h3>
+                <div className="loading-placeholder">
+                    <h3 className="w-100 ms-4 fade-in-out"></h3>
+                </div>
             </div>}
 
             <hr />
             {userPicksDetailedLoading && 
                 <ul className="list-group">
-                    <li className="list-group-item fade-in-out"></li>
-                    <li className="list-group-item fade-in-out"></li>
-                    <li className="list-group-item fade-in-out"></li>
-                    <li className="list-group-item fade-in-out"></li>
-                    <li className="list-group-item fade-in-out"></li>
-                    <li className="list-group-item fade-in-out"></li>
-                    <li className="list-group-item fade-in-out"></li>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
+                    <div style={{height: "40px"}}>
+                        <li className="list-group-item fade-in-out"></li>
+                    </div>
                 </ul>
             }
 

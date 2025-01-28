@@ -4,9 +4,9 @@ from .races_validators import validate_race_link_data, generate_link_race_data, 
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
 from .races_util import add_points_to_season_competitors
 
-from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
+from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, RaceComment
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
-from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceCommentSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
@@ -42,6 +42,28 @@ def get_race(request):
         "race": serializer.data,
     }, status=200)
 
+def get_race_comments(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    race_id = request.GET.get("race", -1)
+
+    if race_id == -1:
+        return HttpResponse(status=400)
+    
+    try:
+        race = Race.objects.get(pk=race_id)
+    except Race.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    comments = race.comments.order_by("-date_created")
+
+    serializer = RaceCommentSerializer(comments, many=True)
+
+    return JsonResponse({
+        "comments": serializer.data,
+    }, status=200)
+
 def get_season_races(request):
     if request.method != "GET":
         return HttpResponse(status=405)
@@ -63,6 +85,15 @@ def get_season_races(request):
     return JsonResponse({
         "races": serializer.data,
     }, status=200)
+
+def post_comment(request):
+    pass
+
+def post_comment_response(request):
+    pass
+
+def edit_comment(request):
+    pass
 
 def create_complete_race(request):
     if request.method != 'POST':
@@ -259,7 +290,6 @@ def retrieve_race_result(request):
         return HttpResponse(status=400)
 
     race_standings = standings_serializer.save()
-    print(race_standings)
 
     race.standings = race_standings
     race.finalized = True

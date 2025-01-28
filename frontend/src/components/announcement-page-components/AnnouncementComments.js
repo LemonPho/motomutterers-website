@@ -6,7 +6,7 @@ import { submitAnnouncementComment, submitAnnouncementCommentReply } from "../fe
 
 import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
 import { useAnnouncementContext } from "./AnnouncementContext";
-import { toggleDropdown, focusDiv } from "../utils";
+import { toggleDropdown, focusDiv, autoResizeTextarea } from "../utils";
 
 export default function AnnouncementComments(){
     const { user, contextLoading } = useApplicationContext();
@@ -211,10 +211,12 @@ export default function AnnouncementComments(){
         return null;
     } else {
         return(
-            <div className="card rounded-15 mt-2 p-3 element-background-color element-border-color" id="comments-card">
-                <h5>Comments</h5>
-                <hr />
-                <div id="comments-view">
+            <div className="card rounded-15 mt-2 element-background-color element-border-color" id="comments-card">
+                <div className="card-header">
+                    <h5>Comments</h5>
+                </div>
+                
+                <div className="card-body" id="comments-view">
                     {user.is_logged_in === true ? 
                     (
                         <div className="flex-box align-items-center">
@@ -222,7 +224,7 @@ export default function AnnouncementComments(){
                             (<img className="rounded-circle" style={{width: "3rem", height: "3rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt="" />)
                             :
                             (<div>Error</div>)}
-                            <div contentEditable={true} id="comment-text" className="input-field ms-2 w-100" role="textbox" data-placeholder="Write a comment..." onClick={() => focusDiv("comment-text")}></div>
+                            <textarea id="comment-text" className="input-field textarea-expand ms-2 w-100" rows={1} placeholder="Write a comment..." onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
                             <button className="btn btn-outline-secondary ms-2" onClick={postComment}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">
                                     <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>

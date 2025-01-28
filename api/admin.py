@@ -26,7 +26,7 @@ class CompetitorPositionAdmin(admin.ModelAdmin):
     list_display = ["id", "competitor_points", "position"]
 
 class SeasonCompetitorPositionAdmin(admin.ModelAdmin):
-    list_display = ["id", "competitor_points", "independent"]
+    list_display = ["id", "competitor_points", "competitor_points__competitor", "independent"]
 
 class SeasonAdmin(admin.ModelAdmin):
     list_display = ["id", "year"]

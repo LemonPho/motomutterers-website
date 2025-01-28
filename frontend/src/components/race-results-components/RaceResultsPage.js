@@ -49,27 +49,27 @@ export default function RaceResultsPage({ seasonYear }){
                     )}
             
                     {(!raceResultsLoading && raceResults != undefined) && (raceResults.map((raceResult) => (
-                    <>
-                    <div className="p-2 clickable rounded-15" key={`race-result-${raceResult.id}`}>
-                        <a className="link-no-decorations" href={`/raceresults/${raceResult.id}`}>
-                            <div>
-                                <div className="d-flex align-items-center">
-                                    <h3 className="p-2">
-                                        {raceResult.title}
-                                        {raceResult.is_sprint && " (Sprint)"}
-                                    </h3>
-                                    <div className="ms-auto">
-                                        <div className="container">
-                                            {raceResult.finalized && <span className="badge rounded-pill text-bg-success">Final</span>}
-                                            {!raceResult.finalized && <span className="badge rounded-pill text-bg-secondary">Upcoming</span>}
+                    <div key={`race-result-${raceResult.id}`}>
+                        <div className="p-2 clickable rounded-15">
+                            <a className="link-no-decorations" href={`/raceresults/${raceResult.id}`}>
+                                <div>
+                                    <div className="d-flex align-items-center">
+                                        <h3 className="p-2">
+                                            {raceResult.title}
+                                            {raceResult.is_sprint && " (Sprint)"}
+                                        </h3>
+                                        <div className="ms-auto">
+                                            <div className="container">
+                                                {raceResult.finalized && <span className="badge rounded-pill text-bg-success">Final</span>}
+                                                {!raceResult.finalized && <span className="badge rounded-pill text-bg-secondary">Upcoming</span>}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
+                        <hr />
                     </div>
-                    <hr />
-                    </>
                     )))}
                 </div>
             </div>

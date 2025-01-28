@@ -479,6 +479,7 @@ def generate_race_standings(competitors_positions, season):
     standings = season.standings
 
     season_competitors = season.competitors.all()
+    position = 1
 
     for standing in list(standings.users_picks.all()):
         points = 0
@@ -486,18 +487,19 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
-                print("did not find season competitor")
+                print(f"did not find season competitor: {pick.competitor_points.competitor}")
                 response["competitor_not_found"] = True
                 return response
             
             try:
                 competitor_position = competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                print("did not find competitor position")
-                response["competitor_not_found"] = True
-                return response
+                print(f"Competitor: {pick.competitor_points.competitor.first} {pick.competitor_points.competitor.last} didn't compete in this race")
+                competitor_position = None
             
-            points += season_competitor.competitor_points.points + competitor_position.competitor_points.points
+            points += season_competitor.competitor_points.points
+            if competitor_position is not None:
+                points += competitor_position.competitor_points.points
 
         if season.top_independent:
             try:
@@ -532,9 +534,12 @@ def generate_race_standings(competitors_positions, season):
         #TODO: will need to figure out position change
         response["data"]["users_picks"].append({
             "points": points,
-            "user": standing.user,
+            "user": standing.user.id,
             "position_change": 0,
+            "position": position,
         })
+
+        position += 1
 
     return response
 

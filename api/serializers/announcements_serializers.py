@@ -118,7 +118,7 @@ class AnnouncementCommentSerializer(serializers.ModelSerializer):
         #check if comment is a reply or normal comment
         if validated_data.get("commentId"):
             try:
-                parent_comment = AnnouncementComment.objects.get(pk=validated_data.get("commentId"))
+                parent_comment = AnnouncementComment.objects.filter(announcement=announcement).get(pk=validated_data.get("commentId"))
             except AnnouncementComment.DoesNotExist:
                 raise serializers.ValidationError("Parent comment not found")
             

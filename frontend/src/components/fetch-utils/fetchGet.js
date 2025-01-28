@@ -535,6 +535,27 @@ export async function getRace(raceId){
     return response;
 }
 
+export async function getRaceComments(raceId){
+    let response = {
+        error: false,
+        comments: [],
+        status: null,
+    }
+
+    try{
+        let apiResponse = await fetch(`/api/get-race-comments?race=${raceId}`);
+        let apiResult = await apiResponse.json();
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.comments = apiResponse.status === 200 ? apiResult.comments : false;
+        response.status = apiResponse.status;
+    } catch(error){
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getSeasonRaces(year){
     let response = {
         error: false,

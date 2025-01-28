@@ -177,3 +177,21 @@ export function focusDiv(divId){
         div.focus();
     }
 }
+
+export function autoResizeTextarea(textarea){
+    if(!textarea.classList.contains("textarea-expand")){
+        return;
+    }
+
+    textarea.style.height = "0px";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
+
+export function toggleCardBody(divId){
+    const div = document.getElementById(divId);
+    if(!div || !div.classList.contains("card-body")){
+        return;
+    }
+
+    div.classList.toggle("expanded");
+}
