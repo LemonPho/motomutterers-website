@@ -21,7 +21,7 @@ from ...utils import is_username_valid, is_email_valid
 from ...forms import ProfilePictureForm
 from ...serializers.user_serializers import UserSerializer
 from ...serializers.announcements_serializers import AnnouncementCommentSerializer
-from ...serializers.user_serializers import ProfilePictureSerializer, UserSimpleProfilePictureSerializer
+from ...serializers.user_serializers import ProfilePictureSerializer, UserSimpleSerializer
 
 def get_user(request):
     if request.method != "POST":
@@ -43,7 +43,7 @@ def get_user(request):
     if user == None:
         return HttpResponse(status=404)
     
-    serializer = UserSerializer(user)
+    serializer = UserSimpleSerializer(user)
 
     return JsonResponse(serializer.data, status=200)
 
@@ -57,39 +57,26 @@ def get_default_profile_picture(request):
 
     return JsonResponse(serializer.data, status=200)
 
-def get_profile_pictures(request):
-    if request.method != "POST":
+def get_profile_picture(request):
+    if request.method != "GET":
         return HttpResponse(status=405)
     
-    data = json.loads(request.body)
-    users = data.get("users", False)
+    username = request.GET.get("username", -1)
+
+    if username == -1:
+        return HttpResponse(status=404)
+
     User = get_user_model()
-    new_users = []
 
-    if not users:
-        return HttpResponse(status=400)
-    
-    if isinstance(users, dict):
-        try:
-            temp_user = User.objects.get(pk=users["id"])
-        except User.DoesNotExist:
-            return HttpResponse(status=404)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponse(status=404)
         
-        new_users.append(temp_user)
-    else:
-        for user in users:
-            try:
-                temp_user = User.objects.get(pk=user["id"])
-            except User.DoesNotExist:
-                temp_user = None
-            
-            if temp_user is not None:
-                new_users.append(temp_user)
-
-    serializer = UserSimpleProfilePictureSerializer(new_users, many=True)
+    serializer = ProfilePictureSerializer(user.profile_picture)
 
     context = {
-        "users": serializer.data,
+        "profile_picture": serializer.data,
     }
 
     return JsonResponse(context, status=200)

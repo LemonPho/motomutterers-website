@@ -71,30 +71,19 @@ export async function getUser(username){
     return response;
 }
 
-export async function getUsersProfilePictures(users){
+export async function getUserProfilePicture(username){
     let response = {
         error: false,
-        users: [],
+        profilePicture: [],
         status: null,
     };
 
     try{
-        const csrftoken = getCookie("csrftoken");
-        const apiResponse = await fetch(`/api/get-profile-pictures/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrftoken,
-                "Content-type": "application/json",
-            },
-            mode: "same-origin",
-            body: JSON.stringify({
-                users: users,
-            }),
-        });
-
+        const apiResponse = await fetch(`/api/get-profile-picture?username=${username}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
         response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.users = apiResponse.status === 200 ? apiResult.users : null;
+        response.profilePicture = apiResponse.status === 200 ? apiResult.profile_picture : null;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

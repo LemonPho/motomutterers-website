@@ -7,6 +7,7 @@ import { submitAnnouncementComment, submitAnnouncementCommentReply } from "../fe
 import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
 import { useAnnouncementContext } from "./AnnouncementContext";
 import { toggleDropdown, focusDiv, autoResizeTextarea } from "../utils";
+import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 
 export default function AnnouncementComments(){
     const { user, contextLoading } = useApplicationContext();
@@ -220,10 +221,7 @@ export default function AnnouncementComments(){
                     {user.is_logged_in === true ? 
                     (
                         <div className="flex-box align-items-center">
-                            {user.profile_picture_data ?
-                            (<img className="rounded-circle" style={{width: "3rem", height: "3rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt="" />)
-                            :
-                            (<div>Error</div>)}
+                            <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>
                             <textarea id="comment-text" className="input-field textarea-expand ms-2 w-100" rows={1} placeholder="Write a comment..." onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
                             <button className="btn btn-outline-secondary ms-2" onClick={postComment}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">
@@ -245,7 +243,7 @@ export default function AnnouncementComments(){
                             comment.parent_comment === null &&
                             <div id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
                                 <div className="d-flex align-items-start">
-                                    <img className="rounded-circle" style={{width: "2.5rem", height: "2.5rem"}} src={`data: image/${comment.user.profile_picture_format}; base64, ${comment.user.profile_picture_data}`} alt="" />
+                                    <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
                                     <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
                                         <div className="d-flex align-items-center">
                                             <a className="link-no-decorations" href={`/users/${comment.user.username}?page=1`}><strong>{comment.user.username}</strong></a>
@@ -294,7 +292,7 @@ export default function AnnouncementComments(){
                                     comment.replies.map((reply) => (
                                         <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className="dynamic-container mb-2" style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
                                             <div className="d-flex align-items-start">
-                                                <img className="rounded-circle" style={{width: "1.5rem", height: "1.5rem", marginTop: "6px"}} src={`data: image/${reply.user.profile_picture_format}; base64, ${reply.user.profile_picture_data}`} alt="" />
+                                                <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} username={reply.user.username}/>
                                                 <div className="dynamic-container">
                                                     <div className="d-flex align-items-center">
                                                         <a className="link-no-decorations ms-2" href={`/users/${reply.user.username}?page=1`}><small><strong>{reply.user.username}</strong></small></a>

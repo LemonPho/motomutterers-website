@@ -38,7 +38,7 @@ class AnnouncementWriteSerializer(serializers.ModelSerializer):
         return announcement
 
 class AnnouncementSerializer(serializers.ModelSerializer):
-    user = user_serializers.UserSerializer(read_only=True)
+    user = user_serializers.UserSimpleSerializer(read_only=True)
     edited = serializers.BooleanField(read_only=True)
     date_created = serializers.DateTimeField(read_only=True)
     date_edited = serializers.DateTimeField(read_only=True)
@@ -52,7 +52,7 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 
 class AnnouncementParentCommentSerializer(serializers.ModelSerializer):
     announcement = AnnouncementSerializer()
-    user = user_serializers.UserSerializer()
+    user = user_serializers.UserSimpleSerializer()
     class Meta:
         model = AnnouncementComment
         fields = ["id", "text", "announcement", "user", "date_created", "edited"]
@@ -63,7 +63,7 @@ class AnnouncementParentCommentSerializer(serializers.ModelSerializer):
         return amount_replies
 
 class AnnouncementCommentSerializer(serializers.ModelSerializer):
-    user = user_serializers.UserSerializer(read_only=True)
+    user = user_serializers.UserSimpleSerializer(read_only=True)
     amount_replies = serializers.SerializerMethodField(read_only=True)
     replies = serializers.SerializerMethodField(read_only=True)
     announcement = AnnouncementSerializer(read_only=True)

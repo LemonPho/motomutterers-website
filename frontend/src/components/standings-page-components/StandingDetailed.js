@@ -12,12 +12,12 @@ export default function StandingDetailed(){
             {errorMessage && <div className="alert alert-danger"><small>{errorMessage}</small></div>}
             {!userPicksDetailedLoading &&
             <a className="p-2 custom-modal-header d-flex align-items-center link-no-decorations clickable rounded-15" href={`/users/${userPicksDetailed.user.username}?page=1`}>
-                <ProfilePictureLazyLoader width="5rem" height="5rem" format={userPicksDetailed.user.profile_picture.profile_picture_format} base64={userPicksDetailed.user.profile_picture.profile_picture_data}/>
+                <ProfilePictureLazyLoader width="5rem" height="5rem" username={userPicksDetailed.user.username}/>
                 <h3 className="ms-4">{userPicksDetailed.user.username} - {userPicksDetailed.points}</h3>
             </a>}
             {userPicksDetailedLoading && 
             <div className="p-2 custom-modal-header d-flex align-items-center">
-                <ProfilePictureLazyLoader width="5rem" height="5rem" format={false} base64={false}/>
+                <ProfilePictureLazyLoader width="5rem" height="5rem" username={false}/>
                 <div className="loading-placeholder">
                     <h3 className="w-100 ms-4 fade-in-out"></h3>
                 </div>

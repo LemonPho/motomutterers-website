@@ -35,7 +35,7 @@ class UserPicksSerializer(serializers.ModelSerializer):
     picks = competitors_serializers.CompetitorPositionSerializer(many=True, read_only=True)
     independent_pick = serializers.SerializerMethodField(read_only=True)
     rookie_pick = serializers.SerializerMethodField(read_only=True)
-    user = user_serializers.UserSimpleProfilePictureSerializer(read_only=True)
+    user = user_serializers.UserSimpleSerializer(read_only=True)
     season = importlib.import_module("api.serializers.seasons_serializers").SeasonSimpleSerializer(read_only=True)
     position = serializers.IntegerField()
     id = serializers.IntegerField(read_only=True)

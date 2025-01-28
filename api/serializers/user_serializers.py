@@ -10,13 +10,13 @@ USERS_PICKS_LENGTH = 5
 User = get_user_model()
 
 class ProfilePictureSerializer(serializers.Serializer):
-    profile_picture_format = serializers.SerializerMethodField()
-    profile_picture_data = serializers.SerializerMethodField()
+    format = serializers.SerializerMethodField()
+    data = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ["profile_picture_format", "profile_picture_data"]
+        fields = ["format", "data"]
 
-    def get_profile_picture_data(self, profile_picture):
+    def get_data(self, profile_picture):
         if profile_picture:
             try:
                 with open(profile_picture.path, 'rb') as profile_picture_file:
@@ -33,7 +33,7 @@ class ProfilePictureSerializer(serializers.Serializer):
                 profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
                 return profile_picture_data
         
-    def get_profile_picture_format(self, profile_picture):
+    def get_format(self, profile_picture):
         if profile_picture:
             try:
                 with open(profile_picture.path, 'rb') as profile_picture_file:
@@ -49,19 +49,11 @@ class ProfilePictureSerializer(serializers.Serializer):
 class UserSimpleSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     id = serializers.IntegerField()
+    date_created = serializers.DateTimeField()
 
     class Meta:
         model = User
-        fields = ["username", "id"]
-
-class UserSimpleProfilePictureSerializer(serializers.ModelSerializer):
-    username = serializers.CharField()
-    profile_picture = ProfilePictureSerializer()
-    id = serializers.IntegerField()
-
-    class Meta:
-        model = User
-        fields = ["username", "profile_picture", "id"]
+        fields = ["username", "id", "date_created"]
         
 class UserSerializer(serializers.ModelSerializer):
     notifications = serializers.SerializerMethodField()

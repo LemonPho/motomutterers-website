@@ -32,7 +32,7 @@ export default function RaceResultComments({ raceId }){
                     {(!userLoading && !user.is_logged_in) &&  <div className="d-flex justify-content-center w-100"><span>You must log in to create a comment</span></div>}
                     {(!userLoading && user.is_logged_in) &&
                     <div className="flex-box align-items-center">
-                        <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={user.profile_picture_format} base64={user.profile_picture_data}/>
+                        <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user.username}/>
                         <textarea className="input-field ms-2 w-100 textarea-expand" rows={1} name="create-comment-text" id="create-comment-text" placeholder="Write a comment..." onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
                         <button className="btn btn-outline-secondary ms-2" onClick={console.log("clicked")}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">
@@ -52,7 +52,7 @@ export default function RaceResultComments({ raceId }){
                         comment.parent_comment === null &&
                         <div id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
                             <div className="d-flex align-items-start">
-                                <img className="rounded-circle" style={{width: "2.5rem", height: "2.5rem"}} src={`data: image/${comment.user.profile_picture_format}; base64, ${comment.user.profile_picture_data}`} alt="" />
+                                <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
                                 <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
                                     <div className="d-flex align-items-center">
                                         <a className="link-no-decorations" href={`/users/${comment.user.username}?page=1`}><strong>{comment.user.username}</strong></a>
@@ -101,7 +101,7 @@ export default function RaceResultComments({ raceId }){
                                 comment.replies.map((reply) => (
                                     <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className="dynamic-container mb-2" style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
                                         <div className="d-flex align-items-start">
-                                            <img className="rounded-circle" style={{width: "1.5rem", height: "1.5rem", marginTop: "6px"}} src={`data: image/${reply.user.profile_picture_format}; base64, ${reply.user.profile_picture_data}`} alt="" />
+                                            <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} username={reply.user.username}/>
                                             <div className="dynamic-container">
                                                 <div className="d-flex align-items-center">
                                                     <a className="link-no-decorations ms-2" href={`/users/${reply.user.username}?page=1`}><small><strong>{reply.user.username}</strong></small></a>

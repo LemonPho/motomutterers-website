@@ -5,6 +5,7 @@ import { submitChangeProfilePicture } from "../fetch-utils/fetchPost";
 import { getCurrentUser } from "../fetch-utils/fetchGet";
 
 import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
+import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 
 export default function ProfilePictureSettings(){
     const [selectedPhoto, setSelectedPhoto] = useState(false);
@@ -115,7 +116,7 @@ export default function ProfilePictureSettings(){
                         <strong style={{fontSize: "20px"}}>Profile photo</strong>
                     </div>
                     <div>
-                        {user.profile_picture_data != "" && <img id="profile-picture-div" style={{width: "7rem", height: "7rem"}} className="rounded-circle" src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt={user.username} />}
+                        <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={user.username}/>
                     </div>
                 </div>
                 <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();toggleModal("profile-picture-modal", e)}}>Change</button>
@@ -133,7 +134,8 @@ export default function ProfilePictureSettings(){
                             <div className="d-flex justify-content-center">
                                 <div style={{position: "relative"}}>
                                     <label>
-                                        {selectedPhoto === false && <img className="rounded-circle" id="edit-profile-photo" style={{width: "14rem", height: "14rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`}></img>}
+                                        
+                                        {selectedPhoto === false && <ProfilePictureLazyLoader width={"14rem"} height={"14rem"} username={user.username}/>}
                                         {selectedPhoto && <img className="rounded-circle" id="edit-profile-photo" style={{width: "14rem", height: "14rem"}} src={photoPreview}></img>}
                                         <input type="file" accept="image/*" onChange={changePhotoPreview}/>
                                         <div className="d-flex justify-content-center align-content-center">

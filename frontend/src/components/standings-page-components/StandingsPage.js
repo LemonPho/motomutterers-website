@@ -8,7 +8,7 @@ import StandingDetailed from "./StandingDetailed";
 
 export default function Standings(){
     const { 
-        retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, retrieveProfilePictures, selectedSeason, seasonList,
+        retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, seasonList,
         standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks } = useStandingsContext();
 
     useEffect(() => {
@@ -20,14 +20,6 @@ export default function Standings(){
 
         fetchData();
     }, [])
-
-    useEffect(() => {
-        async function profilePictures(){
-            await retrieveProfilePictures();
-        }
-
-        profilePictures();
-    }, [standingsLoading])
 
     return (
     <div className="card rounded-15 align-middle element-background-color element-border-color">
@@ -67,8 +59,7 @@ export default function Standings(){
                 <div key={`standings-user-${user_picks.user.username}`}>
                     <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); toggleModal("user-picks-detailed-modal", e); retrieveUserPicks(user_picks.user.id)}}>
                         <div className="d-flex align-items-center">
-                            {profilePicturesLoading && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={false} base64={false}/>}
-                            {!profilePicturesLoading && <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" format={user_picks.user.profile_picture.profile_picture_format} base64={user_picks.user.profile_picture.profile_picture_data}/>}
+                            <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user_picks.user.username}/>
                             <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
                         </div>
                         <div className="d-flex align-items-center">

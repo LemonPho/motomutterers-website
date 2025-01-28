@@ -5,6 +5,7 @@ import ApplicationContext, { useApplicationContext } from "./ApplicationContext"
 import { getUser, getUserComments } from "./fetch-utils/fetchGet";
 import { pagination } from "./utils";
 import PageNotFound from "./PageNotFound";
+import ProfilePictureLazyLoader from "./util-components/ProfilePictureLazyLoader";
 
 //could be separated into separate components, works for now like this
 export default function UserPage(){
@@ -108,7 +109,7 @@ export default function UserPage(){
                 <div className="col-md-4">
                     <div id="user-view" className="card rounded-15 p-3 element-background-color element-border-color">
                         <div className="d-flex align-items-center justify-content-center">
-                            {displayUser.profile_picture_data != "" && <img className="rounded-circle" style={{width: "7rem", height: "7rem"}} src={`data: image/${displayUser.profile_picture_format}; base64, ${displayUser.profile_picture_data}`} alt="" />} 
+                            <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={displayUser.username}/>
                         </div>
                         <div className="d-flex justify-content-center">
                             <div style={{ fontSize: "30px" }}>{displayUser.username}</div>
@@ -144,7 +145,7 @@ export default function UserPage(){
                                                 <svg style={{marginRight: "0.3rem"}} xmlns="http://www.w3.org/2000/svg" fill="#5A5A5A" width="1rem" height="1rem" viewBox="0 0 512 512">
                                                     <path d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 7.1 5.8 12 12 12 2.4 0 4.9-.7 7.1-2.4L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm16 352c0 8.8-7.2 16-16 16H288l-12.8 9.6L208 428v-60H64c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16h384c8.8 0 16 7.2 16 16v288z"/>
                                                 </svg>
-                                                <img className="rounded-circle" style={{width: "2rem", height: "2rem"}} src={`data: image/${comment.parent_comment.user.profile_picture_format}; base64, ${comment.parent_comment.user.profile_picture_data}`} alt="" />
+                                                <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} username={comment.parent_comment.user.username}/>
                                                 <span className="mx-1">•</span>
                                                 <a className="link-no-decorations" href={`/announcements/${comment.announcement.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></a>
                                             </div>
@@ -168,7 +169,7 @@ export default function UserPage(){
                                                 <svg style={{marginRight: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none">
                                                     <path d="M7 8H17M7 12H17M7 16H13M4 4H20V20H4V4Z" stroke="#5A5A5A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                                 </svg>
-                                                <img className="rounded-circle" style={{width: "2rem", height: "2rem"}} src={`data: image/${comment.announcement.user.profile_picture_format}; base64, ${comment.announcement.user.profile_picture_data}`} alt="" />
+                                                <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} username={comment.announcement.user.username}/>
                                                 <span className="mx-1">•</span>
                                                 <a className="link-no-decorations" href={`/announcements/${comment.announcement.id}`}><i>{comment.announcement.title}</i></a>
                                                 {/*<!-- License: MIT. Made by radix-ui: https://github.com/radix-ui/icons -->*/}

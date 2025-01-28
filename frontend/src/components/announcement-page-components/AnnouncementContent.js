@@ -5,6 +5,7 @@ import PageNotFound from "../PageNotFound";
 import { useAnnouncementContext } from "./AnnouncementContext";
 import { useApplicationContext } from "../ApplicationContext";
 import { toggleDropdown } from "../utils";
+import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 
 export default function AnnouncementContent(){
     const { user, contextLoading } = useApplicationContext();
@@ -62,10 +63,7 @@ export default function AnnouncementContent(){
                     <h3 id="announcement-title" className="" contentEditable={false}>{announcement.title}</h3>
                     <span className="ms-2 me-2">•</span>
                     <a href={`/users/${announcement.user.username}?page=1`} className="link-no-decorations">
-                        {announcement.user.profile_picture_data ?
-                        (<img className="rounded-circle" style={{width: "2.75rem", height: "2.75rem"}} src={`data: image/${announcement.user.profile_picture_format}; base64, ${announcement.user.profile_picture_data}`} alt="" />)
-                        :
-                        (<div>Error</div>)}
+                        <ProfilePictureLazyLoader width={"2.75rem"} height={"2.75rem"} username={announcement.user.username}/>
                         <span className="ms-2"><strong>{announcement.user.username}</strong></span>
                     </a>
                     { 

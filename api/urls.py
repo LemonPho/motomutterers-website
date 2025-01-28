@@ -44,7 +44,7 @@ urlpatterns = [
     path('get-token/', utils_view.get_token),
     path('get-user-comments', user_view.get_user_comments),
     path('get-user/', user_view.get_user),
-    path('get-profile-pictures/', user_view.get_profile_pictures),
+    path('get-profile-picture', user_view.get_profile_picture),
     path('get-default-pfp/', user_view.get_default_profile_picture),
     path('get-user-picks', picks_view.get_user_picks),
     path('get-user-picks-simple', picks_view.get_user_picks_simple),

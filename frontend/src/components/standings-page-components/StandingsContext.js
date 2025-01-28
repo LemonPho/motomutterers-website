@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getUsersProfilePictures, getSeasonStandings, getUserPicksSimple } from "../fetch-utils/fetchGet";
+import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getSeasonStandings, getUserPicksSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 
 const StandingsContext = createContext();
@@ -10,7 +10,6 @@ export default function StandingsContextProvider(){
 
     const [standings, setStandings] = useState({});
     const [standingsLoading, setStandingsLoading] = useState(true);
-    const [profilePicturesLoading, setProfilePicturesLoading] = useState(true);
     const [userPicksDetailed, setUserPicksDetailed] = useState({});
     const [userPicksDetailedLoading, setUserPicksDetailedLoading] = useState(true);
 
@@ -36,37 +35,6 @@ export default function StandingsContextProvider(){
             setStandings(usersStandingsResponse.standings);
             setStandingsLoading(false);
         }
-    }
-
-    async function retrieveProfilePictures(){
-        if(!standings || Object.keys(standings).length == 0 || standings.users_picks.length == 0){
-            return;
-        }
-
-        const users = standings.users_picks.map(user_picks => user_picks.user);
-        const profilePicturesResponse = await getUsersProfilePictures(users);
-
-        if(profilePicturesResponse.status !== 200){
-            setErrorMessage("There was an error loading the profile pictures");
-            return;
-        }
-
-        const updatedUsersPicks = standings.users_picks.map((userPicks, index) => {
-            const updatedUser = {
-              ...userPicks.user,
-              profile_picture: profilePicturesResponse.users[index].profile_picture,
-            };
-          
-            return {
-              ...userPicks,
-              user: updatedUser,
-            };
-        });
-        let updatedStandings = standings;
-        updatedStandings.users_picks = updatedUsersPicks;
-
-        setStandings(updatedStandings);
-        setProfilePicturesLoading(false);
     }
 
     async function retrieveSelectedSeason(){
@@ -117,33 +85,20 @@ export default function StandingsContextProvider(){
             return;
         }
 
-        if(userPicksResponse.status == 200){
-            const profilePictureResponse = await getUsersProfilePictures(userPicksResponse.userPicks.user);
-
-            if(profilePictureResponse.error){
-                setErrorMessage("There was an error loading the profile picture");
-                return;
-            }
-
-            if(profilePictureResponse.status == 404){
-                setErrorMessage("User profile picture was not found");
-                return;
-            }
-
-            if(profilePictureResponse.status == 200){
-                userPicksResponse.userPicks.user.profile_picture = profilePictureResponse.users[0].profile_picture;
-                setUserPicksDetailed(userPicksResponse.userPicks);
-                setUserPicksDetailedLoading(false);
-            }
-           
+        if(userPicksResponse.status != 200){
+            setErrorMessage("There was an error loading the user picks");
+            return;
         }
+
+        setUserPicksDetailed(userPicksResponse.userPicks);
+        setUserPicksDetailedLoading(false);
     }
     
     return(
         <StandingsContext.Provider value={{
-            retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, retrieveUserPicks, retrieveProfilePictures,
+            retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, retrieveUserPicks,
             standings, userPicksDetailed, seasonList, selectedSeason,
-            standingsLoading, userPicksDetailedLoading, seasonListLoading, selectedSeasonLoading, profilePicturesLoading,
+            standingsLoading, userPicksDetailedLoading, seasonListLoading, selectedSeasonLoading,
         }}>
             <Outlet />
         </StandingsContext.Provider>

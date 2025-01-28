@@ -118,7 +118,7 @@ export default function Anouncements(){
                 <a className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' href={`/announcements/${announcement.id}`} key={announcement.id}>
                     
                     <div className='card-header d-flex align-items-center'>
-                        <ProfilePictureLazyLoader width={"2rem"} height="2rem" format={announcement.user.profile_picture_format} base64={announcement.user.profile_picture_data}/>
+                        <ProfilePictureLazyLoader width={"2rem"} height="2rem" username={announcement.user.username}/>
                         <small className='ms-2'>{announcement.user.username}</small>
                         <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
                     </div>
@@ -169,7 +169,7 @@ export default function Anouncements(){
                 <div className="custom-modal-body">
                     <hr className='m-1' />
                     <div className='d-flex align-items-center'>
-                        {!userLoading && <img className="rounded-circle" style={{width: "3rem", height: "3rem", marginRight: "0.5rem"}} src={`data: image/${user.profile_picture_format}; base64, ${user.profile_picture_data}`} alt=''/>}
+                        {!userLoading && <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>}
                         {!userLoading && <strong>{user.username}</strong>}
                     </div>
                     <textarea id="announcement-title" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Title..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTextChange(e)}}></textarea>
@@ -180,6 +180,7 @@ export default function Anouncements(){
                 </div>
             </div>
         </div>
+        
     );
     
 }
