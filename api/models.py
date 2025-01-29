@@ -193,6 +193,7 @@ class Comment(models.Model):
 
         super().delete(*args, **kwargs)
 
+#not in use, just there just in case i need it
 class AnnouncementComment(models.Model):
     text = models.TextField(max_length=2048)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="announcements_comments")
