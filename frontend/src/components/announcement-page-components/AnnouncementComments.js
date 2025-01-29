@@ -10,8 +10,8 @@ import { toggleDropdown, focusDiv, autoResizeTextarea } from "../utils";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 
 export default function AnnouncementComments(){
-    const { user, contextLoading } = useApplicationContext();
-    const { retrieveComment, announcementLoading, commentsErrorMessage, setCommentsErrorMessage, resetAnnouncementMessages,
+    const { user, contextLoading, setErrorMessage } = useApplicationContext();
+    const { retrieveComment, announcementLoading, resetAnnouncementMessages,
             editComment, createCommentReply, createComment, deleteComment, announcement } = useAnnouncementContext();
 
     const [newReplyCommentId, setNewReplyCommentId] = useState(null);
@@ -20,6 +20,9 @@ export default function AnnouncementComments(){
     const location = useLocation();
 
     async function postComment(){
+        alert("Comments are being worked on, should be working soon");
+        return;
+
         const text = document.getElementById("comment-text").innerHTML
         
         const result = createComment(text);
@@ -238,7 +241,6 @@ export default function AnnouncementComments(){
                     </div>
                     )}
                     <hr />
-                    {commentsErrorMessage && <div className="alert alert-danger m-2">{commentsErrorMessage}</div>}
                     {comments ?
                         (comments.map((comment) => (
                             comment.parent_comment === null &&

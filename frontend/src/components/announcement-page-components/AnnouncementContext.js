@@ -15,12 +15,6 @@ export default function AnnouncementContextProvider(){
     const [announcement, setAnnouncement] = useState({});
     const [comments, setComments] = useState({});
     const [announcementLoading, setAnnouncementLoading] = useState(true);
-    const [commentsErrorMessage, setCommentsErrorMessage] = useState(false);
-
-
-    function resetAnnouncementsMessages(){
-        setCommentsErrorMessage(false);
-    }
 
     //--------------------------------ANNOUNCEMENTS-------------------------------------------//
     async function retrieveAnnouncement(){
@@ -96,7 +90,7 @@ export default function AnnouncementContextProvider(){
         const commentResponse = await getAnnouncementComment(commentId);
 
         if(commentResponse.error || commentResponse.status != 200){
-            setCommentsErrorMessage("There was an error retrieving the comment");
+            setErrorMessage("There was an error retrieving the comment");
             console.log(commentResponse.error);
             return false;
         }
@@ -109,13 +103,13 @@ export default function AnnouncementContextProvider(){
         const commentResponse = await submitAnnouncementComment(text, announcement.id);
 
         if(commentResponse.error){
-            setCommentsErrorMessage("There was an error posting the comment");
+            setErrorMessage("There was an error posting the comment");
             console.log(commentResponse.error);
             return false;
         }
         
         if(commentResponse.status != 200){
-            setCommentsErrorMessage("Comment is invalid");
+            setErrorMessage("Comment is invalid");
             return false;
         }
 
@@ -130,13 +124,13 @@ export default function AnnouncementContextProvider(){
         const commentResponse = await submitEditAnnouncementComment(text, commentId);
 
         if(commentResponse.error){
-            setCommentsErrorMessage("There was an error editing the comment");
+            setErrorMessage("There was an error editing the comment");
             console.log(commentResponse.error);
             return false;
         }
 
         if(commentResponse.status != 200){
-            setCommentsErrorMessage("Comments have a max character count of 2048 characters");
+            setErrorMessage("Comments have a max character count of 2048 characters");
             return false;
         }
 
@@ -148,7 +142,7 @@ export default function AnnouncementContextProvider(){
         const commentResponse = await submitDeleteAnnouncementComment(commentId);
 
         if(commentResponse.error || commentResponse.status != 200){
-            setCommentsErrorMessage("There was an error deleting the comment");
+            setErrorMessage("There was an error deleting the comment");
             console.log(commentResponse.error);
             return;
         }
@@ -162,7 +156,7 @@ export default function AnnouncementContextProvider(){
         const replyResponse = await submitAnnouncementCommentReply(text, commentId, announcement.id);
 
         if(replyResponse.error || replyResponse.status != 200){
-            setCommentsErrorMessage("Error submiting the comment");
+            setErrorMessage("Error submiting the comment");
             console.log(replyResponse.error);
             return false;
         }
@@ -175,7 +169,7 @@ export default function AnnouncementContextProvider(){
 
     return(
         <AnnouncementContext.Provider value={{  announcement, comments, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
-                                                retrieveComment, commentsErrorMessage, setCommentsErrorMessage, resetAnnouncementsMessages, editComment, deleteComment,
+                                                retrieveComment, editComment, deleteComment,
                                                 createCommentReply, createComment}}>
             <Outlet/>
         </AnnouncementContext.Provider>
