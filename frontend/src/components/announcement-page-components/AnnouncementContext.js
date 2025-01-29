@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { createContext, useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
-import { getAnnouncement, getAnnouncementComment } from "../fetch-utils/fetchGet";
+import { getAnnouncement } from "../fetch-utils/fetchGet";
 import { Outlet, useParams } from "react-router-dom";
 import { submitAnnouncementComment, submitAnnouncementCommentReply, submitDeleteAnnouncement, submitDeleteAnnouncementComment, submitEditAnnouncement, submitEditAnnouncementComment } from "../fetch-utils/fetchPost";
 
@@ -25,8 +25,6 @@ export default function AnnouncementContextProvider(){
         }
 
         const announcementResponse = await getAnnouncement(announcementId);
-
-        console.log(announcementResponse);
 
         if(announcementResponse.status == 404){
             setAnnouncement(false);
@@ -85,19 +83,6 @@ export default function AnnouncementContextProvider(){
 
     //---------------------------------COMMENTS-----------------------------------------------//
 
-    async function retrieveComment(commentId){
-        resetAnnouncementsMessages();
-        const commentResponse = await getAnnouncementComment(commentId);
-
-        if(commentResponse.error || commentResponse.status != 200){
-            setErrorMessage("There was an error retrieving the comment");
-            console.log(commentResponse.error);
-            return false;
-        }
-
-        return commentResponse.comment.text;
-    }
-
     async function createComment(text){
         resetApplicationMessages();
         const commentResponse = await submitAnnouncementComment(text, announcement.id);
@@ -120,7 +105,7 @@ export default function AnnouncementContextProvider(){
     }
 
     async function editComment(text, commentId){
-        resetAnnouncementsMessages();
+        
         const commentResponse = await submitEditAnnouncementComment(text, commentId);
 
         if(commentResponse.error){
@@ -134,11 +119,12 @@ export default function AnnouncementContextProvider(){
             return false;
         }
 
+        retrieveAnnouncement();
         return true;
     }
 
     async function deleteComment(commentId){
-        resetAnnouncementsMessages();
+        
         const commentResponse = await submitDeleteAnnouncementComment(commentId);
 
         if(commentResponse.error || commentResponse.status != 200){
@@ -152,7 +138,7 @@ export default function AnnouncementContextProvider(){
     }
 
     async function createCommentReply(text, commentId){
-        resetAnnouncementsMessages();
+        
         const replyResponse = await submitAnnouncementCommentReply(text, commentId, announcement.id);
 
         if(replyResponse.error || replyResponse.status != 200){
@@ -169,7 +155,7 @@ export default function AnnouncementContextProvider(){
 
     return(
         <AnnouncementContext.Provider value={{  announcement, comments, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
-                                                retrieveComment, editComment, deleteComment,
+                                                editComment, deleteComment,
                                                 createCommentReply, createComment}}>
             <Outlet/>
         </AnnouncementContext.Provider>

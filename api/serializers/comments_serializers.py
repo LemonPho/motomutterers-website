@@ -5,11 +5,13 @@ from django.contrib.auth import get_user_model
 from ..models import Comment
 from .serializers_util import sanitize_html
 
+from ..utils import sanitize_text
+
 import importlib
 
 class CommentWriteSerializer(serializers.ModelSerializer):
     text = serializers.CharField()
-    user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), required=False)
     parent_comment = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), required=False)
 
     class Meta:
@@ -21,15 +23,27 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         text = sanitize_html(text)
 
         parent_comment = validated_data.pop("parent_comment", None)
+        user = validated_data.pop("user", None)
+
+        if user is None:
+            raise serializers.ValidationError("Need to have user data when creating comment")
 
         if parent_comment:
-            instance = Comment.objects.create(text=text, user=validated_data.pop("user"), parent_comment=parent_comment)
+            instance = Comment.objects.create(text=text, user=user, parent_comment=parent_comment)
         else:
-            instance = Comment.objects.create(text=text, user=validated_data.pop("user"))
+            instance = Comment.objects.create(text=text, user=user)
 
         #TODO: create notifications for comment
 
         return instance
+    
+    def update(self, instance, validated_data):
+        text = validated_data.pop("text")
+        text = sanitize_text(text)
+        instance.text = text
+        instance.save()
+        return instance
+
     
 class ParentCommentReadSerializer(serializers.ModelSerializer):
     text = serializers.CharField(read_only=True)

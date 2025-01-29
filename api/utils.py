@@ -32,3 +32,7 @@ def is_email_valid(email):
 def send_email(recipient, subject, body):
     return EmailMessage(subject, body, to=[recipient])
     
+
+def sanitize_text(text):
+    sanitized_text = re.sub(r'\n\s*\n+', '\n\n', text.strip())
+    return sanitized_text

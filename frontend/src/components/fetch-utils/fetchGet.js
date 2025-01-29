@@ -256,27 +256,6 @@ export async function getAnnouncementComments(id){
     return response;
 }
 
-export async function getAnnouncementComment(commentId){
-    let response = {
-        error: false,
-        comment: {},
-        status: null,
-    }
-
-    try{
-        const apiResponse = await fetch(`/api/get-announcement-comment?commentId=${commentId}`);
-        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
-
-        response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.comment = apiResponse.status === 200 ? apiResult.comment : false;
-        response.status = apiResponse.status;
-    } catch(error){
-        response.error = error;
-    }
-
-    return response;
-}
-
 export async function getCommentReplies(commentId){
     let response = {
         error: false,

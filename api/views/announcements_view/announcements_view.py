@@ -5,6 +5,7 @@ import json
 from ...models import Announcement, AnnouncementComment
 from ..notification_view import create_announcement_notification, create_announcement_comment_notification, create_comment_response_notification
 from ...serializers.announcements_serializers import AnnouncementWriteSerializer, AnnouncementCommentSerializer, AnnouncementSerializer
+from ...serializers.comments_serializers import CommentWriteSerializer
 
 #retrieving the 10 announcements of this page
 def get_announcements(request):
@@ -80,52 +81,6 @@ def get_comment(request):
     return JsonResponse({
         "comment": serializer.data,
     }, status=200)
-    
-
-def edit_comment(request):
-    if request.method != "POST" or not request.user.is_authenticated:
-        return HttpResponse(status=405)
-    
-    data = json.loads(request.body)
-    comment_id = data.get("commentId", -1)
-    data.pop("commentId")
-    
-    try:
-        comment = AnnouncementComment.objects.get(pk=comment_id)
-    except AnnouncementComment.DoesNotExist:
-        return HttpResponse(status=400)
-    
-    if comment.user.id != request.user.id:
-        return HttpResponse(status=403)
-    
-    serializer = AnnouncementCommentSerializer(data=data, instance=comment)
-    if not serializer.is_valid():
-        return HttpResponse(status=400)
-    
-    serializer.save()
-
-    return HttpResponse(status=200)
-
-def delete_comment(request):
-    if request.method != "POST":
-        return HttpResponse(status=405)
-    
-    if not request.user.is_authenticated:
-        return HttpResponse(status=403)
-    
-    data = json.loads(request.body)
-    comment_id = data.get("commentId", -1)
-
-    try:
-        comment = AnnouncementComment.objects.get(pk=comment_id)
-    except AnnouncementComment.DoesNotExist:
-        return HttpResponse(status=400)
-    
-    if comment.user.id != request.user.id and not request.user.is_admin:
-        return HttpResponse(status=403)
-    
-    comment.delete()
-    return HttpResponse(status=200)
 
 #get the replies of a comment  
 def get_comment_replys(request):
@@ -221,33 +176,7 @@ def delete_announcement(request):
         return HttpResponse(status=400)
     
     announcement.delete()
-    return HttpResponse(status=200)
-
-def post_comment(request):
-    data = json.loads(request.body)
-    announcement_id = data.get("announcementId", False)
-
-    if announcement_id:
-        try:
-            announcement = Announcement.objects.get(pk=announcement_id)
-        except Announcement.DoesNotExist:
-            announcement = None
-
-    if request.method != "POST" or not announcement_id or announcement == None or not request.user.is_authenticated:
-        return HttpResponse(status=405)
-    
-    serializer = AnnouncementCommentSerializer(data=data, context={'request': request, 'announcement_id': announcement_id})
-
-    if not serializer.is_valid():
-        return HttpResponse(status=400)
-    
-    comment = serializer.save()
-
-    notification = create_announcement_comment_notification(announcement=announcement, comment=comment, request=request)
-    if notification is not None:
-        comment.notifications.add(notification)
-
-    return HttpResponse(status=200)
+    return HttpResponse(status=200)    
 
 def post_comment_response(request):
     data = json.loads(request.body)

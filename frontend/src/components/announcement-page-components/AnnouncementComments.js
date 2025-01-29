@@ -11,35 +11,44 @@ import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoade
 
 export default function AnnouncementComments(){
     const { user, contextLoading, setErrorMessage } = useApplicationContext();
-    const { retrieveComment, announcementLoading, resetAnnouncementMessages,
+    const { retrieveComment, announcementLoading,
             editComment, createCommentReply, createComment, deleteComment, announcement } = useAnnouncementContext();
 
     const [newReplyCommentId, setNewReplyCommentId] = useState(null);
     const [comments, setComments] = useState(announcement.comments);
 
+    const [commentText, setCommentText] = useState("");
+    const [replyText, setReplyText] = useState("");
+    const [commentEditText, setCommentEditText] = useState("");
+    const [replyEditText, setReplyEditText] = useState("");
+
     const location = useLocation();
 
     async function postComment(){
-        alert("Comments are being worked on, should be working soon");
-        return;
-
-        const text = document.getElementById("comment-text").innerHTML
+        if(commentText == ""){
+            return;
+        }
         
-        const result = createComment(text);
+        const result = createComment(commentText);
         if(result){
-            document.getElementById("comment-text").innerHTML = "";
+            setCommentText("");
+            document.getElementById("comment-text").value = "";
         }
     }
 
     async function postCommentReply(commentId){
-        const text = document.getElementById(`comment-reply-text-${commentId}`).innerHTML;
+        if(replyText == ""){
+            return;
+        }
+
         //hiding the reply box and button
-        toggleReplyBox(commentId);    
-        const result = createCommentReply(text, commentId);
+        const result = createCommentReply(replyText, commentId);
 
         if(result){
+            toggleReplyBox(commentId);    
             setNewReplyCommentId(commentId);
-            document.getElementById(`comment-reply-text-${commentId}`).innerHTML = "";
+            setReplyText("");
+            document.getElementById(`comment-reply-text-${commentId}`).value = "";
         }
     }
 
@@ -59,100 +68,66 @@ export default function AnnouncementComments(){
     }
 
     function toggleEditComment(commentId){
+        const textCommentEdit = document.getElementById(`edit-comment-${commentId}-text`);
         const textComment = document.getElementById(`comment-${commentId}-text`);
 
-        if(textComment == null){
+        if(textCommentEdit == null){
             return;
         }
 
         const saveButton = document.getElementById(`comment-${commentId}-save-button`);
         const cancelButton = document.getElementById(`comment-${commentId}-cancel-button`);
 
-        textComment.contentEditable = textComment.contentEditable === "false";
-        textComment.classList.toggle("input-field");
+        textComment.classList.toggle("hidden");
+        textCommentEdit.classList.toggle("hidden");
         saveButton.classList.toggle("hidden");
         cancelButton.classList.toggle("hidden");
     }
 
     function toggleEditReply(replyId){
+        const replyCommentEdit = document.getElementById(`edit-reply-${replyId}-text`);
         const replyComment = document.getElementById(`reply-${replyId}-text`);
 
-        if(replyComment == null){
+        if(replyCommentEdit === null || replyComment === null){
             return;
         }
 
         const saveButton = document.getElementById(`reply-${replyId}-save-button`);
         const cancelButton = document.getElementById(`reply-${replyId}-cancel-button`);
 
-        replyComment.contentEditable = replyComment.contentEditable === "false";
-        replyComment.classList.toggle("input-field");
+        replyComment.classList.toggle("hidden");
+        replyCommentEdit.classList.toggle("hidden");
         saveButton.classList.toggle("hidden");
         cancelButton.classList.toggle("hidden");
     }
 
     async function saveEditReply(replyId){
-        const reply = document.getElementById(`reply-${replyId}-text`);
-
-        if(reply == null){
+        if(replyEditText == ""){
             return;
         }
 
-        const result = await editComment(reply.innerHTML, replyId);
+        const result = await editComment(replyEditText, replyId);
 
         if(!result){
             return;
         }
 
+        setReplyEditText("");
         toggleEditReply(replyId);
     }
 
     async function saveEditComment(commentId){
-        const comment = document.getElementById(`comment-${commentId}-text`);
-
-        if(comment == null){
+        if(commentEditText == ""){
             return;
         }
 
-        const result = await editComment(comment.innerHTML, commentId);
+        const result = await editComment(commentEditText, commentId);
 
         if(!result){
             return;
         }
 
-        toggleEditComment(commentId);
-    }
-
-    async function cancelEditReply(replyId){
-        const reply = document.getElementById(`reply-${replyId}-text`);
-
-        if(reply == null){
-            return;
-        }
-
-        const comment = await retrieveComment(replyId);
-
-        if(!result){
-            return;
-        }
-
-        reply.innerHTML = comment;
-        toggleEditReply(replyId);
-    }
-
-    async function cancelEditComment(commentId){
-        const textComment = document.getElementById(`comment-${commentId}-text`);
-
-        if(textComment == null){
-            return;
-        }
-
-        const comment = await retrieveComment(commentId);
-
-        if(!comment){
-            return;
-        }
-
-        textComment.innerHTML = comment;
+        setCommentEditText("");
         toggleEditComment(commentId);
     }
 
@@ -202,6 +177,22 @@ export default function AnnouncementComments(){
         setNewReplyCommentId(null);
     }
 
+    function handleCommentCreateTextChange(event){
+        setCommentText(event.target.value);
+    }
+
+    function handleReplyCreateTextChange(event){
+        setReplyText(event.target.value);
+    }
+
+    function handleCommentEditTextChange(event){
+        setCommentEditText(event.target.value);
+    }
+
+    function handleReplyEditTextChange(event){
+        setReplyEditText(event.target.value);
+    }
+
     useEffect(() => {
         showReplies();
     }, [newReplyCommentId]);
@@ -226,7 +217,7 @@ export default function AnnouncementComments(){
                     (
                         <div className="flex-box align-items-center">
                             <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>
-                            <textarea id="comment-text" className="input-field textarea-expand ms-2 w-100" rows={1} placeholder="Write a comment..." onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
+                            <textarea id="comment-text" className="input-field textarea-expand ms-2 w-100" rows={1} placeholder="Write a comment..." onChange={(e) => {autoResizeTextarea(e.target)}} onKeyUp={(e) => {handleCommentCreateTextChange(e)}}></textarea>
                             <button className="btn btn-outline-secondary ms-2" onClick={postComment}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">
                                     <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
@@ -267,13 +258,14 @@ export default function AnnouncementComments(){
                                             }
                                         </div>
                                         <div className="break-line-text">
-                                            <span id={`comment-${comment.id}-text`} style={{overflow: "visible"}} className="" contentEditable={false}>{comment.text}</span>
+                                            <span id={`comment-${comment.id}-text`} style={{overflow: "visible"}} className="">{comment.text}</span>
+                                            <textarea id={`edit-comment-${comment.id}-text`} className="textarea-expand hidden input-field w-100" rows={1} defaultValue={comment.text} onKeyUp={(e) => {handleCommentEditTextChange(e)}} onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
                                         </div>
                                         {
                                             user.id === comment.user.id && 
                                             <div className="d-flex">
                                                 <button id={`comment-${comment.id}-save-button`} className="btn btn-primary ms-auto me-2 mt-2 hidden" onClick={() => saveEditComment(comment.id)}>Save</button>
-                                                <button id={`comment-${comment.id}-cancel-button`} className="btn btn-outline-secondary mt-2 hidden" onClick={() => cancelEditComment(comment.id)}>Cancel</button>
+                                                <button id={`comment-${comment.id}-cancel-button`} className="btn btn-outline-secondary mt-2 hidden" onClick={() => toggleEditComment(comment.id)}>Cancel</button>
                                             </div>
                                         }
                                         <div className="d-flex mb-3">
@@ -286,7 +278,7 @@ export default function AnnouncementComments(){
                                 
                                 <div id={`comment-reply-div-${comment.id}`} className="hidden" style={{marginBottom: "0.5rem", marginLeft: "3.4rem"}}>
                                     <div className="d-flex justify-content-center">
-                                        <div id={`comment-reply-text-${comment.id}`} role="textbox" contentEditable={true} className="input-field w-100" data-placeholder="Add a reply..." onClick={() => focusDiv(`comment-reply-text-${comment.id}`)}></div>
+                                        <textarea id={`comment-reply-text-${comment.id}`} role="textbox" className="input-field textarea-expand w-100" placeholder="Add a reply..." rows={1} onClick={() => focusDiv(`comment-reply-text-${comment.id}`)} onChange={(e) => {autoResizeTextarea(e.target)}} onKeyUp={(e) => {handleReplyCreateTextChange(e)}}></textarea>
                                         <button id={`comment-reply-button-${comment.id}`} className="btn btn-outline-secondary p-1 ms-2" onClick={() => {postCommentReply(comment.id)}}><small>Reply</small></button>
                                     </div>
                                 </div>
@@ -317,7 +309,8 @@ export default function AnnouncementComments(){
                                                         }
                                                     </div>
                                                     <div className="break-line-text my-1">
-                                                        <span id={`reply-${reply.id}-text`} className="" contentEditable={false}>{reply.text}</span>
+                                                        <span id={`reply-${reply.id}-text`} className="">{reply.text}</span>
+                                                        <textarea rows={1} id={`edit-reply-${reply.id}-text`} className="textarea-expand input-field w-100 hidden" defaultValue={reply.text} onChange={(e) => autoResizeTextarea(e.target)} onKeyUp={(e) => handleReplyEditTextChange(e)}></textarea>
                                                     </div>
                                                 </div>
                                                 
@@ -327,7 +320,7 @@ export default function AnnouncementComments(){
                                             user.id === reply.user.id && 
                                             <div className="d-flex mt-2">
                                                 <button id={`reply-${reply.id}-save-button`} className="btn btn-primary ms-auto me-2 hidden" onClick={() => saveEditReply(reply.id)}>Save</button>
-                                                <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary hidden" onClick={() => cancelEditReply(reply.id)}>Cancel</button>
+                                                <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary hidden" onClick={() => toggleEditReply(reply.id)}>Cancel</button>
                                             </div>
                                         } 
                                         </div>
