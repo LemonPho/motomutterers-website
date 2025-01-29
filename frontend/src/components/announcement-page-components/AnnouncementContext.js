@@ -32,6 +32,8 @@ export default function AnnouncementContextProvider(){
 
         const announcementResponse = await getAnnouncement(announcementId);
 
+        console.log(announcementResponse);
+
         if(announcementResponse.status == 404){
             setAnnouncement(false);
             setAnnouncementLoading(false);

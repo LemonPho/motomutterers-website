@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from . import competitors_serializers, user_serializers
 
-from ..models import Race, RaceComment
+from ..models import Race
 
 from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
 
@@ -111,36 +111,3 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         #create simple user picks model to avoid creating extra riders
 
         return instance
-
-class RaceParentCommentSerializer(serializers.ModelSerializer):
-    user = user_serializers.UserSimpleSerializer()
-
-    class Meta:
-        model = RaceComment
-        fields = ["id", "text", "user", "date_created"]
-
-class RaceCommentSerializer(serializers.ModelSerializer):
-    user = user_serializers.UserSimpleSerializer()
-    parent_comment = serializers.SerializerMethodField()
-    replies = serializers.SerializerMethodField()
-    amount_replies = serializers.SerializerMethodField()
-
-    class Meta:
-        model = RaceComment
-        fields = ["id", "text", "user", "parent_comment", "replies", "amount_replies", "date_created"]
-
-    def get_parent_comment(self, comment):
-        if comment.parent_comment == None:
-            return None
-        
-        serializer = RaceParentCommentSerializer(comment.parent_comment)
-        return serializer.data
-    
-    def get_replies(self, comment):
-        replies = comment.replies.all()
-        serializer = RaceCommentSerializer(replies, many=True)
-        return serializer.data
-    
-    def get_amount_replies(self, comment):
-        amount_replies = comment.replies.count()
-        return str(amount_replies)

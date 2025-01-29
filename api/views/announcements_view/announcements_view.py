@@ -24,13 +24,9 @@ def get_announcements(request):
         if announcement == None:
             return HttpResponse(status=404)
         
-        comments = retrieve_comments(announcement)
-
-        comments_serializer = AnnouncementCommentSerializer(comments, many=True)
         announcement_serializer = AnnouncementSerializer(announcement)
         return JsonResponse({
             "announcement": announcement_serializer.data,
-            "comments": comments_serializer.data,
         }, status=200)
     #for getting multiple announcements
     else:

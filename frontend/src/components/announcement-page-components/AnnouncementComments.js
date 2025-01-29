@@ -11,10 +11,11 @@ import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoade
 
 export default function AnnouncementComments(){
     const { user, contextLoading } = useApplicationContext();
-    const { comments, retrieveComment, announcementLoading, commentsErrorMessage, setCommentsErrorMessage, resetAnnouncementMessages,
-            editComment, createCommentReply, createComment, deleteComment } = useAnnouncementContext();
+    const { retrieveComment, announcementLoading, commentsErrorMessage, setCommentsErrorMessage, resetAnnouncementMessages,
+            editComment, createCommentReply, createComment, deleteComment, announcement } = useAnnouncementContext();
 
     const [newReplyCommentId, setNewReplyCommentId] = useState(null);
+    const [comments, setComments] = useState(announcement.comments);
 
     const location = useLocation();
 

@@ -34,6 +34,9 @@ def read_notification(request):
 
     return HttpResponse(status=200)
 
+def create_notifications(text, path, origin_user, user_list):
+    pass
+
 def create_announcement_notification(announcement, request):
     path = f"/announcements/{announcement.id}"
     origin_user = request.user

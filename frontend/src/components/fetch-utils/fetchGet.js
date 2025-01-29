@@ -218,7 +218,6 @@ export async function getAnnouncement(id){
     let response = {
         error: false,
         announcement: {},
-        comments: {},
         status: null,
     }
 
@@ -228,11 +227,7 @@ export async function getAnnouncement(id){
         
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.announcement = apiResponse.status === 200 ? apiResult.announcement : false;
-        response.comments = apiResponse.status === 200 ? apiResult.comments : false;
         response.status = apiResponse.status;
-        if(response.comments.length === 0){
-            response.comments = false;
-        }
     } catch(error) {
         response.error = error;
     }

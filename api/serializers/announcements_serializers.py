@@ -3,6 +3,7 @@ from rest_framework import serializers
 from . import user_serializers
 
 from .serializers_util import sanitize_html
+from .comments_serializers import CommentReadSerializer
 
 
 from ..models import Announcement, AnnouncementComment, CompetitorPoints, CompetitorPosition, Competitor
@@ -43,9 +44,10 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     date_created = serializers.DateTimeField(read_only=True)
     date_edited = serializers.DateTimeField(read_only=True)
     amount_comments = serializers.SerializerMethodField()
+    comments = CommentReadSerializer(many=True)
     class Meta:
         model = Announcement
-        fields = ["id", "title", "text", "user", "edited", "date_created", "date_edited", "amount_comments"]
+        fields = ["id", "title", "text", "user", "edited", "date_created", "date_edited", "amount_comments", "comments"]
 
     def get_amount_comments(self, announcement):
         return announcement.comments.count()

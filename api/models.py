@@ -133,6 +133,7 @@ class Announcement(models.Model):
     date_created = models.DateTimeField(null=True, auto_now_add=True)
     date_edited = models.DateTimeField(null=True, blank=True)
     notifications = models.ManyToManyField("Notification", related_name="announcement", blank=True)
+    comments = models.ManyToManyField("Comment", related_name="announcement", blank=True)
 
     # for deleting the notifications associated to the announcement
     def delete(self, *args, **kwargs):
@@ -154,6 +155,7 @@ class Race(models.Model):
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
     standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, related_name="race_standings", null=True, blank=True)
     url = models.URLField(null=True, blank=True)
+    comments = models.ManyToManyField("Comment", blank=True, related_name="race")
 
     class Meta:
         ordering = ["timestamp"]
@@ -176,11 +178,25 @@ class CurrentSeason(models.Model):
         if CurrentSeason.objects.exists() and not self.pk:
             raise Exception("There can be only one current season instance")
         return super(CurrentSeason, self).save(*args, **kwargs)
+    
+class Comment(models.Model):
+    text = models.TextField(max_length=2048)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
+    notifications = models.ManyToManyField("Notification", blank=True, related_name="comments")
+    date_created = models.DateTimeField(null=True, auto_now_add=True)
+    edited = models.BooleanField(default=False)
+
+    def delete(self, *args, **kwargs):
+        for notification in self.notifications.all():
+            notification.delete()
+
+        super().delete(*args, **kwargs)
 
 class AnnouncementComment(models.Model):
     text = models.TextField(max_length=2048)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="announcements_comments")
-    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, null=True, blank=True, related_name="comments")
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, null=True, blank=True, related_name="old_comments")
     parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
     notifications = models.ManyToManyField("Notification", blank=True, related_name="announcements_comments")
     date_created = models.DateTimeField(null=True, auto_now_add=True)
@@ -192,13 +208,6 @@ class AnnouncementComment(models.Model):
             notification.delete()
 
         super().delete(*args, **kwargs)    
-
-class RaceComment(models.Model):
-    text = models.TextField(max_length=2048)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="races_comments")
-    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="comments")
-    parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
-    date_created = models.DateTimeField(null=True, auto_now_add=True)
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")

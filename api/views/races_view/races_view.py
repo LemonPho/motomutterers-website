@@ -4,9 +4,9 @@ from .races_validators import validate_race_link_data, generate_link_race_data, 
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
 from .races_util import add_points_to_season_competitors
 
-from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, RaceComment
+from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
-from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceCommentSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
@@ -43,6 +43,8 @@ def get_race(request):
     }, status=200)
 
 def get_race_comments(request):
+    return HttpResponse(status=202)
+
     if request.method != "GET":
         return HttpResponse(status=405)
     
@@ -58,7 +60,7 @@ def get_race_comments(request):
     
     comments = race.comments.order_by("-date_created")
 
-    serializer = RaceCommentSerializer(comments, many=True)
+    #serializer = RaceCommentSerializer(comments, many=True)
 
     return JsonResponse({
         "comments": serializer.data,
