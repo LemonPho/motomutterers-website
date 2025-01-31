@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import { submitDeleteComment, submitEditAnnouncement, submitEditComment } from "../../fetch-utils/fetchPost";
-import { autoResizeTextarea } from "../../utils";
+import { autoResizeTextarea, toggleDropdown } from "../../utils";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
 import { useApplicationContext } from "../../ApplicationContext";
 

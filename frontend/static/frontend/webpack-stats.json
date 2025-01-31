@@ -113,6 +113,14 @@
       "name": "main.96753923818ae9224586.js.LICENSE.txt",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.96753923818ae9224586.js.LICENSE.txt"
     },
+    "main.a30f10a9844282498e29.js": {
+      "name": "main.a30f10a9844282498e29.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.a30f10a9844282498e29.js"
+    },
+    "main.a30f10a9844282498e29.js.LICENSE.txt": {
+      "name": "main.a30f10a9844282498e29.js.LICENSE.txt",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.a30f10a9844282498e29.js.LICENSE.txt"
+    },
     "main.a5fe601f132f54721b95.js": {
       "name": "main.a5fe601f132f54721b95.js",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\main.a5fe601f132f54721b95.js"
@@ -528,6 +536,14 @@
     "src_components_announcement-page-components_Announcement_js.ce29330f0f87729818a3.js.LICENSE.txt": {
       "name": "src_components_announcement-page-components_Announcement_js.ce29330f0f87729818a3.js.LICENSE.txt",
       "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\src_components_announcement-page-components_Announcement_js.ce29330f0f87729818a3.js.LICENSE.txt"
+    },
+    "src_components_announcement-page-components_Announcement_js.d484a9835ef88f7a0131.js": {
+      "name": "src_components_announcement-page-components_Announcement_js.d484a9835ef88f7a0131.js",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\src_components_announcement-page-components_Announcement_js.d484a9835ef88f7a0131.js"
+    },
+    "src_components_announcement-page-components_Announcement_js.d484a9835ef88f7a0131.js.LICENSE.txt": {
+      "name": "src_components_announcement-page-components_Announcement_js.d484a9835ef88f7a0131.js.LICENSE.txt",
+      "path": "C:\\Users\\mishu\\OneDrive\\Documents\\Programming\\Motomutterrers\\Website\\frontend\\static\\frontend\\src_components_announcement-page-components_Announcement_js.d484a9835ef88f7a0131.js.LICENSE.txt"
     },
     "src_components_announcement-page-components_Announcement_js.d89df5aa96b269339445.js": {
       "name": "src_components_announcement-page-components_Announcement_js.d89df5aa96b269339445.js",
@@ -996,7 +1012,7 @@
   },
   "chunks": {
     "main": [
-      "main.bc76a87defebfb36643e.js"
+      "main.a30f10a9844282498e29.js"
     ]
   },
   "error": "ModuleBuildError",

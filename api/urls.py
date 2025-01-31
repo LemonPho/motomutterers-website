@@ -68,6 +68,7 @@ urlpatterns = [
     path('delete-announcement/', announcements_view.delete_announcement),
     path('delete-announcement-comment/', comments_view.delete_comment),
     path('delete-all-competitors/', competitors_view.delete_all_competitors),
+    path('delete-comment/', comments_view.delete_comment),
     path('delete-competitor/', competitors_view.delete_competitor),
     path('delete-competitors/', competitors_view.delete_competitors),
     path('delete-race/', races_view.delete_race),
