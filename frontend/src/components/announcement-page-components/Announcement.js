@@ -3,6 +3,7 @@ import { useAnnouncementContext } from "./AnnouncementContext";
 import AnnouncementComments from "./AnnouncementComments";
 import AnnouncementContent from "./AnnouncementContent";
 import PageNotFound from "../PageNotFound";
+import CommentsSection from "../util-components/comments-section-components/CommentsSection";
 
 export default function Announcement(){
     const { announcement, announcementLoading, retrieveAnnouncement } = useAnnouncementContext();
@@ -22,7 +23,7 @@ export default function Announcement(){
     return(
         <div id="announcement-view" className="my-3">
             <AnnouncementContent />
-            <AnnouncementComments />
+            <CommentsSection comments={announcement.comments} parentElement={{id: announcement.id, type: "ANNOUNCEMENT"}}/>
         </div>
     );
 }

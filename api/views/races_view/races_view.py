@@ -88,15 +88,6 @@ def get_season_races(request):
         "races": serializer.data,
     }, status=200)
 
-def post_comment(request):
-    pass
-
-def post_comment_response(request):
-    pass
-
-def edit_comment(request):
-    pass
-
 def create_complete_race(request):
     if request.method != 'POST':
         return HttpResponse(status=405)

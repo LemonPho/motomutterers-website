@@ -114,8 +114,8 @@ export default function AnnouncementContextProvider(){
             return false;
         }
         
-        if(commentResponse.status != 200){
-            setCommentsErrorMessage("Comment is invalid");
+        if(commentResponse.status != 201){
+            setErrorMessage("Comment is invalid");
             return false;
         }
 
@@ -135,8 +135,8 @@ export default function AnnouncementContextProvider(){
             return false;
         }
 
-        if(commentResponse.status != 200){
-            setCommentsErrorMessage("Comments have a max character count of 2048 characters");
+        if(commentResponse.status != 201){
+            setErrorMessage("Comments have a max character count of 2048 characters");
             return false;
         }
 
@@ -147,8 +147,8 @@ export default function AnnouncementContextProvider(){
         resetAnnouncementsMessages();
         const commentResponse = await submitDeleteAnnouncementComment(commentId);
 
-        if(commentResponse.error || commentResponse.status != 200){
-            setCommentsErrorMessage("There was an error deleting the comment");
+        if(commentResponse.error || commentResponse.status != 201){
+            setErrorMessage("There was an error deleting the comment");
             console.log(commentResponse.error);
             return;
         }

@@ -9,6 +9,8 @@ from .views.announcements_view import announcements_view
 
 from .views.competitors_view import competitors_view
 
+from .views.comments_view import comments_view
+
 from .views.standings_view import standings_view
 
 from .views import activation_view, authentication_view, utils_view, notification_view
@@ -64,22 +66,23 @@ urlpatterns = [
     path('create-race-link/', races_view.create_race_link),
     path('delete-account/', user_view.delete_account),
     path('delete-announcement/', announcements_view.delete_announcement),
-    path('delete-announcement-comment/', announcements_view.delete_comment),
+    path('delete-announcement-comment/', comments_view.delete_comment),
     path('delete-all-competitors/', competitors_view.delete_all_competitors),
     path('delete-competitor/', competitors_view.delete_competitor),
     path('delete-competitors/', competitors_view.delete_competitors),
     path('delete-race/', races_view.delete_race),
     path('delete-season/', seasons_view.delete_season),
     path('edit-announcement/', announcements_view.edit_announcement),
-    path('edit-announcement-comment/', announcements_view.edit_comment),
+    path('edit-announcement-comment/', comments_view.edit_comment),
     path('edit-season-competitor/', competitors_view.edit_season_competitor),
     path('edit-race/', races_view.edit_race),
-    path('edit-race-comment/', races_view.edit_comment),
-    path('post-announcement-comment-reply/', announcements_view.post_comment_response),
-    path('post-announcement-comment/', announcements_view.post_comment),
+    path('edit-race-comment/', comments_view.edit_comment),
+    path('post-announcement-comment-reply/', comments_view.post_comment),
+    path('post-announcement-comment/', comments_view.post_comment),
     path('post-announcement/', announcements_view.post_announcement),
-    path('post-race-comment/', races_view.post_comment),
-    path('post-race-comment-reply/', races_view.post_comment_response),
+    path('post-race-comment/', comments_view.post_comment),
+    path('post-race-comment-reply/', comments_view.post_comment),
+    path('post-comment/', comments_view.post_comment),
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),
