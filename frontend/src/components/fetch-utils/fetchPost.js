@@ -468,29 +468,31 @@ export async function submitDeleteAnnouncement(announcementId){
     return response;
 }
 
-export async function submitAnnouncementComment(text, announcementId){
+export async function submitComment(text, parentElement, commentId){
     let response = {
         error: false,
         status: null,
-    }
+    };
 
     try{
         const csrftoken = getCookie("csrftoken");
-        const apiResponse = await fetch(`/api/post-announcement-comment/`, {
+        const apiResponse = await fetch(`/api/post-comment/`, {
             method: "POST",
-            headers : {
+            headers:{
                 "Content-type": "application/json",
                 "X-CSRFToken": csrftoken,
             },
             body: JSON.stringify({
-                announcementId: announcementId,
+                id: parentElement.id,
+                parentElement: parentElement.type,
                 text: text,
-            }),
-            mode: "same-origin",
-        });
+                commentId: commentId,
+            })
+        })
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
+        
     } catch(error) {
         response.error = error;
     }
@@ -498,16 +500,16 @@ export async function submitAnnouncementComment(text, announcementId){
     return response;
 }
 
-export async function submitEditAnnouncementComment(text, commentId){
+export async function submitEditComment(text, commentId){
     let response = {
         error: false,
         status: null,
-    }
+    };
 
     try{
         const csrftoken = getCookie("csrftoken");
-        const apiResponse = await fetch("/api/edit-announcement-comment/", {
-            method: "POST",
+        const apiResponse = await fetch("/api/edit-comment/", {
+            method: "PUT",
             headers: {
                 "Content-type": "application/json",
                 "X-CSRFToken": csrftoken,
@@ -527,7 +529,7 @@ export async function submitEditAnnouncementComment(text, commentId){
     return response;
 }
 
-export async function submitDeleteAnnouncementComment(commentId){
+export async function submitDeleteComment(commentId){
     let response = {
         error: false,
         status: null,
@@ -535,7 +537,7 @@ export async function submitDeleteAnnouncementComment(commentId){
 
     try{
         const csrftoken = getCookie("csrftoken");
-        const apiResponse = await fetch("/api/delete-announcement-comment/", {
+        const apiResponse = await fetch("/api/delete-comment/", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
@@ -550,37 +552,6 @@ export async function submitDeleteAnnouncementComment(commentId){
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
     } catch(error) {
-        response.error = error;
-    }
-
-    return response;
-}
-
-export async function submitAnnouncementCommentReply(text, commentId, announcementId){
-    let response = {
-        error: false,
-        status: null,
-    }
-
-    try{
-        const csrftoken = getCookie("csrftoken");
-        const apiResponse = await fetch(`/api/post-announcement-comment-reply/`, {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-                "X-CSRFToken": csrftoken,
-            },
-            body: JSON.stringify({
-                commentId: commentId,
-                announcementId: announcementId,
-                text: text,
-            }),
-            mode: "same-origin",
-        });
-
-        response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.status = apiResponse.status;
-    } catch(error){
         response.error = error;
     }
 

@@ -11,6 +11,8 @@ from .views.comments_view import comments_view
 
 from .views.competitors_view import competitors_view
 
+from .views.comments_view import comments_view
+
 from .views.standings_view import standings_view
 
 from .views import activation_view, authentication_view, utils_view, notification_view
@@ -23,9 +25,7 @@ urlpatterns = [
     path('find-account', utils_view.find_account),
     path('find-image', utils_view.find_image),
     path('get-announcements', announcements_view.get_announcements),
-    path('get-announcement-comments', announcements_view.get_announcement_comments),
-    path('get-announcement-comment', announcements_view.get_comment),
-    path('get-comment-replies', announcements_view.get_comment_replys),
+    path('get-comments', comments_view.get_comments),
     path('get-competitor-position', competitors_view.get_competitor_position),
     path('get-season-competitor', competitors_view.get_season_competitor),
     path('get-competitors/', competitors_view.get_all_competitors),
@@ -66,13 +66,18 @@ urlpatterns = [
     path('create-race-link/', races_view.create_race_link),
     path('delete-account/', user_view.delete_account),
     path('delete-announcement/', announcements_view.delete_announcement),
+<<<<<<< HEAD
     path('delete-announcement-comment/', comments_view.delete_announcement_comment),
+=======
+>>>>>>> new_features
     path('delete-all-competitors/', competitors_view.delete_all_competitors),
+    path('delete-comment/', comments_view.delete_comment),
     path('delete-competitor/', competitors_view.delete_competitor),
     path('delete-competitors/', competitors_view.delete_competitors),
     path('delete-race/', races_view.delete_race),
     path('delete-season/', seasons_view.delete_season),
     path('edit-announcement/', announcements_view.edit_announcement),
+<<<<<<< HEAD
     path('edit-announcement-comment/', comments_view.edit_announcement_comment),
     path('edit-season-competitor/', competitors_view.edit_season_competitor),
     path('edit-race/', races_view.edit_race),
@@ -82,6 +87,12 @@ urlpatterns = [
     path('post-announcement/', announcements_view.post_announcement),
     path('post-race-comment/', races_view.post_comment),
     path('post-race-comment-reply/', races_view.post_comment_response),
+=======
+    path('edit-season-competitor/', competitors_view.edit_season_competitor),
+    path('edit-race/', races_view.edit_race),
+    path('edit-comment/', comments_view.edit_comment),
+    path('post-comment/', comments_view.post_comment),
+>>>>>>> new_features
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),

@@ -20,7 +20,6 @@ from ...tokens import account_activation_token
 from ...utils import is_username_valid, is_email_valid
 from ...forms import ProfilePictureForm
 from ...serializers.user_serializers import UserSerializer
-from ...serializers.announcements_serializers import AnnouncementCommentSerializer
 from ...serializers.user_serializers import ProfilePictureSerializer, UserSimpleSerializer
 
 def get_user(request):

@@ -4,9 +4,9 @@ def validate_generate_comment_data(data, request):
         "user": request.user.id,
     }
 
-    parent_comment_id = data.pop("commentId", -1)
+    parent_comment_id = data.pop("commentId")
 
-    if parent_comment_id != -1:
+    if parent_comment_id:
         response["parent_comment"] = parent_comment_id
 
     return response

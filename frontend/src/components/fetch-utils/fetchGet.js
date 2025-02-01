@@ -235,6 +235,27 @@ export async function getAnnouncement(id){
     return response;
 }
 
+export async function getComments(parentElement){
+    let response = {
+        error: false,
+        comments: [],
+        status: null,
+    };
+
+    try{
+        const apiResponse = await fetch(`/api/get-comments?parentElement=${parentElement.type}&id=${parentElement.id}`);
+        const apiResult = await apiResponse.json();
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.comments = apiResponse.status === 200 ? apiResult.comments : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getAnnouncementComments(id){
     let response = {
         error: false,

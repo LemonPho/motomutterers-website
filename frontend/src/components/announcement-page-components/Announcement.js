@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useAnnouncementContext } from "./AnnouncementContext";
-import AnnouncementComments from "./AnnouncementComments";
 import AnnouncementContent from "./AnnouncementContent";
 import PageNotFound from "../PageNotFound";
+import CommentsContextProvider from "../util-components/comments-section-components/CommentsSectionContext";
+import CommentsSection from "../util-components/comments-section-components/CommentsSection";
 
 export default function Announcement(){
     const { announcement, announcementLoading, retrieveAnnouncement } = useAnnouncementContext();
@@ -22,7 +23,9 @@ export default function Announcement(){
     return(
         <div id="announcement-view" className="my-3">
             <AnnouncementContent />
-            <AnnouncementComments />
+            <CommentsContextProvider parentElement={{id: announcement.id, type: "ANNOUNCEMENT"}}>
+                <CommentsSection/>
+            </CommentsContextProvider>
         </div>
     );
 }

@@ -9,12 +9,18 @@ import { submitAnnouncementComment, submitAnnouncementCommentReply, submitDelete
 const AnnouncementContext = createContext()
 
 export default function AnnouncementContextProvider(){
-    const { setErrorMessage, setSuccessMessage, setModalErrorMessage, resetApplicationMessages } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
 
     const {announcementId} = useParams();
     const [announcement, setAnnouncement] = useState({});
-    const [comments, setComments] = useState({});
     const [announcementLoading, setAnnouncementLoading] = useState(true);
+<<<<<<< HEAD
+=======
+
+    function resetAnnouncementsMessages(){
+        setCommentsErrorMessage(false);
+    }
+>>>>>>> new_features
 
     //--------------------------------ANNOUNCEMENTS-------------------------------------------//
     async function retrieveAnnouncement(){
@@ -40,7 +46,6 @@ export default function AnnouncementContextProvider(){
         }
 
         setAnnouncement(announcementResponse.announcement);
-        setComments(announcementResponse.comments);
         setAnnouncementLoading(false);
     };
 
@@ -80,6 +85,7 @@ export default function AnnouncementContextProvider(){
         return;
     }
 
+<<<<<<< HEAD
 
     //---------------------------------COMMENTS-----------------------------------------------//
 
@@ -157,6 +163,12 @@ export default function AnnouncementContextProvider(){
         <AnnouncementContext.Provider value={{  announcement, comments, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
                                                 editComment, deleteComment,
                                                 createCommentReply, createComment}}>
+=======
+    return(
+        <AnnouncementContext.Provider value={{  announcement, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
+                                                resetAnnouncementsMessages,
+                                                }}>
+>>>>>>> new_features
             <Outlet/>
         </AnnouncementContext.Provider>
     );
