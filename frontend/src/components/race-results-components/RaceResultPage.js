@@ -3,7 +3,8 @@ import { useRaceResultsContext } from "./RaceResultsContext";
 import { useApplicationContext } from "../ApplicationContext";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { autoResizeTextarea, toggleCardBody } from "../utils";
-import RaceResultComments from "./RaceResultComments";
+import CommentsSection from "../util-components/comments-section-components/CommentsSection";
+import CommentsContextProvider from "../util-components/comments-section-components/CommentsSectionContext";
 
 export default function RaceResultPage({ raceId }){
 
@@ -119,9 +120,9 @@ export default function RaceResultPage({ raceId }){
                 </div>
             </div>
             }
-
-            <RaceResultComments raceId={raceId}/>
-            
+            <CommentsContextProvider parentElement={{id: raceId, type: "RACE"}}>
+                <CommentsSection />
+            </CommentsContextProvider>
         </div>
         
     );

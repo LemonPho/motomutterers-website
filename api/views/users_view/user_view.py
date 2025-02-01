@@ -21,6 +21,7 @@ from ...utils import is_username_valid, is_email_valid
 from ...forms import ProfilePictureForm
 from ...serializers.user_serializers import UserSerializer
 from ...serializers.user_serializers import ProfilePictureSerializer, UserSimpleSerializer
+from ...serializers.comments_serializers import CommentReadSerializer
 
 def get_user(request):
     if request.method != "POST":
@@ -126,11 +127,12 @@ def get_user_comments(request):
         return HttpResponse(status=404)
     
     amount_comments = user.announcements_comments.count()
-    announcements_comments = user.announcements_comments.order_by("-date_created")[start:end]
-    announcements_comments_serialized = AnnouncementCommentSerializer(announcements_comments, many=True)
+    comments = user.comments.all()
+
+    serializer = CommentReadSerializer(comments, many=True)
 
     return JsonResponse({
-        "comments": announcements_comments_serialized.data,
+        "comments": serializer.data,
         "amount_comments": amount_comments,
     }, status=200)
 
