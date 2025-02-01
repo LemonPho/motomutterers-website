@@ -14,13 +14,10 @@ export default function AnnouncementContextProvider(){
     const {announcementId} = useParams();
     const [announcement, setAnnouncement] = useState({});
     const [announcementLoading, setAnnouncementLoading] = useState(true);
-<<<<<<< HEAD
-=======
 
     function resetAnnouncementsMessages(){
         setCommentsErrorMessage(false);
     }
->>>>>>> new_features
 
     //--------------------------------ANNOUNCEMENTS-------------------------------------------//
     async function retrieveAnnouncement(){
@@ -85,90 +82,10 @@ export default function AnnouncementContextProvider(){
         return;
     }
 
-<<<<<<< HEAD
-
-    //---------------------------------COMMENTS-----------------------------------------------//
-
-    async function createComment(text){
-        resetApplicationMessages();
-        const commentResponse = await submitAnnouncementComment(text, announcement.id);
-
-        if(commentResponse.error){
-            setErrorMessage("There was an error posting the comment");
-            console.log(commentResponse.error);
-            return false;
-        }
-        
-        if(commentResponse.status != 200){
-            setErrorMessage("Comment is invalid");
-            return false;
-        }
-
-        //reload comments to load the comment after its sent (NEEDS CHANGING)
-        retrieveAnnouncement();
-        return true;
-        
-    }
-
-    async function editComment(text, commentId){
-        
-        const commentResponse = await submitEditAnnouncementComment(text, commentId);
-
-        if(commentResponse.error){
-            setErrorMessage("There was an error editing the comment");
-            console.log(commentResponse.error);
-            return false;
-        }
-
-        if(commentResponse.status != 200){
-            setErrorMessage("Comments have a max character count of 2048 characters");
-            return false;
-        }
-
-        retrieveAnnouncement();
-        return true;
-    }
-
-    async function deleteComment(commentId){
-        
-        const commentResponse = await submitDeleteAnnouncementComment(commentId);
-
-        if(commentResponse.error || commentResponse.status != 200){
-            setErrorMessage("There was an error deleting the comment");
-            console.log(commentResponse.error);
-            return;
-        }
-
-        retrieveAnnouncement();
-        return;
-    }
-
-    async function createCommentReply(text, commentId){
-        
-        const replyResponse = await submitAnnouncementCommentReply(text, commentId, announcement.id);
-
-        if(replyResponse.error || replyResponse.status != 200){
-            setErrorMessage("Error submiting the comment");
-            console.log(replyResponse.error);
-            return false;
-        }
-
-        //TODO: make a system where it only retrieves the singular comment to then update it, not eficient to update the whole announcement
-        retrieveAnnouncement();
-        return true;
-    }
-    
-
-    return(
-        <AnnouncementContext.Provider value={{  announcement, comments, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
-                                                editComment, deleteComment,
-                                                createCommentReply, createComment}}>
-=======
     return(
         <AnnouncementContext.Provider value={{  announcement, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
                                                 resetAnnouncementsMessages,
                                                 }}>
->>>>>>> new_features
             <Outlet/>
         </AnnouncementContext.Provider>
     );

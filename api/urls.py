@@ -66,10 +66,6 @@ urlpatterns = [
     path('create-race-link/', races_view.create_race_link),
     path('delete-account/', user_view.delete_account),
     path('delete-announcement/', announcements_view.delete_announcement),
-<<<<<<< HEAD
-    path('delete-announcement-comment/', comments_view.delete_announcement_comment),
-=======
->>>>>>> new_features
     path('delete-all-competitors/', competitors_view.delete_all_competitors),
     path('delete-comment/', comments_view.delete_comment),
     path('delete-competitor/', competitors_view.delete_competitor),
@@ -77,22 +73,10 @@ urlpatterns = [
     path('delete-race/', races_view.delete_race),
     path('delete-season/', seasons_view.delete_season),
     path('edit-announcement/', announcements_view.edit_announcement),
-<<<<<<< HEAD
-    path('edit-announcement-comment/', comments_view.edit_announcement_comment),
-    path('edit-season-competitor/', competitors_view.edit_season_competitor),
-    path('edit-race/', races_view.edit_race),
-    path('edit-race-comment/', races_view.edit_comment),
-    path('post-announcement-comment-reply/', comments_view.post_announcement_comment),
-    path('post-announcement-comment/', comments_view.post_announcement_comment),
-    path('post-announcement/', announcements_view.post_announcement),
-    path('post-race-comment/', races_view.post_comment),
-    path('post-race-comment-reply/', races_view.post_comment_response),
-=======
     path('edit-season-competitor/', competitors_view.edit_season_competitor),
     path('edit-race/', races_view.edit_race),
     path('edit-comment/', comments_view.edit_comment),
     path('post-comment/', comments_view.post_comment),
->>>>>>> new_features
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),
