@@ -1,43 +1,45 @@
 import React, { useRef, useState } from "react";
 
-import { submitDeleteComment, submitEditAnnouncement, submitEditComment } from "../../fetch-utils/fetchPost";
 import { autoResizeTextarea, toggleDropdown } from "../../utils";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
 import { useApplicationContext } from "../../ApplicationContext";
+import { useCommentsContext } from "./CommentsSectionContext";
 
 export default function CommentReply({ reply }){
 
+    const { postEditComment, postDeleteComment } = useCommentsContext();
     const { user, setErrorMessage } = useApplicationContext();
 
     const [replyEditText, setReplyEditText] = useState("");
+    const replyEditTextDiv = useRef(null);
     const replyEditTextInput = useRef(null);
     const replyTextDiv = useRef(null);
 
     async function deleteComment(){
-        const commentResponse = await submitDeleteComment(reply.id);
-
-        if(commentResponse.error || commentResponse.status != 201){
-            setErrorMessage("There was an error deleting the comment");
-            return;
-        }
+        await postDeleteComment(reply.id);
     }
 
     async function editComment(){
-        const commentResponse = await submitEditComment(replyEditText, reply.id);
-
-        if(commentResponse.error || commentResponse.status != 201){
-            setErrorMessage("There was an error editing the comment");
+        if(replyEditText == ""){
             return;
         }
 
-        setReplyEditText("");
-        replyEditTextInput.value = "";
+        const commentResponse = await postEditComment(replyEditText, reply.id);
+
+        if(commentResponse){
+            replyTextDiv.current.innerHTML = replyEditText;
+            setReplyEditText("");
+            replyEditTextInput.value = "";
+            toggleReplyEditBox();
+        }
+        
     }
 
     function toggleReplyEditBox(){
-        if(replyEditTextInput.current && replyTextDiv){
-            replyEditTextInput.current.classList.toggle("hidden");
+        if(replyEditTextDiv.current && replyTextDiv.current){
+            setReplyEditText("");
             replyTextDiv.current.classList.toggle("hidden");
+            replyEditTextDiv.current.classList.toggle("hidden")
         }
     }
 
@@ -67,19 +69,17 @@ export default function CommentReply({ reply }){
                     </div>
                     <div className="break-line-text my-1">
                         <span ref={replyTextDiv} id={`reply-${reply.id}-text`} className="">{reply.text}</span>
-                        <textarea ref={replyEditTextInput} rows={1} id={`edit-reply-${reply.id}-text`} className="textarea-expand input-field w-100 hidden" defaultValue={reply.text} onChange={(e) => autoResizeTextarea(e.target)} onKeyUp={(e) => setReplyEditText(e.target.value)}></textarea>
+                        <div ref={replyEditTextDiv} className="hidden">
+                            <textarea ref={replyEditTextInput} rows={1} id={`edit-reply-${reply.id}-text`} className="textarea-expand input-field w-100" defaultValue={reply.text} onChange={(e) => autoResizeTextarea(e.target)} onKeyUp={(e) => setReplyEditText(e.target.value)}></textarea>
+                            <div className="d-flex mt-2">
+                                <button id={`reply-${reply.id}-save-button`} className="btn btn-primary ms-auto me-2" onClick={() => editComment()}>Save</button>
+                                <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary" onClick={() => toggleReplyEditBox()}>Cancel</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
             </div>
-            
-            {
-            user.id === reply.user.id && 
-            <div className="d-flex mt-2">
-                <button id={`reply-${reply.id}-save-button`} className="btn btn-primary ms-auto me-2 hidden" onClick={() => editComment()}>Save</button>
-                <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary hidden" onClick={() => toggleReplyEditBox()}>Cancel</button>
-            </div>
-        } 
         </div>
  
     );

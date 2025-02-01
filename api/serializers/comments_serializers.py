@@ -8,7 +8,7 @@ from .serializers_util import sanitize_html
 import importlib
 
 class CommentWriteSerializer(serializers.ModelSerializer):
-    text = serializers.CharField()
+    text = serializers.CharField(allow_blank=False)
     user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     parent_comment = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), required=False)
 
@@ -31,6 +31,12 @@ class CommentWriteSerializer(serializers.ModelSerializer):
 
         return instance
     
+    def update(self, instance, validated_data):
+        instance.text = validated_data["text"]
+        instance.edited = True
+        instance.save()
+        return instance
+        
 class ParentCommentReadSerializer(serializers.ModelSerializer):
     text = serializers.CharField(read_only=True)
     user = importlib.import_module("api.serializers.user_serializers").UserSimpleSerializer()
@@ -51,7 +57,7 @@ class CommentReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "amount_replies", "replies", "parent_comment", "date_created", "id"]
+        fields = ["text", "user", "amount_replies", "replies", "parent_comment", "date_created", "edited", "id"]
 
     def get_amount_replies(self, comment):
         amount_replies = str(comment.replies.count())

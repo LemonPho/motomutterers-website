@@ -84,8 +84,6 @@ export function ApplicationContextProvider({children}){
     }
 
     async function retrieveProfilePicture(username){
-        console.log(profilePictures);   
-
         for(let i=0; i < profilePictures.length; i++){
             if(profilePictures[i].username == username){
                 return profilePictures[i].profilePicture;

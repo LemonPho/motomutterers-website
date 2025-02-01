@@ -70,12 +70,16 @@ def post_comment(request):
         return HttpResponse(status=400)
     
     comment = serializer.save()
-    if announcement:
-        announcement.comments.add(comment)
-        announcement.save()
-    elif race:
-        race.comments.add(comment)
-        race.save()
+
+    #if the comment doesn't have a parent comment, then its not a reply and we need to add it to the post
+    #if the comment has a parent comment, when its saved its automatically associated to the parent comment, no need to add it to the post (it would get duplicated)
+    if comment.parent_comment is None:
+        if announcement:
+            announcement.comments.add(comment)
+            announcement.save()
+        elif race:
+            race.comments.add(comment)
+            race.save()
 
     return HttpResponse(status=201)
 
@@ -95,14 +99,14 @@ def edit_comment(request):
     if comment.user.id != request.user.id:
         return HttpResponse(status=403)
     
+    data["user"] = request.user.id
+    
     serializer = CommentWriteSerializer(data=data, instance=comment)
     if not serializer.is_valid():
         print(serializer.errors)
         return HttpResponse(status=400)
-    
-    print(serializer)
-    
-    serializer.save()
+        
+    comment = serializer.save()
 
     return HttpResponse(status=201)
 

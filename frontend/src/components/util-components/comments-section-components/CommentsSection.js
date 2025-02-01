@@ -1,12 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useApplicationContext } from "../../ApplicationContext";
 import { getComments } from "../../fetch-utils/fetchGet";
 
 import Comment from "./Comment";
 import CreateComment from "./CreateComment";
+import { useCommentsContext } from "./CommentsSectionContext";
 
-export default function CommentsSection({ comments, parentElement }){
+export default function CommentsSection(){
+    const { setErrorMessage } = useApplicationContext();
+    const { comments, commentsLoading, retrieveComments, parentElement } = useCommentsContext();
+
+    useEffect(() => {
+        async function getData(){
+            await retrieveComments();
+        }
+
+        getData();
+    }, []);
+
+    if(commentsLoading){
+        return(
+            <div>Loading...</div>
+        )
+    }
+
     return(
         <div className="card rounded-15 mt-2 element-background-color element-border-color" id="comments-card">
             <div className="card-header">
@@ -14,10 +32,10 @@ export default function CommentsSection({ comments, parentElement }){
             </div>
 
             <div className="card-body">
-                <CreateComment parentElement={parentElement}/>
+                <CreateComment/>
                 <hr />
                 {comments.map((comment) => (
-                    <Comment key={comment.id} comment={comment} parentElement={parentElement}/>
+                    <Comment key={comment.id} comment={comment}/>
                 ))}
             </div>
         </div>

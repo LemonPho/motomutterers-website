@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[807],{807:(e,n,r)=>{r.r(n),r.d(n,{default:()=>o});var t=r(540);class s extends t.Component{constructor(e){super(e)}render(){return t.createElement("p",null,"Error page not found")}}const o=s}}]);

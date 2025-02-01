@@ -243,7 +243,7 @@ export async function getComments(parentElement){
     };
 
     try{
-        const apiResponse = await fetch(`/api/retrieve-comments?parentElement=${parentElement.type}&id=${parentElement.id}`);
+        const apiResponse = await fetch(`/api/get-comments?parentElement=${parentElement.type}&id=${parentElement.id}`);
         const apiResult = await apiResponse.json();
 
         response.error = apiResponse.status === 500 ? apiResponse : false;

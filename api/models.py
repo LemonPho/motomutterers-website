@@ -179,6 +179,10 @@ class CurrentSeason(models.Model):
             raise Exception("There can be only one current season instance")
         return super(CurrentSeason, self).save(*args, **kwargs)
     
+class CommentManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(parent_comment=None)
+    
 class Comment(models.Model):
     text = models.TextField(max_length=2048)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
@@ -186,6 +190,11 @@ class Comment(models.Model):
     notifications = models.ManyToManyField("Notification", blank=True, related_name="comments")
     date_created = models.DateTimeField(null=True, auto_now_add=True)
     edited = models.BooleanField(default=False)
+
+    objects = CommentManager
+
+    class Meta:
+        ordering = ["-date_created"]
 
     def delete(self, *args, **kwargs):
         for notification in self.notifications.all():
