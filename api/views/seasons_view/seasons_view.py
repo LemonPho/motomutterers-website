@@ -80,12 +80,13 @@ def get_current_season(request):
         return HttpResponse(status=404)
     
     season_serializer = SeasonSimpleSerializer(current_season.season)
-    competitors = get_competitors_sorted_number(current_season.season)
-    competitors_serializer = SeasonCompetitorPositionSimpleSerializer(competitors, many=True)
+    #testing to see if competitors sorted number is actually used
+    #competitors = get_competitors_sorted_number(current_season.season)
+    #competitors_serializer = SeasonCompetitorPositionSimpleSerializer(competitors, many=True)
     
     return JsonResponse({
         "current_season": season_serializer.data,
-        "competitors_sorted_number": competitors_serializer.data,
+        #"competitors_sorted_number": competitors_serializer.data,
     }, status=200)
 
 def get_users_picks_state(request):

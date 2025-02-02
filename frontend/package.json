@@ -30,7 +30,7 @@
     "html5sortable": "^0.13.3",
     "react-datepicker": "^7.3.0",
     "react-image-crop": "^10.1.5",
-    "react-router-dom": "^6.14.2",
+    "react-router-dom": "^6.29.0",
     "sortablejs": "^1.15.1",
     "source-map-loader": "^4.0.1"
   }

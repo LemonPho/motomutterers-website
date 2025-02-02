@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { getSeason, getUserPicks, getUsersPicksState } from "./fetch-utils/fetchGet";
 import { useApplicationContext } from "./ApplicationContext";
 import { toggleDropdown } from "./utils";

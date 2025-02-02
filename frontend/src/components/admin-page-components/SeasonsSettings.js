@@ -6,6 +6,7 @@ import { submitCurrentSeason, submitDeleteSeason, submitSeason } from "../fetch-
 import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal } from "../utils";
 import SeasonCreateModal from "./SeasonCreateModal";
 import { useSeasonCreateContext } from "./SeasonCreateContext";
+import { Link } from "react-router-dom";
 
 export default function SeasonsSettings(){
 
@@ -96,7 +97,7 @@ export default function SeasonsSettings(){
                                     </svg>
                                 </div>
                                 <div id={`dropdown-season-${season.year}`} className="dropdown-menu">
-                                    <li><a className="dropdown-item" href={`administration/seasons/${season.year}`}>Edit</a></li>
+                                    <li><Link className="dropdown-item" to={`administration/seasons/${season.year}`}>Edit</Link></li>
                                     <li><a className="dropdown-item link-button" onClick={(e) => {openDeleteModal(e, season.id)}}>Delete</a></li>
                                 </div>
                             </div>

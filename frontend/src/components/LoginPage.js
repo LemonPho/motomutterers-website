@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 
 import { submitLogin } from "./fetch-utils/fetchPost";
 import { useApplicationContext } from "./ApplicationContext";
@@ -94,11 +94,11 @@ function LoginPage() {
                 </div>}
                 
                 <div className="container d-flex justify-content-center">
-                    <small className="mt-2 px-3"><a href="/find-account">Forgot your password?</a></small>
+                    <small className="mt-2 px-3"><Link to="/find-account">Forgot your password?</Link></small>
                 </div>
                 <hr className="mt-2"/>
                 <div className="input-group mb-3 px-3 mx-auto">
-                    <a href="/register" className="btn btn-success w-100 rounded-15">Create account</a>
+                    <Link to="/register" className="btn btn-success w-100 rounded-15">Create account</Link>
                 </div>
             </div>
         </div>

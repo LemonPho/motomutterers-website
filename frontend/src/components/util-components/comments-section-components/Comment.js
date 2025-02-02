@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useApplicationContext } from "../../ApplicationContext";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
@@ -85,7 +86,7 @@ export default function Comment({ comment }){
                 <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
                 <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
                     <div className="d-flex align-items-center">
-                        <a className="link-no-decorations" href={`/users/${comment.user.username}?page=1`}><strong>{comment.user.username}</strong></a>
+                        <Link className="link-no-decorations" to={`/users/${comment.user.username}?page=1`}><strong>{comment.user.username}</strong></Link>
                         <span className="flex-item ms-2" style={{fontSize: "0.75rem"}}>{new Date(comment.date_created).toISOString().substring(0,10)} {new Date(comment.date_created).toLocaleTimeString().substring(0,5)}</span>
                         {comment.edited && <small className="ms-1">{`(edited)`}</small>}
                         {(user.id === comment.user.id || user.is_admin == true) && 

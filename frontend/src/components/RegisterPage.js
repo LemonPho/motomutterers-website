@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 
 import { submitRegistration } from "./fetch-utils/fetchPost";
 
@@ -106,7 +106,7 @@ export default function RegisterPage() {
 
                 <hr />
                 <div className="input-group mb-3 px-3 mx-auto">
-                    <a href="/login" className="btn btn-success w-100 rounded-15">Login to an account</a>
+                    <Link to="/login" className="btn btn-success w-100 rounded-15">Login to an account</Link>
                 </div>
             </div>
         </div>

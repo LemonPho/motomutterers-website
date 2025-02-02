@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 
 import ApplicationContext, { useApplicationContext } from "./ApplicationContext";
 import { getUser, getUserComments } from "./fetch-utils/fetchGet";
@@ -116,13 +116,13 @@ export default function UserPage(){
                         </div>
                         {displayUser.id === user.id && 
                         <div className="d-flex justify-content-center align-items-center link-no-decorations">
-                            <a className="link-no-decorations" href={`/settings`}>
+                            <Link className="link-no-decorations" to={`/settings`}>
                                 <span>Edit</span>
                                 <svg style={{marginLeft: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none">
                                     <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                     <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
-                            </a>
+                            </Link>
                         </div>}
                         <hr />
                         <h5>Account created on</h5>
@@ -147,12 +147,12 @@ export default function UserPage(){
                                                 </svg>
                                                 {comment.parent_comment.announcement_id != null &&
                                                     <>
-                                                        <a className="link-no-decorations" href={`/announcements/${comment.parent_comment.announcement_id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></a>                                                
+                                                        <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement_id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>                                                
                                                     </>
                                                 }
                                                 {comment.parent_comment.race_id != null &&
                                                     <>
-                                                        <a className="link-no-decorations" href={`/raceresults/${comment.parent_comment.race_id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></a>                                                                                                    
+                                                        <Link className="link-no-decorations" to={`/raceresults/${comment.parent_comment.race_id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>                                                                                                    
                                                     </>
                                                 }
                                             </div>
@@ -166,10 +166,10 @@ export default function UserPage(){
                                                     />
                                                 </svg>
                                                 {comment.parent_comment.announcement_id != null &&
-                                                    <a className="link-no-decorations" href={`/announcements/${comment.parent_comment.announcement_id}?comment=${comment.parent_comment.id}`}><span>{comment.parent_comment.text}</span></a>                                                
+                                                    <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement_id}?comment=${comment.parent_comment.id}`}><span>{comment.parent_comment.text}</span></Link>                                                
                                                 }
                                                 {comment.parent_comment.race_id != null && 
-                                                    <a className="link-no-decorations" href={`/raceresults/${comment.parent_comment.race_id}?comment=${comment.parent_comment.id}`}><span>{comment.parent_comment.text}</span></a>                                                
+                                                    <Link className="link-no-decorations" to={`/raceresults/${comment.parent_comment.race_id}?comment=${comment.parent_comment.id}`}><span>{comment.parent_comment.text}</span></Link>                                                
                                                 }                                            
                                             </div>
                                         </div>
@@ -183,7 +183,7 @@ export default function UserPage(){
                                                         <svg style={{marginRight: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none">
                                                             <path d="M7 8H17M7 12H17M7 16H13M4 4H20V20H4V4Z" stroke="#5A5A5A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                                         </svg>
-                                                        <a className="link-no-decorations" href={`/announcements/${comment.announcement_id}?comment=${comment.id}`}><i>{comment.text}</i></a>
+                                                        <Link className="link-no-decorations" to={`/announcements/${comment.announcement_id}?comment=${comment.id}`}><i>{comment.text}</i></Link>
                                                     </>                                                
                                                 }
                                                 {comment.race_id != null && 
@@ -195,7 +195,7 @@ export default function UserPage(){
     </g>
   </g>
 </svg>
-                                                        <a className="link-no-decorations" href={`/raceresults/${comment.race_id}?comment=${comment.id}`}><i>{comment.text}</i></a>                                                
+                                                        <Link className="link-no-decorations" to={`/raceresults/${comment.race_id}?comment=${comment.id}`}><i>{comment.text}</i></Link>                                                
                                                     </>
                                                 }
                                             </div>
@@ -209,10 +209,10 @@ export default function UserPage(){
                                                 />
                                                 </svg>
                                                 {comment.announcement_id != null &&
-                                                    <a className="link-no-decorations" href={`/announcements/${comment.announcement_id}?comment=${comment.id}`}><span>{comment.text}</span></a>                                                
+                                                    <Link className="link-no-decorations" to={`/announcements/${comment.announcement_id}?comment=${comment.id}`}><span>{comment.text}</span></Link>                                                
                                                 }
                                                 {comment.race_id != null && 
-                                                    <a className="link-no-decorations" href={`/raceresults/${comment.race_id}?comment=${comment.id}`}><span>{comment.text}</span></a>                                                
+                                                    <Link className="link-no-decorations" to={`/raceresults/${comment.race_id}?comment=${comment.id}`}><span>{comment.text}</span></Link>                                                
                                                 }
                                             </div>
                                         </div> 
@@ -226,24 +226,24 @@ export default function UserPage(){
                             <nav id="pagination-view">
                                 <ul className='pagination justify-content-center'>
                                     <li id='previous-page' className={`${previousPage}`}>
-                                        <a id='previous-page-link' href={`/users/${displayUserUsername}?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</a>
+                                        <Link id='previous-page-link' to={`/users/${displayUserUsername}?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</Link>
                                     </li>
                                     {pageNumbers.map((page) => (
                                         parseInt(currentPage) !== page ?
                                         ( 
                                         <li id={`page-${page}`} key={`page-${page}`} className="page-item">
-                                            <a id={`page-link-${page}`} href={`/users/${displayUserUsername}?page=${page}`} className='page-link'>{page}</a>
+                                            <Link id={`page-link-${page}`} to={`/users/${displayUserUsername}?page=${page}`} className='page-link'>{page}</Link>
                                         </li>
                                         )
                                         :
                                         (
                                         <li id={`page-${page}`} key={`page-${page}`} className="page-item disabled">
-                                            <a id={`page-link-${page}`} href={`/users/${displayUserUsername}?page=${page}`} className='page-link'>{page}</a>
+                                            <Link id={`page-link-${page}`} to={`/users/${displayUserUsername}?page=${page}`} className='page-link'>{page}</Link>
                                         </li>
                                         )
                                         ))}
                                     <li id='next-page' className={`${nextPage}`}>
-                                        <a id='next-page-link' href={`/users/${displayUserUsername}?page=${parseInt(currentPage)+1}`} className='page-link'>Next</a>
+                                        <Link id='next-page-link' to={`/users/${displayUserUsername}?page=${parseInt(currentPage)+1}`} className='page-link'>Next</Link>
                                     </li>
                                 </ul>
                             </nav>

@@ -5,6 +5,7 @@ import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoade
 import { autoResizeTextarea, toggleCardBody } from "../utils";
 import CommentsSection from "../util-components/comments-section-components/CommentsSection";
 import CommentsContextProvider from "../util-components/comments-section-components/CommentsSectionContext";
+import { Link } from "react-router-dom";
 
 export default function RaceResultPage({ raceId }){
 
@@ -94,7 +95,7 @@ export default function RaceResultPage({ raceId }){
                 </div>
                 <div className="card-body custom-card-body" id="race-standings-card-body">
                     {raceResultDetails.standings.users_picks.map((user_picks) => (
-                        <a className="race-standings-row p-1 link-no-decorations rounded-15 clickable" href={`/users/${user_picks.user.username}?page=1`} key={`user-picks-${user_picks.user.id}`} style={{marginRight: "0px"}}>
+                        <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={`user-picks-${user_picks.user.id}`} style={{marginRight: "0px"}}>
                             {user_picks.position_change > 0 && 
                             <span className="race-standings-position-change">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
@@ -113,7 +114,7 @@ export default function RaceResultPage({ raceId }){
                             <span className="race-standings-position">{user_picks.position}</span>
                             <span className="race-standings-username">{user_picks.user.username}</span>
                             <span className="race-standings-points">{user_picks.points}</span>
-                        </a>
+                        </Link>
                     ))
 
                     }

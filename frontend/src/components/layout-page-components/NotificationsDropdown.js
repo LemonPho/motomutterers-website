@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { getNotifications } from "../fetch-utils/fetchGet";
 
@@ -87,11 +87,11 @@ export default function NotificationsDropdown(){
                 (
                     notifications.map((notification) => (
                         <li id={`notification-${notification.id}`} key={`notification-${notification.id}`} className="dropdown-item">
-                            <a className="d-flex link-no-decorations" href={`${notification.path}`} onClick={(e) => notificationClick(e, notification.id)}>
+                            <Link className="d-flex link-no-decorations" to={`${notification.path}`} onClick={(e) => notificationClick(e, notification.id)}>
                                 <span className="m-2">
                                     {`${notification.origin_user.username} ${notification.text}`}
                                 </span>
-                            </a>
+                            </Link>
                         </li>
                     ))
                 )}

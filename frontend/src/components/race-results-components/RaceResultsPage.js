@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { getRaceResults, getSeasonRaces, getSeasonsSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
@@ -30,14 +30,14 @@ export default function RaceResultsPage({ seasonYear }){
                         <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown">
                             {!seasonListLoading && (seasonList.map((season) => (
                                 <li className="ms-2" key={`${season.year}`}>
-                                    <a className="d-flex align-items-center" href={`/raceresults?season=${season.year}`} id={`${season.year}`}>
+                                    <Link className="d-flex align-items-center" to={`/raceresults?season=${season.year}`} id={`${season.year}`}>
                                         {season.year}
                                         {season.year == seasonYear && (
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
                                                 <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
                                             </svg>
                                         )}
-                                    </a>
+                                    </Link>
                                 </li>
                             )))}
                         </ul>
@@ -51,22 +51,20 @@ export default function RaceResultsPage({ seasonYear }){
                     {(!raceResultsLoading && raceResults != undefined) && (raceResults.map((raceResult) => (
                     <div key={`race-result-${raceResult.id}`}>
                         <div className="p-2 clickable rounded-15">
-                            <a className="link-no-decorations" href={`/raceresults/${raceResult.id}`}>
-                                <div>
-                                    <div className="d-flex align-items-center">
-                                        <h3 className="p-2">
-                                            {raceResult.title}
-                                            {raceResult.is_sprint && " (Sprint)"}
-                                        </h3>
-                                        <div className="ms-auto">
-                                            <div className="container">
-                                                {raceResult.finalized && <span className="badge rounded-pill text-bg-success">Final</span>}
-                                                {!raceResult.finalized && <span className="badge rounded-pill text-bg-secondary">Upcoming</span>}
-                                            </div>
+                            <Link className="link-no-decorations" to={`/raceresults/${raceResult.id}`}>
+                                <div className="d-flex align-items-center">
+                                    <h3 className="p-2">
+                                        {raceResult.title}
+                                        {raceResult.is_sprint && " (Sprint)"}
+                                    </h3>
+                                    <div className="ms-auto">
+                                        <div className="container">
+                                            {raceResult.finalized && <span className="badge rounded-pill text-bg-success">Final</span>}
+                                            {!raceResult.finalized && <span className="badge rounded-pill text-bg-secondary">Upcoming</span>}
                                         </div>
                                     </div>
                                 </div>
-                            </a>
+                            </Link>
                         </div>
                         <hr />
                     </div>

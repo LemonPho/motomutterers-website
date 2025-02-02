@@ -5,6 +5,7 @@ import { getScreenDimensions, closeDropdowns, closeModals, toggleDropdown } from
 
 import NotificationsDropdown from "./NotificationsDropdown";
 import UserDropdown from "./UserDropdown";
+import { Link } from "react-router-dom";
 
 export default function Header(){
     const { currentSeason, selectPicksState, user, userLoading, contextLoading, currentSeasonLoading, selectPicksStateLoading } = useApplicationContext();
@@ -31,13 +32,13 @@ export default function Header(){
                             <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </button>
-                    <a href="/" className="navbar-brand link-no-decorations my-1 ms-1">Home</a>
+                    <Link to="/" className="navbar-brand link-no-decorations my-1 ms-1">Home</Link>
                     <div id="menu-dropdown-content" className="dropdown-menu" style={{top: "100%", left: "0"}}>
                         {(!currentSeasonLoading && !currentSeason) && <span className="navbar-text dropdown-item">No current season</span>}
-                        {(!currentSeasonLoading && currentSeason) && <a href={`/raceresults?season=${currentSeason.year}`} className="navbar-text dropdown-item">Races</a> }       
-                        <a href="/announcements?page=1" className="navbar-text dropdown-item">Announcements</a>
-                        {(!currentSeasonLoading && currentSeason) && <a href={`/standings?season=${currentSeason.year}`} className="navbar-text dropdown-item">Standings</a>}
-                        {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) && <a href="/select-picks" className="navbar-text dropdown-item">Select your picks!</a>}
+                        {(!currentSeasonLoading && currentSeason) && <Link to={`/raceresults?season=${currentSeason.year}`} className="navbar-text dropdown-item">Races</Link> }       
+                        <Link to="/announcements?page=1" className="navbar-text dropdown-item">Announcements</Link>
+                        {(!currentSeasonLoading && currentSeason) && <Link to={`/standings?season=${currentSeason.year}`} className="navbar-text dropdown-item">Standings</Link>}
+                        {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) && <Link to="/select-picks" className="navbar-text dropdown-item">Select your picks!</Link>}
                     </div>
                 </div>}
                 <div className="d-flex align-items-center ms-auto">
@@ -54,9 +55,9 @@ export default function Header(){
         return(
             <div className="header menu-div d-flex align-items-center">
                 <div className="d-flex align-items-center">
-                    <a href="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</a>
+                    <Link to="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</Link>
                     <span className="menu-bar-item link-no-decorations ps-2">Races</span>
-                    <a href="/announcements?page=1" className="menu-bar-item link-no-decorations ps-2">Announcements</a>
+                    <Link to="/announcements?page=1" className="menu-bar-item link-no-decorations ps-2">Announcements</Link>
                     <span className="menu-bar-item link-no-decorations ps-2">Standings</span>
                 </div>
                 <div className="d-flex align-items-center ms-auto">
@@ -69,20 +70,20 @@ export default function Header(){
         return(
             <div className="header menu-div d-flex align-items-center">
                 <div className="d-flex align-items-center">
-                    <a href="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</a>
+                    <Link to="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</Link>
                     {(!currentSeasonLoading && !currentSeason) && <span className="menu-bar-item ps-2">No current season</span>}
-                    {(!currentSeasonLoading && currentSeason) && <a href={`/raceresults?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Races</a>}
-                    <a href="/announcements?page=1" className="menu-bar-item link-no-decorations ps-2">Announcements</a>
-                    {(!currentSeasonLoading && currentSeason) && <a href={`/standings?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Standings</a>}
+                    {(!currentSeasonLoading && currentSeason) && <Link to={`/raceresults?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Races</Link>}
+                    <Link to="/announcements?page=1" className="menu-bar-item link-no-decorations ps-2">Announcements</Link>
+                    {(!currentSeasonLoading && currentSeason) && <Link to={`/standings?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Standings</Link>}
                     {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) &&
-                        <a href="/select-picks" className="menu-bar-item link-no-decorations d-flex align-items-center">
+                        <Link to="/select-picks" className="menu-bar-item link-no-decorations d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="rgb(0, 118, 255)" className="bi bi-dot" viewBox="0 0 16 16">
                                 <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
                             </svg>
                             <div>
                                 Select your picks!
                             </div>
-                        </a>}
+                        </Link>}
                 </div>
                 <div className="d-flex align-items-center ms-auto">
                     <div className="menu-bar-item"><NotificationsDropdown /></div>

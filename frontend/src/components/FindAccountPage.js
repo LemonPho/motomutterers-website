@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { sendNewPasswordEmail } from "./fetch-utils/fetchPost";
 
@@ -84,7 +85,7 @@ export default function FindAccount() {
                         <button className="btn btn-primary ms-3" style={{width: "48%"}} onClick={sendEmail}>Send email</button>
                     </div>
                     <div className="container d-flex justify-content-center mt-2 mb-2 px-3">
-                        <a href="/contact"><small>Contact admin</small></a>
+                        <Link to="/contact"><small>Contact admin</small></Link>
                     </div>
                 </div>
             </div>

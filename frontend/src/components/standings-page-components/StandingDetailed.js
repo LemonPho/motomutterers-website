@@ -2,6 +2,7 @@ import React from "react";
 import { useStandingsContext } from "./StandingsContext";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useApplicationContext } from "../ApplicationContext";
+import { Link } from "react-router-dom";
 
 export default function StandingDetailed(){
     const { errorMessage } = useApplicationContext();
@@ -11,10 +12,10 @@ export default function StandingDetailed(){
         <div className="custom-modal hidden" id="user-picks-detailed-modal" onClick={(e) => {e.stopPropagation()}}>
             {errorMessage && <div className="alert alert-danger"><small>{errorMessage}</small></div>}
             {!userPicksDetailedLoading &&
-            <a className="p-2 custom-modal-header d-flex align-items-center link-no-decorations clickable rounded-15" href={`/users/${userPicksDetailed.user.username}?page=1`}>
+            <Link className="p-2 custom-modal-header d-flex align-items-center link-no-decorations clickable rounded-15" to={`/users/${userPicksDetailed.user.username}?page=1`}>
                 <ProfilePictureLazyLoader width="5rem" height="5rem" username={userPicksDetailed.user.username}/>
                 <h3 className="ms-4">{userPicksDetailed.user.username} - {userPicksDetailed.points}</h3>
-            </a>}
+            </Link>}
             {userPicksDetailedLoading && 
             <div className="p-2 custom-modal-header d-flex align-items-center">
                 <ProfilePictureLazyLoader width="5rem" height="5rem" username={false}/>

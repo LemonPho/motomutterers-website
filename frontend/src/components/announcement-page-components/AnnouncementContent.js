@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import PageNotFound from "../PageNotFound";
 import { useAnnouncementContext } from "./AnnouncementContext";
@@ -62,10 +62,10 @@ export default function AnnouncementContent(){
                 <div className="card-header d-flex align-items-center p-3">
                     <h3 id="announcement-title" className="" contentEditable={false}>{announcement.title}</h3>
                     <span className="ms-2 me-2">•</span>
-                    <a href={`/users/${announcement.user.username}?page=1`} className="link-no-decorations">
+                    <Link to={`/users/${announcement.user.username}?page=1`} className="link-no-decorations">
                         <ProfilePictureLazyLoader width={"2.75rem"} height={"2.75rem"} username={announcement.user.username}/>
                         <span className="ms-2"><strong>{announcement.user.username}</strong></span>
-                    </a>
+                    </Link>
                     { 
                     user.is_admin && 
                         <div className="ms-auto dropdown-div">

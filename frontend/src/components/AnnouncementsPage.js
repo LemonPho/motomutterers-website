@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate, Link } from 'react-router-dom';
 
 import ApplicationContext, { useApplicationContext } from './ApplicationContext';
 
@@ -115,7 +115,7 @@ export default function Anouncements(){
             </div>
             <div className='card-body'>
             {(!announcementsLoading && announcements.length != 0) && announcements.map((announcement) => (
-                <a className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' href={`/announcements/${announcement.id}`} key={announcement.id}>
+                <Link className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' to={`/announcements/${announcement.id}`} key={announcement.id}>
                     
                     <div className='card-header d-flex align-items-center'>
                         <ProfilePictureLazyLoader width={"2rem"} height="2rem" username={announcement.user.username}/>
@@ -131,7 +131,7 @@ export default function Anouncements(){
                     <div className='card-footer'>
                         <small>Comments: {announcement.amount_comments}</small>
                     </div>                 
-                </a>
+                </Link>
             ))}
             </div>
             <div className='card-footer'>
@@ -139,24 +139,24 @@ export default function Anouncements(){
                 <nav id="pagination-view ">
                     <ul className='pagination justify-content-center'>
                         <li id='previous-page' className={`${previousPage}`}>
-                            <a id='previous-page-link' href={`announcements?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</a>
+                            <Link id='previous-page-link' to={`announcements?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</Link>
                         </li>
                         {pageNumbers.map((page) => (
                             parseInt(currentPage) !== page ?
                             ( 
                             <li id={`page-${page}`} key={`page-${page}`} className="page-item">
-                                <a id={`page-link-${page}`} href={`announcements?page=${page}`} className='page-link'>{page}</a>
+                                <Link id={`page-link-${page}`} to={`announcements?page=${page}`} className='page-link'>{page}</Link>
                             </li>
                             )
                             :
                             (
                             <li id={`page-${page}`} key={`page-${page}`} className="page-item disabled">
-                                <a id={`page-link-${page}`} href={`announcements?page=${page}`} className='page-link'>{page}</a>
+                                <Link id={`page-link-${page}`} to={`announcements?page=${page}`} className='page-link'>{page}</Link>
                             </li>
                             )
                         ))}
                         <li id='next-page' className={`${nextPage}`}>
-                            <a id='next-page-link' href={`announcements?page=${parseInt(currentPage)+1}`} className='page-link'>Next</a>
+                            <Link id='next-page-link' to={`announcements?page=${parseInt(currentPage)+1}`} className='page-link'>Next</Link>
                         </li>
                     </ul>
                 </nav>}

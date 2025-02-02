@@ -11,31 +11,31 @@ export default function RaceResultsHandler(){
 
     const { retrieveSeasonList, seasonList, seasonListLoading, setSelectedSeason, selectedSeason } = useRaceResultsContext();
 
-    const seasonYear = searchParams.get("season");   
+    const seasonYear = searchParams.get("season");
+
+    useEffect(() => {
+        async function fetchData(){
+            await retrieveSeasonList();
+        }
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        if(seasonListLoading || seasonList == undefined){
+            return;
+        }
+
+        for(let i=0; i < seasonList.length; i++){
+            if(seasonList[i].year == seasonYear){
+                setSelectedSeason(seasonList[i]);
+            }
+        }
+    }, [seasonList]);
 
     if(raceId){
         return <RaceResultPage raceId={raceId}/>
     } else if(seasonYear){
-        useEffect(() => {
-            async function fetchData(){
-                await retrieveSeasonList();
-            }
-    
-            fetchData();
-        }, []);
-    
-        useEffect(() => {
-            if(seasonListLoading || seasonList == undefined){
-                return;
-            }
-    
-            for(let i=0; i < seasonList.length; i++){
-                if(seasonList[i].year == seasonYear){
-                    setSelectedSeason(seasonList[i]);
-                }
-            }
-        }, [seasonList]);
-    
         if(!selectedSeason){
             return <PageNotFound/>
         }

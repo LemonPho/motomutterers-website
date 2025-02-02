@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { getRaceResults, getCurrentUser, getCurrentSeason } from "./fetch-utils/fetchGet";
 
@@ -19,37 +19,37 @@ export default function HomePage(){
             <div className="row">
                 {
                 currentSeason.year && 
-                    <a className="col card rounded-15 clickable link-no-decorations me-1 element-background-color element-border-color" href={`/raceresults?season=${currentSeason.year}`}>
+                    <Link className="col card rounded-15 clickable link-no-decorations me-1 element-background-color element-border-color" to={`/raceresults?season=${currentSeason.year}`}>
                         <div className="card-body">
                             <h1>Race Results</h1>
                         </div>
-                    </a>
+                    </Link>
                 }
                 
-                <a className="col card rounded-15 clickable link-no-decorations ms-1 element-background-color element-border-color" href="/announcements?page=1">
+                <Link className="col card rounded-15 clickable link-no-decorations ms-1 element-background-color element-border-color" to="/announcements?page=1">
                     <div className="card-body">
                         <h1>Announcements</h1>
                     </div>
-                </a>
+                </Link>
             </div>
             <div className="row my-2">
                 {
                 currentSeason.year && 
-                    <a className="col card rounded-15 clickable link-no-decorations element-background-color element-border-color" href={`/standings?season=${currentSeason.year}`}>
+                    <Link className="col card rounded-15 clickable link-no-decorations element-background-color element-border-color" to={`/standings?season=${currentSeason.year}`}>
                         <div className="card-body">
                             <h1>Standings</h1>
                         </div>
-                    </a>
+                    </Link>
                 }
                     
             </div>
             {user.is_logged_in && selectPicksState && 
             <div className="row my-2">
-                <a className="col card rounded-15 clickable link-no-decorations element-background-color element-border-color" href="/select-picks">
+                <Link className="col card rounded-15 clickable link-no-decorations element-background-color element-border-color" to="/select-picks">
                     <div className="card-body">
                         <h1>Select your picks!</h1>
                     </div>
-                </a>
+                </Link>
             </div>
             }
         </div>

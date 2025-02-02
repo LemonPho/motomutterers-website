@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { autoResizeTextarea, toggleDropdown } from "../../utils";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
@@ -49,7 +50,7 @@ export default function CommentReply({ reply }){
                 <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} username={reply.user.username}/>
                 <div className="dynamic-container">
                     <div className="d-flex align-items-center">
-                        <a className="link-no-decorations ms-2" href={`/users/${reply.user.username}?page=1`}><small><strong>{reply.user.username}</strong></small></a>
+                        <Link className="link-no-decorations ms-2" to={`/users/${reply.user.username}?page=1`}><small><strong>{reply.user.username}</strong></small></Link>
                         <span className="ms-2" style={{fontSize: "0.75rem"}}>{new Date(reply.date_created).toISOString().substring(0,10)} {new Date(reply.date_created).toLocaleTimeString().substring(0,5)}</span>
                         {reply.edited && <small className="ms-1">{`(edited)`}</small>}
                         { 
@@ -62,7 +63,7 @@ export default function CommentReply({ reply }){
                                 </button>
                                 <div id={`reply-${reply.id}-dropdown`} className="dropdown-menu">
                                     <li><button className="dropdown-item" onClick={() => toggleReplyEditBox()}>Edit</button></li>
-                                    <li><a className="dropdown-item" onClick={() => deleteComment()}>Delete</a></li>
+                                    <li><button className="dropdown-item" onClick={() => deleteComment()}>Delete</button></li>
                                 </div>
                             </div>
                         }

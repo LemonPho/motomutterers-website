@@ -5,6 +5,7 @@ import { toggleDropdown, toggleModal } from "../utils";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useStandingsContext } from "./StandingsContext";
 import StandingDetailed from "./StandingDetailed";
+import { Link } from "react-router-dom";
 
 export default function Standings(){
     const { 
@@ -38,14 +39,14 @@ export default function Standings(){
                     <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>
                     {!seasonListLoading && seasonList.map((season) => (
                         <li key={`${season.year}`}>
-                            <a className="dropdown-item" href={`/standings?season=${season.year}`} id={`${season.year}`}>
+                            <Link className="dropdown-item" to={`/standings?season=${season.year}`} id={`${season.year}`}>
                                 {season.year}
                                 {season.year == selectedSeason.year && (
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
                                         <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
                                     </svg>
                                 )}
-                            </a>
+                            </Link>
                         </li>
                     ))}
                     </ul>
