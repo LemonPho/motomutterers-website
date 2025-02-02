@@ -113,7 +113,7 @@ def create_season_competitors_link(request):
         return JsonResponse(response, status=400)
 
     #process and generate competitor data
-    table_data_response = generate_competitor_table_data(url, season)
+    table_data_response = generate_competitor_table_data(url, season, request)
     response["timeout"] = table_data_response["timeout"]
 
     if response["timeout"]:

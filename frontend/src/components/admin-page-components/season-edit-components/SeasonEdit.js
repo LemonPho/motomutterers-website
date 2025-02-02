@@ -10,6 +10,7 @@ import SeasonFinalize from "./SeasonFinalize";
 import { useApplicationContext } from "../../ApplicationContext";
 import SetCurrentSeason from "./SetCurrentSeason";
 import DeleteSeason from "./DeleteSeason";
+import SeleniumStatus from "./SeleniumStatus";
 
 export default function SeasonEdit(){
     const { retrieveSeason, season, seasonLoading } = useSeasonContext();
@@ -43,6 +44,13 @@ export default function SeasonEdit(){
         return (
             <div>
                 <div className="container" style={{padding: "0px"}}>
+                    {season.selenium_status != null &&
+                    <div className="row">
+                        <div className="card rounded-15 col-md me-2 mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
+                            <SeleniumStatus />
+                        </div>
+                    </div>
+                    }
                     <div className="row">
                         <div className="card rounded-15 col-md me-2 mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
                             <CompetitorsManagement/>

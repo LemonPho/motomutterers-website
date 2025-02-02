@@ -1248,3 +1248,32 @@ export async function submitUserPicks(picks, independentPick, rookiePick){
 
     return response;
 }
+
+export async function submitTerminateSelenium(pid){
+    let response = {
+        error: false,
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/terminate-selenium/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                pid: pid,
+            })
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}

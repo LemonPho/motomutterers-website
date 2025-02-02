@@ -42,30 +42,6 @@ def get_race(request):
         "race": serializer.data,
     }, status=200)
 
-def get_race_comments(request):
-    return HttpResponse(status=202)
-
-    if request.method != "GET":
-        return HttpResponse(status=405)
-    
-    race_id = request.GET.get("race", -1)
-
-    if race_id == -1:
-        return HttpResponse(status=400)
-    
-    try:
-        race = Race.objects.get(pk=race_id)
-    except Race.DoesNotExist:
-        return HttpResponse(status=404)
-    
-    comments = race.comments.order_by("-date_created")
-
-    #serializer = RaceCommentSerializer(comments, many=True)
-
-    return JsonResponse({
-        "comments": serializer.data,
-    }, status=200)
-
 def get_season_races(request):
     if request.method != "GET":
         return HttpResponse(status=405)
@@ -187,6 +163,7 @@ def create_race_link(request):
         "invalid_season": False,
         "invalid_type": False,
         "timeout": False,
+        "selenium_available": True,
     }
 
     data = json.loads(request.body)
@@ -195,13 +172,15 @@ def create_race_link(request):
     response["invalid_link"] = validated_data_response["invalid_link"]
     response["invalid_season"] = validated_data_response["invalid_season"]
     response["invalid_type"] = validated_data_response["invalid_type"]
+    response["selenium_available"] = validated_data_response["selenium_available"]
     data["link"] = validated_data_response["link"]
+    data["request"] = request
     season = validated_data_response.pop("season")
     race_type = int(data.pop("race_type"))
     is_sprint = race_type == RACE_TYPE_SPRINT
     is_final = race_type == RACE_TYPE_FINAL
 
-    if response["invalid_link"] or response["invalid_season"] or response["invalid_type"]:
+    if response["invalid_link"] or response["invalid_season"] or response["invalid_type"] or not response["selenium_available"]:
         return JsonResponse(response, status=400)
     
     race_data = generate_link_race_data(data, season, is_sprint, is_final)
@@ -256,7 +235,10 @@ def retrieve_race_result(request):
     
     season = race.season.first()
     
-    positions_data = process_retrieve_race_result(race)
+    positions_data = process_retrieve_race_result(race, request)
+
+    if not positions_data["selenium_available"]:
+        return HttpResponse(status=503)
     
     if positions_data["timeout"]:
         return HttpResponse(status=408)

@@ -55,7 +55,7 @@ export default function UserDropdown(){
                 <hr className="mt-1 mb-1"/>
                 <li><Link className="dropdown-item" to={`/settings`}>User Settings</Link></li>
                 {user.is_admin === true && <li><Link className="dropdown-item" to={`/administration`}>Fantasy League Administration</Link></li>}
-                {user.is_admin === true && <li><Link className="dropdown-item" to={`/admin/`}>Site Administration</Link></li>}
+                {user.is_admin === true && <li><a className="dropdown-item" href={`/admin/`}>Site Administration</a></li>}
                 <li><a className="dropdown-item link-button" onClick={sendLogout}>Logout</a></li>
             </ul>
         </div>

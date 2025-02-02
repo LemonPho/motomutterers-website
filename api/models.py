@@ -226,3 +226,9 @@ class Notification(models.Model):
     path = models.CharField(max_length=256)
     date_created = models.DateTimeField(null=True, auto_now_add=True)
     read = models.BooleanField(default=False)
+
+class SeleniumStatus(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="selenium_working")
+    message = models.CharField(max_length=1024)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    pid = models.IntegerField()

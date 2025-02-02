@@ -1,5 +1,6 @@
 from ...models import Season, Competitor, CompetitorPoints
 from ...serializers.serializers_util import sanitize_html
+from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -91,6 +92,7 @@ def validate_season_competitors_data(data):
         "invalidSeason": False,
         "timeout": False,
         "season": None,
+        "selenium_available": check_selenium_status()
     }
 
     year = data.get("year")
@@ -112,7 +114,7 @@ def validate_season_competitors_data(data):
 
     return response
 
-def generate_competitor_table_data(url, season):
+def generate_competitor_table_data(url, season, request):
     response = {
         "timeout": False,
         "data": [],
@@ -132,6 +134,8 @@ def generate_competitor_table_data(url, season):
         service = Service("/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
 
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request)
+
     browser.get(url)
     delay = 10
 
@@ -141,6 +145,8 @@ def generate_competitor_table_data(url, season):
             table = motogp_rider_container.find_element(By.CSS_SELECTOR, ".rider-list__container.js-lazy-load-images")
         except TimeoutException:
             response["timeout"] = True
+            browser.quit()
+            close_selenium_status(selenium_instance)
             return response
         
         table_rows = table.find_elements(By.TAG_NAME, "a")
@@ -176,6 +182,8 @@ def generate_competitor_table_data(url, season):
             table_rows = WebDriverWait(table, delay).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "standings-table__body-row")))
         except TimeoutException:
             response["timeout"] = True
+            browser.quit()
+            close_selenium_status(selenium_instance)
             return response
 
         for i in range(0, len(table_rows)):
@@ -207,4 +215,5 @@ def generate_competitor_table_data(url, season):
         response["timeout"] = True
 
     browser.quit()
+    close_selenium_status(selenium_instance)
     return response

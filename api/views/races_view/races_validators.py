@@ -2,6 +2,8 @@ from ...models import Season, CompetitorPosition, Competitor, SeasonCompetitorPo
 from ...serializers.serializers_util import sanitize_html
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
 
+from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,6 +28,7 @@ def validate_race_link_data(data):
         "invalid_season": False,
         "invalid_type": False,
         "link": None,
+        "selenium_available": check_selenium_status(),
     }
 
     url = data.get("link")
@@ -162,6 +165,7 @@ def generate_link_upcoming_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"])
 
     browser.get(q2_url)
     delay = 10
@@ -171,6 +175,7 @@ def generate_link_upcoming_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
         
     try:
@@ -178,6 +183,7 @@ def generate_link_upcoming_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
 
         
@@ -210,6 +216,7 @@ def generate_link_upcoming_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
         
     try:
@@ -217,6 +224,7 @@ def generate_link_upcoming_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
 
     table_body = table.find_element(By.TAG_NAME, "tbody")
@@ -238,6 +246,7 @@ def generate_link_upcoming_data(data, season):
             position += 1
 
     browser.quit()
+    close_selenium_status(selenium_instance)
     return response
 
 def generate_link_final_data(data, season):
@@ -257,9 +266,6 @@ def generate_link_final_data(data, season):
 
     url = data.get("link")
 
-    #start browser
-    
-
     #windows
     if os.name == "nt":
         browser = webdriver.Chrome()
@@ -275,6 +281,7 @@ def generate_link_final_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving full race result", request=data["request"])
 
     browser.get(url)
     delay = 10
@@ -284,6 +291,7 @@ def generate_link_final_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
         
     try:
@@ -291,6 +299,7 @@ def generate_link_final_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
 
         
@@ -314,7 +323,7 @@ def generate_link_final_data(data, season):
             })
         
     browser.quit()
-
+    close_selenium_status(selenium_instance)
     return response
 
 
@@ -354,6 +363,7 @@ def generate_link_sprint_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving sprint race result", request=data["request"])
 
     browser.get(url)
     delay = 10
@@ -363,6 +373,7 @@ def generate_link_sprint_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
         
     try:
@@ -370,6 +381,7 @@ def generate_link_sprint_data(data, season):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
 
         
@@ -393,6 +405,7 @@ def generate_link_sprint_data(data, season):
             })
         
     browser.quit()
+    close_selenium_status(selenium_instance)
 
     return response
 
@@ -407,15 +420,19 @@ def generate_link_race_data(data, season, is_sprint, is_final):
     
     return response
 
-def process_retrieve_race_result(race):
+def process_retrieve_race_result(race, request):
     response = {
         "timeout": False,
         "competitors_not_found": [],
         "data": {
             "competitors_positions": [],
             "standings": {},
-        }
+        },
+        "selenium_available": check_selenium_status(),
     }
+
+    if not response["selenium_available"]:
+        return response
 
     url = race.url
 
@@ -434,6 +451,7 @@ def process_retrieve_race_result(race):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving race result", request=request)
 
     browser.get(url)
     delay = 10
@@ -443,6 +461,7 @@ def process_retrieve_race_result(race):
     except TimeoutException:
         response["timeout"] = True
         browser.quit()
+        close_selenium_status(selenium_instance)
         return response
     
     table_body = table.find_element(By.TAG_NAME, "tbody")
@@ -463,6 +482,7 @@ def process_retrieve_race_result(race):
             })
         
     browser.quit()
+    close_selenium_status(selenium_instance)
 
     return response
 

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from . import competitors_serializers, races_serializers
 
-from ..models import Season, SeasonCompetitorPosition, CompetitorPoints, Standings
+from ..models import Season, SeasonCompetitorPosition, CompetitorPoints, Standings, SeleniumStatus
 from ..views.seasons_view.seasons_util import get_competitors_sorted_number
 
 import importlib
@@ -152,6 +152,13 @@ class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
         season.competitors.add(season_competitor_position_instance)
 
         return season_competitor_position_instance
+    
+class SeleniumStatusSerializer(serializers.ModelSerializer):
+    user = importlib.import_module("api.serializers.user_serializers").UserSimpleSerializer()
+
+    class Meta:
+        model = SeleniumStatus
+        fields = ["message", "user", "timestamp", "pid"]
 
 class SeasonSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
@@ -166,10 +173,11 @@ class SeasonSerializer(serializers.ModelSerializer):
     current = serializers.SerializerMethodField()
     standings = importlib.import_module("api.serializers.standings_serializers").StandingsSimpleSerializer()
     competitors_sorted_number = serializers.SerializerMethodField()
+    selenium_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Season
-        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "standings", "competitors_sorted_number"]
+        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "standings", "competitors_sorted_number", "selenium_status"]
 
     def get_current(self, season):
         if hasattr(season, 'current'):
@@ -181,3 +189,12 @@ class SeasonSerializer(serializers.ModelSerializer):
         competitors_sorted_number = get_competitors_sorted_number(season)
         competitors_sorted_number_serializer = SeasonCompetitorPositionSerializer(competitors_sorted_number, many=True)
         return competitors_sorted_number_serializer.data
+    
+    def get_selenium_status(self, season):
+        if SeleniumStatus.objects.count() == 0:
+            return None
+        
+        instance = SeleniumStatus.objects.all()
+        serializer = SeleniumStatusSerializer(instance, many=True)
+
+        return serializer.data

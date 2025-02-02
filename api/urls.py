@@ -15,7 +15,7 @@ from .views.comments_view import comments_view
 
 from .views.standings_view import standings_view
 
-from .views import activation_view, authentication_view, utils_view, notification_view
+from .views import activation_view, authentication_view, utils_view, notification_view, selenium_status_view
 from .views.picks_view import picks_view
 from .views.standings_view import standings_view
 from .views.races_view import races_view
@@ -34,7 +34,6 @@ urlpatterns = [
     path('get-logged-in/', user_view.get_logged_in),
     path('get-notifications/', notification_view.get_notifications),
     path('get-race', races_view.get_race),
-    path('get-race-comments', races_view.get_race_comments),
     path('get-race-results', races_view.get_season_races),
     path('get-season', seasons_view.get_season),
     path('get-season-simple', seasons_view.get_season_simple),
@@ -85,6 +84,7 @@ urlpatterns = [
     path('set-user-picks/', picks_view.set_user_picks),
     path('finalize-season/', seasons_view.finalize_season),
     path('toggle-users-picks/', seasons_view.toggle_users_picks),
+    path('terminate-selenium/', selenium_status_view.terminate_selenium_pid),
 
     #other
     path('request-activation-token/', activation_view.request_activation_token),
