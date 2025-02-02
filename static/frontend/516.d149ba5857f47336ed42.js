@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[516],{516:(e,n,s)=>{s.r(n),s.d(n,{default:()=>u});var r=s(540);class t extends r.Component{constructor(e){super(e)}render(){return r.createElement("p",null,"This is the users page")}}const u=t}}]);
