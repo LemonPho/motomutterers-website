@@ -46,7 +46,7 @@ export default function SeasonEdit(){
                 <div className="container" style={{padding: "0px"}}>
                     {season.selenium_status != null &&
                     <div className="row">
-                        <div className="card rounded-15 col-md me-2 mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
+                        <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
                             <SeleniumStatus />
                         </div>
                     </div>

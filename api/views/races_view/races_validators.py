@@ -452,7 +452,7 @@ def process_retrieve_race_result(race, request):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=request, browser=browser)
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message=f"Retrieving race result for: {race.title}", request=request, browser=browser)
 
     browser.get(url)
     delay = 10
@@ -552,13 +552,14 @@ def generate_race_standings(competitors_positions, season):
             
             points += competitor_position.competitor_points.points + season_competitor.competitor_points.points
 
-        #TODO: will need to figure out position change
         response["data"]["users_picks"].append({
             "points": points,
             "user": standing.user.id,
             "position_change": 0,
             "position": position,
         })
+
+        position += 1
 
     return response
 

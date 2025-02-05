@@ -52,46 +52,54 @@ export default function RacesManagement(){
 
         const raceResultResponse = await retrieveRaceResult(season.races[raceIndex].id);
 
+        setLoadingMessage(false);
+
         if(raceResultResponse.error){
             setErrorMessage("There was an error retrieving the race result");
-            setLoadingMessage(false);
+            
             return;
         }
 
         if(raceResultResponse.status == 400){
             setErrorMessage("There was an error retrieving the race results");
-            setLoadingMessage(false);
+            
             return;
         }
 
         if(raceResultResponse.status == 404){
             setErrorMessage("The race was not found");
-            setLoadingMessage(false);
+            
             return;
         }
 
         if(raceResultResponse.status == 408){
             setErrorMessage("motorsport.com took too long to load");
-            setLoadingMessage(false);
+            
             return;
         }
 
         if(raceResultResponse.status == 422){
             setErrorMessage("The server could not process the race result");
-            setLoadingMessage(false);
+            
+            return;
+        }
+
+        if(raceResultResponse.status == 503){
+            setErrorMessage("Please wait for an existing retrieval to finish, contact admin if there shouldn't be one open");
+            
             return;
         }
 
         if(raceResultResponse.status != 201){
             setErrorMessage("There was an error retrieving the race result");
-            setLoadingMessage(false);
+            
             return;
         }
 
         console.log(raceResultResponse);
 
         setSuccessMessage("Results successfully retrieved");
-        setLoadingMessage(false);
+        
         await retrieveSeason();
         return;
     }

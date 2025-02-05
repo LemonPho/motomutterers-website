@@ -27,19 +27,21 @@ export default function RaceCreateAutomatic(){
 
     async function submitLink(){
         resetApplicationMessages();
-        setLoadingMessage("Loading...");
+        closeModals();
+        setLoadingMessage("Loading: Reload to view the progress of the retrieval");
 
         let raceResponse = await submitRaceResultLink(link, raceDate, raceType, season.year);
-        setLoadingMessage(false);
 
         if(raceResponse.error){
             setErrorMessage("There was an error processing the link.");
+            setLoadingMessage(false);
             console.log(raceResponse.error);
             return;
         }
 
         if(raceResponse.invalidLink){
             setErrorMessage("The link is invalid or website didn't load.");
+            setLoadingMessage(false);
             return;
         }
 
@@ -53,31 +55,42 @@ export default function RaceCreateAutomatic(){
             string += "were not found in the database";
 
             setErrorMessage(string);
+            setLoadingMessage(false);
             return;
         }
 
         if(raceResponse.timeout){
             setErrorMessage("Motosport website didn't load, try again later");
+            setLoadingMessage(false);
             return;
         }
 
         if(raceResponse.invalidSeason){
             setErrorMessage("Season was not found in the database");
+            setLoadingMessage(false);
             return;
         }
 
         if(raceResponse.invalidType){
             setErrorMessage("Race type was not valid (Upcoming, Final, Sprint)");
+            setLoadingMessage(false);
+            return;
+        }
+
+        if(!raceResponse.seleniumAvailable){
+            setErrorMessage("Please wait for another retrieval to finish, if there shouldn't be any other retrieval happening contact admin");
+            setLoadingMessage(false);
             return;
         }
 
         if(raceResponse.status != 201){
             setErrorMessage("There was an error processing the link.");
+            setLoadingMessage(false);
             return;
         }
 
-        closeModals();
         setLoadingMessage(false);
+        closeModals();
         setSuccessMessage("The race has been submited");
         retrieveSeason();
     }

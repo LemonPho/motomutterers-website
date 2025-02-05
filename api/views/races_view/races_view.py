@@ -164,6 +164,7 @@ def create_race_link(request):
         "invalid_type": False,
         "timeout": False,
         "selenium_available": True,
+        "standings_error": False,
     }
 
     data = json.loads(request.body)
@@ -199,13 +200,31 @@ def create_race_link(request):
     
     race = serializer.save()
 
-    season.races.add(race)
+    if race.finalized:
+        competitors_positions = race.competitors_positions.all()
+        race_standings_data = generate_race_standings(competitors_positions, season)
+        standings_serializer = StandingsRaceWriteSerializer(data=race_standings_data["data"])
+
+        if not standings_serializer.is_valid() or race_standings_data["competitor_not_found"]:
+            print(standings_serializer.errors)
+            race.remove()
+            race.save()
+            response["standings_error"] = True
+            return JsonResponse(response, status=400)
+        
+        race_standings = standings_serializer.save()
+        sort_race_standings(race_standings, season)
+        race.standings = race_standings
+        race.save()
+
     add_points = add_points_to_season_competitors(season, race)
 
     if not add_points:
         race.remove()
         race.save()
         return JsonResponse(response, status=400)
+    
+    season.races.add(race)
 
     update_members_points()
     sort_standings(season)
@@ -257,7 +276,6 @@ def retrieve_race_result(request):
 
     if not standings_serializer.is_valid() or race_standings_data["competitor_not_found"]:
         print(standings_serializer.errors)
-        print(standings_serializer.error_messages)
         for competitor_position in competitors_positions:
             competitor_position.delete()
 

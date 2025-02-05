@@ -109,7 +109,7 @@ def create_season_competitors_link(request):
     response = validate_season_competitors_data(data)
     season = response.pop("season")
 
-    if response["invalidSeason"] or response["invalidLink"]:
+    if response["invalidSeason"] or response["invalidLink"] or not response["selenium_available"]:
         return JsonResponse(response, status=400)
 
     #process and generate competitor data
