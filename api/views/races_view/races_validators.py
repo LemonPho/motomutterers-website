@@ -2,7 +2,7 @@ from ...models import Season, CompetitorPosition, Competitor, SeasonCompetitorPo
 from ...serializers.serializers_util import sanitize_html
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
 
-from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status
+from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By

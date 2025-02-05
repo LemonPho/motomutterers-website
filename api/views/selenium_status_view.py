@@ -7,10 +7,8 @@ from selenium import webdriver
 
 from ..models import SeleniumStatus
 
-import os
-import signal
+import threading
 import json
-import psutil
 
 ACTIVE_BROWSERS = {}
 
@@ -49,6 +47,7 @@ def terminate_selenium_pid(request):
         return HttpResponse(status=404)
     
     browser = ACTIVE_BROWSERS.pop(instance.pid)
+    #browser.quit() takes a little while, it has to wait until the webdriverwait is done
     browser.quit() 
     instance.delete()
 
