@@ -21,6 +21,11 @@ export default function SeleniumStatus(){
             return;
         }
 
+        if(terminateResponse.status == 400){
+            setErrorMessage("There was an error trying to terminate the service");
+            return;
+        }
+
         setSuccessMessage("Service terminated");
         retrieveSeason();
     }

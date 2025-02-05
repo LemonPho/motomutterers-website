@@ -232,3 +232,4 @@ class SeleniumStatus(models.Model):
     message = models.CharField(max_length=1024)
     timestamp = models.DateTimeField(auto_now_add=True)
     pid = models.IntegerField()
+    executor_url = models.URLField(max_length=255, null=True, blank=True)

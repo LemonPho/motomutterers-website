@@ -14,6 +14,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
 import os
+import psutil
 
 RACE_TYPE_UPCOMING = 1
 RACE_TYPE_FINAL = 2
@@ -165,7 +166,7 @@ def generate_link_upcoming_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"])
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"], browser=browser)
 
     browser.get(q2_url)
     delay = 10
@@ -281,7 +282,7 @@ def generate_link_final_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving full race result", request=data["request"])
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"], browser=browser)
 
     browser.get(url)
     delay = 10
@@ -363,7 +364,7 @@ def generate_link_sprint_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving sprint race result", request=data["request"])
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, executor_url=browser.command_executor, message="Retrieving sprint race result", request=data["request"], browser=browser)
 
     browser.get(url)
     delay = 10
@@ -451,7 +452,7 @@ def process_retrieve_race_result(race, request):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving race result", request=request)
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=request, browser=browser)
 
     browser.get(url)
     delay = 10

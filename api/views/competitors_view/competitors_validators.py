@@ -134,7 +134,7 @@ def generate_competitor_table_data(url, season, request):
         service = Service("/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request)
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request, browser=browser)
 
     browser.get(url)
     delay = 10
