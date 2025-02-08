@@ -34,8 +34,6 @@ export default function CompetitorDeleteModal({reset}){
 
         setLoadingMessage("Loading...");
 
-        console.log(selectedCompetitors);
-
         const competitorList = selectedCompetitors
         .filter((selectedCompetitor) => (selectedCompetitor.selected == true))
         .map((selectedCompetitor) => (selectedCompetitor.competitor.id));

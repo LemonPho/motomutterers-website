@@ -9,14 +9,18 @@ import { useRaceResultsContext } from "./RaceResultsContext";
 export default function RaceResultsPage({ seasonYear }){
     const { retrieveRaceResults, retrieveRaceResultsDetails, retrieveSeasonList, raceResults, raceResultsLoading, selectedSeason, seasonList, seasonListLoading } = useRaceResultsContext(); 
 
+    async function fetchData(){
+        await retrieveRaceResults();
+        await retrieveSeasonList();
+    }
+
     useEffect(() => {
-        async function fetchData(){
-            await retrieveRaceResults();
-            await retrieveSeasonList();
-        }
-        
         fetchData();
     }, [])
+
+    useEffect(() => {
+        fetchData();
+    }, [seasonYear])
 
     return(
         <div>
@@ -27,7 +31,7 @@ export default function RaceResultsPage({ seasonYear }){
                         <button className="btn btn-outline-secondary dropdown-toggle rounded-15" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
                             {seasonYear}
                         </button>
-                        <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown">
+                        <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown" style={{top: "100%", right: "0px"}}>
                             {!seasonListLoading && (seasonList.map((season) => (
                                 <li className="ms-2" key={`${season.year}`}>
                                     <Link className="d-flex align-items-center" to={`/raceresults?season=${season.year}`} id={`${season.year}`}>

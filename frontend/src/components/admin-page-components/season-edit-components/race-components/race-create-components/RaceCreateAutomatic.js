@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal, focusDiv } from "../../../../utils.js";
+import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal, focusDiv, autoResizeTextarea } from "../../../../utils.js";
 import { useApplicationContext } from "../../../../ApplicationContext.js";
 import { useSeasonContext } from "../../SeasonContext.js"; 
 import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";
@@ -22,7 +22,7 @@ export default function RaceCreateAutomatic(){
     }
 
     function handleLinkChange(event){
-        setLink(event.target.innerHTML);
+        setLink(event.target.value);
     }
 
     async function submitLink(){
@@ -92,7 +92,7 @@ export default function RaceCreateAutomatic(){
             
             <div className="custom-modal-body">
                 <div className="alert alert-info"><small>Open the race result on motorsport.com and then paste the link into the textbox</small></div>
-                <div className="input-field" id="race-automatic-link" contentEditable={true} role="textbox" data-placeholder="Link..." data-category="input-field" onInput={(e) => {handleLinkChange(e)}} onClick={(e) => {focusDiv("race-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}></div>
+                <textarea rows={1} className="input-field textarea-expand w-100" id="race-automatic-link" role="textbox" placeholder="Link..." data-category="input-field" onInput={(e) => {handleLinkChange(e)}} onClick={(e) => {focusDiv("race-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <div className="d-flex justify-content-center align-items-center mt-2">
                     <input id="race-automatic-date" type="date" className="input-field" data-category="input-field" onChange={(e) => handleDateChange(e)} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}/>
                     <select className="input-field ms-2" data-category="input-field" onChange={(e) => {handleRaceTypeChange(e)}}>

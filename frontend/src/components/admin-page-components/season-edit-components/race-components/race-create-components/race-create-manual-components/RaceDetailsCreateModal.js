@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useApplicationContext } from "../../../../../ApplicationContext";
-import { enterKeySubmit, toggleModal } from "../../../../../utils";
+import { autoResizeTextarea, enterKeySubmit, toggleModal } from "../../../../../utils";
 import { useRaceCreateContext } from "../RaceCreateContext";
 
 export default function RaceDetailsCreateModal(){
@@ -18,11 +18,11 @@ export default function RaceDetailsCreateModal(){
     }
     
     function handleTrackChange(e){
-        setTrack(e.currentTarget.innerHTML);
+        setTrack(e.currentTarget.value);
     }
 
     function handleTitleNameChange(e){
-        setTitle(e.currentTarget.innerHTML);
+        setTitle(e.currentTarget.value);
     }
 
     function handleTimestampChange(e){
@@ -42,8 +42,8 @@ export default function RaceDetailsCreateModal(){
             <hr />
 
             <div className="custom-modal-body">
-                <div id="race-create-track" className='input-field mt-2' data-category="input-field" contentEditable={true} data-placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, next);handleTrackChange(e)}}></div>
-                <div id="race-create-title" className='input-field mt-2' data-category="input-field" contentEditable={true} data-placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, next);handleTitleNameChange(e)}}></div>
+                <textarea rows={1} id="race-create-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, next);handleTrackChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <textarea rows={1} id="race-create-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, next);handleTitleNameChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <div className="d-flex justify-content-center">
                     <input id="race-create-date" type="date" className="input-field flex-grow-1 mt-2" data-category="input-field" onChange={(e) => handleTimestampChange(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
                 </div>

@@ -101,9 +101,16 @@ export default function Anouncements(){
     }
 
     useEffect(() => {
+        setAnnouncementsLoading(true);
         retrieveAnnouncements();
         setAnnouncementsLoading(false);
     }, [])
+
+    useEffect(() => {
+        setAnnouncementsLoading(true);
+        retrieveAnnouncements();
+        setAnnouncementsLoading(false);
+    }, [location.search])
 
 
 
@@ -139,24 +146,24 @@ export default function Anouncements(){
                 <nav id="pagination-view ">
                     <ul className='pagination justify-content-center'>
                         <li id='previous-page' className={`${previousPage}`}>
-                            <Link id='previous-page-link' to={`announcements?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</Link>
+                            <Link id='previous-page-link' to={`?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</Link>
                         </li>
                         {pageNumbers.map((page) => (
                             parseInt(currentPage) !== page ?
                             ( 
                             <li id={`page-${page}`} key={`page-${page}`} className="page-item">
-                                <Link id={`page-link-${page}`} to={`announcements?page=${page}`} className='page-link'>{page}</Link>
+                                <Link id={`page-link-${page}`} to={`?page=${page}`} className='page-link'>{page}</Link>
                             </li>
                             )
                             :
                             (
                             <li id={`page-${page}`} key={`page-${page}`} className="page-item disabled">
-                                <Link id={`page-link-${page}`} to={`announcements?page=${page}`} className='page-link'>{page}</Link>
+                                <Link id={`page-link-${page}`} to={`?page=${page}`} className='page-link'>{page}</Link>
                             </li>
                             )
                         ))}
                         <li id='next-page' className={`${nextPage}`}>
-                            <Link id='next-page-link' to={`announcements?page=${parseInt(currentPage)+1}`} className='page-link'>Next</Link>
+                            <Link id='next-page-link' to={`?page=${parseInt(currentPage)+1}`} className='page-link'>Next</Link>
                         </li>
                     </ul>
                 </nav>}
@@ -170,7 +177,7 @@ export default function Anouncements(){
                     <hr className='m-1' />
                     <div className='d-flex align-items-center'>
                         {!userLoading && <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>}
-                        {!userLoading && <strong>{user.username}</strong>}
+                        {!userLoading && <strong className='ms-2'>{user.username}</strong>}
                     </div>
                     <textarea id="announcement-title" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Title..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTextChange(e)}}></textarea>
                     <textarea id="break-line-text" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Text..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTitleChange(e)}}></textarea>

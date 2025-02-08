@@ -52,21 +52,21 @@ export default function AnnouncementContextProvider(){
         if(announcementResponse.error){
             console.log(announcementResponse.error);
             setErrorMessage("There was an error saving the changes");
-            return;
+            return false;
         }
 
         if(announcementResponse.status === 400){
             setErrorMessage("Be sure the title has a limit of 128 characters and the text 2048");
-            return;
+            return false;
         }
 
         if(announcementResponse.status === 200){
             setSuccessMessage("Announcement changes saved");
-            return;
+            return true;
         }
 
         setErrorMessage("There was an error saving the changes");
-        return;
+        return false;
     }
 
     async function deleteAnnouncement(announcementId){

@@ -76,6 +76,7 @@ urlpatterns = [
     path('edit-race/', races_view.edit_race),
     path('edit-comment/', comments_view.edit_comment),
     path('post-comment/', comments_view.post_comment),
+    path('post-announcement/', announcements_view.post_announcement),
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),

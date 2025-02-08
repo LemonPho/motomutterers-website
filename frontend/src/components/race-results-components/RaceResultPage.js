@@ -93,7 +93,7 @@ export default function RaceResultPage({ raceId }){
                     </div>
                     
                 </div>
-                <div className="card-body custom-card-body" id="race-standings-card-body">
+                <div className="card-body custom-card-body expanded" id="race-standings-card-body">
                     {raceResultDetails.standings.users_picks.map((user_picks) => (
                         <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={`user-picks-${user_picks.user.id}`} style={{marginRight: "0px"}}>
                             {user_picks.position_change > 0 && 

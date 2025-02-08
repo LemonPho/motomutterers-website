@@ -46,6 +46,7 @@ def terminate_selenium_pid(request):
         instance = SeleniumStatus.objects.get(pid=pid)
         instance.delete()
     except SeleniumStatus.DoesNotExist:
+        instance = None
         return HttpResponse(status=404)
     
     try:
@@ -54,6 +55,8 @@ def terminate_selenium_pid(request):
 
         process.wait(timeout=3)
     except psutil.NoSuchProcess:
+        if instance:
+            instance.delete()
         return HttpResponse(status=404)
 
     return HttpResponse(status=400)

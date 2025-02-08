@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 
-import { focusDiv, enterKeySubmit, closeModals } from "../../../../utils";
+import { focusDiv, enterKeySubmit, closeModals, autoResizeTextarea } from "../../../../utils";
 import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
@@ -10,11 +10,13 @@ export default function CompetitorCreateAutomatic(){
     const { setErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
     const { retrieveSeason, season } = useSeasonContext();
 
+    const [link, setLink] = useState("");
+    const linkInput = useRef(null);
+
     async function submitLink(){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
 
-        let link = document.getElementById("competitor-automatic-link").innerHTML;
         const competitorResponse = await submitSeasonCompetitorsLink(link, season.year);
         setLoadingMessage(false);
 
@@ -43,6 +45,7 @@ export default function CompetitorCreateAutomatic(){
             return;
         }
 
+        linkInput.current.value = "";
         closeModals();
         retrieveSeason();
         setSuccessMessage("Riders successfully added");
@@ -58,7 +61,7 @@ export default function CompetitorCreateAutomatic(){
 
             <div className="custom-modal-body">
                 <div className="alert alert-info"><small>Paste the link of the motogp.com standings page</small></div>
-                <div className="input-field" id="competitor-automatic-link" contentEditable={true} role="textbox" data-placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("competitor-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}></div>
+                <textarea rows={1} ref={linkInput} className="input-field textarea-expand" id="competitor-automatic-link" role="textbox" placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("competitor-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink); setLink(e.target.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
             </div>
 
             <div className="custom-modal-footer">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import {useApplicationContext} from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
-import { enterKeySubmit, closeDropdowns, closeModals } from "../../../../utils";
+import { enterKeySubmit, closeDropdowns, closeModals, autoResizeTextarea } from "../../../../utils";
 
 export default function CreateCompetitorManual(){
     const { createSeasonCompetitor, season } = useSeasonContext()
@@ -25,9 +25,9 @@ export default function CreateCompetitorManual(){
         } else if(id == "competitor-edit-independent" || id == "competitor-create-independent"){
             setCompetitorIndependent(event.currentTarget.checked);
         } else if(id == "competitor-edit-first" || id == "competitor-create-first"){
-            setCompetitorFirst(event.currentTarget.innerHTML);
+            setCompetitorFirst(event.currentTarget.value);
         } else if(id == "competitor-edit-last" || id == "competitor-create-last"){
-            setCompetitorLast(event.currentTarget.innerHTML);
+            setCompetitorLast(event.currentTarget.value);
         } else if(id == "competitor-edit-rookie" || id == "competitor-create-rookie"){
             setCompetitorRookie(event.currentTarget.checked);
         }
@@ -82,8 +82,8 @@ export default function CreateCompetitorManual(){
             <hr />
             <div className="custom-modal-body">
                 {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                <div id="competitor-create-first" className='input-field mt-2' contentEditable={true} data-placeholder="First name..." data-category="input-field" autoFocus onKeyUp={(e) => enterKeySubmit(e, createCompetitor)} onInput={(e) => handleCompetitorData(e)}></div>
-                <div id="competitor-create-last" className='input-field mt-2' contentEditable={true} data-placeholder="Last name(s)..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, createCompetitor)} onInput={(e) => handleCompetitorData(e)}></div>
+                <textarea rows={1} id="competitor-create-first" className='input-field textarea-expand mt-2 w-100' placeholder="First name..." data-category="input-field" autoFocus onKeyUp={(e) => enterKeySubmit(e, createCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <textarea rows={1} id="competitor-create-last" className='input-field textarea-expand mt-2 w-100' placeholder="Last name(s)..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, createCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <div className="d-flex justify-content-around my-2">
                     <input id="competitor-create-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
                     <input id="competitor-create-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>

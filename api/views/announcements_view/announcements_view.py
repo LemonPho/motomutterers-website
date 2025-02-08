@@ -95,8 +95,9 @@ def edit_announcement(request):
     except Announcement.DoesNotExist:
         return HttpResponse(status=400)
     
-    serializer = AnnouncementSerializer(data=data, instance=announcement)
+    serializer = AnnouncementWriteSerializer(data=data, instance=announcement)
     if not serializer.is_valid():
+        print(serializer.errors)
         return HttpResponse(status=400)
     
     serializer.save()

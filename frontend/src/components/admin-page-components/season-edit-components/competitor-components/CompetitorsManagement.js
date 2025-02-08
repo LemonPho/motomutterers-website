@@ -2,53 +2,28 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 import { getSeasonCompetitors, getSeasonCompetitor } from "../../../fetch-utils/fetchGet";
-import { closeDropdowns, closeModals, enterKeySubmit, toggleModal } from "../../../utils";
+import { autoResizeTextarea, closeDropdowns, closeModals, enterKeySubmit, toggleModal } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import CompetitorCreateModal from "./create-competitor-components/CompetitorCreateModal";
 import CompetitorDeleteModal from "./CompetitorDeleteModal";
+import CompetitorEditModal from "./CompetitorEditModal";
 
 
 export default function CompetitorsManagement(){
     const { season, seasonLoading, createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, retrieveSeason } = useSeasonContext()    
     const { resetApplicationMessages, modalErrorMessage, setModalErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, user } = useApplicationContext();
 
-    const [tempCompetitor, setTempCompetitor] = useState({});
-
-    const [competitorNumber, setCompetitorNumber] = useState(0);
-    const [competitorPoints, setCompetitorPoints] = useState(0);
-    const [competitorFirst, setCompetitorFirst] = useState("");
-    const [competitorLast, setCompetitorLast] = useState("");
-    const [competitorIndependent, setCompetitorIndependent] = useState(false);
-    const [competitorRookie, setCompetitorRookie] = useState(false);
-
+    const [editCompetitor, setEditCompetitor] = useState(null);
     const [resetDeleteModal, setResetDeleteModal] = useState(false);
 
-    function handleCompetitorData(event){
-        const id = event.currentTarget.id;
-
-        if(id == "competitor-edit-number" || id == "competitor-create-number"){
-            setCompetitorNumber(event.currentTarget.value);
-        } else if(id == "competitor-edit-points" || id == "competitor-create-points") {
-            setCompetitorPoints(event.currentTarget.value);
-        } else if(id == "competitor-edit-independent" || id == "competitor-create-independent"){
-            setCompetitorIndependent(event.currentTarget.checked);
-        } else if(id == "competitor-edit-first" || id == "competitor-create-first"){
-            setCompetitorFirst(event.currentTarget.innerHTML);
-        } else if(id == "competitor-edit-last" || id == "competitor-create-last"){
-            setCompetitorLast(event.currentTarget.innerHTML);
-        } else if(id == "competitor-edit-rookie" || id == "competitor-create-rooie"){
-            setCompetitorRookie(event.currentTarget.checked);
-        }
-    }
 
     async function openEditModal(competitorId, event){
         resetApplicationMessages();
-        toggleModal("competitor-edit-modal", event);
         const competitorResponse = await getSeasonCompetitor(competitorId);
 
         if(competitorResponse.error){
-            setModalErrorMessage("There was an error editing the rider");
+            setModalErrorMessage("There was an error retrieving the rider");
             console.log(competitorResponse.error);
             return;
         }
@@ -59,73 +34,17 @@ export default function CompetitorsManagement(){
         }
 
         if(competitorResponse.status != 200){
-            setModalErrorMessage("Be sure the rider number is unique to this season");
+            setModalErrorMessage("There was an error retrieving the rider");
             return;
         }
 
-        setTempCompetitor(competitorResponse.competitor);
-        setCompetitorNumber(competitorResponse.competitor.competitor_points.competitor.number);
-        setCompetitorPoints(competitorResponse.competitor.competitor_points.points);
-        setCompetitorFirst(competitorResponse.competitor.competitor_points.competitor.first);
-        setCompetitorLast(competitorResponse.competitor.competitor_points.competitor.last);
-        setCompetitorIndependent(competitorResponse.competitor.independent);
-        setCompetitorRookie(competitorResponse.competitor.rookie);
-        document.getElementById("competitor-edit-first").innerHTML = competitorResponse.competitor.competitor_points.competitor.first;
-        document.getElementById("competitor-edit-last").innerHTML = competitorResponse.competitor.competitor_points.competitor.last;
-    }
-
-    async function editCompetitor(){
-        resetApplicationMessages();
-        let newCompetitor = {
-            id: null,
-            first: null,
-            last: null,
-            number: null,
-        }
-        let newCompetitorPoints = {
-            competitor: newCompetitor,
-            points: null,
-            id: null,
-        }
-        let newCompetitorPosition = {
-            id: null,
-            competitorPoints: newCompetitorPoints,
-            independent: null,
-            rookie: null,
-        }
-
-        newCompetitor.first = competitorFirst;
-        newCompetitor.last = competitorLast;
-        newCompetitor.number = competitorNumber;
-        newCompetitor.id = tempCompetitor.competitor_points.competitor.id;
-        newCompetitorPoints.points = competitorPoints;
-        newCompetitorPoints.id = tempCompetitor.competitor_points.id;
-        newCompetitorPosition.id = tempCompetitor.id;
-        newCompetitorPosition.competitorPoints = newCompetitorPoints;
-        newCompetitorPosition.independent = competitorIndependent;
-        newCompetitorPosition.rookie = competitorRookie;
-        
-        const result = await editSeasonCompetitor(newCompetitorPosition);
-
-        if(result){
-            closeModals();
-        } else {
-            setModalErrorMessage("There was an error while submiting the edited competitor");
-        }
-    }
-
-    async function deleteCompetitor(competitorId){
-        resetApplicationMessages();
-        const result = await deleteSeasonCompetitor(competitorId, season.id);
-        if(result){
-            closeModals();
-        }
+        setEditCompetitor(competitorResponse.competitor);
+        toggleModal("competitor-edit-modal", event);
     }
 
     function openDeleteModal(event){
         setResetDeleteModal(true);
         toggleModal("competitor-delete-modal", event, user.is_logged_in, user.is_admin);
-        setTimeout(() => setResetDeleteModal(false), 0);
     }
 
 
@@ -196,37 +115,7 @@ export default function CompetitorsManagement(){
 
             <CompetitorCreateModal/>
             <CompetitorDeleteModal reset={resetDeleteModal}/>
-
-            <div className="custom-modal hidden" id="competitor-edit-modal" onClick={(e) => {e.stopPropagation();}}>
-                
-                <div className="custom-modal-header justify-content-center">  
-                    <h5>Edit rider</h5>
-                </div>
-                {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                <hr />
-                <div className="custom-modal-body">
-                    <div id="competitor-edit-first" className='input-field mt-2' contentEditable={true} data-placeholder="First name..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, editCompetitor)} onInput={(e) => handleCompetitorData(e)}></div>
-                    <div id="competitor-edit-last" className='input-field mt-2' contentEditable={true} data-placeholder="Last name(s)..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, editCompetitor)} onInput={(e) => handleCompetitorData(e)}></div>
-                    <div className="d-flex justify-content-around mt-2">
-                        <input id="competitor-edit-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" value={competitorNumber} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
-                        <input id="competitor-edit-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" value={competitorPoints} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
-                    </div>
-                    <form className="form-check">
-                        <input id="competitor-edit-independent" type="checkbox" className="form-check-input" checked={competitorIndependent} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
-                        <label className="form-check-label ms-1" htmlFor="competitor-edit-independent">Independent Rider</label>
-                    </form>
-
-                    <form className="form-check">
-                        <input id="competitor-edit-rookie" type="checkbox" className="form-check-input" checked={competitorRookie} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
-                        <label className="form-check-label ms-1" htmlFor="competitor-edit-rookie">Rookie</label>
-                    </form>
-                    
-                </div>
-                <div className="custom-modal-footer d-flex flex-column">
-                    <button id="competitor-edit-button" className="btn btn-primary rounded-15 w-100" onClick={editCompetitor}>Save Changes</button>
-                    <button id="competitor-delete-button" className="btn btn-outline-danger mt-2 rounded-15 w-100" onClick={() => deleteCompetitor(tempCompetitor.id)}>Delete Rider</button>
-                </div>
-            </div>
+            <CompetitorEditModal competitor={editCompetitor}/>
         </div>
 
         

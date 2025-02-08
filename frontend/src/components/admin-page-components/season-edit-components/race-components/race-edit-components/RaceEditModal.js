@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { useRaceEditContext } from "./RaceEditContext";
-import { enterKeySubmit } from "../../../../utils";
+import { autoResizeTextarea, enterKeySubmit } from "../../../../utils";
 
 export default function RaceEditModal(){
     const { modalErrorMessage } = useApplicationContext();
@@ -29,8 +29,8 @@ export default function RaceEditModal(){
             {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 
             <div className="custom-modal-body">
-                <div id="race-edit-track" className='input-field mt-2' data-category="input-field" contentEditable={true} data-placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.innerHTML)}}></div>
-                <div id="race-edit-title" className='input-field mt-2' data-category="input-field" contentEditable={true} data-placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.innerHTML)}}></div>
+                <textarea rows={1} id="race-edit-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <textarea rows={1} id="race-edit-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <div className="d-flex justify-content-center">
                     <input id="race-edit-date" type="date" data-category="input-field" className="input-field flex-grow-1 mt-2" value={timestamp} onChange={(e) => setTimestamp(e.currentTarget.value)} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                 </div>
