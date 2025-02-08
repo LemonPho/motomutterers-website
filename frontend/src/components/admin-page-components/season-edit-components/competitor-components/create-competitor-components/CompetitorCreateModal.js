@@ -15,6 +15,7 @@ export default function CompetitorCreateModal(){
     async function retrieveCompetitorsRiderList(){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
+        closeModals();
 
         let link = "https://www.motogp.com/en/riders/motogp";
         const competitorResponse = await submitSeasonCompetitorsLink(link, season.year);

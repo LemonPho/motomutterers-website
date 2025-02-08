@@ -1,12 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium import webdriver
+
+
 from ..models import SeleniumStatus
 
-import os
-import signal
+import threading
 import json
-import psutil
+
+ACTIVE_BROWSERS = {}
 
 def check_selenium_status():
     if SeleniumStatus.objects.count() != 0:
@@ -14,9 +18,11 @@ def check_selenium_status():
     else:
         return True
 
-def create_selenium_status(pid, message, request):
+def create_selenium_status(pid, message, request, browser):
     if SeleniumStatus.objects.count() != 0:
         return False
+    
+    ACTIVE_BROWSERS[pid] = browser
     
     return SeleniumStatus.objects.create(
         user=request.user,
@@ -25,17 +31,10 @@ def create_selenium_status(pid, message, request):
     )
 
 def close_selenium_status(instance):
-    try:
-        process = psutil.Process(instance.pid)
-        process.terminate()
-
-        process.wait(timeout=3)
-    except psutil.NoSuchProcess:
-        None
+    ACTIVE_BROWSERS.pop(instance.pid)
     instance.delete()
 
 def terminate_selenium_pid(request):
-    print(request.body)
     data = json.loads(request.body)
     pid = data.get("pid", False)
 
@@ -44,19 +43,13 @@ def terminate_selenium_pid(request):
 
     try:
         instance = SeleniumStatus.objects.get(pid=pid)
-        instance.delete()
     except SeleniumStatus.DoesNotExist:
         instance = None
         return HttpResponse(status=404)
     
-    try:
-        process = psutil.Process(pid)
-        process.terminate()
+    browser = ACTIVE_BROWSERS.pop(instance.pid)
+    #browser.quit() takes a little while, it has to wait until the webdriverwait is done
+    browser.quit() 
+    instance.delete()
 
-        process.wait(timeout=3)
-    except psutil.NoSuchProcess:
-        if instance:
-            instance.delete()
-        return HttpResponse(status=404)
-
-    return HttpResponse(status=400)
+    return HttpResponse(status=204)

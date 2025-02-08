@@ -2,7 +2,7 @@ from ...models import Season, CompetitorPosition, Competitor, SeasonCompetitorPo
 from ...serializers.serializers_util import sanitize_html
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
 
-from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status
+from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -14,6 +14,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
 import os
+import psutil
 
 RACE_TYPE_UPCOMING = 1
 RACE_TYPE_FINAL = 2
@@ -165,7 +166,7 @@ def generate_link_upcoming_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"])
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"], browser=browser)
 
     browser.get(q2_url)
     delay = 10
@@ -281,7 +282,7 @@ def generate_link_final_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving full race result", request=data["request"])
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving upcoming race", request=data["request"], browser=browser)
 
     browser.get(url)
     delay = 10
@@ -363,7 +364,7 @@ def generate_link_sprint_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving sprint race result", request=data["request"])
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, executor_url=browser.command_executor, message="Retrieving sprint race result", request=data["request"], browser=browser)
 
     browser.get(url)
     delay = 10
@@ -451,7 +452,7 @@ def process_retrieve_race_result(race, request):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving race result", request=request)
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message=f"Retrieving race result for: {race.title}", request=request, browser=browser)
 
     browser.get(url)
     delay = 10
@@ -551,13 +552,14 @@ def generate_race_standings(competitors_positions, season):
             
             points += competitor_position.competitor_points.points + season_competitor.competitor_points.points
 
-        #TODO: will need to figure out position change
         response["data"]["users_picks"].append({
             "points": points,
             "user": standing.user.id,
             "position_change": 0,
             "position": position,
         })
+
+        position += 1
 
     return response
 

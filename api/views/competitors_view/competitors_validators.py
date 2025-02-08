@@ -1,6 +1,6 @@
 from ...models import Season, Competitor, CompetitorPoints
 from ...serializers.serializers_util import sanitize_html
-from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status
+from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -134,7 +134,7 @@ def generate_competitor_table_data(url, season, request):
         service = Service("/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request)
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request, browser=browser)
 
     browser.get(url)
     delay = 10

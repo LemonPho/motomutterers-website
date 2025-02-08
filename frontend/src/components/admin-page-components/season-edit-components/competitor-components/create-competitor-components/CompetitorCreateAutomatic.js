@@ -15,7 +15,8 @@ export default function CompetitorCreateAutomatic(){
 
     async function submitLink(){
         resetApplicationMessages();
-        setLoadingMessage("Loading...");
+        closeModals();
+        setLoadingMessage("Loading: Reload page to view progress");
 
         const competitorResponse = await submitSeasonCompetitorsLink(link, season.year);
         setLoadingMessage(false);

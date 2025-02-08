@@ -659,6 +659,7 @@ export async function submitSeasonCompetitorsLink(link, year){
         invalidLink: false,
         invalidSeason: false,
         timeout: false,
+        seleniumAvailable: true,
         status: null,
     }
 
@@ -682,6 +683,7 @@ export async function submitSeasonCompetitorsLink(link, year){
         response.invalidLink = apiResult.invalidLink;
         response.invalidSeason = apiResult.invalidSeason;
         response.timeout = apiResult.timeout;
+        response.seleniumAvailable = apiResult.selenium_available;
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
     } catch(error) {
@@ -971,6 +973,7 @@ export async function submitRaceResultLink(link, raceDate, raceType, seasonYear)
         timeout: false,
         invalidSeason: false,
         invalidType: false,
+        seleniumAvailable: true,
         status: null,
     }
 
@@ -998,6 +1001,7 @@ export async function submitRaceResultLink(link, raceDate, raceType, seasonYear)
         response.invalidSeason = apiResult.invalidSeason;
         response.invalidType = apiResult.invalidType;
         response.timeout = apiResult.timeout;
+        response.seleniumAvailable = apiResult.selenium_available;
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
 

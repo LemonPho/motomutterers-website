@@ -108,6 +108,4 @@ class RaceWriteSerializer(serializers.ModelSerializer):
               
         instance.save()
 
-        #create simple user picks model to avoid creating extra riders
-
         return instance
