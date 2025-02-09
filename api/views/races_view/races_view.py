@@ -265,6 +265,7 @@ def retrieve_race_result(request):
     competitors_serializer = CompetitorPositionWriteSerializer(data=positions_data["data"]["competitors_positions"], many=True)
 
     if not competitors_serializer.is_valid():
+        print(competitors_serializer.errors)
         return HttpResponse(status=422)
     
     competitors_positions = competitors_serializer.save()

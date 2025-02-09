@@ -47,9 +47,10 @@ def terminate_selenium_pid(request):
         instance = None
         return HttpResponse(status=404)
     
-    browser = ACTIVE_BROWSERS.pop(instance.pid)
+    browser = ACTIVE_BROWSERS.pop(instance.pid, -1)
     #browser.quit() takes a little while, it has to wait until the webdriverwait is done
-    browser.quit() 
+    if browser != -1:
+        browser.quit() 
     instance.delete()
 
     return HttpResponse(status=204)

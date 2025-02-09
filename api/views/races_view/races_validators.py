@@ -508,7 +508,7 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
-                print(f"did not find season competitor: {pick.competitor_points.competitor}")
+                print(f"did not find season competitor: {pick.competitor_points.competitor.number}")
                 response["competitor_not_found"] = True
                 return response
             
@@ -526,12 +526,14 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
+                print(f"did not find independent season competitor: {standing.independent_pick.competitor_points.competitor.number}")
                 response["competitor_not_found"] = True
                 return response
             
             try:
                 competitor_position = competitors_positions.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
+                print(f"did not find competitor in race: {standing.independent_pick.competitor_points.competitor.number}")
                 response["competitor_not_found"] = True
                 return response
             
@@ -541,12 +543,14 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
+                print(f"did not find rookie season competitor: {standing.rookie_pick.competitor_points.competitor.number}")
                 response["competitor_not_found"] = True
                 return response
             
             try:
                 competitor_position = competitors_positions.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
+                print(f"did not find competitor in race: {standing.rookie_pick.competitor_points.competitor.number}")
                 response["competitor_not_found"] = True
                 return response
             
