@@ -16,11 +16,7 @@ export default function RaceResultsPage({ seasonYear }){
 
     useEffect(() => {
         fetchData();
-    }, [])
-
-    useEffect(() => {
-        fetchData();
-    }, [seasonYear])
+    }, [seasonYear]);
 
     return(
         <div>

@@ -33,6 +33,7 @@ export default function Anouncements(){
     }
 
     async function retrieveAnnouncements(){
+        setAnnouncementsLoading(true);
         const params = new URLSearchParams(location.search);
         let page = params.get("page");
         setCurrentPage(page);
@@ -46,6 +47,7 @@ export default function Anouncements(){
 
         setAnnouncements(announcementsResponse.announcements);
         setTotalAnnouncements(announcementsResponse.amountAnnouncements);
+        setAnnouncementsLoading(false);
     }
 
     //when totalAnnouncements is asigned, we can generate the pagination necessary, no need to check if its 0, it will just generate a disabled pagination menu
@@ -101,18 +103,8 @@ export default function Anouncements(){
     }
 
     useEffect(() => {
-        setAnnouncementsLoading(true);
         retrieveAnnouncements();
-        setAnnouncementsLoading(false);
-    }, [])
-
-    useEffect(() => {
-        setAnnouncementsLoading(true);
-        retrieveAnnouncements();
-        setAnnouncementsLoading(false);
-    }, [location.search])
-
-
+    }, [location.search]);
 
     return(
         <div className='card element-background-color element-border-color rounded-15'>

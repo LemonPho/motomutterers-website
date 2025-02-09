@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import RaceResultPage from "./RaceResultPage";
 import RaceResultsPage from "./RaceResultsPage";
@@ -9,29 +9,27 @@ export default function RaceResultsHandler(){
     const { raceId } = useParams();
     const [ searchParams ] = useSearchParams();
 
-    const { retrieveSeasonList, seasonList, seasonListLoading, setSelectedSeason, selectedSeason } = useRaceResultsContext();
+    const { retrieveSeasonList, selectedSeason } = useRaceResultsContext();
 
     const seasonYear = searchParams.get("season");
 
+    const [loading, setLoading] = useState();
+
+    async function fetchData(){
+        if(seasonYear){
+            setLoading(true);
+            await retrieveSeasonList();  
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        async function fetchData(){
-            await retrieveSeasonList();
-        }
+        fetchData();  
+    }, [location.search]);
 
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        if(seasonListLoading || seasonList == undefined){
-            return;
-        }
-
-        for(let i=0; i < seasonList.length; i++){
-            if(seasonList[i].year == seasonYear){
-                setSelectedSeason(seasonList[i]);
-            }
-        }
-    }, [seasonList]);
+    if(loading){
+        return;
+    }
 
     if(raceId){
         return <RaceResultPage raceId={raceId}/>

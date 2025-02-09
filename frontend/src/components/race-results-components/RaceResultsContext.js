@@ -99,11 +99,18 @@ export default function RaceResultsContextProvider(){
     async function retrieveSeasonList(){
         setSeasonListLoading(true);
         const seasonListResponse = await getSeasonsSimple();
+        const seasonYear = searchParams.get("season");
 
         if(seasonListResponse.error || seasonListResponse.status != 200){
             setErrorMessage("There was an error loading the season list");
             return;
         }
+
+        for(let i=0; i < seasonListResponse.seasons.length; i++){
+            if(seasonListResponse.seasons[i].year == seasonYear){
+                setSelectedSeason(seasonListResponse.seasons[i]);
+            }
+        }    
 
         setSeasonList(seasonListResponse.seasons);
         setSeasonListLoading(false);
