@@ -6,7 +6,7 @@ import { useApplicationContext } from "../ApplicationContext";
 const StandingsContext = createContext();
 
 export default function StandingsContextProvider(){
-    const { setErrorMessage } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage } = useApplicationContext();
 
     const [standings, setStandings] = useState({});
     const [standingsLoading, setStandingsLoading] = useState(true);
@@ -93,12 +93,56 @@ export default function StandingsContextProvider(){
         setUserPicksDetailed(userPicksResponse.userPicks);
         setUserPicksDetailedLoading(false);
     }
+
+    function copyStandingsTable(){ 
+        if(!standings || standings.users_picks.length == 0){
+            setErrorMessage("There are no standings to be copied");
+            return;
+        }
+        
+        let result = "<table>\n";
+
+        for(let i=0; i < standings.users_picks.length; i++){
+            result += "\t<tr>\n";
+            result += "\t\t<td>";
+            result += "<b>";
+            result += String(i+1) + ". ";
+            result += standings.users_picks[i].user.username + " - ";
+            result += standings.users_picks[i].points;
+            result += "</b>";
+            result += "</td>\n";
+            for(let j=0; j < standings.users_picks[i].picks.length; j++){
+                result += "\t\t<td>";
+                result += standings.users_picks[i].picks[j].first[0] + ". " + standings.users_picks[i].picks[j].last.slice(0, 3);
+                result += " - " + standings.users_picks[i].picks[j].points;
+                result += "</td>\n";
+            }
+            if(standings.users_picks[i].independent_pick){
+                result += "\t\t<td>";
+                result += standings.users_picks[i].independent_pick.first[0] + ". " + standings.users_picks[i].independent_pick.last.slice(0, 3);
+                result += " - " + standings.users_picks[i].independent_pick.points;
+                result += "</td>\n";
+            }
+            if(standings.users_picks[i].rookie_pick){
+                result += "\t\t<td>";
+                result += standings.users_picks[i].rookie_pick.first[0] + ". " + standings.users_picks[i].rookie_pick.last.slice(0, 3);
+                result += " - " + standings.users_picks[i].rookie_pick.points;
+                result += "</td>\n";
+            }
+            result += "\t</tr>\n";
+        }
+        result += "</table>";
+
+        navigator.clipboard.writeText(result);
+        setSuccessMessage("Table copied to clipboard");
+    }
     
     return(
         <StandingsContext.Provider value={{
             retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, retrieveUserPicks,
             standings, userPicksDetailed, seasonList, selectedSeason,
             standingsLoading, userPicksDetailedLoading, seasonListLoading, selectedSeasonLoading,
+            copyStandingsTable,
         }}>
             <Outlet />
         </StandingsContext.Provider>

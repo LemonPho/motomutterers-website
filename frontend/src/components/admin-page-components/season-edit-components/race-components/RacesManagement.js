@@ -96,12 +96,38 @@ export default function RacesManagement(){
             return;
         }
 
-        console.log(raceResultResponse);
-
         setSuccessMessage("Results successfully retrieved");
         
         await retrieveSeason();
         return;
+    }
+
+    function copyStandingsTable(race){
+        console.log(race);
+
+        let result = "<table>";
+
+        for(let i=0; i < race.standings.users_picks.length; i++){
+            result += "<tr>";
+            result += "<td>";
+            result += "<b>";
+            result += String(i+1) + ". ";
+            result += race.standings.users_picks[i].user.username + " - ";
+            result += race.standings.users_picks[i].points;
+            result += "</b>";
+            result += "</td>";
+            for(let j=0; j < race.standings.users_picks[i].picks.length; i++){
+                result += "td";
+                result += race.standings.users_picks[j].picks[j].competitor_points.competitor.first.slice(0, 2) + " " + race.standings.users_picks[j].picks[j].competitor_points.competitor.last[0];
+                result += "</td>";
+            }
+            result += "</tr>\n";
+        }
+        result += "</table>";
+
+        navigator.clipboard.writeText(result);
+        console.log("coppied: ", result);
+
     }
 
     if(seasonLoading){

@@ -171,7 +171,7 @@ class SeasonSerializer(serializers.ModelSerializer):
     top_rookie = serializers.BooleanField()
     finalized = serializers.BooleanField()
     current = serializers.SerializerMethodField()
-    standings = importlib.import_module("api.serializers.standings_serializers").StandingsSimpleSerializer()
+    standings = importlib.import_module("api.serializers.standings_serializers").StandingsSerializer()
     competitors_sorted_number = serializers.SerializerMethodField()
     selenium_status = serializers.SerializerMethodField()
 

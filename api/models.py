@@ -99,7 +99,7 @@ class User(AbstractUser):
 #Managed in the user picks view
 class UserPicksRace(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="simple_picks")
-    points = models.PositiveIntegerField()
+    points = models.FloatField()
     position = models.PositiveIntegerField()
     position_change = models.IntegerField()
 

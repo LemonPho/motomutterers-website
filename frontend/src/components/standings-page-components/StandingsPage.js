@@ -5,29 +5,40 @@ import { toggleDropdown, toggleModal } from "../utils";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useStandingsContext } from "./StandingsContext";
 import StandingDetailed from "./StandingDetailed";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useApplicationContext } from "../ApplicationContext";
 
 export default function Standings(){
+    const { user, userLoading } = useApplicationContext();
     const { 
         retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, seasonList,
-        standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks } = useStandingsContext();
+        standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks,
+        copyStandingsTable } = useStandingsContext();
+
+    const location = useLocation();
+
+    async function fetchData(){
+        await retrieveStandings();
+        await retrieveSeasonList();
+        await retrieveSelectedSeason();
+    }
 
     useEffect(() => {
-        async function fetchData(){
-            await retrieveStandings();
-            await retrieveSeasonList();
-            await retrieveSelectedSeason();
-        }
-
         fetchData();
     }, [])
+
+    useEffect(() => {
+        fetchData();
+    }, [location.search])
+
+
 
     return (
     <div className="card rounded-15 align-middle element-background-color element-border-color">
         <div className="rounded-15-top card-header">
             <div className="d-flex align-items-center">
                 <h5 className="m-0">
-                    Standings
+                    <span>Standings</span>
                 </h5>
                 {!selectedSeasonLoading && selectedSeason.finalized &&
                     <small>‎ (finalized)</small>
@@ -39,7 +50,7 @@ export default function Standings(){
                     <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>
                     {!seasonListLoading && seasonList.map((season) => (
                         <li key={`${season.year}`}>
-                            <Link className="dropdown-item" to={`/standings?season=${season.year}`} id={`${season.year}`}>
+                            <Link className="dropdown-item" to={`?season=${season.year}`} id={`${season.year}`}>
                                 {season.year}
                                 {season.year == selectedSeason.year && (
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
@@ -51,10 +62,22 @@ export default function Standings(){
                     ))}
                     </ul>
                 </div>
+                {(!userLoading && user.is_admin) && 
+                    <div className="dropdown-div ms-2" onClick={(e) => toggleDropdown(`dropdown-standings-options`, e)}>
+                        <div className="d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                            </svg>
+                        </div>
+                        <ul id={`dropdown-standings-options`} className="dropdown-menu">
+                            <li><button className="dropdown-item" onClick={() => copyStandingsTable()}>Copy Standings Table</button></li>
+                        </ul>
+                    </div>
+                }
             </div>
         </div>
         <div className="card-body">
-            {!standings ? 
+            {(!standingsLoading && (!standings || standings.users_picks.length == 0)) ? 
             (<div>There are no standings for this season</div>) : 
             (standingsLoading == 0 && standings.users_picks.map((user_picks, i) => (
                 <div key={`standings-user-${user_picks.user.username}`}>
