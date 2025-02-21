@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { useApplicationContext } from "../ApplicationContext";
 import { submitSeason } from "../fetch-utils/fetchPost";
-import { closeModals } from "../utils";
 import { useSeasonCreateContext } from "./SeasonCreateContext";
 
 export default function SeasonCreateModal(){
@@ -55,7 +54,7 @@ export default function SeasonCreateModal(){
     }
 
     return(
-        <div className="custom-modal hidden" id="season-create-modal" onClick={(e) => {e.stopPropagation()}}>
+        <div className="custom-modal" id="season-create-modal" onClick={(e) => {e.stopPropagation()}}>
             {modalErrorMessage != "" && <div className="alert alert-danger my-2"><small>{modalErrorMessage}</small></div>}
             {modalSuccessMessage != "" && <div className="alert alert-success my-2"><small>{modalSuccessMessage}</small></div>}
             {loadingMessage && <div className="alert alert-secondary my-2"><small>{loadingMessage}</small></div>}

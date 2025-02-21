@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSeasonContext } from "../../../SeasonContext";
 import { useApplicationContext } from "../../../../../ApplicationContext";
 import { useRaceCreateContext } from "../RaceCreateContext";
-import { toggleModal } from "../../../../../utils";
+import { useModalsContext } from "../../../../../ModalsContext";
 
 export default function RaceResultsCreateModal(){
+    const { setOpenedModal } = useModalsContext();
     const { season, seasonLoading } = useSeasonContext();
     const { user, resetApplicationMessages, setLoadingMessage } = useApplicationContext();
     const { createRace, invalidCompetitors, selectedCompetitors, competitorsPositions, setCompetitorsPositions } = useRaceCreateContext();
@@ -57,7 +58,7 @@ export default function RaceResultsCreateModal(){
     }
 
     return (
-        <div className="custom-modal hidden" id="race-results-create-manual-modal" onClick={(e) => {e.stopPropagation()}}>
+        <div className="custom-modal" id="race-results-create-manual-modal" onClick={(e) => {e.stopPropagation()}}>
             <div className="custom-modal-header justify-content-center">
                 <h5>Race Create Manual</h5>
             </div>
@@ -99,7 +100,7 @@ export default function RaceResultsCreateModal(){
             </div>
 
             <div className="custom-modal-footer">
-                <button className="btn btn-primary rounded-15" onClick={(e) => {toggleModal("competitors-select-modal", e, user.is_logged_in, user.is_admin, false)}}>Back</button>
+                <button className="btn btn-primary rounded-15" onClick={(e) => {setOpenedModal("race-create-select-competitors")}}>Back</button>
                 <button className="btn btn-primary rounded-15 ms-auto" onClick={handleCreateRace}>Save race result</button>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { dataURLtoFile, toggleModal, closeModals } from "../utils";
+import { dataURLtoFile } from "../utils";
 import { submitChangeProfilePicture } from "../fetch-utils/fetchPost";
 import { getCurrentUser } from "../fetch-utils/fetchGet";
 
@@ -120,7 +120,7 @@ export default function ProfilePictureSettings(){
                     </div>
                 </div>
                 <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();toggleModal("profile-picture-modal", e)}}>Change</button>
-                <div className="custom-modal hidden" id="profile-picture-modal" onClick={(e) => {e.stopPropagation();}}>
+                <div className="custom-modal" id="profile-picture-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">
                         <h5>Change profile picture</h5>
                         <button type="button" className="btn btn-link link-no-decorations ms-auto" id="close-modal">

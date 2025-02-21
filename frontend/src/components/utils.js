@@ -76,56 +76,6 @@ export function getScreenDimensions(){
     return result
 }
 
-export function closeModals(clearInputFields){
-    const modals = document.getElementsByClassName("custom-modal");
-    const backgroundBlur = document.getElementById("background-blur");
-    const inputFields = document.querySelectorAll('[data-category="input-field"]');
-
-    //closing modals
-    Array.prototype.forEach.call(modals, (modal) => {
-        if(!modal.classList.contains("hidden")){
-            modal.classList.toggle("hidden");
-        }
-    });
-
-    //Erasing all inputs
-    if(clearInputFields || clearInputFields == undefined){
-        Array.prototype.forEach.call(inputFields, (inputField) => {
-            if(inputField.tagName === "INPUT"){
-                inputField.value = null;
-                inputField.checked = false;
-            } else if(inputField.nodeName == 'SELECT'){
-                inputField.value = 1;
-            } else {
-                inputField.innerHTML = "";
-            }
-        })
-    }
-    
-    if(!backgroundBlur.classList.contains("hidden")){
-        backgroundBlur.classList.toggle("hidden");
-    }
-}
-
-export function toggleModal(elementId, event, isLoggedIn, isAdmin, clearInputFields){
-    const modal = document.getElementById(elementId);
-    const backgroundBlur = document.getElementById("background-blur");
-    event.stopPropagation();
-
-    if(!modal.classList.contains("hidden")){
-        closeModals(clearInputFields);
-        return;
-    }
-
-    if((isLoggedIn === undefined || isLoggedIn === true) && (isAdmin === undefined || isAdmin === true)){
-        closeDropdowns();
-        closeModals(clearInputFields);
-
-        modal.classList.toggle("hidden");
-        backgroundBlur.classList.toggle("hidden");
-    }
-}
-
 export function closeDropdowns(){
     //this function retrieves all the dropdowns currently on the page, and closes them all
     //this grabs the dropdown CONTENT divs, not the GENERAL dropdown div, and removes the show class

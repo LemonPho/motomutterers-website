@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { getRaceResults, getSeasonRaces, getSeasonsSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
-import { toggleDropdown, toggleModal } from "../utils";
+import { toggleDropdown } from "../utils";
 import { useRaceResultsContext } from "./RaceResultsContext";
 
 export default function RaceResultsPage({ seasonYear }){

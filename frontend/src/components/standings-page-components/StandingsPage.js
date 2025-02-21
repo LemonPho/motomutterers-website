@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { toggleDropdown, toggleModal } from "../utils";
+import { toggleDropdown } from "../utils";
 
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useStandingsContext } from "./StandingsContext";

@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 
 import { useApplicationContext } from "../../../../../ApplicationContext";
 import { useSeasonContext } from "../../../SeasonContext";
-import { toggleModal } from "../../../../../utils";
 import RaceDetailsCreateModal from "./RaceDetailsCreateModal";
 import RaceResultsCreateModal from "./RaceResultsCreateModal";
 import RaceSelectCompetitorsCreateModal from "./RaceSelectCompetitorsCreateModal";
+import Modal from "../../../../../util-components/Modal";
+import { useModalsContext } from "../../../../../ModalsContext";
 
 export default function RaceCreateManual(){
 
-    const { modalErrorMessage, contextLoading, loggedIn, user } = useApplicationContext();
-    const { season, seasonLoading } = useSeasonContext();
+    const { openedModal } = useModalsContext();
+    const { contextLoading, } = useApplicationContext();
+    const { seasonLoading } = useSeasonContext();
 
 
     if(seasonLoading || contextLoading){
@@ -20,14 +22,13 @@ export default function RaceCreateManual(){
     return (
         <div>
 
-            <RaceDetailsCreateModal/>
-
-            <RaceResultsCreateModal/>
-
-            <RaceSelectCompetitorsCreateModal/>
-
-            <RaceResultsCreateModal/>
             
+            
+            {/* 
+            <Modal isOpen={openedModal == "race-create"}>
+                <RaceResultsCreateModal/>
+            </Modal>
+            */}
         </div>
         
     )

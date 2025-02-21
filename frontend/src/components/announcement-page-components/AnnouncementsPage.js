@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, Navigate, Link } from 'react-router-dom';
 
-import ApplicationContext, { useApplicationContext } from './ApplicationContext';
+import ApplicationContext, { useApplicationContext } from '../ApplicationContext';
 
-import { getAnnouncements } from './fetch-utils/fetchGet';
-import { submitAnnouncement } from './fetch-utils/fetchPost';
-import { autoResizeTextarea, closeModals, pagination, toggleModal } from './utils';
-import ProfilePictureLazyLoader from './util-components/ProfilePictureLazyLoader';
+import { getAnnouncements } from '../fetch-utils/fetchGet';
+import { submitAnnouncement } from '../fetch-utils/fetchPost';
+import { autoResizeTextarea, pagination } from '../utils';
+import ProfilePictureLazyLoader from '../util-components/ProfilePictureLazyLoader';
+import Modal from '../util-components/Modal';
+import { useModalsContext } from '../ModalsContext';
+import CreateAnnouncementModal from './CreateAnnouncementModal';
 
 export default function Anouncements(){
     const [announcements, setAnnouncements] = useState([]);
@@ -15,6 +18,7 @@ export default function Anouncements(){
     const [totalAnnouncements, setTotalAnnouncements] = useState(0);
 
     const {user, userLoading, setErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage} = useApplicationContext();
+    const {openedModal, setOpenedModal} = useModalsContext();
 
     const [pages, setPages] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,14 +27,6 @@ export default function Anouncements(){
     const [pageNumbers, setPageNumbers] = useState([]);
 
     const location = useLocation();
-
-    const [newAnnouncementText, setNewAnnouncementText] = useState("");
-    const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
-
-    function resetNewAnnouncementVariables(){
-        setNewAnnouncementText("");
-        setNewAnnouncementTitle("");
-    }
 
     async function retrieveAnnouncements(){
         setAnnouncementsLoading(true);
@@ -62,46 +58,6 @@ export default function Anouncements(){
         
     }, [totalAnnouncements]);
 
-    async function postAnnouncement(){
-        resetApplicationMessages();
-        setLoadingMessage("Loading..");
-        if(!user.is_admin){
-            setErrorMessage("There was an error submiting the announcement");
-            return;
-        }
-
-        const announcementResponse = await submitAnnouncement(newAnnouncementTitle, newAnnouncementText);
-
-        if(announcementResponse.error){
-            setErrorMessage("There was an error submiting the announcement");
-            return;
-        }
-
-        if(announcementResponse.status === 400){
-            setErrorMessage("Be sure the title has less than 128 characters and the text 2048 characters");
-            return;
-        }
-
-        if(announcementResponse.status === 200){
-            setSuccessMessage("Announcement posted");
-            setLoadingMessage(false);
-            retrieveAnnouncements();
-            closeModals();
-            return;
-        }
-
-        setErrorMessage("There was a server error while submiting the announcement");
-        return;
-    }
-
-    function handleAnnouncementTextChange(event){
-        setNewAnnouncementText(event.target.value);
-    }
-
-    function handleAnnouncementTitleChange(event){
-        setNewAnnouncementTitle(event.target.value);
-    }
-
     useEffect(() => {
         retrieveAnnouncements();
     }, [location.search]);
@@ -110,12 +66,11 @@ export default function Anouncements(){
         <div className='card element-background-color element-border-color rounded-15'>
             <div className='card-header d-flex align-items-center'>
                 <h5>Announcements</h5>
-                {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={(e) => {resetNewAnnouncementVariables();toggleModal("announcement-create-modal", e, undefined, user.is_admin)}}>Create Announcement</button>}
+                {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={() => {setOpenedModal("announcement-create")}}>Create Announcement</button>}
             </div>
             <div className='card-body'>
             {(!announcementsLoading && announcements.length != 0) && announcements.map((announcement) => (
                 <Link className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' to={`/announcements/${announcement.id}`} key={announcement.id}>
-                    
                     <div className='card-header d-flex align-items-center'>
                         <ProfilePictureLazyLoader width={"2rem"} height="2rem" username={announcement.user.username}/>
                         <small className='ms-2'>{announcement.user.username}</small>
@@ -160,24 +115,9 @@ export default function Anouncements(){
                     </ul>
                 </nav>}
             </div>
-
-            <div className="custom-modal hidden" id="announcement-create-modal" style={{width: "50%"}} onClick={(e) => {e.stopPropagation();}}>
-                <div className="custom-modal-header justify-content-center">                                
-                    <h5 className='m-0'>Create announcement</h5>
-                </div>
-                <div className="custom-modal-body">
-                    <hr className='m-1' />
-                    <div className='d-flex align-items-center'>
-                        {!userLoading && <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>}
-                        {!userLoading && <strong className='ms-2'>{user.username}</strong>}
-                    </div>
-                    <textarea id="announcement-title" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Title..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTextChange(e)}}></textarea>
-                    <textarea id="break-line-text" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Text..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {handleAnnouncementTitleChange(e)}}></textarea>
-                </div>
-                <div className="custom-modal-footer">
-                    <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postAnnouncement}>Post announcement</button>
-                </div>
-            </div>
+            <Modal isOpen={openedModal == "announcement-create"}>
+                <CreateAnnouncementModal/>
+            </Modal>
         </div>
         
     );

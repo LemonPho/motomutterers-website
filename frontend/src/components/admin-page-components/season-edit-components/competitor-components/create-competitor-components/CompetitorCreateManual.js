@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 import {useApplicationContext} from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
-import { enterKeySubmit, closeDropdowns, closeModals, autoResizeTextarea } from "../../../../utils";
+import { enterKeySubmit, closeDropdowns, autoResizeTextarea } from "../../../../utils";
+import { useModalsContext } from "../../../../ModalsContext";
 
 export default function CreateCompetitorManual(){
+    const { closeModal } = useModalsContext();
     const { createSeasonCompetitor, season } = useSeasonContext()
     const { setModalErrorMessage, modalErrorMessage, resetApplicationMessages } = useApplicationContext();
 
@@ -68,14 +70,14 @@ export default function CreateCompetitorManual(){
         const result = await createSeasonCompetitor(newCompetitorPosition); 
 
         if(result){
-            closeModals();
+            closeModal();
             retrieveSeason();
         }
     }
 
 
     return (
-        <div className="custom-modal hidden" id="competitor-create-manual-modal" onClick={(e) => {e.stopPropagation();}}>
+        <div className="custom-modal" id="competitor-create-manual-modal" onClick={(e) => {e.stopPropagation();}}>
             <div className="custom-modal-header justify-content-center">  
                 <h5>Create rider</h5>
             </div>

@@ -7,17 +7,17 @@ import Footer from "./Footer";
 import Header from "./Header";
 import Content from "./Content";
 import { useLocation } from "react-router-dom";
+import { useModalsContext } from "../ModalsContext";
 
 function LayoutPage() {
     const { resetApplicationMessages, errorMessage, successMessage, loadingMessage, informationMessage } = useApplicationContext();
-    const location = useLocation();
+    const { closeModal } = useModalsContext();
 
 
     function handleGeneralClick(event){
         event.stopPropagation();
 
-        closeModals();
-        closeDropdowns();
+        closeModal();
         resetApplicationMessages();
 
         return;
@@ -51,7 +51,6 @@ function LayoutPage() {
                 </div>
                 }
             </div>
-            <div id="background-blur" className="overlay hidden"></div>
             <Header />
             <Content/>
             <Footer/>

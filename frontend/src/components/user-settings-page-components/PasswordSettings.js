@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { submitChangePassword } from "../fetch-utils/fetchPost";
 import { getToken } from "../fetch-utils/fetchGet";
-import { closeModals, enterKeySubmit, toggleModal } from "../utils";
+import { enterKeySubmit } from "../utils";
 import { useNavigate } from "react-router-dom";
 import { useApplicationContext } from "../ApplicationContext";
 
@@ -73,7 +73,7 @@ export default function PasswordSettings(){
                     <div>••••••••••</div>
                 </div>
                 <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();resetVariables();toggleModal("password-modal", e)}}>Change</button>
-                <div className="custom-modal hidden" id="password-modal" onClick={(e) => {e.stopPropagation();}}>
+                <div className="custom-modal" id="password-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change password</h5>
                         <button type="button" className="ms-auto btn btn-link link-no-decorations" id="close-modal" onClick={() => {closeModals(); resetApplicationMessages();}}>

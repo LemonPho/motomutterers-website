@@ -3,15 +3,23 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCompetitor, getRace, getSeasonCompetitors, getSeasonRaces } from "../../../fetch-utils/fetchGet";
 import { retrieveRaceResult, submitDeleteRace, submitEditRace, submitRace, submitRaceResults } from "../../../fetch-utils/fetchPost";
-import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal } from "../../../utils";
+import { closeDropdowns, enterKeySubmit, toggleDropdown } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import RaceCreateModal from "./race-create-components/RaceCreateModal";
-import RaceEditContextProvider from "./race-edit-components/RaceEditContext";
 import RaceEditModal from "./race-edit-components/RaceEditModal";
 import RaceCreateContextProvider from "./race-create-components/RaceCreateContext";
+import Modal from "../../../util-components/Modal";
+import { useModalsContext } from "../../../ModalsContext";
+import RaceResultModal from "./RaceResultModal";
+import RaceCreateAutomatic from "./race-create-components/RaceCreateAutomatic";
+import RaceCreateManual from "./race-create-components/race-create-manual-components/RaceCreateManual";
+import RaceDetailsCreateModal from "./race-create-components/race-create-manual-components/RaceDetailsCreateModal";
+import RaceResultsCreateModal from "./race-create-components/race-create-manual-components/RaceResultsCreateModal";
+import RaceSelectCompetitorsCreateModal from "./race-create-components/race-create-manual-components/RaceSelectCompetitorsCreateModal";
 
 export default function RacesManagement(){
+    const { openedModal, setOpenedModal } = useModalsContext();
     const { season, seasonLoading, retrieveSeason, editSeasonRace, deleteSeasonRace, createSeasonRace, addSeasonRaceResults } = useSeasonContext();
     const { setErrorMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages, loggedIn, user, successMessage } = useApplicationContext();
 
@@ -39,7 +47,7 @@ export default function RacesManagement(){
         }
 
         setOpenedRaceResult(raceResponse.race);
-        toggleModal("race-result-modal", e, loggedIn, user.is_admin);
+        setOpenedModal("race-result");
     }
 
     async function retrieveResults(raceIndex){
@@ -102,34 +110,6 @@ export default function RacesManagement(){
         return;
     }
 
-    function copyStandingsTable(race){
-        console.log(race);
-
-        let result = "<table>";
-
-        for(let i=0; i < race.standings.users_picks.length; i++){
-            result += "<tr>";
-            result += "<td>";
-            result += "<b>";
-            result += String(i+1) + ". ";
-            result += race.standings.users_picks[i].user.username + " - ";
-            result += race.standings.users_picks[i].points;
-            result += "</b>";
-            result += "</td>";
-            for(let j=0; j < race.standings.users_picks[i].picks.length; i++){
-                result += "td";
-                result += race.standings.users_picks[j].picks[j].competitor_points.competitor.first.slice(0, 2) + " " + race.standings.users_picks[j].picks[j].competitor_points.competitor.last[0];
-                result += "</td>";
-            }
-            result += "</tr>\n";
-        }
-        result += "</table>";
-
-        navigator.clipboard.writeText(result);
-        console.log("coppied: ", result);
-
-    }
-
     if(seasonLoading){
         return(<div className="p-3">Loading...</div>);
     }
@@ -137,45 +117,44 @@ export default function RacesManagement(){
     return (
         <div>
             <RaceCreateContextProvider>
-                <RaceCreateModal/>
+                <Modal isOpen={openedModal == "race-create"}>
+                        <RaceCreateModal/>
+                </Modal>
+                <Modal isOpen={openedModal == "race-create-automatic"}>
+                    <RaceCreateAutomatic />
+                </Modal>
+
+                <Modal isOpen={openedModal == "race-create-details"}>
+                    <RaceDetailsCreateModal/>
+                </Modal>
+
+                <Modal isOpen={openedModal == "race-create-results"}>
+                    <RaceResultsCreateModal/>
+                </Modal>
+
+                <Modal isOpen={openedModal == "race-create-select-competitors"}>
+                    <RaceSelectCompetitorsCreateModal/>
+                </Modal>
             </RaceCreateContextProvider>
 
-            <RaceEditContextProvider raceId={editRaceId}>
-                <RaceEditModal/>
-            </RaceEditContextProvider>
+            
 
-            <div className="custom-modal hidden" id="race-result-modal">
-                <div className="custom-modal-header">
-                    {openedRaceResult && <h5>{openedRaceResult.title}</h5>}
-                </div>
+            <Modal isOpen={openedModal == "race-edit"}>
+                <RaceEditModal raceId={editRaceId}/>
+            </Modal>
 
-                <hr />
+            <Modal isOpen={openedModal == "race-result"}>
+                <RaceResultModal race={openedRaceResult}/>
+            </Modal>
 
-                <div className="custom-modal-body">
-                    <div>
-                        <div className="row g-0" style={{marginRight: "0px", padding: "0px"}}>
-                            <strong className="col-2">Pos.</strong>
-                            <strong className="col-6">Name</strong>
-                        </div>
-                        {openedRaceResult && 
-                            openedRaceResult.competitors_positions.map((competitor_position) => (
-                                <div className="row g-0" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>   
-                                    {competitor_position.position == 0 && <span className="col-2">DNF</span>}
-                                    {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>} 
-                                    <span className="col-6"><small>#{competitor_position.number}</small> {competitor_position.first} {competitor_position.last}</span>
-                                </div>
-                            ))}
-                    </div>
-                </div>
-
-            </div>
+            
 
             <div className="card-header rounded-15-top">
                 <div className="container" style={{paddingLeft: "0px", paddingRight: "0px"}}>
                     <div className="d-flex">
                         <h3>Races</h3>
                         {!season.finalized && 
-                        <button className="btn ms-auto" id="create-race-button" onClick={(e) => {resetApplicationMessages();toggleModal("race-create-modal", e, loggedIn, user.is_admin)}}>
+                        <button className="btn ms-auto" id="create-race-button" onClick={(e) => {resetApplicationMessages();setOpenedModal("race-create")}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="blue" className="bi bi-plus" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                             </svg>
@@ -203,7 +182,7 @@ export default function RacesManagement(){
                                     </svg>
                                 </div>
                                 <ul id={`dropdown-race-${race.id}`} className="dropdown-menu">
-                                    <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);toggleModal("race-edit-modal", e, loggedIn, user.is_admin)}}>Edit</button></li>
+                                    <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);setOpenedModal("race-edit")}}>Edit</button></li>
                                     {(!race.finalized && !race.has_url) && <li><button id="add-results-race-button" className="dropdown-item" onClick={(e) => {openSelectCompetitorsModal(e)}}>Add Results</button></li>}
                                     {(!race.finalized && race.has_url) && <li><button id="retrieve-results-race-button" className="dropdown-item" onClick={(e) => {retrieveResults(i)}}>Retrieve Results</button></li>}
                                     {race.finalized && <li><button id="view-race-results-button" className="dropdown-item" onClick={(e) => openViewResultsModal(e, race.id)}>View Race Results</button></li>}

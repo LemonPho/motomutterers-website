@@ -4,7 +4,7 @@ import { submitChangeUsername } from "../fetch-utils/fetchPost";
 import { getCurrentUser } from "../fetch-utils/fetchGet";
 
 import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
-import { toggleModal, closeModals, enterKeySubmit } from "../utils";
+import { enterKeySubmit } from "../utils";
 
 export default function UsernameSettings(){
     const {user, contextLoading, setErrorMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages, retrieveUserData} = useApplicationContext();
@@ -70,7 +70,7 @@ export default function UsernameSettings(){
                     <div>{user.username}</div>
                 </div>
                 <button id="username-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetVariables();toggleModal("username-modal", e)}}>Change</button>
-                <div className="custom-modal hidden" id="username-modal" onClick={(e) => {e.stopPropagation();}}>
+                <div className="custom-modal" id="username-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change username</h5>
                         <button type="button" className="btn btn-link link-no-decorations ms-auto" id="close-modal" onClick={(e) => {closeModals(); resetApplicationMessages();}}>

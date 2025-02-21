@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useApplicationContext } from "../../../../../ApplicationContext";
-import { autoResizeTextarea, enterKeySubmit, toggleModal } from "../../../../../utils";
+import { autoResizeTextarea, enterKeySubmit } from "../../../../../utils";
 import { useRaceCreateContext } from "../RaceCreateContext";
+import { useModalsContext } from "../../../../../ModalsContext";
 
 export default function RaceDetailsCreateModal(){
+    const { setOpenedModal } = useModalsContext();
     const { loggedIn, user, setErrorMessage, resetApplicationMessages } = useApplicationContext();
     const { track, title, timestamp, isSprint, setTrack, setTitle, setTimestamp, setIsSprint, resetVariables } = useRaceCreateContext();
 
@@ -14,7 +16,7 @@ export default function RaceDetailsCreateModal(){
         }
 
         resetApplicationMessages();
-        toggleModal("competitors-select-modal", e, loggedIn, user.is_admin, false);
+        setOpenedModal("race-create-select-competitors")
     }
     
     function handleTrackChange(e){
@@ -34,7 +36,7 @@ export default function RaceDetailsCreateModal(){
     }
 
     return (
-        <div className="custom-modal hidden" id="create-race-details-manual-modal" onClick={(e) => {e.stopPropagation()}}>
+        <div className="custom-modal" id="create-race-details-manual-modal" onClick={(e) => {e.stopPropagation()}}>
             <div className="custom-modal-header justify-content-center">
                 <h5>Race Details</h5>
             </div>
@@ -42,13 +44,14 @@ export default function RaceDetailsCreateModal(){
             <hr />
 
             <div className="custom-modal-body">
-                <textarea rows={1} id="race-create-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Track name..." onKeyUp={(e) => {enterKeySubmit(e, next);handleTrackChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
-                <textarea rows={1} id="race-create-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Race title..." onKeyUp={(e) => {enterKeySubmit(e, next);handleTitleNameChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <textarea rows={1} id="race-create-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Track name..." defaultValue={track} onKeyUp={(e) => {enterKeySubmit(e, next);handleTrackChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <textarea rows={1} id="race-create-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Race title..." defaultValue={title} onKeyUp={(e) => {enterKeySubmit(e, next);handleTitleNameChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <div className="d-flex justify-content-center">
-                    <input id="race-create-date" type="date" className="input-field flex-grow-1 mt-2" data-category="input-field" onChange={(e) => handleTimestampChange(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
+                    <input id="race-create-date" type="date" className="input-field flex-grow-1 mt-2" data-category="input-field" defaultValue={timestamp} onChange={(e) => handleTimestampChange(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
                 </div>
                 <div className="form-check mt-1">
-                    <input id="race-create-sprint" type="checkbox" className="form-check-input" data-category="input-field" value={isSprint} onChange={(e) => handleSprintSelection(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
+                    {console.log(isSprint)}
+                    <input id="race-create-sprint" type="checkbox" className="form-check-input" data-category="input-field" defaultChecked={isSprint} onChange={(e) => handleSprintSelection(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
                     <label className="form-check-label" htmlFor="race-create-sprint">Sprint Race</label>
                 </div>
             </div>

@@ -4,7 +4,7 @@ import { submitChangeEmail } from "../fetch-utils/fetchPost";
 import { getCurrentUser } from "../fetch-utils/fetchGet";
 
 import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
-import { closeModals, enterKeySubmit, toggleModal } from "../utils";
+import { enterKeySubmit } from "../utils";
 
 export default function EmailSettings(){
     const [ newEmail, setNewEmail ] = useState("");
@@ -60,7 +60,7 @@ export default function EmailSettings(){
                     <div>{user.email}</div>
                 </div>
                 <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {toggleModal("email-modal", e);resetVariables();}}>Change</button>
-                <div className="custom-modal hidden" id="email-modal" onClick={(e) => {e.stopPropagation();}}>
+                <div className="custom-modal" id="email-modal" onClick={(e) => {e.stopPropagation();}}>
                     <div className="custom-modal-header">                                
                         <h5>Change email</h5>
                         <button type="button" className="btn btn-link link-no-decorations ms-auto" id="close-modal" onClick={() => {closeModals();}}>

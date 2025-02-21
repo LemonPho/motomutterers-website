@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { closeModals, toggleModal } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { submitDeleteCompetitors } from "../../../fetch-utils/fetchPost";
+import { useModalsContext } from "../../../ModalsContext";
 
 export default function CompetitorDeleteModal({reset}){
+    const { closeModal } = useModalsContext();
     const { season, seasonLoading, retrieveSeason } = useSeasonContext();
     const { user, setLoadingMessage, loadingMessage, setErrorMessage, setSuccessMessage } = useApplicationContext();
 
@@ -48,7 +49,7 @@ export default function CompetitorDeleteModal({reset}){
 
         if(deleteCompetitorsResponse.status == 422){
             setErrorMessage("One or more riders are already included in a race or picks, ones that weren't were deleted");
-            closeModals();
+            closeModal();
             retrieveSeason();
             return;
         }
@@ -59,7 +60,7 @@ export default function CompetitorDeleteModal({reset}){
         }
 
         setSuccessMessage("Riders deleted");
-        closeModals();
+        closeModal();
         retrieveSeason();
         return;
     }
@@ -83,11 +84,11 @@ export default function CompetitorDeleteModal({reset}){
 
     //loading here is used to avoid the checkmarks visibly disappearing while they are being reset
     if(loading){
-        return <div className="custom-modal hidden" id="competitor-delete-modal"></div>;
+        return <div className="custom-modal" id="competitor-delete-modal"></div>;
     }
 
     return(
-        <div className="custom-modal hidden" id="competitor-delete-modal" onClick={(e) => {e.stopPropagation();}}>
+        <div className="custom-modal" id="competitor-delete-modal" onClick={(e) => {e.stopPropagation();}}>
             <div className="custom-modal-header">
                 <h5>Delete Riders</h5>
             </div>
@@ -111,7 +112,7 @@ export default function CompetitorDeleteModal({reset}){
                 ) : (
                     <button className="btn btn-danger rounded-15 mb-2" onClick={deleteCompetitors}>{confirmDelete ? "Click again to delete" : "Delete"}</button>
                 )}
-                <button className="btn btn-light rounded-15" onClick={closeModals}>Cancel</button>
+                <button className="btn btn-light rounded-15" onClick={() => closeModal()}>Cancel</button>
             </div>
         </div>
         
