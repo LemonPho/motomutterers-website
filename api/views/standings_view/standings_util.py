@@ -29,8 +29,6 @@ def sort_race_standings(standings, season):
         except UserPicks.DoesNotExist:
             race_standing.position_change = 0
 
-        print(f"position change for {race_standing.user.username}: {season_standing.position} - {i+1}")
-
         race_standing.position_change = season_standing.position - (i+1)
         race_standing.position = i+1
         race_standing.save()

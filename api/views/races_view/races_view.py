@@ -35,7 +35,7 @@ def get_race(request):
         race = Race.objects.get(pk=race_id)
     except Race.DoesNotExist:
         return HttpResponse(status=404)
-    
+        
     serializer = RaceSimpleSerializer(race)
 
     return JsonResponse({
@@ -116,7 +116,7 @@ def create_complete_race(request):
     season.save()
 
     if not add_points:
-        race.remove()
+        race.delete()
 
     update_members_points()
     sort_standings(season)
@@ -207,11 +207,10 @@ def create_race_link(request):
 
         if not standings_serializer.is_valid() or race_standings_data["competitor_not_found"]:
             print(standings_serializer.errors)
-            race.remove()
-            race.save()
+            print(standings_serializer.error_messages)
             response["standings_error"] = True
             return JsonResponse(response, status=400)
-        
+                
         race_standings = standings_serializer.save()
         sort_race_standings(race_standings, season)
         race.standings = race_standings
@@ -220,7 +219,7 @@ def create_race_link(request):
     add_points = add_points_to_season_competitors(season, race)
 
     if not add_points:
-        race.remove()
+        race.delete()
         race.save()
         return JsonResponse(response, status=400)
     

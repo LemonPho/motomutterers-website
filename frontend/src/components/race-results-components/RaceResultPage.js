@@ -95,7 +95,7 @@ export default function RaceResultPage({ raceId }){
                 </div>
                 <div className="card-body custom-card-body expanded" id="race-standings-card-body">
                     {raceResultDetails.standings.users_picks.map((user_picks) => (
-                        <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={`user-picks-${user_picks.user.id}`} style={{marginRight: "0px"}}>
+                        <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={user_picks.user.id} style={{marginRight: "0px"}}>
                             {user_picks.position_change > 0 && 
                             <span className="race-standings-position-change">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
@@ -106,18 +106,16 @@ export default function RaceResultPage({ raceId }){
                             {user_picks.position_change == 0 && <span className="race-standings-position-change" style={{color: "grey"}}> -</span>}
                             {user_picks.position_change < 0 &&
                             <span className="race-standings-position-change">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
                                     <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                 </svg>
                             </span>
                             }
-                            <span className="race-standings-position">{user_picks.position}</span>
-                            <span className="race-standings-username">{user_picks.user.username}</span>
+                            <span className="race-standings-position ms-2">{user_picks.position}</span>
+                            <span className="race-standings-username ms-1">{user_picks.user.username}</span>
                             <span className="race-standings-points">{user_picks.points}</span>
                         </Link>
-                    ))
-
-                    }
+                    ))}
                 </div>
             </div>
             }

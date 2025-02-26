@@ -22,12 +22,12 @@ textarea {
 .card-body.custom-card-body{
     max-height: 0px;
     transition: padding 0.15s ease, max-height 0.15s ease;
-    padding: 0;
+    padding: 0px;
     overflow: hidden;
 }
 
 .card-body.custom-card-body.expanded{
-    max-height: 2000px;
+    max-height: 5000px;
     padding: 8px;
 }
 

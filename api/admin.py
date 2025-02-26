@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserPicks, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus
+from .models import User, UserPicks, UserPicksRace, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus
 
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = ["title", "user"]
@@ -43,6 +43,9 @@ class StandingsAdmin(admin.ModelAdmin):
 class SeleniumStatusAdmin(admin.ModelAdmin):
     list_display = ["executor_url", "message", "id"]
 
+class UserPicksRaceAdmin(admin.ModelAdmin):
+    list_display = ["user__username", "points"]
+
 # Register your models here.
 admin.site.register(User)
 admin.site.register(Announcement, AnnouncementAdmin)
@@ -59,3 +62,4 @@ admin.site.register(CurrentSeason, CurrentSeasonAdmin)
 admin.site.register(UserPicks, UserPicksAdmin)
 admin.site.register(Standings, StandingsAdmin)
 admin.site.register(SeleniumStatus, SeleniumStatusAdmin)
+admin.site.register(UserPicksRace, UserPicksRaceAdmin)
