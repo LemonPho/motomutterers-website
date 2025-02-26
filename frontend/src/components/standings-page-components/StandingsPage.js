@@ -25,10 +25,6 @@ export default function Standings(){
 
     useEffect(() => {
         fetchData();
-    }, [])
-
-    useEffect(() => {
-        fetchData();
     }, [location.search])
 
 
@@ -91,8 +87,8 @@ export default function Standings(){
                                 <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
                             ))}
 
-                            {!selectedSeasonLoading && selectedSeason.top_independent && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}
-                            {!selectedSeasonLoading && selectedSeason.top_rookie && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {user_picks.rookie_pick.first[0]}. {user_picks.rookie_pick.last.slice(0,3)}</strong> - {user_picks.rookie_pick.points}</div>}
+                            {(user_picks.independent_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}
+                            {(user_picks.rookie_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {user_picks.rookie_pick.first[0]}. {user_picks.rookie_pick.last.slice(0,3)}</strong> - {user_picks.rookie_pick.points}</div>}
                             
                         </div>
                     </div>
