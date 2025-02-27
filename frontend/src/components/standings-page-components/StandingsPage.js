@@ -7,6 +7,8 @@ import { useStandingsContext } from "./StandingsContext";
 import StandingDetailed from "./StandingDetailed";
 import { Link, useLocation } from "react-router-dom";
 import { useApplicationContext } from "../ApplicationContext";
+import Modal from "../util-components/Modal";
+import { useModalsContext } from "../ModalsContext";
 
 export default function Standings(){
     const { user, userLoading } = useApplicationContext();
@@ -14,6 +16,7 @@ export default function Standings(){
         retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, seasonList,
         standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks,
         copyStandingsTable } = useStandingsContext();
+    const { openedModal, setOpenedModal } = useModalsContext();
 
     const location = useLocation();
 
@@ -81,7 +84,7 @@ export default function Standings(){
             (<div>There are no standings for this season</div>) : 
             (standingsLoading == 0 && standings.users_picks.map((user_picks, i) => (
                 <div key={`standings-user-${user_picks.user.username}`}>
-                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); toggleModal("user-picks-detailed-modal", e); retrieveUserPicks(user_picks.user.id)}}>
+                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); setOpenedModal("standing-detailed"); retrieveUserPicks(user_picks.user.id)}}>
                         <div className="d-flex align-items-center">
                             <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user_picks.user.username}/>
                             <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
@@ -101,6 +104,8 @@ export default function Standings(){
                 
             )))}
         </div>
-        <StandingDetailed />
+        <Modal isOpen={openedModal == "standing-detailed"}>
+            <StandingDetailed />
+        </Modal>
     </div>);
 }

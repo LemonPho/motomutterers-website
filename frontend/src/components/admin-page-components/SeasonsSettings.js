@@ -66,7 +66,7 @@ export default function SeasonsSettings(){
                                 </div>
                                 <div id={`dropdown-season-${season.year}`} className="dropdown-menu">
                                     <li><Link className="dropdown-item" to={`seasons/${season.year}`}>Edit</Link></li>
-                                    <li><a className="dropdown-item link-button" onClick={(e) => {openDeleteModal(e, season.id)}}>Delete</a></li>
+                                    <li><a className="dropdown-item link-button" onClick={(e) => {openDeleteModal(e, season)}}>Delete</a></li>
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
 import { useModalsContext } from "../ModalsContext";
 import { submitDeleteSeason } from "../fetch-utils/fetchPost";
@@ -9,11 +9,18 @@ export default function SeasonDeleteModal({ selectedSeason }){
     const { resetApplicationMessages, setErrorMessage, setSuccessMessage } = useApplicationContext();
     const { retrieveSeasons } = useSeasonCreateContext();
 
+    const [yearInput, setYearInput] = useState(0);
+
     async function deleteSeason(event){
         resetApplicationMessages();
         event.stopPropagation();
 
-        let deleteResponse = await submitDeleteSeason(selectedSeason);
+        if(yearInput != selectedSeason.year){
+            setErrorMessage("Make sure the inputted year is correct");
+            return;
+        }
+
+        let deleteResponse = await submitDeleteSeason(selectedSeason.id);
 
         if(deleteResponse.error){
             setErrorMessage("There was an error deleting the season");
@@ -35,11 +42,11 @@ export default function SeasonDeleteModal({ selectedSeason }){
                 <h5>Are you sure you want to delete this season?</h5>
             </div>   
             <div className="custom-modal-body">
-                <hr />
+                <input type="text" className="input-field w-100" placeholder="Write the season year" onChange={(e) => {setYearInput(e.target.value)}}/>
             </div>
-            <div className="custom-modal-footer">
-                <button id="season-confirm-delete" className="btn btn-danger me-auto rounded-15" onClick={(e) => deleteSeason(e)}>Confirm</button>
-                <button id="season-cancel-delete" className="btn btn-secondary ms-auto rounded-15" onClick={() => closeModal()}>Cancel</button>
+            <div className="custom-modal-footer d-flex flex-column">
+                <button id="season-confirm-delete" className="btn btn-outline-danger me-auto rounded-15 w-100" onClick={(e) => deleteSeason(e)}>Confirm</button>
+                <button id="season-cancel-delete" className="btn btn-primary rounded-15 mt-2 w-100" onClick={() => closeModal()}>Cancel</button>
             </div>
         </div>
     )

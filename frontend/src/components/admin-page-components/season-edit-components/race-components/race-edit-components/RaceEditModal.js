@@ -1,12 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { autoResizeTextarea, enterKeySubmit } from "../../../../utils";
-
+import { useSeasonContext } from "../../SeasonContext";
+import { getRace } from "../../../../fetch-utils/fetchGet";
+import { submitEditRace } from "../../../../fetch-utils/fetchPost";
+import { useModalsContext } from "../../../../ModalsContext";
+ 
 export default function RaceEditModal({ raceId }){
     const { modalErrorMessage } = useApplicationContext();
 
     const { setModalErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
     const { retrieveSeason } = useSeasonContext();
+    const { closeModal } = useModalsContext();
+
+    const [originalRaceData, setOriginalRaceData] = useState({});
 
     const [track, setTrack] = useState("");
     const [title, setTitle] = useState("");
@@ -39,14 +46,15 @@ export default function RaceEditModal({ raceId }){
         setTitle(raceResponse.race.title);
         setTimestamp(raceResponse.race.timestamp);
         setIsSprint(raceResponse.race.is_sprint);
+        setOriginalRaceData(raceResponse.race);
     }
 
     async function editRace(){
         resetApplicationMessages();
 
         const newRace = {
-            title: title,
-            track: track,
+            title: title != "" ? title : originalRaceData.title,
+            track: track != "" ? track : originalRaceData.track,
             timestamp: timestamp,
             isSprint: isSprint,
             id: raceId,
@@ -61,8 +69,8 @@ export default function RaceEditModal({ raceId }){
 
         setSuccessMessage("Race edited");
         retrieveSeason();
-        closeModals();
         resetVariables();
+        closeModal();
     }
 
     useEffect(() => {
@@ -95,8 +103,10 @@ export default function RaceEditModal({ raceId }){
             {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 
             <div className="custom-modal-body">
-                <textarea rows={1} id="race-edit-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder={track} onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
-                <textarea rows={1} id="race-edit-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder={title} onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                {track == "" && <textarea rows={1} id="race-edit-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="No track set" onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
+                {track != "" && <textarea rows={1} id="race-edit-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder={track} onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
+                {title == "" && <textarea rows={1} id="race-edit-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="No title set" onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
+                {title != "" && <textarea rows={1} id="race-edit-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder={title} onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
                 <div className="d-flex justify-content-center">
                     <input id="race-edit-date" type="date" data-category="input-field" className="input-field flex-grow-1 mt-2" value={timestamp} onChange={(e) => setTimestamp(e.currentTarget.value)} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                 </div>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { autoResizeTextarea } from "../utils";
-import { useStandingsContext } from "../standings-page-components/StandingsContext";
 import { useApplicationContext } from "../ApplicationContext";
 import { useModalsContext } from "../ModalsContext";
 import { submitAnnouncement } from "../fetch-utils/fetchPost";
