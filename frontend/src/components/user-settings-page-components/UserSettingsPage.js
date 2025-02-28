@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { useApplicationContext } from "../ApplicationContext";
 import Modal from "../util-components/Modal";
 import DeleteAccountModal from "./DeleteAccountModal";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 import UsernameChangeModal from "./UsernameChangeModal";
 import ProfilePictureChangeModal from "./ProfilePictureChangeModal";
 import PasswordChangeModal from "./PasswordChangeModal";
@@ -12,7 +12,7 @@ import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoade
 
 export default function UserSettings(){
     const {user, userLoading, setErrorMessage, retrieveUserData, resetApplicationMessages} = useApplicationContext();
-    const { openedModal, setOpenedModal, closeModal } = useModalsContext();
+    const { openedModal, openModal, closeModal } = useOpenersContext();
 
     if(userLoading){
         return null;
@@ -35,7 +35,7 @@ export default function UserSettings(){
                             <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={user.username}/>
                         </div>
                     </div>
-                    <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();setOpenedModal("profile-picture-change")}}>Change</button>          
+                    <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("profile-picture-change")}}>Change</button>          
                     <Modal isOpen={openedModal == "profile-picture-change"}>
                         <ProfilePictureChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData}/>
                     </Modal>
@@ -48,7 +48,7 @@ export default function UserSettings(){
                             <span className="ms-auto">{user.username}</span>
                         </div>
                     </div>
-                    <button id="username-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();setOpenedModal("username-change")}}>Change</button>
+                    <button id="username-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("username-change")}}>Change</button>
                     <Modal isOpen={openedModal == "username-change"}>
                         <UsernameChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData}/>
                     </Modal>
@@ -60,7 +60,7 @@ export default function UserSettings(){
                         <strong style={{fontSize: "20px"}}>Email</strong>
                         <div>{user.email}</div>
                     </div>
-                    <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();setOpenedModal("email-change");}}>Change</button>
+                    <button id="email-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("email-change");}}>Change</button>
                     <Modal isOpen={openedModal == "email-change"}>
                         <EmailChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData} />
                     </Modal>
@@ -71,7 +71,7 @@ export default function UserSettings(){
                         <strong style={{fontSize: "20px"}}>Password</strong>
                         <div>••••••••••</div>
                     </div>
-                    <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();setOpenedModal("password-change")}}>Change</button>
+                    <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("password-change")}}>Change</button>
                     <Modal isOpen={openedModal == "password-change"}>
                         <PasswordChangeModal closeModal={closeModal}/>
                     </Modal>
@@ -80,7 +80,7 @@ export default function UserSettings(){
                 <div>
                     <div className="p-3 d-flex align-items-center">
                         <strong style={{fontSize: "20px"}}>Delete Account</strong>
-                        <button className="ms-auto btn btn-outline-danger rounded-15" onClick={(e) => {resetApplicationMessages();setOpenedModal("account-delete")}}>Delete Account</button>
+                        <button className="ms-auto btn btn-outline-danger rounded-15" onClick={(e) => {resetApplicationMessages();openModal("account-delete")}}>Delete Account</button>
                     </div>
                     <Modal isOpen={openedModal == "account-delete"}>
                         <DeleteAccountModal closeModal={closeModal} retrieveUserData={retrieveUserData}/>

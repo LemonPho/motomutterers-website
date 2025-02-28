@@ -6,11 +6,14 @@ import { getNotifications } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 import { readNotification } from "../fetch-utils/fetchPost";
 import { toggleDropdown } from "../utils";
+import { useOpenersContext } from "../OpenersContext";
+import Dropdown from "../util-components/Dropdown";
 
 //TODO: create system to check notifications when clicking on the bell!
 
 export default function NotificationsDropdown(){
     const { user, userLoading } = useApplicationContext();
+    const { openedDropdown, toggleDropdown } = useOpenersContext();
 
     const [notifications, setNotifications] = useState([]);
     const [newNotifications, setNewNotifications] = useState(false);
@@ -77,25 +80,27 @@ export default function NotificationsDropdown(){
                 </div>
                 
             )}
-            <ul style={{width: "320px"}} id="notifications-dropdown-content" className="dropdown-menu">
-                {notifications.length === 0 ? 
-                (
-                    <li><span className="dropdown-item m-2">No notifications</span></li>
-                    
-                )
-                :
-                (
-                    notifications.map((notification) => (
-                        <li id={`notification-${notification.id}`} key={`notification-${notification.id}`} className="dropdown-item">
-                            <Link className="d-flex link-no-decorations" to={`${notification.path}`} onClick={(e) => notificationClick(e, notification.id)}>
-                                <span className="m-2">
-                                    {`${notification.origin_user.username} ${notification.text}`}
-                                </span>
-                            </Link>
-                        </li>
-                    ))
-                )}
-            </ul>
+            <Dropdown isOpen={openedDropdown == "notifications-dropdown-content"}>
+                <ul style={{width: "320px"}} id="notifications-dropdown-content" className="dropdown-menu">
+                    {notifications.length === 0 ? 
+                    (
+                        <li><span className="dropdown-item m-2">No notifications</span></li>
+                        
+                    )
+                    :
+                    (
+                        notifications.map((notification) => (
+                            <li id={`notification-${notification.id}`} key={`notification-${notification.id}`} className="dropdown-item">
+                                <Link className="d-flex link-no-decorations" to={`${notification.path}`} onClick={(e) => notificationClick(e, notification.id)}>
+                                    <span className="m-2">
+                                        {`${notification.origin_user.username} ${notification.text}`}
+                                    </span>
+                                </Link>
+                            </li>
+                        ))
+                    )}
+                </ul>
+            </Dropdown>
         </div>
     );
         

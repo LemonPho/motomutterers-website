@@ -7,17 +7,18 @@ import Footer from "./Footer";
 import Header from "./Header";
 import Content from "./Content";
 import { useLocation } from "react-router-dom";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 
 function LayoutPage() {
     const { resetApplicationMessages, errorMessage, successMessage, loadingMessage, informationMessage } = useApplicationContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal, closeDropdown } = useOpenersContext();
 
 
     function handleGeneralClick(event){
         event.stopPropagation();
 
         closeModal();
+        closeDropdown();
         resetApplicationMessages();
 
         return;

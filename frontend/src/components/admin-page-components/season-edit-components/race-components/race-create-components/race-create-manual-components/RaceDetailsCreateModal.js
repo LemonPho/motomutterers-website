@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useApplicationContext } from "../../../../../ApplicationContext";
 import { autoResizeTextarea, enterKeySubmit } from "../../../../../utils";
 import { useRaceCreateContext } from "../RaceCreateContext";
-import { useModalsContext } from "../../../../../ModalsContext";
+import { useOpenersContext } from "../../../../../OpenersContext";
 
 export default function RaceDetailsCreateModal(){
-    const { setOpenedModal } = useModalsContext();
+    const { openModal } = useOpenersContext();
     const { loggedIn, user, setErrorMessage, resetApplicationMessages } = useApplicationContext();
     const { track, title, timestamp, isSprint, setTrack, setTitle, setTimestamp, setIsSprint, resetVariables } = useRaceCreateContext();
 
@@ -16,7 +16,7 @@ export default function RaceDetailsCreateModal(){
         }
 
         resetApplicationMessages();
-        setOpenedModal("race-create-select-competitors")
+        openModal("race-create-select-competitors")
     }
     
     function handleTrackChange(e){

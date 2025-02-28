@@ -4,14 +4,14 @@ import { autoResizeTextarea, enterKeySubmit } from "../../../../utils";
 import { useSeasonContext } from "../../SeasonContext";
 import { getRace } from "../../../../fetch-utils/fetchGet";
 import { submitEditRace } from "../../../../fetch-utils/fetchPost";
-import { useModalsContext } from "../../../../ModalsContext";
+import { useOpenersContext } from "../../../../OpenersContext";
  
 export default function RaceEditModal({ raceId }){
     const { modalErrorMessage } = useApplicationContext();
 
     const { setModalErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
     const { retrieveSeason } = useSeasonContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
 
     const [originalRaceData, setOriginalRaceData] = useState({});
 

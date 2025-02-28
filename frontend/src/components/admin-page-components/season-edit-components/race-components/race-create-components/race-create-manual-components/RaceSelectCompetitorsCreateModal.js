@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSeasonContext } from "../../../SeasonContext";
 import { useApplicationContext } from "../../../../../ApplicationContext";
 import { useRaceCreateContext } from "../RaceCreateContext";
-import { useModalsContext } from "../../../../../ModalsContext";
+import { useOpenersContext } from "../../../../../OpenersContext";
 
 export default function RaceSelectCompetitorsCreateModal(){
-    const { setOpenedModal } = useModalsContext();
+    const { openModal } = useOpenersContext();
     const { season, seasonLoading } = useSeasonContext();
     const { user, resetApplicationMessages } = useApplicationContext();
     const { setSelectedCompetitors, selectedCompetitors } = useRaceCreateContext();
@@ -23,7 +23,7 @@ export default function RaceSelectCompetitorsCreateModal(){
 
         setSelectedCompetitors(newCompetitors);
         resetApplicationMessages();
-        setOpenedModal("race-create-results")
+        openModal("race-create-results")
     }
 
     function handleCompetitorIncludeChange(index){
@@ -69,7 +69,7 @@ export default function RaceSelectCompetitorsCreateModal(){
                 }
             </div>
             <div className="custom-modal-footer mt-2">
-                <button className="btn btn-primary rounded-15" onClick={(e) => {setOpenedModal("race-create-details")}}>Back</button>
+                <button className="btn btn-primary rounded-15" onClick={(e) => {openModal("race-create-details")}}>Back</button>
                 <button className="btn btn-primary ms-auto rounded-15" onClick={(e) => {next(e)}}>Next</button>
             </div>
         </div>

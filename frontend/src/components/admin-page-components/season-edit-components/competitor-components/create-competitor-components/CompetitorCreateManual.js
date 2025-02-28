@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import {useApplicationContext} from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
 import { enterKeySubmit, closeDropdowns, autoResizeTextarea } from "../../../../utils";
-import { useModalsContext } from "../../../../ModalsContext";
+import { useOpenersContext } from "../../../../OpenersContext";
 
 export default function CreateCompetitorManual(){
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { createSeasonCompetitor, season } = useSeasonContext()
     const { setModalErrorMessage, modalErrorMessage, resetApplicationMessages } = useApplicationContext();
 

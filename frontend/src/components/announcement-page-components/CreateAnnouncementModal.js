@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { autoResizeTextarea } from "../utils";
 import { useApplicationContext } from "../ApplicationContext";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 import { submitAnnouncement } from "../fetch-utils/fetchPost";
 
 export default function CreateAnnouncementModal(){
     const { user, userLoading, resetApplicationMessages, setLoadingMessage, setErrorMessage, setSuccessMessage } = useApplicationContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
 
     const [announcementTitle, setAnnouncementTitle] = useState("");
     const [announcementText, setAnnouncementText] = useState("");

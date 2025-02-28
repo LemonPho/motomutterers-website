@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 import { submitDeleteSeason } from "../fetch-utils/fetchPost";
 import { useSeasonCreateContext } from "./SeasonCreateContext";
 
 export default function SeasonDeleteModal({ selectedSeason }){
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { resetApplicationMessages, setErrorMessage, setSuccessMessage } = useApplicationContext();
     const { retrieveSeasons } = useSeasonCreateContext();
 

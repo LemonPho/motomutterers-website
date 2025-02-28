@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { submitFullRace } from "../../../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
-import { useModalsContext } from "../../../../ModalsContext";
+import { useOpenersContext } from "../../../../OpenersContext";
 
 const RaceCreateContext = createContext();
 
@@ -24,7 +24,7 @@ export default function RaceCreateContextProvider({children}){
     //create race responses
     const [invalidCompetitors, setInvalidCompetitors] = useState([]);
 
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { setErrorMessage, setSuccessMessage, setLoadingMessage } = useApplicationContext();
     const { season, retrieveSeason } = useSeasonContext();
 

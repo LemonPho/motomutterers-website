@@ -8,13 +8,13 @@ import CompetitorCreateModal from "./create-competitor-components/CompetitorCrea
 import CompetitorDeleteModal from "./CompetitorDeleteModal";
 import CompetitorEditModal from "./CompetitorEditModal";
 import Modal from "../../../util-components/Modal";
-import { useModalsContext } from "../../../ModalsContext";
+import { useOpenersContext } from "../../../OpenersContext";
 import CompetitorCreateAutomatic from "./create-competitor-components/CompetitorCreateAutomatic";
 import CreateCompetitorManual from "./create-competitor-components/CompetitorCreateManual";
 
 
 export default function CompetitorsManagement(){
-    const { openedModal, setOpenedModal } = useModalsContext();
+    const { openedModal, openModal } = useOpenersContext();
     const { season, seasonLoading, createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, retrieveSeason } = useSeasonContext()    
     const { resetApplicationMessages, modalErrorMessage, setModalErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, user } = useApplicationContext();
 
@@ -43,12 +43,12 @@ export default function CompetitorsManagement(){
         }
 
         setEditCompetitor(competitorResponse.competitor);
-        setOpenedModal("competitor-edit");
+        openModal("competitor-edit");
     }
 
     function openDeleteModal(event){
         setResetDeleteModal(true);
-        setOpenedModal("competitor-delete");
+        openModal("competitor-delete");
     }
 
 
@@ -64,7 +64,7 @@ export default function CompetitorsManagement(){
                         <h3>Riders</h3>
                         {!season.finalized && 
                         <div className="ms-auto">
-                            <button className="btn" id="create-competitor-button" onClick={() => setOpenedModal("competitor-create")}>
+                            <button className="btn" id="create-competitor-button" onClick={() => openModal("competitor-create")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="blue" className="bi bi-plus" viewBox="0 0 16 16">
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                 </svg>

@@ -8,7 +8,7 @@ import { submitAnnouncement } from '../fetch-utils/fetchPost';
 import { autoResizeTextarea, pagination } from '../utils';
 import ProfilePictureLazyLoader from '../util-components/ProfilePictureLazyLoader';
 import Modal from '../util-components/Modal';
-import { useModalsContext } from '../ModalsContext';
+import { useOpenersContext } from '../OpenersContext';
 import CreateAnnouncementModal from './CreateAnnouncementModal';
 
 export default function Anouncements(){
@@ -18,7 +18,7 @@ export default function Anouncements(){
     const [totalAnnouncements, setTotalAnnouncements] = useState(0);
 
     const {user, userLoading, setErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage} = useApplicationContext();
-    const {openedModal, setOpenedModal} = useModalsContext();
+    const {openedModal, openModal} = useOpenersContext();
 
     const [pages, setPages] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +66,7 @@ export default function Anouncements(){
         <div className='card element-background-color element-border-color rounded-15'>
             <div className='card-header d-flex align-items-center'>
                 <h5>Announcements</h5>
-                {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={() => {setOpenedModal("announcement-create")}}>Create Announcement</button>}
+                {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={() => {openModal("announcement-create")}}>Create Announcement</button>}
             </div>
             <div className='card-body'>
             {(!announcementsLoading && announcements.length != 0) && announcements.map((announcement) => (

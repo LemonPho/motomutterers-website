@@ -2,14 +2,14 @@ import React, { useState } from "react"
 import { useApplicationContext } from "../ApplicationContext";
 import { submitSeason } from "../fetch-utils/fetchPost";
 import { useSeasonCreateContext } from "./SeasonCreateContext";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 
 export default function SeasonCreateModal(){
     const currentYear = new Date().getFullYear();
 
     const { setErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage, loadingMessage } = useApplicationContext();
     const { retrieveSeasons } = useSeasonCreateContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
 
     const [seasonYear, setSeasonYear] = useState(currentYear);
     const [seasonTopIndependent, setSeasonTopIndependent] = useState(false);

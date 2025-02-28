@@ -7,12 +7,12 @@ import CompetitorCreateAutomatic from "./CompetitorCreateAutomatic.js";
 import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost.js";
 import { useSeasonContext } from "../../SeasonContext.js";
 import Modal from "../../../../util-components/Modal.js";
-import { useModalsContext } from "../../../../ModalsContext.js";
+import { useOpenersContext } from "../../../../OpenersContext.js";
 
 export default function CompetitorCreateModal(){
     const { modalErrorMessage, setErrorMessage, resetApplicationMessages, setLoadingMessage, loadingMessage, setSuccessMessage } = useApplicationContext();
     const { retrieveSeason, season } = useSeasonContext();
-    const { openedModal, setOpenedModal, closeModal } = useModalsContext();
+    const { openedModal, openModal, closeModal } = useOpenersContext();
     
     async function retrieveCompetitorsRiderList(){
         resetApplicationMessages();
@@ -58,7 +58,7 @@ export default function CompetitorCreateModal(){
             <div className="custom-modal" id="competitor-create-modal" onClick={(e) => {e.stopPropagation()}}>
                 <div className="custom-modal-body">
                     {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                    <div className="card rounded-15 clickable mb-2" onClick={() => {resetApplicationMessages();setOpenedModal("competitor-create-automatic")}}>
+                    <div className="card rounded-15 clickable mb-2" onClick={() => {resetApplicationMessages();openModal("competitor-create-automatic")}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
                                 <strong>Retrieve season riders through motogp standings page</strong>
@@ -72,7 +72,7 @@ export default function CompetitorCreateModal(){
                             </div>
                         </div>
                     </div>
-                    <div className="card rounded-15 clickable" onClick={() => {resetApplicationMessages();setOpenedModal("competitor-create-manual")}}>
+                    <div className="card rounded-15 clickable" onClick={() => {resetApplicationMessages();openModal("competitor-create-manual")}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
                                 <strong>Create riders manually</strong>

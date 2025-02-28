@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
 import { submitChangeEmail } from "../fetch-utils/fetchPost";
 import { enterKeySubmit } from "../utils";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 
 export default function EmailChangeModal(){
     const [ newEmail, setNewEmail ] = useState("");
     const [ passwordInput, setPasswordInput ] = useState("");
     const { setErrorMessage, setSuccessMessage, retrieveUserData, resetApplicationMessages, setLoadingMessage } = useApplicationContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
 
 
     async function postNewEmail(){

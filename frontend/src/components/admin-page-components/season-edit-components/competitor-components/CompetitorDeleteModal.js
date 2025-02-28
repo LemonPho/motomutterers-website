@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { submitDeleteCompetitors } from "../../../fetch-utils/fetchPost";
-import { useModalsContext } from "../../../ModalsContext";
+import { useOpenersContext } from "../../../OpenersContext";
 
 export default function CompetitorDeleteModal({reset}){
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { season, seasonLoading, retrieveSeason } = useSeasonContext();
     const { user, setLoadingMessage, loadingMessage, setErrorMessage, setSuccessMessage } = useApplicationContext();
 

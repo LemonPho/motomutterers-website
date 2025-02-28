@@ -3,12 +3,12 @@ import { submitDeleteCompetitor } from "../../../fetch-utils/fetchPost";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { autoResizeTextarea, closeModal, enterKeySubmit } from "../../../utils";
-import { useModalsContext } from "../../../ModalsContext";
+import { useOpenersContext } from "../../../OpenersContext";
 
 export default function CompetitorEditModal({ competitor }){
     const { resetApplicationMessages } = useApplicationContext();
     const { deleteSeasonCompetitor, season, editSeasonCompetitor } = useSeasonContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
 
     const [competitorNumber, setCompetitorNumber] = useState(0);
     const [competitorPoints, setCompetitorPoints] = useState(0);

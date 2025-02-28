@@ -6,11 +6,11 @@ import RaceDetailsCreateModal from "./RaceDetailsCreateModal";
 import RaceResultsCreateModal from "./RaceResultsCreateModal";
 import RaceSelectCompetitorsCreateModal from "./RaceSelectCompetitorsCreateModal";
 import Modal from "../../../../../util-components/Modal";
-import { useModalsContext } from "../../../../../ModalsContext";
+import { useOpenersContext } from "../../../../../OpenersContext";
 
 export default function RaceCreateManual(){
 
-    const { openedModal } = useModalsContext();
+    const { openedModal } = useOpenersContext();
     const { contextLoading, } = useApplicationContext();
     const { seasonLoading } = useSeasonContext();
 

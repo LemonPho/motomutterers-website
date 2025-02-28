@@ -5,11 +5,11 @@ import { useApplicationContext } from "../../../../ApplicationContext.js";
 import { useSeasonContext } from "../../SeasonContext.js"; 
 import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";
 import { useRaceCreateContext } from "./RaceCreateContext.js";
-import { useModalsContext } from "../../../../ModalsContext.js";
+import { useOpenersContext } from "../../../../OpenersContext.js";
 
 
 export default function RaceCreateAutomatic(){
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
     const { season, retrieveSeason } = useSeasonContext();
     const { link, raceDate, raceType, setLink, setRaceDate, setRaceType } = useRaceCreateContext();

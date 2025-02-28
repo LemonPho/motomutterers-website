@@ -6,10 +6,10 @@ import RaceCreateManual from "./race-create-manual-components/RaceCreateManual.j
 import { useSeasonContext } from "../../SeasonContext.js";
 import RaceCreateContextProvider, { useRaceCreateContext } from "./RaceCreateContext.js";
 import Modal from "../../../../util-components/Modal.js";
-import { useModalsContext } from "../../../../ModalsContext.js";
+import { useOpenersContext } from "../../../../OpenersContext.js";
 
 export default function RaceCreateModal(){
-    const { openedModal, setOpenedModal } = useModalsContext();
+    const { openedModal, openModal } = useOpenersContext();
     const { season, seasonLoading } = useSeasonContext();
     const { modalErrorMessage, setModalErrorMessage, resetApplicationMessages, loggedIn, user } = useApplicationContext();
     const { resetVariables } = useRaceCreateContext();
@@ -27,14 +27,14 @@ export default function RaceCreateModal(){
                     {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
 
                     <div className="custom-modal-body">
-                        <div className="card rounded-15 clickable mb-2" onClick={() => {resetVariables();setOpenedModal("race-create-automatic")}}>
+                        <div className="card rounded-15 clickable mb-2" onClick={() => {resetVariables();openModal("race-create-automatic")}}>
                             <div className="card-body">
                                 <div className="d-flex justify-content-center">
                                     <strong>Create race automatically with motorsport link</strong>
                                 </div>
                             </div>
                         </div>
-                        <div className="card rounded-15 clickable" onClick={(e) => {resetVariables();setOpenedModal("race-create-details")}}>
+                        <div className="card rounded-15 clickable" onClick={(e) => {resetVariables();openModal("race-create-details")}}>
                             <div className="card-body">
                                 <div className="d-flex justify-content-center">
                                     <strong>Create race manually</strong>

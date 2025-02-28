@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import { BrowserRouter } from 'react-router-dom';
 import { ApplicationContextProvider } from './components/ApplicationContext';
-import { ModalsContextProvider } from './components/ModalsContext';
+import { OpenersContextProvider } from './components/OpenersContext';
 
 const appDiv = document.getElementById("app")
 const root = createRoot(appDiv);
@@ -11,9 +11,9 @@ const root = createRoot(appDiv);
 root.render(
     <BrowserRouter>
         <ApplicationContextProvider>
-            <ModalsContextProvider>
+            <OpenersContextProvider>
                 <App />
-            </ModalsContextProvider>
+            </OpenersContextProvider>
         </ApplicationContextProvider>
     </BrowserRouter>
 )

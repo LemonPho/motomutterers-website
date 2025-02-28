@@ -10,7 +10,7 @@ import RaceCreateModal from "./race-create-components/RaceCreateModal";
 import RaceEditModal from "./race-edit-components/RaceEditModal";
 import RaceCreateContextProvider from "./race-create-components/RaceCreateContext";
 import Modal from "../../../util-components/Modal";
-import { useModalsContext } from "../../../ModalsContext";
+import { useOpenersContext } from "../../../OpenersContext";
 import RaceResultModal from "./RaceResultModal";
 import RaceCreateAutomatic from "./race-create-components/RaceCreateAutomatic";
 import RaceCreateManual from "./race-create-components/race-create-manual-components/RaceCreateManual";
@@ -19,7 +19,7 @@ import RaceResultsCreateModal from "./race-create-components/race-create-manual-
 import RaceSelectCompetitorsCreateModal from "./race-create-components/race-create-manual-components/RaceSelectCompetitorsCreateModal";
 
 export default function RacesManagement(){
-    const { openedModal, setOpenedModal } = useModalsContext();
+    const { openedModal, openModal } = useOpenersContext();
     const { season, seasonLoading, retrieveSeason, editSeasonRace, deleteSeasonRace, createSeasonRace, addSeasonRaceResults } = useSeasonContext();
     const { setErrorMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages, loggedIn, user, successMessage } = useApplicationContext();
 
@@ -47,7 +47,7 @@ export default function RacesManagement(){
         }
 
         setOpenedRaceResult(raceResponse.race);
-        setOpenedModal("race-result");
+        openModal("race-result");
     }
 
     async function retrieveResults(raceIndex){
@@ -154,7 +154,7 @@ export default function RacesManagement(){
                     <div className="d-flex">
                         <h3>Races</h3>
                         {!season.finalized && 
-                        <button className="btn ms-auto" id="create-race-button" onClick={(e) => {resetApplicationMessages();setOpenedModal("race-create")}}>
+                        <button className="btn ms-auto" id="create-race-button" onClick={(e) => {resetApplicationMessages();openModal("race-create")}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="blue" className="bi bi-plus" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                             </svg>
@@ -182,7 +182,7 @@ export default function RacesManagement(){
                                     </svg>
                                 </div>
                                 <ul id={`dropdown-race-${race.id}`} className="dropdown-menu">
-                                    <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);setOpenedModal("race-edit")}}>Edit</button></li>
+                                    <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);openModal("race-edit")}}>Edit</button></li>
                                     {(!race.finalized && !race.has_url) && <li><button id="add-results-race-button" className="dropdown-item" onClick={(e) => {openSelectCompetitorsModal(e)}}>Add Results</button></li>}
                                     {(!race.finalized && race.has_url) && <li><button id="retrieve-results-race-button" className="dropdown-item" onClick={(e) => {retrieveResults(i)}}>Retrieve Results</button></li>}
                                     {race.finalized && <li><button id="view-race-results-button" className="dropdown-item" onClick={(e) => openViewResultsModal(e, race.id)}>View Race Results</button></li>}

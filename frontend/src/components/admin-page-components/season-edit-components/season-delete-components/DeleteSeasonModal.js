@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useSeasonContext } from "../SeasonContext";
-import { useModalsContext } from "../../../ModalsContext";
+import { useOpenersContext } from "../../../OpenersContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { useNavigate } from "react-router-dom";
 
 export default function DeleteSeasonModal(){
     const { setErrorMessage } = useApplicationContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { season, deleteSeason } = useSeasonContext();
 
     const navigate = useNavigate();

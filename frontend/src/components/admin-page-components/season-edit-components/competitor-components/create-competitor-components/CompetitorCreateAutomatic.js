@@ -4,10 +4,10 @@ import { focusDiv, enterKeySubmit, autoResizeTextarea } from "../../../../utils"
 import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
-import { useModalsContext } from "../../../../ModalsContext";
+import { useOpenersContext } from "../../../../OpenersContext";
 
 export default function CompetitorCreateAutomatic(){
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
     const { setErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
     const { retrieveSeason, season } = useSeasonContext();
 

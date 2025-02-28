@@ -4,10 +4,10 @@ import { useApplicationContext } from "../../../ApplicationContext";
 import { submitToggleSeasonFinalize } from "../../../fetch-utils/fetchPost";
 import Modal from "../../../util-components/Modal";
 import SeasonFinalizeModal from "./SeasonFinalizeModal";
-import { useModalsContext } from "../../../ModalsContext";
+import { useOpenersContext } from "../../../OpenersContext";
 
 export default function SeasonFinalize() {
-    const { openedModal, setOpenedModal } = useModalsContext();
+    const { openedModal, openModal } = useOpenersContext();
     const { season } = useSeasonContext();
     const { setErrorMessage, setSuccessMessage, selectPicksState, contextLoading } = useApplicationContext();
     const [ seasonFinalizeState, setSeasonFinalizeState ] = useState(season.finalized); 
@@ -22,7 +22,7 @@ export default function SeasonFinalize() {
             }
             {!seasonFinalizeState && season.current && 
             <div className="form-check form-switch ms-auto mb-0">
-                <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} onChange={(e) => {setOpenedModal("season-finalize")}}/>
+                <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} onChange={(e) => {openModal("season-finalize")}}/>
             </div>
             }
             <Modal isOpen={openedModal == "season-finalize"}>

@@ -3,11 +3,11 @@ import { useApplicationContext } from "../ApplicationContext";
 import { getToken } from "../fetch-utils/fetchGet";
 import { submitChangePassword } from "../fetch-utils/fetchPost";
 import { enterKeySubmit } from "../utils";
-import { useModalsContext } from "../ModalsContext";
+import { useOpenersContext } from "../OpenersContext";
 
 export default function PasswordChangeModal(){
     const {setLogout, setErrorMessage, setSuccessMessage, resetApplicationMessages} = useApplicationContext();
-    const { closeModal } = useModalsContext();
+    const { closeModal } = useOpenersContext();
 
     const [ newPassword, setNewPassword ] = useState("");
     const [ oldPassword, setOldPassword ] = useState("");
