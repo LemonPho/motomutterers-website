@@ -126,8 +126,11 @@ def get_user_comments(request):
     if user == None:
         return HttpResponse(status=404)
     
-    amount_comments = user.announcements_comments.count()
-    comments = user.comments.all()
+    if start < 0:
+        return HttpResponse(status=400)
+    
+    amount_comments = user.comments.count()
+    comments = user.comments.all()[start:end]
 
     serializer = CommentReadSerializer(comments, many=True)
 

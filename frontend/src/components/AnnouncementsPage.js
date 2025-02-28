@@ -35,7 +35,7 @@ export default function Anouncements(){
     async function retrieveAnnouncements(){
         setAnnouncementsLoading(true);
         const params = new URLSearchParams(location.search);
-        let page = params.get("page");
+        let page = parseInt(params.get("page"));
         setCurrentPage(page);
 
         const announcementsResponse = await getAnnouncements(page);
@@ -49,18 +49,6 @@ export default function Anouncements(){
         setTotalAnnouncements(announcementsResponse.amountAnnouncements);
         setAnnouncementsLoading(false);
     }
-
-    //when totalAnnouncements is asigned, we can generate the pagination necessary, no need to check if its 0, it will just generate a disabled pagination menu
-    useEffect(() => {
-        let result = pagination(totalAnnouncements, 10, currentPage);
-        if(result !== null){
-            setNextPage(result.nextPage);
-            setPreviousPage(result.previousPage);
-            setPageNumbers(result.pageNumbers);
-            setPages(true);
-        }
-        
-    }, [totalAnnouncements]);
 
     async function postAnnouncement(){
         resetApplicationMessages();
@@ -106,6 +94,23 @@ export default function Anouncements(){
         retrieveAnnouncements();
     }, [location.search]);
 
+    //when totalAnnouncements is asigned, we can generate the pagination necessary, no need to check if its 0, it will just generate a disabled pagination menu
+    useEffect(() => {
+        console.log("setting pagination");
+        const params = new URLSearchParams(location.search);
+        const page = parseInt(params.get("page"));
+        setCurrentPage(page);
+
+        let result = pagination(totalAnnouncements, 10, page);
+        if(result !== null){
+            setNextPage(result.nextPage);
+            setPreviousPage(result.previousPage);
+            setPageNumbers(result.pageNumbers);
+            setPages(true);
+        }
+        
+    }, [totalAnnouncements, location.search]);
+
     return(
         <div className='card element-background-color element-border-color rounded-15'>
             <div className='card-header d-flex align-items-center'>
@@ -138,10 +143,10 @@ export default function Anouncements(){
                 <nav id="pagination-view ">
                     <ul className='pagination justify-content-center'>
                         <li id='previous-page' className={`${previousPage}`}>
-                            <Link id='previous-page-link' to={`?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</Link>
+                            <Link id='previous-page-link' to={`?page=${currentPage-1}`} className='page-link'>Previous</Link>
                         </li>
                         {pageNumbers.map((page) => (
-                            parseInt(currentPage) !== page ?
+                            currentPage !== page ?
                             ( 
                             <li id={`page-${page}`} key={`page-${page}`} className="page-item">
                                 <Link id={`page-link-${page}`} to={`?page=${page}`} className='page-link'>{page}</Link>
@@ -155,7 +160,7 @@ export default function Anouncements(){
                             )
                         ))}
                         <li id='next-page' className={`${nextPage}`}>
-                            <Link id='next-page-link' to={`?page=${parseInt(currentPage)+1}`} className='page-link'>Next</Link>
+                            <Link id='next-page-link' to={`?page=${currentPage+1}`} className='page-link'>Next</Link>
                         </li>
                     </ul>
                 </nav>}

@@ -6,6 +6,7 @@ export function pagination(totalElements, elementsPerPage, currentPage){
     }
 
     let totalPages = Math.ceil(totalElements/elementsPerPage);
+
     let i = 0;
     let j;
 

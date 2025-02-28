@@ -54,10 +54,9 @@ export default function UserPage(){
         const params = new URLSearchParams(location.search);
         const page = params.get("page");
         const tempComments = await getUserComments(displayUserUsername, page);
-        setCurrentPage(page);
+        setCurrentPage(parseInt(page));
 
         if(tempComments.error){
-            console.log(tempComments.error);
             setComments(false);
             setCommentsLoading(false);
             return;
@@ -75,13 +74,32 @@ export default function UserPage(){
     }
 
     useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const page = parseInt(searchParams.get("page"));
+
+        setCurrentPage(page);
         retrieveDisplayUser();
         if(displayUserFound){
             retrieveDisplayUserComments();
         }
-    }, []);
+
+        setPaginationLoading(true);
+        if(amountComments !== null){
+            let result = pagination(amountComments, 15, page);
+            if(result !== null){
+                setPages(true);
+                setNextPage(result.nextPage);
+                setPreviousPage(result.previousPage);
+                setPageNumbers(result.pageNumbers);
+            }
+        }
+
+        setPaginationLoading(false);
+        
+    }, [location.search]);
 
     useEffect(() => {
+        setPaginationLoading(true);
         if(amountComments !== null){
             let result = pagination(amountComments, 15, currentPage);
             if(result !== null){
@@ -135,8 +153,9 @@ export default function UserPage(){
                             <h3>Comments</h3>
                         </div>
                         <div className="card-body">
-                            {comments.length === 0 && <div><hr /><h6>User hasn't posted any comments</h6></div>}
-                            {comments.map((comment) => (
+                            {(comments.length === 0) && <div><h6>User hasn't posted any comments</h6></div>}
+                            {(!comments) && <div><h6>Error loading comments</h6></div>}
+                            {(comments) && comments.map((comment) => (
                                 <div key={`comment-${comment.id}`}>
                                     {comment.parent_comment != null ? 
                                     (
@@ -145,14 +164,14 @@ export default function UserPage(){
                                                 <svg style={{marginRight: "0.3rem"}} xmlns="http://www.w3.org/2000/svg" fill="#5A5A5A" width="1rem" height="1rem" viewBox="0 0 512 512">
                                                     <path d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 7.1 5.8 12 12 12 2.4 0 4.9-.7 7.1-2.4L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm16 352c0 8.8-7.2 16-16 16H288l-12.8 9.6L208 428v-60H64c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16h384c8.8 0 16 7.2 16 16v288z"/>
                                                 </svg>
-                                                {comment.parent_comment.announcement_id != null &&
+                                                {comment.parent_comment.announcement != null &&
                                                     <>
-                                                        <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement_id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>                                                
+                                                        <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>                                                
                                                     </>
                                                 }
-                                                {comment.parent_comment.race_id != null &&
+                                                {comment.parent_comment.race != null &&
                                                     <>
-                                                        <Link className="link-no-decorations" to={`/raceresults/${comment.parent_comment.race_id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>                                                                                                    
+                                                        <Link className="link-no-decorations" to={`/raceresults/${comment.parent_comment.race.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>                                                                                                    
                                                     </>
                                                 }
                                             </div>
@@ -165,11 +184,11 @@ export default function UserPage(){
                                                         fill="grey"
                                                     />
                                                 </svg>
-                                                {comment.parent_comment.announcement_id != null &&
-                                                    <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement_id}?comment=${comment.parent_comment.id}`}><span>{comment.parent_comment.text}</span></Link>                                                
+                                                {comment.parent_comment.announcement != null &&
+                                                    <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.parent_comment.id}`}><span>{comment.text}</span></Link>                                                
                                                 }
-                                                {comment.parent_comment.race_id != null && 
-                                                    <Link className="link-no-decorations" to={`/raceresults/${comment.parent_comment.race_id}?comment=${comment.parent_comment.id}`}><span>{comment.parent_comment.text}</span></Link>                                                
+                                                {comment.parent_comment.race != null && 
+                                                    <Link className="link-no-decorations" to={`/raceresults/${comment.parent_comment.race.id}?comment=${comment.parent_comment.id}`}><span>{comment.text}</span></Link>                                                
                                                 }                                            
                                             </div>
                                         </div>
@@ -178,15 +197,15 @@ export default function UserPage(){
                                     (
                                         <div>
                                             <div className="d-flex align-items-center">
-                                                {comment.announcement_id != null &&
+                                                {comment.announcement != null &&
                                                     <>
                                                         <svg style={{marginRight: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none">
                                                             <path d="M7 8H17M7 12H17M7 16H13M4 4H20V20H4V4Z" stroke="#5A5A5A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                                         </svg>
-                                                        <Link className="link-no-decorations" to={`/announcements/${comment.announcement_id}?comment=${comment.id}`}><i>{comment.text}</i></Link>
+                                                        <Link className="link-no-decorations" to={`/announcements/${comment.announcement.id}?comment=${comment.id}`}><i>{comment.announcement.title}</i></Link>
                                                     </>                                                
                                                 }
-                                                {comment.race_id != null && 
+                                                {comment.race != null && 
                                                     <>
                                                         <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" width="1.2rem" height="1.2rem" viewBox="0 0 410 450" space="preserve">
   <g>
@@ -195,7 +214,7 @@ export default function UserPage(){
     </g>
   </g>
 </svg>
-                                                        <Link className="link-no-decorations" to={`/raceresults/${comment.race_id}?comment=${comment.id}`}><i>{comment.text}</i></Link>                                                
+                                                        <Link className="link-no-decorations" to={`/raceresults/${comment.race.id}?comment=${comment.id}`}><i>{comment.race.title}</i></Link>                                                
                                                     </>
                                                 }
                                             </div>
@@ -208,11 +227,11 @@ export default function UserPage(){
                                                     fill="grey"
                                                 />
                                                 </svg>
-                                                {comment.announcement_id != null &&
-                                                    <Link className="link-no-decorations" to={`/announcements/${comment.announcement_id}?comment=${comment.id}`}><span>{comment.text}</span></Link>                                                
+                                                {comment.announcement != null &&
+                                                    <Link className="link-no-decorations" to={`/announcements/${comment.announcement.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>                                                
                                                 }
-                                                {comment.race_id != null && 
-                                                    <Link className="link-no-decorations" to={`/raceresults/${comment.race_id}?comment=${comment.id}`}><span>{comment.text}</span></Link>                                                
+                                                {comment.race != null && 
+                                                    <Link className="link-no-decorations" to={`/raceresults/${comment.race.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>                                                
                                                 }
                                             </div>
                                         </div> 
@@ -226,24 +245,24 @@ export default function UserPage(){
                             <nav id="pagination-view">
                                 <ul className='pagination justify-content-center'>
                                     <li id='previous-page' className={`${previousPage}`}>
-                                        <Link id='previous-page-link' to={`/users/${displayUserUsername}?page=${parseInt(currentPage)-1}`} className='page-link'>Previous</Link>
+                                        <Link id='previous-page-link' to={`/users/${displayUserUsername}?page=${currentPage-1}`} className='page-link'>Previous</Link>
                                     </li>
                                     {pageNumbers.map((page) => (
-                                        parseInt(currentPage) !== page ?
+                                        currentPage !== page ?
                                         ( 
                                         <li id={`page-${page}`} key={`page-${page}`} className="page-item">
-                                            <Link id={`page-link-${page}`} to={`/users/${displayUserUsername}?page=${page}`} className='page-link'>{page}</Link>
+                                            <Link id={`page-link-${page}`} to={`?page=${page}`} className='page-link'>{page}</Link>
                                         </li>
                                         )
                                         :
                                         (
                                         <li id={`page-${page}`} key={`page-${page}`} className="page-item disabled">
-                                            <Link id={`page-link-${page}`} to={`/users/${displayUserUsername}?page=${page}`} className='page-link'>{page}</Link>
+                                            <Link id={`page-link-${page}`} to={`?page=${page}`} className='page-link'>{page}</Link>
                                         </li>
                                         )
                                         ))}
                                     <li id='next-page' className={`${nextPage}`}>
-                                        <Link id='next-page-link' to={`/users/${displayUserUsername}?page=${parseInt(currentPage)+1}`} className='page-link'>Next</Link>
+                                        <Link id='next-page-link' to={`?page=${currentPage+1}`} className='page-link'>Next</Link>
                                     </li>
                                 </ul>
                             </nav>

@@ -6,7 +6,7 @@ from .races_util import add_points_to_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
-from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
@@ -36,7 +36,7 @@ def get_race(request):
     except Race.DoesNotExist:
         return HttpResponse(status=404)
         
-    serializer = RaceSimpleSerializer(race)
+    serializer = RaceReadSerializer(race)
 
     return JsonResponse({
         "race": serializer.data,

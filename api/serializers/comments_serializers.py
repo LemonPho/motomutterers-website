@@ -47,25 +47,28 @@ class ParentCommentReadSerializer(serializers.ModelSerializer):
     text = serializers.CharField(read_only=True)
     user = importlib.import_module("api.serializers.user_serializers").UserSimpleSerializer()
     date_created = serializers.DateTimeField()
-    announcement_id = serializers.SerializerMethodField()
-    race_id = serializers.SerializerMethodField()
+    announcement = serializers.SerializerMethodField()
+    race = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "date_created", "announcement_id", "race_id", "id"]
+        fields = ["text", "user", "date_created", "announcement", "race", "id"]
 
-    def get_announcement_id(self, comment):        
+    def get_announcement(self, comment):        
         announcement = comment.announcement.first()
         if announcement is None:
             return None
-        return announcement.id
+        serializer = importlib.import_module("api.serializers.announcements_serializers").AnnouncementSimpleSerializer(announcement)
+        return serializer.data
     
-    def get_race_id(self, comment):
+    def get_race(self, comment):
         race = comment.race.first()
         if race is None:
             return None
+        
+        serializer = importlib.import_module("api.serializers.races_serializers").RaceSimpleSerializer(race)
 
-        return race.id
+        return serializer.data
     
 class CommentReadSerializer(serializers.ModelSerializer):
     text = serializers.CharField(read_only=True)
@@ -74,13 +77,13 @@ class CommentReadSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
     parent_comment = serializers.SerializerMethodField()
     date_created = serializers.DateTimeField()
-    announcement_id = serializers.SerializerMethodField()
-    race_id = serializers.SerializerMethodField()
+    announcement = serializers.SerializerMethodField()
+    race = serializers.SerializerMethodField()
 
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "amount_replies", "replies", "parent_comment", "date_created", "edited", "announcement_id", "race_id", "id"]
+        fields = ["text", "user", "amount_replies", "replies", "parent_comment", "date_created", "edited", "announcement", "race", "id"]
 
     def get_amount_replies(self, comment):
         amount_replies = str(comment.replies.count())
@@ -98,15 +101,18 @@ class CommentReadSerializer(serializers.ModelSerializer):
         serializer = ParentCommentReadSerializer(comment.parent_comment)
         return serializer.data
     
-    def get_announcement_id(self, comment):        
+    def get_announcement(self, comment):        
         announcement = comment.announcement.first()
         if announcement is None:
             return None
-        return announcement.id
+        serializer = importlib.import_module("api.serializers.announcements_serializers").AnnouncementSimpleSerializer(announcement)
+        return serializer.data
     
-    def get_race_id(self, comment):
+    def get_race(self, comment):
         race = comment.race.first()
         if race is None:
             return None
+        
+        serializer = importlib.import_module("api.serializers.races_serializers").RaceSimpleSerializer(race)
 
-        return race.id
+        return serializer.data

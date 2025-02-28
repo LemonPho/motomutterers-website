@@ -11,6 +11,18 @@ import importlib
 class RaceSimpleSerializer(serializers.ModelSerializer):
     title = serializers.CharField()
     track = serializers.CharField()
+    id = serializers.IntegerField()
+    finalized = serializers.BooleanField()
+    timestamp = serializers.CharField()
+    is_sprint = serializers.BooleanField()
+
+    class Meta:
+        model = Race
+        fields = ["title", "track", "id", "finalized", "timestamp", "is_sprint"]
+
+class RaceReadSerializer(serializers.ModelSerializer):
+    title = serializers.CharField()
+    track = serializers.CharField()
     timestamp = serializers.CharField()
     is_sprint = serializers.BooleanField()
     finalized = serializers.BooleanField()
