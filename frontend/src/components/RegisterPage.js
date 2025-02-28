@@ -10,26 +10,27 @@ import { enterKeySubmit } from "./utils";
 export default function RegisterPage() {
     const {loggedIn, contextLoading, setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages} = useApplicationContext();
 
-    const [createUserLoading, setCreateUserLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
     async function registerAccount(){
-        if(createUserLoading){
+        if(loading){
             return;
         }
 
         resetApplicationMessages();
-        setCreateUserLoading(true);
+        setLoading(true);
         setLoadingMessage("Loading...");
-        const username = document.getElementById("username").value;
-        const email = document.getElementById("email").value;
-        const password1 = document.getElementById("password").value;
-        const password2 = document.getElementById("password-confirm").value;
 
-        const registerResponse = await submitRegistration(username, email, password1, password2);
+        const registerResponse = await submitRegistration(username, email, password, passwordConfirmation);
 
         if(registerResponse.error){
             setErrorMessage("An error ocurred while submiting the account");
-            setCreateUserLoading(false);
+            setLoading(false);
             setLoadingMessage(false)
             return;
         }
@@ -41,21 +42,24 @@ export default function RegisterPage() {
             message += registerResponse.emailValid ? "" : "Email isn't valid\n";
             message += registerResponse.passwordsMatch ? "" : "Passwords don't match\n";
             message += registerResponse.passwordValid ? "" : "Passwords need at least 8 characters and can't be 'simple'\n";
+            if(registerResponse.usernameUnique && registerResponse.usernameValid && registerResponse.emailUnique && registerResponse.emailValid && registerResponse.passwordValid && registerResponse.passwordsMatch && registerResponse.invalidData){
+                setErrorMessage("Be sure the data is valid (password can not be simple and more than 8 characters)");
+            }
             setErrorMessage(message);
-            setCreateUserLoading(false);
+            setLoading(false);
             setLoadingMessage(false);
             return;
         }
 
         if(registerResponse.status === 200){
             setSuccessMessage("Account created, check your email to finalize the creation")
-            setCreateUserLoading(false);
+            setLoading(false);
             setLoadingMessage(false);
             return;
         }
 
         setErrorMessage("There was an error while submiting the account information");
-        setCreateUserLoading(false);
+        setLoading(false);
         setLoadingMessage(false);
         return;
     }
@@ -72,42 +76,23 @@ export default function RegisterPage() {
         )
     }
 
-    return (
-        <div> 
-            <div className="card shadow mx-auto my-5 rounded-15 element-background-color element-border-color" style={{width: "21rem"}}>
-                <div className="my-3" style={{display: "flex"}}> 
-                    <h6 style={{margin: "auto", fontSize: "40px"}}>Sign up</h6>
-                </div>
-                <hr className="mt-2"/>
-                <div className="input-group mt-3 px-3 mx-auto">
-                </div>
-                <div className="input-group px-3  mx-auto">
-                    <input type="text" className="form-control" placeholder="Username" id="username" onKeyUp={(e) => enterKeySubmit(e, registerAccount)}/>
-                </div>
-                <div className="input-group mt-3 px-3  mx-auto">
-                    <input type="text" className="form-control" placeholder="Email" id="email" onKeyUp={(e) => enterKeySubmit(e, registerAccount)}/>
-                </div>
-                <div className="input-group mt-3 px-3  mx-auto">
-                    <input type="password" className="form-control" placeholder="Password" id="password" onKeyUp={(e) => enterKeySubmit(e, registerAccount)}/>
-                </div>
-                <div className="input-group mt-3 px-3 mx-auto">
-                    <input type="password" className="form-control" placeholder="Confirm password" id="password-confirm" onKeyUp={(e) => enterKeySubmit(e, registerAccount)}/>
-                </div>
+    return(
+        <div className="card rounded-15 element-background-color element-border-color mx-auto" style={{width: "21rem"}}>
+            <div className="card-header d-flex justify-content-center">
+                <h2>Sign Up</h2>
+            </div>
+            <div className="card-body">
+                <input type="text" className="input-field w-100 mb-2" placeholder="Username" onKeyUp={(e) => {setUsername(e.target.value);enterKeySubmit(e, registerAccount)}}/>
+                <input type="text" className="input-field w-100 mb-2" placeholder="Email" onKeyUp={(e) => {setEmail(e.target.value);enterKeySubmit(e, registerAccount)}}/>
+                <input type="text" className="input-field w-100 mb-2" placeholder="Password" onKeyUp={(e) => {setPassword(e.target.value);enterKeySubmit(e, registerAccount)}}/>
+                <input type="text" className="input-field w-100 mb-2" placeholder="Confirm password" onKeyUp={(e) => {setPasswordConfirmation(e.target.value);enterKeySubmit(e, registerAccount)}}/>
 
-                {createUserLoading && 
-                <div className="input-group mt-3 px-3 mx-auto">
-                    <button className="btn btn-primary w-100 rounded-15" disabled>Loading...</button>    
-                </div>}
+                {loading && <button className="btn btn-primary w-100 rounded-15 mt-2" disabled>Loading...</button>}
+                {!loading && <button className="btn btn-primary w-100 rounded-15 mt-2" onClick={registerAccount}>Sign up</button>}
+            </div>
 
-                {!createUserLoading && 
-                <div className="input-group mt-3 px-3 mx-auto">
-                    <button className="btn btn-primary w-100 rounded-15" onClick={registerAccount}>Sign up</button>
-                </div>}
-
-                <hr />
-                <div className="input-group mb-3 px-3 mx-auto">
-                    <Link to="/login" className="btn btn-success w-100 rounded-15">Login to an account</Link>
-                </div>
+            <div className="card-footer">
+                <Link to="/login" className="btn btn-success w-100 rounded-15">Login to an account</Link>
             </div>
         </div>
     );

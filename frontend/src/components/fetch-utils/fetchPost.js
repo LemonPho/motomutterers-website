@@ -11,6 +11,7 @@ export async function submitRegistration(username, email, password1, password2){
         emailValid: null,
         passwordsMatch: null,
         passwordValid: null,
+        invalidData: null,
         status: null,
     }
 
@@ -39,6 +40,7 @@ export async function submitRegistration(username, email, password1, password2){
             response.emailValid = apiResult.email_valid;
             response.passwordsMatch = apiResult.passwords_match;
             response.passwordValid = apiResult.password_valid;
+            response.invalidData = apiResult.invalid_data;
         }
         response.status = apiResponse.status;
         

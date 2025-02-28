@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 
 import { submitLogin } from "./fetch-utils/fetchPost";
 import { useApplicationContext } from "./ApplicationContext";
@@ -9,7 +9,11 @@ function LoginPage() {
     const { user, userLoading, contextLoading, setLoadingMessage, retrieveUserData, setErrorMessage} = useApplicationContext();
 
     const [loginLoading, setLoginLoading] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
+
+    const [primaryKeyInput, setPrimaryKeyInput] = useState("");
+    const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     async function login(){
         if(loginLoading){
@@ -20,14 +24,12 @@ function LoginPage() {
         setLoadingMessage("Loading...");
 
         let isUsername = true;
-        let usernameEmail = document.getElementById("username-email").value;
-        let password = document.getElementById("password").value;
 
-        if(usernameEmail.includes("@")){
+        if(primaryKeyInput.includes("@")){
             isUsername = false
         }
 
-        const loginResponse = await submitLogin(isUsername, usernameEmail, password);
+        const loginResponse = await submitLogin(isUsername, primaryKeyInput, password);
 
         setLoadingMessage(false);
         setLoginLoading(false);
@@ -52,54 +54,38 @@ function LoginPage() {
             retrieveUserData();
             setLoadingMessage(false);
             setLoginLoading(false);
+            navigate("/");
             return;
         }        
     }
-
-    useEffect(() => {
-        if(!userLoading){
-            setLoggedIn(user.is_logged_in);
-        }
-    }, [userLoading])
 
     if(contextLoading){
         return null;
     }
 
-    if(loggedIn){
-        return <Navigate to="/" replace={true}/>;
-    }
-
-    return (
-        <div>
-            <div className="card shadow mx-auto my-5 rounded-15 element-background-color element-border-color" style={{width: "21rem"}}>
-                <div className="my-3" style={{display: "flex"}}> 
-                    <h6 style={{margin: "auto", fontSize: "40px"}}>Login</h6>
-                </div>
-                <hr className="mt-2"/>
-                <div className="input-group px-3 mx-auto">
-                    <input type="text" className="form-control" placeholder="Username or email" id="username-email" onKeyUp={(e) => {enterKeySubmit(e, login)}}/>
-                </div>
-                <div className="input-group mt-3 px-3 mx-auto">
-                    <input type="password" className="form-control" placeholder="Password" id="password" onKeyUp={(e) => {enterKeySubmit(e, login)}}/>
-                </div>
-                
+    return(
+        <div className="card rounded-15 element-background-color element-border-color mx-auto" style={{width: "21rem"}}>
+            <div className="card-header d-flex justify-content-center">
+                <h2>Login</h2>
+            </div>
+            <div className="card-body">
+                <input type="text" className="input-field w-100 mb-2" placeholder="Username or email" onKeyUp={(e) => {setPrimaryKeyInput(e.target.value);enterKeySubmit(e, login)}}/>
+                <input type="password" className="input-field w-100 mb-2" placeholder="Password" onKeyUp={(e) => {setPassword(e.target.value);enterKeySubmit(e, login)}}/>
                 {loginLoading && 
-                <div className="input-group mt-3 px-3 mx-auto">
+                <div className="input-group mx-auto">
                     <button type="submit" className="btn btn-primary w-100 rounded-15" disabled>Loading...</button>
                 </div>}
                 {!loginLoading && 
-                <div className="input-group mt-3 px-3 mx-auto">
+                <div className="input-group mx-auto">
                     <button type="submit" className="btn btn-primary w-100 rounded-15" onClick={login}>Login</button>
                 </div>}
-                
                 <div className="container d-flex justify-content-center">
                     <small className="mt-2 px-3"><Link to="/find-account">Forgot your password?</Link></small>
                 </div>
-                <hr className="mt-2"/>
-                <div className="input-group mb-3 px-3 mx-auto">
-                    <Link to="/register" className="btn btn-success w-100 rounded-15">Create account</Link>
-                </div>
+            </div>
+
+            <div className="card-footer d-flex justify-content-center">
+                <Link to="/register" className="btn btn-success w-100 rounded-15">Create account</Link>
             </div>
         </div>
     );

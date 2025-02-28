@@ -24,6 +24,7 @@ def register(request):
     password_valid = True
     email_unique = False
     email_valid = False
+    invalid_data = False
 
     #load fetch data
     data = json.loads(request.body)
@@ -56,7 +57,7 @@ def register(request):
 
     form = UserRegistrationForm(data)
     if not form.is_valid():
-        password_valid = False
+        invalid_data = True
 
     context = {
         "username_unique": username_unique,
@@ -65,6 +66,7 @@ def register(request):
         "password_valid": password_valid,
         "email_unique": email_unique,
         "email_valid": email_valid,
+        "invalid_data": invalid_data,
     }
     json_context = json.dumps(context)
 

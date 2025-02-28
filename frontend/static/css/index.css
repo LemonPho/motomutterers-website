@@ -370,6 +370,10 @@ input[type="file"]{
     outline: grey;
 }
 
+.input-field.error{
+    border-color: red;
+}
+
 .text{
     white-space: pre-line;
 }
