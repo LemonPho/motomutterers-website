@@ -3,3 +3,4 @@ db.sqlite3
 /motomutterers_fantasy_league/
 /media/
 /frontend/templates/frontend/
+__pycache__/
