@@ -11,10 +11,8 @@ export default function UsernameChangeModal({ closeModal, retrieveUserData }){
 
     async function postNewUsername(){
             setLoadingMessage("Loading...");     
-            const newUsername = document.getElementById("username-input").value;
-            const currentPassword = document.getElementById("password-username-input").value;
     
-            const usernameResponse = await submitChangeUsername(currentPassword, newUsername);
+            const usernameResponse = await submitChangeUsername(passwordInput, newUsername);
     
             if(usernameResponse.error){
                 setErrorMessage("There was an error while submiting the new username");
