@@ -76,25 +76,6 @@ export function getScreenDimensions(){
     return result
 }
 
-export function closeDropdowns(){
-    //this function retrieves all the dropdowns currently on the page, and closes them all
-    //this grabs the dropdown CONTENT divs, not the GENERAL dropdown div, and removes the show class
-    const dropdowns = document.getElementsByClassName("dropdown-menu");
-    const menuDropdowns = document.getElementsByClassName("menu-dropdown-content");
-
-    Array.prototype.forEach.call(dropdowns, (dropdown) => {
-        if(dropdown.classList.contains("show")){
-            dropdown.classList.toggle("show");
-        }
-    });
-
-    Array.prototype.forEach.call(menuDropdowns, (menuDropdown) => {
-        if(menuDropdown.classList.contains("show")){
-            menuDropdown.classList.toggle("show");
-        }
-    })
-}
-
 export function toggleDropdown(elementId, event, loggedIn){
     //finds the dropdown on the page, if it has the show class it closes the dropdowns, if not it adds show
     event.stopPropagation();
@@ -102,11 +83,9 @@ export function toggleDropdown(elementId, event, loggedIn){
     const element = document.getElementById(elementId);
 
     if(element.classList.contains("show")){
-        closeDropdowns();
         return;
     }
 
-    closeDropdowns();
     if(elementId != undefined && (loggedIn == undefined || loggedIn == true)){
         element.classList.toggle("show");
     }

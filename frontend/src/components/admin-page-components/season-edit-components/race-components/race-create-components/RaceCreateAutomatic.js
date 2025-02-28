@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import { closeDropdowns, enterKeySubmit, toggleDropdown, focusDiv, autoResizeTextarea } from "../../../../utils.js";
+import { enterKeySubmit, focusDiv, autoResizeTextarea } from "../../../../utils.js";
 import { useApplicationContext } from "../../../../ApplicationContext.js";
 import { useSeasonContext } from "../../SeasonContext.js"; 
 import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";

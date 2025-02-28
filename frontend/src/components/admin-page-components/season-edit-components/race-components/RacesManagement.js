@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCompetitor, getRace, getSeasonCompetitors, getSeasonRaces } from "../../../fetch-utils/fetchGet";
 import { retrieveRaceResult, submitDeleteRace, submitEditRace, submitRace, submitRaceResults } from "../../../fetch-utils/fetchPost";
-import { closeDropdowns, enterKeySubmit, toggleDropdown } from "../../../utils";
+import { enterKeySubmit, toggleDropdown } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import RaceCreateModal from "./race-create-components/RaceCreateModal";
