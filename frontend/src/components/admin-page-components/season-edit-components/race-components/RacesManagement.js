@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
 import { getCompetitor, getRace, getSeasonCompetitors, getSeasonRaces } from "../../../fetch-utils/fetchGet";
 import { retrieveRaceResult, submitDeleteRace, submitEditRace, submitRace, submitRaceResults } from "../../../fetch-utils/fetchPost";
-import { enterKeySubmit, toggleDropdown } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import RaceCreateModal from "./race-create-components/RaceCreateModal";
@@ -17,9 +15,10 @@ import RaceCreateManual from "./race-create-components/race-create-manual-compon
 import RaceDetailsCreateModal from "./race-create-components/race-create-manual-components/RaceDetailsCreateModal";
 import RaceResultsCreateModal from "./race-create-components/race-create-manual-components/RaceResultsCreateModal";
 import RaceSelectCompetitorsCreateModal from "./race-create-components/race-create-manual-components/RaceSelectCompetitorsCreateModal";
+import Dropdown from "../../../util-components/Dropdown";
 
 export default function RacesManagement(){
-    const { openedModal, openModal } = useOpenersContext();
+    const { openedModal, openModal, openedDropdown, toggleDropdown } = useOpenersContext();
     const { season, seasonLoading, retrieveSeason, editSeasonRace, deleteSeasonRace, createSeasonRace, addSeasonRaceResults } = useSeasonContext();
     const { setErrorMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages, loggedIn, user, successMessage } = useApplicationContext();
 
@@ -138,7 +137,6 @@ export default function RacesManagement(){
             </RaceCreateContextProvider>
 
             
-
             <Modal isOpen={openedModal == "race-edit"}>
                 <RaceEditModal raceId={editRaceId}/>
             </Modal>
@@ -181,13 +179,15 @@ export default function RacesManagement(){
                                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                                     </svg>
                                 </div>
-                                <ul id={`dropdown-race-${race.id}`} className="dropdown-menu">
-                                    <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);openModal("race-edit")}}>Edit</button></li>
-                                    {(!race.finalized && !race.has_url) && <li><button id="add-results-race-button" className="dropdown-item" onClick={(e) => {openSelectCompetitorsModal(e)}}>Add Results</button></li>}
-                                    {(!race.finalized && race.has_url) && <li><button id="retrieve-results-race-button" className="dropdown-item" onClick={(e) => {retrieveResults(i)}}>Retrieve Results</button></li>}
-                                    {race.finalized && <li><button id="view-race-results-button" className="dropdown-item" onClick={(e) => openViewResultsModal(e, race.id)}>View Race Results</button></li>}
-                                    <li><button className="dropdown-item" onClick={() => deleteSeasonRace(race.id)}>Delete</button></li>
-                                </ul>
+                                <Dropdown isOpen={openedDropdown == `dropdown-race-${race.id}`}>
+                                    <ul id={`dropdown-race-${race.id}`} className="dropdown-menu">
+                                        <li><button id="edit-race-button" className="dropdown-item" onClick={(e) => {setEditRaceId(race.id);openModal("race-edit")}}>Edit</button></li>
+                                        {(!race.finalized && !race.has_url) && <li><button id="add-results-race-button" className="dropdown-item" onClick={(e) => {openSelectCompetitorsModal(e)}}>Add Results</button></li>}
+                                        {(!race.finalized && race.has_url) && <li><button id="retrieve-results-race-button" className="dropdown-item" onClick={(e) => {retrieveResults(i)}}>Retrieve Results</button></li>}
+                                        {race.finalized && <li><button id="view-race-results-button" className="dropdown-item" onClick={(e) => openViewResultsModal(e, race.id)}>View Race Results</button></li>}
+                                        <li><button className="dropdown-item" onClick={() => deleteSeasonRace(race.id)}>Delete</button></li>
+                                    </ul>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>

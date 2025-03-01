@@ -6,9 +6,12 @@ import { getScreenDimensions, closeDropdowns, closeModals, toggleDropdown } from
 import NotificationsDropdown from "./NotificationsDropdown";
 import UserDropdown from "./UserDropdown";
 import { Link } from "react-router-dom";
+import { useOpenersContext } from "../OpenersContext";
+import Dropdown from "../util-components/Dropdown";
 
 export default function Header(){
     const { currentSeason, selectPicksState, user, userLoading, contextLoading, currentSeasonLoading, selectPicksStateLoading } = useApplicationContext();
+    const { toggleDropdown, openedDropdown } = useOpenersContext();
 
     const [screenWidth, setScreenWidth] = useState(getScreenDimensions().width);
 
@@ -26,20 +29,22 @@ export default function Header(){
         return(
             <div className="header menu-div d-flex align-items-center">
                 {screenWidth < 500 && !contextLoading &&
-                <div className="btn-group d-flex align-items-center">
-                    <button className="btn btn-link link-no-decorations" onClick={(e) => toggleDropdown("menu-dropdown-content", e)}>
+                <div className="btn-group d-flex align-items-center dropdown-div">
+                    <button className="btn btn-link link-no-decorations dropdown-button" onClick={(e) => toggleDropdown("menu-dropdown-content", e)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24" fill="none">
                             <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </button>
                     <Link to="/" className="navbar-brand link-no-decorations my-1 ms-1">Home</Link>
-                    <div id="menu-dropdown-content" className="dropdown-menu" style={{top: "100%", left: "0"}}>
-                        {(!currentSeasonLoading && !currentSeason) && <span className="navbar-text dropdown-item">No current season</span>}
-                        {(!currentSeasonLoading && currentSeason) && <Link to={`/raceresults?season=${currentSeason.year}`} className="navbar-text dropdown-item">Races</Link> }       
-                        <Link to="/announcements?page=1" className="navbar-text dropdown-item">Announcements</Link>
-                        {(!currentSeasonLoading && currentSeason) && <Link to={`/standings?season=${currentSeason.year}`} className="navbar-text dropdown-item">Standings</Link>}
-                        {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) && <Link to="/select-picks" className="navbar-text dropdown-item">Select your picks!</Link>}
-                    </div>
+                    <Dropdown isOpen={openedDropdown == "menu-dropdown-content"}>
+                        <div id="menu-dropdown-content" className="dropdown-menu" style={{top: "100%", left: "0"}}>
+                            {(!currentSeasonLoading && !currentSeason) && <span className="navbar-text dropdown-item">No current season</span>}
+                            {(!currentSeasonLoading && currentSeason) && <Link to={`/raceresults?season=${currentSeason.year}`} className="navbar-text dropdown-item">Races</Link> }       
+                            <Link to="/announcements?page=1" className="navbar-text dropdown-item">Announcements</Link>
+                            {(!currentSeasonLoading && currentSeason) && <Link to={`/standings?season=${currentSeason.year}`} className="navbar-text dropdown-item">Standings</Link>}
+                            {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) && <Link to="/select-picks" className="navbar-text dropdown-item">Select your picks!</Link>}
+                        </div>
+                    </Dropdown>
                 </div>}
                 <div className="d-flex align-items-center ms-auto">
                     <div className="menu-bar-item"><NotificationsDropdown /></div>

@@ -184,7 +184,7 @@ export default function UserPicksSelector(){
                                     <h5 className="card-title text-muted">{picksWords[i]} Pick</h5>
                                 </div>
                                 <div className="card-body" style={{padding: "8px"}}>
-                                    <div className="dropdown p-2">
+                                    <div className="dropdown-div p-2">
                                         <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].competitor_points.competitor.first} {userPicks[i].competitor_points.competitor.last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
@@ -208,7 +208,7 @@ export default function UserPicksSelector(){
                                 </div>
 
                                 <div className="card-body" style={{padding: "8px"}}>
-                                    <div className="dropdown p-2">
+                                    <div className="dropdown-div p-2">
                                         <button className="btn btn-outline-secondary dropdown-toggle rounded-15" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].competitor_points.competitor.first} {userPicks[i].competitor_points.competitor.last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
@@ -234,7 +234,7 @@ export default function UserPicksSelector(){
                         </div>
 
                         <div className="card-body" style={{padding: "8px"}}>
-                            <div className="dropdown p-2">
+                            <div className="dropdown-div p-2">
                                 {invalidIndependent == true && 
                                 <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
                                     {userIndependentPick != 0 && <span>{userIndependentPick.competitor_points.competitor.first} {userIndependentPick.competitor_points.competitor.last}</span>}
@@ -267,7 +267,7 @@ export default function UserPicksSelector(){
                         </div>
 
                         <div className="card-body" style={{padding: "8px"}}>
-                            <div className="dropdown p-2">
+                            <div className="dropdown-div p-2">
                                 {invalidRookie == true && 
                                 <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
                                     {userRookiePick != 0 && <span>{userRookiePick.competitor_points.competitor.first} {userRookiePick.competitor_points.competitor.last}</span>}

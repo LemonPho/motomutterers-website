@@ -1,22 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import ApplicationContext, { useApplicationContext } from "../ApplicationContext";
-import { getCompetitors, getSeasons } from "../fetch-utils/fetchGet";
-import { submitCurrentSeason, submitDeleteSeason, submitSeason } from "../fetch-utils/fetchPost";
-import { closeDropdowns, enterKeySubmit, toggleDropdown } from "../utils";
+import { useApplicationContext } from "../ApplicationContext";
 import SeasonCreateModal from "./SeasonCreateModal";
 import { useSeasonCreateContext } from "./SeasonCreateContext";
 import { Link } from "react-router-dom";
 import Modal from "../util-components/Modal";
 import { useOpenersContext } from "../OpenersContext";
 import SeasonDeleteModal from "./SeasonDeleteModal";
+import Dropdown from "../util-components/Dropdown";
 
 export default function SeasonsSettings(){
-    const { errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, 
-            setErrorMessage, setSuccessMessage, setModalErrorMessage, setModalSuccesMessage,
-            resetApplicationMessages } = useApplicationContext();
+    const { resetApplicationMessages } = useApplicationContext();
     const {user, isLoggedIn, contextLoading} = useApplicationContext();
-    const { openedModal, openModal, closeModal } = useOpenersContext();
+    const { openedModal, openModal, closeModal, toggleDropdown, openedDropdown } = useOpenersContext();
 
     const { seasons, seasonsLoading, retrieveSeasons } = useSeasonCreateContext();
 
@@ -64,10 +60,12 @@ export default function SeasonsSettings(){
                                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                                     </svg>
                                 </div>
-                                <div id={`dropdown-season-${season.year}`} className="dropdown-menu">
-                                    <li><Link className="dropdown-item" to={`seasons/${season.year}`}>Edit</Link></li>
-                                    <li><a className="dropdown-item link-button" onClick={(e) => {openDeleteModal(e, season)}}>Delete</a></li>
-                                </div>
+                                <Dropdown isOpen={openedDropdown == `dropdown-season-${season.year}`}>
+                                    <div id={`dropdown-season-${season.year}`} className="dropdown-menu">
+                                        <li><Link className="dropdown-item" to={`seasons/${season.year}`}>Edit</Link></li>
+                                        <li><a className="dropdown-item link-button" onClick={(e) => {openDeleteModal(e, season)}}>Delete</a></li>
+                                    </div>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>

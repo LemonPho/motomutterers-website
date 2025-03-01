@@ -39,7 +39,7 @@ export default function UserDropdown(){
 
         <div className="dropdown-div">
             <div id="user-dropdown-button">
-                <div className="ms-auto mt-2 mb-2" onClick={(e) => {toggleDropdown("user-dropdown-content", e, user.is_logged_in)}}>
+                <div className="ms-auto mt-2 mb-2 dropdown-button" onClick={(e) => {toggleDropdown("user-dropdown-content", e, user.is_logged_in)}}>
                     <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} username={user.username}/>
                 </div>
             </div>

@@ -1,12 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import { getScreenDimensions, closeDropdowns, closeModals, toggleDropdown } from "../utils";
 
 import { useApplicationContext } from "../ApplicationContext";
 
 import Footer from "./Footer";
 import Header from "./Header";
 import Content from "./Content";
-import { useLocation } from "react-router-dom";
 import { useOpenersContext } from "../OpenersContext";
 
 function LayoutPage() {

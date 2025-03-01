@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 
 import { useApplicationContext } from "../../ApplicationContext";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
-import { autoResizeTextarea, focusDiv, toggleDropdown } from "../../utils";
+import { autoResizeTextarea, focusDiv } from "../../utils";
 import CommentReply from "./CommentReply";
 import { useCommentsContext } from "./CommentsSectionContext";
+import Dropdown from "../Dropdown";
+import { useOpenersContext } from "../../OpenersContext";
 
 export default function Comment({ comment }){
-    const { user, setErrorMessage } = useApplicationContext();
+    const { user } = useApplicationContext();
     const { postDeleteComment, postComment, postEditComment } = useCommentsContext();
+    const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [replyCreateText, setReplyCreateText] = useState("");
     const replyCreateInput = useRef(null);
@@ -58,8 +61,9 @@ export default function Comment({ comment }){
     function toggleEditComment(){
         if(editCommentDiv.current){
             setEditCommentText("");
-            commentText.current.classList.toggle("hidden")
-            editCommentDiv.current.classList.toggle("hidden")
+            commentText.current.classList.toggle("hidden");
+            editCommentDiv.current.classList.toggle("hidden");
+            closeDropdown();
         }
     }
 
@@ -96,10 +100,12 @@ export default function Comment({ comment }){
                                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                                     </svg>
                                 </button>
-                                <div id={`comment-${comment.id}-dropdown`} className="dropdown-menu">
-                                    <li><button className="dropdown-item" onClick={() => toggleEditComment(comment.id)}>Edit</button></li>
-                                    <li><a className="dropdown-item" onClick={() => deleteComment(comment.id)}>Delete</a></li>
-                                </div>
+                                <Dropdown isOpen={openedDropdown == `comment-${comment.id}-dropdown`}>
+                                    <div id={`comment-${comment.id}-dropdown`} className="dropdown-menu">
+                                        {(user.id == comment.user.id) && <li><button className="dropdown-item" onClick={() => toggleEditComment(comment.id)}>Edit</button></li>}
+                                        <li><a className="dropdown-item" onClick={() => deleteComment(comment.id)}>Delete</a></li>
+                                    </div>
+                                </Dropdown>
                             </div>
                         }
                     </div>

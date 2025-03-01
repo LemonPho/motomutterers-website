@@ -12,12 +12,9 @@ export function OpenersContextProvider({ children }){
     }
 
     function toggleDropdown(id, event, loggedIn){
-
-        closeModal();
-        console.log("opening dropdown");
         event.stopPropagation();
         if(id == openedDropdown){
-            setOpenedDropdown("");
+            closeDropdown();
         } else if(id != undefined && (loggedIn == undefined || loggedIn == true)){
             setOpenedDropdown(id);
         }

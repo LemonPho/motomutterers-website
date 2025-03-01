@@ -117,7 +117,7 @@ export default function RaceEditModal({ raceId }){
             </div>
 
             <div className="custom-modal-footer">
-                <button className="btn btn-primary ms-auto" onClick={saveChanges}>Save changes</button>
+                <button className="btn btn-primary rounded-15 w-100" onClick={saveChanges}>Save changes</button>
             </div>
         </div>
     )

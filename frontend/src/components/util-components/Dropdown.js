@@ -1,8 +1,12 @@
 import React from "react";
+import { useOpenersContext } from "../OpenersContext";
 
 export default function Dropdown({ isOpen, children }){
-    console.log(isOpen);
     if(!isOpen) return null;
 
-    return <>{children}</>;
+    const { closeDropdown } = useOpenersContext();
+
+    return <>
+        {children}
+    </>;
 }

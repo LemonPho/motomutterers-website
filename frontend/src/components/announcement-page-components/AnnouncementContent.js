@@ -4,12 +4,15 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import PageNotFound from "../PageNotFound";
 import { useAnnouncementContext } from "./AnnouncementContext";
 import { useApplicationContext } from "../ApplicationContext";
-import { autoResizeTextarea, toggleDropdown } from "../utils";
+import { autoResizeTextarea } from "../utils";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
+import Dropdown from "../util-components/Dropdown";
+import { useOpenersContext } from "../OpenersContext";
 
 export default function AnnouncementContent(){
     const { user, contextLoading } = useApplicationContext();
     const { announcement, editAnnouncement, retrieveAnnouncement, deleteAnnouncement, announcementLoading } = useAnnouncementContext();
+    const { openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
 
     const [announcementEditLoading, setAnnouncementEditLoading] = useState(false);
     const [announcementDeleted, setAnnouncementDeleted] = useState(false);
@@ -29,7 +32,7 @@ export default function AnnouncementContent(){
         setText(announcement.text);
         setTitle(announcement.title);
         staticDiv.current.classList.toggle("hidden");
-
+        closeDropdown();
     }
 
     function cancelEditAnnouncement(){
@@ -43,6 +46,7 @@ export default function AnnouncementContent(){
             toggleEditAnnouncement();
         }
         setAnnouncementEditLoading(false);
+        closeDropdown();
     }
 
     function saveDeleteAnnouncement(){
@@ -51,6 +55,7 @@ export default function AnnouncementContent(){
             setAnnouncementDeleted(true);
         }
         setAnnouncementEditLoading(false);
+        closeDropdown();
     }
 
     if(contextLoading){
@@ -81,10 +86,12 @@ export default function AnnouncementContent(){
                                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                                     </svg>
                                 </button>
-                                <div id={`dropdown-announcement`} className="dropdown-menu">
-                                    <li><button className="dropdown-item" onClick={toggleEditAnnouncement}>Edit</button></li>
-                                    <li><a className="dropdown-item" onClick={saveDeleteAnnouncement}>Delete</a></li>
-                                </div>
+                                <Dropdown isOpen={openedDropdown == "dropdown-announcement"}>
+                                    <div id={`dropdown-announcement`} className="dropdown-menu">
+                                        <li><button className="dropdown-item" onClick={toggleEditAnnouncement}>Edit</button></li>
+                                        <li><a className="dropdown-item" onClick={saveDeleteAnnouncement}>Delete</a></li>
+                                    </div>
+                                </Dropdown>
                             </div>
                         }
                     </div>  
