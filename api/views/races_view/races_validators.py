@@ -105,7 +105,7 @@ def process_race_row(row, season):
     number = int(number_element.find_element(By.CLASS_NAME, "ms-table_row-value").get_attribute('innerHTML'))
     points = points_element.find_element(By.CLASS_NAME, "ms-table_row-value").get_attribute("innerHTML")
 
-    if position == "dnf" or position == "dns":
+    if position == "dnf" or position == "dns" or position == "nc":
         position = 0
     else:
         position = int(position)
@@ -364,7 +364,7 @@ def generate_link_sprint_data(data, season):
         options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(service=service, options=options)
 
-    selenium_instance = create_selenium_status(pid=browser.service.process.pid, executor_url=browser.command_executor, message="Retrieving sprint race result", request=data["request"], browser=browser)
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving sprint race result", request=data["request"], browser=browser)
 
     browser.get(url)
     delay = 10

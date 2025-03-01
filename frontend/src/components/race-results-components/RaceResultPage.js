@@ -85,7 +85,7 @@ export default function RaceResultPage({ raceId }){
                     ))}
                 </div>
             </div>
-            {raceResultDetails.finalized && 
+            {(raceResultDetails.finalized && raceResultDetails.standings.users_picks.length > 0) && 
             <div className="card rounded-15 element-background-color element-border-color mb-2" id="race-standings-card">
                 <div className="card-header rounded-15 clickable" onClick={(e) => {toggleCardBody("race-standings-card-body")}}>
                     <div className="p-1">

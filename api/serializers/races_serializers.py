@@ -15,10 +15,14 @@ class RaceSimpleSerializer(serializers.ModelSerializer):
     finalized = serializers.BooleanField()
     timestamp = serializers.CharField()
     is_sprint = serializers.BooleanField()
+    has_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Race
-        fields = ["title", "track", "id", "finalized", "timestamp", "is_sprint"]
+        fields = ["title", "track", "id", "finalized", "timestamp", "is_sprint", "has_url"]
+
+    def get_has_url(self, race):
+        return race.url is not None
 
 class RaceReadSerializer(serializers.ModelSerializer):
     title = serializers.CharField()
