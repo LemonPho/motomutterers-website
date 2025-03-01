@@ -534,7 +534,7 @@ def generate_race_standings(competitors_positions, season):
             
             points += season_competitor.competitor_points.points
             if competitor_position is not None:
-                competitor_position.competitor_points.points
+                points += competitor_position.competitor_points.points
             
         if season.top_rookie:
             try:
@@ -550,7 +550,7 @@ def generate_race_standings(competitors_positions, season):
             
             points += season_competitor.competitor_points.points
             if competitor_position is not None:
-                competitor_position.competitor_points.points
+                points += competitor_position.competitor_points.points
 
         response["data"]["users_picks"].append({
             "points": points,
@@ -560,8 +560,6 @@ def generate_race_standings(competitors_positions, season):
         })
 
         position += 1
-
-    print(response["data"]["users_picks"])
 
     return response
 
