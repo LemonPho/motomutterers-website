@@ -501,7 +501,7 @@ def add_race_results(request):
             if (competitor_position["position"] - prev_competitor["position"]) != 1:
                 SeasonMessage.objects.create(
                     season = season,
-                    message = f"There was a difference of positions bigger than 1 ({competitor_position["position"]} - {prev_competitor["position"]})",
+                    message = f"There was a difference of positions bigger than 1 ({competitor_position['position']} - {prev_competitor['position']})",
                     type = 0
                 )
                 return HttpResponse(status=400)
@@ -511,7 +511,7 @@ def add_race_results(request):
         except Competitor.DoesNotExist:
             SeasonMessage.objects.create(
                 season = season,
-                message = f"Could not find competitor data for the competitor id: {competitor_position["competitorId"]}",
+                message = f"Could not find competitor data for the competitor id: {competitor_position['competitorId']}",
                 type = 0
             )
             return HttpResponse(status=400)
