@@ -119,9 +119,9 @@ def create_season_competitors_link(request):
             season = season,
             message = 
                 " ".join(filter(None, [
-                "Season is invalid" if response["invalidSeason"] else "",
-                f"Link: {data['url']} is invalid" if response["invalidLink"] else "",
-                "Server is not ready to retrieve data online (1 at a time)" if not response["selenium_available"] else ""])),
+                "Season is invalid" if response['invalidSeason'] else "",
+                f"Link: {data['url']} is invalid" if response['invalidLink'] else "",
+                "Server is not ready to retrieve data online (1 at a time)" if not response['selenium_available'] else ""])),
             type = 0
         )
         return JsonResponse(response, status=400)
