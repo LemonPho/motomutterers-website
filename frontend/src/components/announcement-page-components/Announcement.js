@@ -21,7 +21,7 @@ export default function Announcement(){
     }
 
     return(
-        <div id="announcement-view" className="my-3">
+        <div id="announcement-view">
             <AnnouncementContent />
             <CommentsContextProvider parentElement={{id: announcement.id, type: "ANNOUNCEMENT"}}>
                 <CommentsSection/>

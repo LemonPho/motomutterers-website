@@ -343,7 +343,9 @@ export async function getSeasonsSimple(){
     return response;
 }
 
-export async function getSeason(seasonYear){
+export async function getSeasonAdmin(seasonYear, user){
+    if (!user.is_admin) return null;
+
     let response = {
         error: false,
         season: null,
@@ -351,7 +353,28 @@ export async function getSeason(seasonYear){
     }
 
     try{
-        const apiResponse = await fetch(`/api/get-season?season=${seasonYear}`);
+        const apiResponse = await fetch(`/api/get-season-admin?season=${seasonYear}`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.season = apiResponse.status === 200 ? apiResult.season : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function getSeasonDetailed(seasonYear){
+    let response = {
+        error: false,
+        season: null,
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-season-detailed?season=${seasonYear}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;

@@ -109,6 +109,11 @@ class UserPicksRace(models.Model):
 #managed in the standings view
 class StandingsRace(models.Model):
     users_picks = models.ManyToManyField(UserPicksRace)
+
+    def delete(self, *args, **kwargs):
+        # Delete all related UserPicksRace instances before deleting StandingsRace
+        self.users_picks.all().delete()
+        super().delete(*args, **kwargs)
     
 class UserPicks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="picks")
@@ -124,6 +129,11 @@ class UserPicks(models.Model):
 
 class Standings(models.Model):
     users_picks = models.ManyToManyField(UserPicks)
+
+    def delete(self, *args, **kwargs):
+        # Delete all related UserPicksRace instances before deleting StandingsRace
+        self.users_picks.all().delete()
+        super().delete(*args, **kwargs)
     
 class Announcement(models.Model):
     title = models.TextField(max_length=128)
@@ -155,10 +165,20 @@ class Race(models.Model):
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
     standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, related_name="race_standings", null=True, blank=True)
     url = models.URLField(null=True, blank=True)
+    notifications = models.ManyToManyField("Notification", related_name="race", blank=True)
     comments = models.ManyToManyField("Comment", blank=True, related_name="race")
 
     class Meta:
         ordering = ["timestamp"]
+
+    def delete(self, *args, **kwargs):
+        for notification in self.notifications.all():
+            notification.delete()
+
+        for comment in self.comments.all():
+            comment.delete()
+
+        super().delete(*args, **kwargs)
 
 class Season(models.Model):
     year = models.IntegerField()
@@ -170,6 +190,15 @@ class Season(models.Model):
     top_rookie = models.BooleanField(default=True)
     finalized = models.BooleanField(default=False)
     standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def delete(self, *args, **kwargs):
+        for competitor in self.competitors.all():
+            competitor.delete()
+
+        for race in self.races.all():
+            race.delete()
+
+        super().delete(*args, **kwargs)
 
 class CurrentSeason(models.Model):
     season = models.OneToOneField(Season, on_delete=models.CASCADE, related_name="current")
@@ -200,24 +229,7 @@ class Comment(models.Model):
         for notification in self.notifications.all():
             notification.delete()
 
-        super().delete(*args, **kwargs)
-
-#not in use, just there just in case i need it
-class AnnouncementComment(models.Model):
-    text = models.TextField(max_length=2048)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="announcements_comments")
-    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, null=True, blank=True, related_name="old_comments")
-    parent_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
-    notifications = models.ManyToManyField("Notification", blank=True, related_name="announcements_comments")
-    date_created = models.DateTimeField(null=True, auto_now_add=True)
-    edited = models.BooleanField(default=False)
-
-    # for deleting the notifications associated to the comment
-    def delete(self, *args, **kwargs):
-        for notification in self.notifications.all():
-            notification.delete()
-
-        super().delete(*args, **kwargs)    
+        super().delete(*args, **kwargs) 
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
@@ -233,3 +245,9 @@ class SeleniumStatus(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     pid = models.IntegerField()
     executor_url = models.URLField(max_length=255, null=True, blank=True)
+
+class SeasonMessage(models.Model):
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name="messages", null=True)
+    message = models.CharField(max_length=1024)
+    type = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)

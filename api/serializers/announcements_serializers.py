@@ -6,7 +6,7 @@ from .serializers_util import sanitize_html
 from .comments_serializers import CommentReadSerializer
 
 
-from ..models import Announcement, AnnouncementComment, CompetitorPoints, CompetitorPosition, Competitor
+from ..models import Announcement, CompetitorPoints, CompetitorPosition, Competitor
 
 class AnnouncementWriteSerializer(serializers.ModelSerializer):
     text = serializers.CharField(write_only=True, allow_blank=False)

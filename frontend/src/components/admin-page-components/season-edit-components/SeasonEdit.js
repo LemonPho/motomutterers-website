@@ -11,14 +11,15 @@ import { useApplicationContext } from "../../ApplicationContext";
 import SetCurrentSeason from "./SetCurrentSeason";
 import DeleteSeason from "./season-delete-components/DeleteSeason";
 import SeleniumStatus from "./SeleniumStatus";
+import SeasonMessages from "./SeasonMessages";
 
 export default function SeasonEdit(){
     const { retrieveSeason, season, seasonLoading } = useSeasonContext();
-    const { contextLoading, user } = useApplicationContext();
+    const { contextLoading, user, userLoading } = useApplicationContext();
 
     useEffect(() => {
         retrieveSeason();
-    }, [])
+    }, [userLoading])
 
     if(seasonLoading || contextLoading || !season){
         return (
@@ -46,18 +47,17 @@ export default function SeasonEdit(){
                 <div className="container" style={{padding: "0px"}}>
                     {season.selenium_status != null &&
                     <div className="row">
-                        <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
-                            <SeleniumStatus />
-                        </div>
+                        <SeleniumStatus />
+                    </div>
+                    }
+                    {season.season_messages.length > 0 &&
+                    <div className="row">
+                        <SeasonMessages />
                     </div>
                     }
                     <div className="row">
-                        <div className="card rounded-15 col-md me-2 mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
-                            <CompetitorsManagement/>
-                        </div>
-                        <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
-                            <RacesManagement/>
-                        </div>
+                        <CompetitorsManagement/>
+                        <RacesManagement/>
                     </div>
                     <div className="row">
                         <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "10px"}}>

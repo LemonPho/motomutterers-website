@@ -4,7 +4,7 @@ from .races_validators import validate_race_link_data, generate_link_race_data, 
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
 from .races_util import add_points_to_season_competitors
 
-from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition
+from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
 from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
@@ -69,6 +69,11 @@ def create_complete_race(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to create a race (they weren't an admin or not logged in)",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     response = {
@@ -86,9 +91,19 @@ def create_complete_race(request):
         season = Season.objects.filter(visible=True).get(year=season_year)
     except Season.DoesNotExist:
         response["invalid_season"] = True
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"When creating the race: {data["race"]["title"]}, the season: {season_year} was not found",
+            type = 0
+        )
         return JsonResponse(response, status=400)
     
     if season.finalized:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Couldn't create the race: {data["race"]["title"]}, because the season: {season_year} is finalized",
+            type = 0
+        )
         return HttpResponse(status=405)
     
     validated_race_data = validate_generate_complete_manual_race(data)
@@ -97,6 +112,11 @@ def create_complete_race(request):
     response["competitors_not_found"] = validated_race_data.pop("competitors_not_found")
 
     if any(response["invalid_competitors_positions_spacing"]) or any(response["competitors_not_found"]):
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Couldn't create the race: {data["race"]["title"]}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+            type = 0
+        )
         return JsonResponse(response, status=400)
         
     race_serializer = RaceWriteSerializer(data=validated_race_data["race"])
@@ -104,6 +124,11 @@ def create_complete_race(request):
     if not race_serializer.is_valid():
         print(race_serializer.errors)
         response["invalid_race_data"] = True
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Data was invalid: {race_serializer.errors} when creating race: {data["race"]["title"]}",
+            type = 0
+        )
         return JsonResponse(response, status=400)
     
     race = race_serializer.save()
@@ -128,6 +153,11 @@ def create_race(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to create a race (they weren't an admin or not logged in)",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     data = json.loads(request.body)
@@ -136,14 +166,29 @@ def create_race(request):
     try:
         season = Season.objects.filter(visible=True).get(year=season_year)
     except Season.DoesNotExist:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"When creating the race: {data["race"]["title"]}, the season: {season_year} was not found",
+            type = 0
+        )
         return HttpResponse(status=400)
     
     if season.finalized:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Couldn't create the race: {data["race"]["title"]}, because the season: {season_year} is finalized",
+            type = 0
+        )
         return HttpResponse(status=400)
 
     serializer = RaceWriteSerializer(data)
 
     if not serializer.is_valid() or not season_year:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Data was invalid: {serializer.errors}",
+            type = 0
+        )
         return HttpResponse(status=400)
     
     race = serializer.save()
@@ -156,6 +201,11 @@ def create_race_link(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to create a race (they weren't an admin or not logged in)",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     response = {
@@ -182,6 +232,11 @@ def create_race_link(request):
     is_final = race_type == RACE_TYPE_FINAL
 
     if response["invalid_link"] or response["invalid_season"] or response["invalid_type"] or not response["selenium_available"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"{"Link was invalid" if response["invalid_link"] else ""} {"Invalid season" if response["invalid_season"] else ""} {"Invalid race type" if response["invalid_type"] else ""} {"Server cant retrieve result right now, contact admin" if not response["selenium_available"] else ""} when validating: {data["link"]}",
+            type = 0
+        )
         return JsonResponse(response, status=400)
     
     race_data = generate_link_race_data(data, season, is_sprint, is_final)
@@ -189,13 +244,31 @@ def create_race_link(request):
     response["timeout"] = race_data["timeout"]
     response["competitors_not_found"] = race_data["competitors_not_found"]
     
-    if response["timeout"] or any(response["competitors_not_found"]):
+    if any(response["competitors_not_found"]):
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Couldn't create the race: {data["race"]["title"]}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+            type = 0
+        )
+        return JsonResponse(response, status=400)
+    
+    if response["timeout"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"motorsport.com didn't response when using link: {data["link"]}",
+            type = 0
+        )
         return JsonResponse(response, status=400)
         
     serializer = RaceWriteSerializer(data=race_data["data"])
 
     if not serializer.is_valid():
         print(serializer.errors)
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Data was invalid: {serializer.errors} when building race from link: {data["link"]}",
+            type = 0
+        )
         return JsonResponse(validated_data_response, status=400)
     
     race = serializer.save()
@@ -209,6 +282,11 @@ def create_race_link(request):
             print(standings_serializer.errors)
             print(standings_serializer.error_messages)
             response["standings_error"] = True
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"Standings data was invalid: {standings_serializer.errors} when building race from link: {data["link"]}",
+                type = 0
+            )
             return JsonResponse(response, status=400)
                 
         race_standings = standings_serializer.save()
@@ -220,6 +298,11 @@ def create_race_link(request):
     add_points = add_points_to_season_competitors(season, race)
 
     if not add_points:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When adding the points to the season competitors after making the race: {race.title}, something went wrong, the race was automatically deleted",
+            type = 0
+        )
         race.delete()
         race.save()
         return JsonResponse(response, status=400)
@@ -236,17 +319,32 @@ def retrieve_race_result(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to retrieve a race result (they weren't an admin or not logged in)",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     data = json.loads(request.body)
     race_id = data.get("race_id", -1)
 
     if race_id == -1:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Could not find race_id in the data sent to the server",
+            type = 0
+        )
         return HttpResponse(status=400)
     
     try:
         race = Race.objects.get(pk=race_id)
     except Race.DoesNotExist:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Could not find the race associated to the race id: {race_id} in the data sent to the server",
+            type = 0
+        )
         return HttpResponse(status=404)
     
     if race.finalized or race.url is None:
@@ -257,15 +355,30 @@ def retrieve_race_result(request):
     positions_data = process_retrieve_race_result(race, request)
 
     if not positions_data["selenium_available"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Server could not start the browser used for retreiving race results",
+            type = 0
+        )
         return HttpResponse(status=503)
     
     if positions_data["timeout"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"motorsport.com took to long to respond to the link: {race.url}",
+            type = 0
+        )
         return HttpResponse(status=408)
     
     competitors_serializer = CompetitorPositionWriteSerializer(data=positions_data["data"]["competitors_positions"], many=True)
 
     if not competitors_serializer.is_valid():
         print(competitors_serializer.errors)
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When creating the competitors positions data, this error ocurred: {competitors_serializer.errors}",
+            type = 0
+        )
         return HttpResponse(status=422)
     
     competitors_positions = competitors_serializer.save()
@@ -275,12 +388,31 @@ def retrieve_race_result(request):
     race_standings_data = generate_race_standings(competitors_positions, season)
     standings_serializer = StandingsRaceWriteSerializer(data=race_standings_data["data"])
 
-    if not standings_serializer.is_valid() or race_standings_data["competitor_not_found"]:
+    if not standings_serializer.is_valid():
         print(standings_serializer.errors)
         for competitor_position in competitors_positions:
             competitor_position.delete()
 
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When creating the race standings data, this error ocurred: {standings_serializer.errors}",
+            type = 0
+        )
+
         return HttpResponse(status=400)
+    
+    if race_standings_data["competitor_not_found"]:
+        for competitor_position in competitors_positions:
+            competitor_position.delete()
+
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When creating the race standings data, one or more competitors were not found in the season rider list",
+            type = 0
+        )
+
+        return HttpResponse(status=400)
+
 
     race_standings = standings_serializer.save()
 
@@ -303,20 +435,45 @@ def add_race_results(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to add a race result (they weren't an admin or not logged in)",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     data = json.loads(request.body)
     competitors_positions = data.get("competitors_positions")
     race_id = int(data.get("raceId", -1))
     finalized = False
+
+    if race_id == -1:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Could not find race_id in the data sent to the server",
+            type = 0
+        )
+        return HttpResponse(status=400)
     
     try:
         race = Race.objects.get(pk=race_id)
         finalized = race.finalized
     except Race.DoesNotExist:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Race (id): {race_id} was not found",
+            type = 0
+        )
         return HttpResponse(status=404)
     
+    season = race.season
+    
     if finalized:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Race: {race.title} is already finalized",
+            type = 0
+        )
         return HttpResponse(status=400)
     
     if race.is_sprint:
@@ -335,11 +492,21 @@ def add_race_results(request):
         #making sure they are all valid before saving
         if competitor_position["position"] != 0:
             if (competitor_position["position"] - prev_competitor["position"]) != 1:
+                SeasonMessage.objects.create(
+                    season = season,
+                    message = f"There was a difference of positions bigger than 1 ({competitor_position["position"]} - {prev_competitor["position"]})",
+                    type = 0
+                )
                 return HttpResponse(status=400)
         
         try:
             competitor = Competitor.objects.get(pk=competitor_position["competitorId"])
         except Competitor.DoesNotExist:
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"Could not find competitor data for the competitor id: {competitor_position["competitorId"]}",
+                type = 0
+            )
             return HttpResponse(status=400)
         
         temp_final_competitor_position = {
@@ -354,6 +521,11 @@ def add_race_results(request):
         serializer = CompetitorPositionWriteSerializer(final_competitor_position)
 
         if not serializer.is_valid():
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"When trying to create a competitor position, this error ocurred: {serializer.errors}",
+                type = 0
+            )
             return HttpResponse(status=400)
 
     for final_competitor_position in final_competitors_positions:
@@ -383,21 +555,43 @@ def edit_race(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to edit a race, they aren't logged in or aren't an admin",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     data = json.loads(request.body)
     race_id = int(data.get("raceId", -1))
 
     if race_id == -1:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Could not find race_id in the data sent to the server",
+            type = 0
+        )
         return HttpResponse(status=400)
     
     try:
         race = Race.objects.get(pk=race_id)
     except Race.DoesNotExist:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Could not find a race associated to the id: {race_id}",
+            type = 0
+        )
         return HttpResponse(status=404)
+    
+    season = race.season
 
     serializer = RaceWriteSerializer(data=data, instance=race)
     if not serializer.is_valid():
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When trying to edit the race, this error ocurred: {serializer.errors}",
+            type = 0
+        )
         return HttpResponse(status=400)
 
     race = serializer.save()
@@ -409,6 +603,11 @@ def delete_race(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to delete a race, they aren't logged in or aren't an admin",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     data = json.loads(request.body)
@@ -416,28 +615,58 @@ def delete_race(request):
     year = data.get("year", 0)
 
     if not year:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Season year data was not found",
+            type = 0
+        )
         return HttpResponse(status=400)
 
     if race_id == -1:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Race id was not found in the data sent",
+            type = 0
+        )
         return HttpResponse(status=400)
     
     try:
         race = Race.objects.get(pk=race_id)
     except Race.DoesNotExist:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"No race was found associated to the id: {race_id}",
+            type = 0
+        )
         return HttpResponse(status=404)
     
     try:
         season = Season.objects.filter(visible=True).get(year=year)
     except Season.DoesNotExist:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"Season: {year} was not found",
+            type = 0
+        )
         return HttpResponse(status=404)
     
     if season.finalized:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"Season: {year} is finalized, no races or competitors can be modified",
+            type = 0
+        )
         return HttpResponse(status=400)
 
     if race.finalized:
         try:
             competitors_positions = CompetitorPosition.objects.filter(final_race=race)
         except CompetitorPosition.DoesNotExist:
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"No competitors are associated to the race: {race.title}",
+                type = 0
+            )
             return HttpResponse(status=400)
         
         if race.is_sprint:
@@ -465,4 +694,10 @@ def delete_race(request):
     race.delete()
     update_members_points()
     sort_standings(season)
+
+    SeasonMessage.objects.create(
+        season = season,
+        message = f"Race deleted",
+        type = 0,
+    )
     return HttpResponse(status=200)

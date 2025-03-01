@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { getSeason, getUserPicks, getUsersPicksState } from "./fetch-utils/fetchGet";
+import { getSeasonDetailed, getUserPicks, getUsersPicksState } from "./fetch-utils/fetchGet";
 import { useApplicationContext } from "./ApplicationContext";
 import { submitUserPicks } from "./fetch-utils/fetchPost";
 import { useOpenersContext } from "./OpenersContext";
@@ -111,7 +111,7 @@ export default function UserPicksSelector(){
         }
 
         setSeasonLoading(true);
-        const seasonResponse = await getSeason(currentSeason.year);
+        const seasonResponse = await getSeasonDetailed(currentSeason.year);
 
         if(seasonResponse.error){
             setErrorMessage("There was an error retrieving the current season");

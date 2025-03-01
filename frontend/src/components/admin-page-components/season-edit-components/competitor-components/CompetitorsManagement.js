@@ -57,7 +57,7 @@ export default function CompetitorsManagement(){
     }
 
     return (
-        <div>
+        <div className="card rounded-15 col-md me-2 mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
             <div className="card-header rounded-15-top">
                 <div className="container" style={{paddingLeft: "0px", paddingRight: "0px"}}>
                     <div className="d-flex">

@@ -114,7 +114,7 @@ export default function RacesManagement(){
     }
 
     return (
-        <div>
+        <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
             <RaceCreateContextProvider>
                 <Modal isOpen={openedModal == "race-create"}>
                         <RaceCreateModal/>

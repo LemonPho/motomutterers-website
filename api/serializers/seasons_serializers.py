@@ -1,8 +1,9 @@
 from rest_framework import serializers
+from django.db.models import Q
 
 from . import competitors_serializers, races_serializers
 
-from ..models import Season, SeasonCompetitorPosition, CompetitorPoints, Standings, SeleniumStatus
+from ..models import Season, SeasonCompetitorPosition, CompetitorPoints, Standings, SeleniumStatus, SeasonMessage
 from ..views.seasons_view.seasons_util import get_competitors_sorted_number
 
 import importlib
@@ -160,6 +161,31 @@ class SeleniumStatusSerializer(serializers.ModelSerializer):
         model = SeleniumStatus
         fields = ["message", "user", "timestamp", "pid"]
 
+class SeasonDetailedSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    year = serializers.IntegerField()
+    competitors = SeasonCompetitorPositionSerializer(many=True)
+    selection_open = serializers.BooleanField()
+    top_independent = serializers.BooleanField()
+    top_rookie = serializers.BooleanField()
+    finalized = serializers.BooleanField()
+    competitors_sorted_number = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Season
+        fields = ["id", "year", "competitors", "top_independent", "top_rookie", "finalized", "selection_open", "competitors_sorted_number"]
+        
+    def get_competitors_sorted_number(self, season):
+        competitors_sorted_number = get_competitors_sorted_number(season)
+        competitors_sorted_number_serializer = SeasonCompetitorPositionSerializer(competitors_sorted_number, many=True)
+        return competitors_sorted_number_serializer.data
+    
+class SeasonMessageSerializer(serializers.ModelSerializer):
+    season = SeasonSimpleSerializer()
+    class Meta:
+        model = SeasonMessage
+        fields = ["message", "timestamp", "season", "id"]
+
 class SeasonSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     year = serializers.IntegerField()
@@ -171,13 +197,13 @@ class SeasonSerializer(serializers.ModelSerializer):
     top_rookie = serializers.BooleanField()
     finalized = serializers.BooleanField()
     current = serializers.SerializerMethodField()
-    standings = importlib.import_module("api.serializers.standings_serializers").StandingsSerializer()
     competitors_sorted_number = serializers.SerializerMethodField()
     selenium_status = serializers.SerializerMethodField()
+    season_messages = serializers.SerializerMethodField()
 
     class Meta:
         model = Season
-        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "standings", "competitors_sorted_number", "selenium_status"]
+        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "competitors_sorted_number", "selenium_status", "season_messages"]
 
     def get_current(self, season):
         if hasattr(season, 'current'):
@@ -197,4 +223,9 @@ class SeasonSerializer(serializers.ModelSerializer):
         instance = SeleniumStatus.objects.all()
         serializer = SeleniumStatusSerializer(instance, many=True)
 
+        return serializer.data
+    
+    def get_season_messages(self, season):
+        season_messages = SeasonMessage.objects.filter(Q(season=season) | Q(season=None))
+        serializer = SeasonMessageSerializer(season_messages, many=True)
         return serializer.data

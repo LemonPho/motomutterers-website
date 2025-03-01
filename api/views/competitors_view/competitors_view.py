@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 
 
-from ...models import Competitor, Season, CompetitorPosition, SeasonCompetitorPosition, CurrentSeason
+from ...models import Competitor, Season, CompetitorPosition, SeasonCompetitorPosition, SeasonMessage
 from ...serializers.competitors_serializers import CompetitorWriteSerializer, CompetitorPositionWriteSerializer, CompetitorPointsWriteSerializer, CompetitorPositionSimpleSerializer
 from ...serializers.seasons_serializers import SeasonCompetitorPositionWriteSerializer, SeasonCompetitorPositionSerializer
 from .competitors_validators import validate_competitor_data, generate_season_competitor_position_data, generate_competitor_table_data, validate_season_competitors_data, generate_competitor_points_data
@@ -101,6 +101,11 @@ def create_season_competitors_link(request):
         return HttpResponse(status=405)
     
     if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to retrieve season competitors, they aren't logged in or they aren't an admin",
+            type = 0
+        )
         return HttpResponse(status=403)
     
     #initializing variables
@@ -110,6 +115,11 @@ def create_season_competitors_link(request):
     season = response.pop("season")
 
     if response["invalidSeason"] or response["invalidLink"] or not response["selenium_available"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"{"Season is invalid" if response["invalidSeason"] else ""} {f"Link: {data['url']} is invalid" if response["invalidLink"] else ""} {"Server is not ready to retrieve data online (1 at a time)" if not response["selenium_available"] else ""}",
+            type = 0
+        )
         return JsonResponse(response, status=400)
 
     #process and generate competitor data
@@ -117,6 +127,11 @@ def create_season_competitors_link(request):
     response["timeout"] = table_data_response["timeout"]
 
     if response["timeout"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"motorsport.com took too long with: {data["url"]}",
+            type = 0
+        )
         return JsonResponse(response, status=400)
     
     #serializer validation and creation of competitor positions
@@ -124,6 +139,11 @@ def create_season_competitors_link(request):
 
     if not serializer.is_valid():
         print(serializer.errors)
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When creating the season competitors, these errors occurred: {serializer.errors}",
+            type = 0
+        )
         return JsonResponse(response, status=400)
     
     competitors = serializer.save()

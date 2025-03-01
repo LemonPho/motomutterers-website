@@ -620,6 +620,35 @@ export async function sendNewPasswordEmail(accountUsername){
     return response;
 }
 
+export async function submitDeleteSeasonMessage(seasonMessageId){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch('/api/delete-season-message/', {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                season_message_id: seasonMessageId,
+            }),
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function submitCompetitor(newCompetitorPosition){
     let response = {
         error: false,

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getSeason } from "../../fetch-utils/fetchGet";
+import { getSeasonAdmin } from "../../fetch-utils/fetchGet";
 import { Outlet, useParams } from "react-router-dom";
 import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults, submitDeleteSeason } from "../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../ApplicationContext";
@@ -8,14 +8,15 @@ import { useSeasonCreateContext } from "../SeasonCreateContext";
 const SeasonContext = createContext();
 
 export default function SeasonContextProvider(){
-    const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages, user, userLoading } = useApplicationContext();
 
     const seasonYear = useParams().seasonYear;
     const [season, setSeason] = useState(null);
     const [seasonLoading, setSeasonLoading] = useState(false);
 
     async function retrieveSeason(){
-        const seasonResponse = await getSeason(seasonYear);
+        if(userLoading) return null;
+        const seasonResponse = await getSeasonAdmin(seasonYear, user);
         let tempSeason = {};
 
         if(seasonResponse.status === 404){
@@ -206,7 +207,7 @@ export default function SeasonContextProvider(){
     }
 
     return(
-        <SeasonContext.Provider value={{ season, seasonLoading, retrieveSeason, deleteSeason,
+        <SeasonContext.Provider value={{ season, seasonLoading, setSeason, retrieveSeason, deleteSeason,
                                         createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace,
                                         createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, }}>
             <Outlet/>

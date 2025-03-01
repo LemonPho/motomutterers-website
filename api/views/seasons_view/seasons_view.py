@@ -1,15 +1,35 @@
 from django.http import HttpResponse, JsonResponse
 
-from ...models import Season, CurrentSeason
+from ...models import Season, CurrentSeason, SeasonMessage
 from ...serializers.seasons_serializers import SeasonCompetitorPositionSimpleSerializer, SeasonCompetitorPositionSerializer
 
 from .seasons_util import get_competitors_sorted_number, finalize_members_points
-from ...serializers.seasons_serializers import SeasonSimpleSerializer, SeasonSimpleYearSerializer, SeasonWriteSerializer, SeasonSerializer
+from ...serializers.seasons_serializers import SeasonSimpleSerializer, SeasonSimpleYearSerializer, SeasonWriteSerializer, SeasonSerializer, SeasonDetailedSerializer
 from ..standings_view.standings_util import sort_standings
 
 import json
 
-def get_season(request):
+def get_season_detailed(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    season_year = request.GET.get("season", False)
+
+    if not season_year:
+        return HttpResponse(status=400)
+    
+    try:
+        season = Season.objects.filter(visible=True).get(year=season_year)
+    except Season.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    serializer = SeasonDetailedSerializer(season)
+
+    return JsonResponse({
+        "season": serializer.data,
+    }, status=200)
+
+def get_season_admin(request):
     if request.method != "GET":
         return HttpResponse(status=405)
     
@@ -102,6 +122,42 @@ def get_users_picks_state(request):
     return JsonResponse({
         "users_picks_state": current_season.season.selection_open,
     }, status=200)
+
+def delete_season_message(request):
+    if request.method != "PUT":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season=None,
+            message = f"User: {request.user.username} tried to delete a season message",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    season_message_id = data.get("season_message_id", -1)
+
+    if season_message_id == -1:
+        SeasonMessage.objects.create(
+            season=None,
+            message = f"Couldn't delete season message because the season message id was not sent in the data",
+            type = 0,
+        )
+        return HttpResponse(status=400)
+    
+    try:
+        season_message = SeasonMessage.objects.get(pk=season_message_id)
+    except:
+        SeasonMessage.objects.create(
+            season=None,
+            message = f"Couldn't find a season message associated to the season message id: {season_message_id}",
+            type = 0,
+        )
+        return HttpResponse(status=404)
+    
+    season_message.delete()
+    return HttpResponse(status=201)
 
 def delete_season(request):
     if request.method != "POST":
