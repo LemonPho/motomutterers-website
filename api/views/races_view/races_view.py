@@ -214,6 +214,7 @@ def create_race_link(request):
         race_standings = standings_serializer.save()
         sort_race_standings(race_standings, season)
         race.standings = race_standings
+        race.is_sprint = is_sprint
         race.save()
 
     add_points = add_points_to_season_competitors(season, race)
