@@ -188,7 +188,7 @@ def generate_link_upcoming_data(data, season):
         return response
 
         
-    response["data"]["title"] = title
+    response["data"]["title"] = " ".join(title.split()[2:])
     
     table_body = table.find_element(By.TAG_NAME, "tbody")
     table_rows = table_body.find_elements(By.TAG_NAME, "tr")
@@ -304,7 +304,7 @@ def generate_link_final_data(data, season):
         return response
 
         
-    response["data"]["title"] = title
+    response["data"]["title"] = " ".join(title.split()[2:])
     
     table_body = table.find_element(By.TAG_NAME, "tbody")
     table_rows = table_body.find_elements(By.TAG_NAME, "tr")
@@ -386,7 +386,7 @@ def generate_link_sprint_data(data, season):
         return response
 
         
-    response["data"]["title"] = title
+    response["data"]["title"] = " ".join(title.split()[2:])
     
     table_body = table.find_element(By.TAG_NAME, "tbody")
     table_rows = table_body.find_elements(By.TAG_NAME, "tr")
