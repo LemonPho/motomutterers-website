@@ -93,7 +93,7 @@ def create_complete_race(request):
         response["invalid_season"] = True
         SeasonMessage.objects.create(
             season = None,
-            message = f"When creating the race: {data["race"]["title"]}, the season: {season_year} was not found",
+            message = f"When creating the race: {data['race']["title"]}, the season: {season_year} was not found",
             type = 0
         )
         return JsonResponse(response, status=400)
@@ -101,7 +101,7 @@ def create_complete_race(request):
     if season.finalized:
         SeasonMessage.objects.create(
             season = season,
-            message = f"Couldn't create the race: {data["race"]["title"]}, because the season: {season_year} is finalized",
+            message = f"Couldn't create the race: {data['race']["title"]}, because the season: {season_year} is finalized",
             type = 0
         )
         return HttpResponse(status=405)
@@ -114,19 +114,19 @@ def create_complete_race(request):
     if any(response["invalid_competitors_positions_spacing"]) or any(response["competitors_not_found"]):
         SeasonMessage.objects.create(
             season = season,
-            message = f"Couldn't create the race: {data["race"]["title"]}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+            message = f"Couldn't create the race: {data['race']["title"]}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
             type = 0
         )
         return JsonResponse(response, status=400)
         
-    race_serializer = RaceWriteSerializer(data=validated_race_data["race"])
+    race_serializer = RaceWriteSerializer(data=validated_race_data['race'])
 
     if not race_serializer.is_valid():
         print(race_serializer.errors)
         response["invalid_race_data"] = True
         SeasonMessage.objects.create(
             season = season,
-            message = f"Data was invalid: {race_serializer.errors} when creating race: {data["race"]["title"]}",
+            message = f"Data was invalid: {race_serializer.errors} when creating race: {data['race']["title"]}",
             type = 0
         )
         return JsonResponse(response, status=400)
@@ -168,7 +168,7 @@ def create_race(request):
     except Season.DoesNotExist:
         SeasonMessage.objects.create(
             season = None,
-            message = f"When creating the race: {data["race"]["title"]}, the season: {season_year} was not found",
+            message = f"When creating the race: {data['race']["title"]}, the season: {season_year} was not found",
             type = 0
         )
         return HttpResponse(status=400)
@@ -176,7 +176,7 @@ def create_race(request):
     if season.finalized:
         SeasonMessage.objects.create(
             season = season,
-            message = f"Couldn't create the race: {data["race"]["title"]}, because the season: {season_year} is finalized",
+            message = f"Couldn't create the race: {data['race']["title"]}, because the season: {season_year} is finalized",
             type = 0
         )
         return HttpResponse(status=400)
@@ -234,7 +234,7 @@ def create_race_link(request):
     if response["invalid_link"] or response["invalid_season"] or response["invalid_type"] or not response["selenium_available"]:
         SeasonMessage.objects.create(
             season = season,
-            message = f"{"Link was invalid" if response["invalid_link"] else ""} {"Invalid season" if response["invalid_season"] else ""} {"Invalid race type" if response["invalid_type"] else ""} {"Server cant retrieve result right now, contact admin" if not response["selenium_available"] else ""} when validating: {data["link"]}",
+            message = f"{"Link was invalid" if response["invalid_link"] else ""} {"Invalid season" if response["invalid_season"] else ""} {"Invalid race type" if response["invalid_type"] else ""} {"Server cant retrieve result right now, contact admin" if not response["selenium_available"] else ""} when validating: {data['link']}",
             type = 0
         )
         return JsonResponse(response, status=400)
@@ -247,7 +247,7 @@ def create_race_link(request):
     if any(response["competitors_not_found"]):
         SeasonMessage.objects.create(
             season = season,
-            message = f"Couldn't create the race: {data["race"]["title"]}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+            message = f"Couldn't create the race: {data['race']["title"]}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
             type = 0
         )
         return JsonResponse(response, status=400)
@@ -255,7 +255,7 @@ def create_race_link(request):
     if response["timeout"]:
         SeasonMessage.objects.create(
             season = season,
-            message = f"motorsport.com didn't response when using link: {data["link"]}",
+            message = f"motorsport.com didn't response when using link: {data['link']}",
             type = 0
         )
         return JsonResponse(response, status=400)
@@ -266,7 +266,7 @@ def create_race_link(request):
         print(serializer.errors)
         SeasonMessage.objects.create(
             season = season,
-            message = f"Data was invalid: {serializer.errors} when building race from link: {data["link"]}",
+            message = f"Data was invalid: {serializer.errors} when building race from link: {data['link']}",
             type = 0
         )
         return JsonResponse(validated_data_response, status=400)
@@ -284,7 +284,7 @@ def create_race_link(request):
             response["standings_error"] = True
             SeasonMessage.objects.create(
                 season = season,
-                message = f"Standings data was invalid: {standings_serializer.errors} when building race from link: {data["link"]}",
+                message = f"Standings data was invalid: {standings_serializer.errors} when building race from link: {data['link']}",
                 type = 0
             )
             return JsonResponse(response, status=400)

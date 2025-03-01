@@ -133,7 +133,7 @@ def create_season_competitors_link(request):
     if response["timeout"]:
         SeasonMessage.objects.create(
             season = season,
-            message = f"motorsport.com took too long with: {data["url"]}",
+            message = f"motorsport.com took too long with: {data['url']}",
             type = 0
         )
         return JsonResponse(response, status=400)
