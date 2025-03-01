@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { submitDeleteCompetitor } from "../../../fetch-utils/fetchPost";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
-import { autoResizeTextarea, closeModals, enterKeySubmit } from "../../../utils";
+import { autoResizeTextarea, closeModal, enterKeySubmit } from "../../../utils";
+import { useOpenersContext } from "../../../OpenersContext";
 
 export default function CompetitorEditModal({ competitor }){
     const { resetApplicationMessages } = useApplicationContext();
     const { deleteSeasonCompetitor, season, editSeasonCompetitor } = useSeasonContext();
+    const { closeModal } = useOpenersContext();
 
     const [competitorNumber, setCompetitorNumber] = useState(0);
     const [competitorPoints, setCompetitorPoints] = useState(0);
@@ -56,7 +58,7 @@ export default function CompetitorEditModal({ competitor }){
         const result = await editSeasonCompetitor(newCompetitorPosition);
 
         if(result){
-            closeModals();
+            closeModal();
         }
     }
 
@@ -64,7 +66,7 @@ export default function CompetitorEditModal({ competitor }){
         resetApplicationMessages();
         const result = await deleteSeasonCompetitor(competitor.competitor_points.competitor.id, season.id);
         if(result){
-            closeModals();
+            closeModal();
         }
     }
 
@@ -109,7 +111,7 @@ export default function CompetitorEditModal({ competitor }){
     }, [competitor])
 
     return(
-        <div className="custom-modal hidden" id="competitor-edit-modal" onClick={(e) => {e.stopPropagation();}}>
+        <div className="custom-modal" id="competitor-edit-modal" onClick={(e) => {e.stopPropagation();}}>
             <div className="custom-modal-header justify-content-center">  
                 <h5>Edit rider</h5>
             </div>

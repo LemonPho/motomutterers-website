@@ -1,12 +1,13 @@
 import React, {useRef, useState} from "react";
 
-import { focusDiv, enterKeySubmit, closeModals, autoResizeTextarea } from "../../../../utils";
+import { focusDiv, enterKeySubmit, autoResizeTextarea } from "../../../../utils";
 import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
+import { useOpenersContext } from "../../../../OpenersContext";
 
 export default function CompetitorCreateAutomatic(){
-
+    const { closeModal } = useOpenersContext();
     const { setErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
     const { retrieveSeason, season } = useSeasonContext();
 
@@ -15,7 +16,7 @@ export default function CompetitorCreateAutomatic(){
 
     async function submitLink(){
         resetApplicationMessages();
-        closeModals();
+        closeModal();
         setLoadingMessage("Loading: Reload page to view progress");
 
         const competitorResponse = await submitSeasonCompetitorsLink(link, season.year);
@@ -47,13 +48,13 @@ export default function CompetitorCreateAutomatic(){
         }
 
         linkInput.current.value = "";
-        closeModals();
+        closeModal();
         retrieveSeason();
         setSuccessMessage("Riders successfully added");
     }
 
     return (
-        <div id="competitor-create-standings-modal" className="custom-modal hidden" onClick={(e) => e.stopPropagation()}>
+        <div id="competitor-create-standings-modal" className="custom-modal" onClick={(e) => e.stopPropagation()}>
             <div className="custom-modal-header justify-content-center">
                 <h5>Create rider automatic</h5>
             </div>
@@ -62,7 +63,7 @@ export default function CompetitorCreateAutomatic(){
 
             <div className="custom-modal-body">
                 <div className="alert alert-info"><small>Paste the link of the motogp.com standings page</small></div>
-                <textarea rows={1} ref={linkInput} className="input-field textarea-expand" id="competitor-automatic-link" role="textbox" placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("competitor-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink); setLink(e.target.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <textarea rows={1} ref={linkInput} className="input-field textarea-expand w-100" id="competitor-automatic-link" role="textbox" placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("competitor-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink); setLink(e.target.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
             </div>
 
             <div className="custom-modal-footer">

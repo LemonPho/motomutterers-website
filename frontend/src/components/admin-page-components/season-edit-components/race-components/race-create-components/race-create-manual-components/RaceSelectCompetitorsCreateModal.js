@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useSeasonContext } from "../../../SeasonContext";
 import { useApplicationContext } from "../../../../../ApplicationContext";
-import { toggleModal } from "../../../../../utils";
 import { useRaceCreateContext } from "../RaceCreateContext";
+import { useOpenersContext } from "../../../../../OpenersContext";
 
 export default function RaceSelectCompetitorsCreateModal(){
-    const [competitors, setCompetitors] = useState([]);
-
+    const { openModal } = useOpenersContext();
     const { season, seasonLoading } = useSeasonContext();
     const { user, resetApplicationMessages } = useApplicationContext();
-    const { setSelectedCompetitors } = useRaceCreateContext();
+    const { setSelectedCompetitors, selectedCompetitors } = useRaceCreateContext();
+
+    const [competitors, setCompetitors] = useState([]);
 
     function next(e){
-        let selectedCompetitors = [];
+        let newCompetitors = [];
 
         for(let i = 0; i < competitors.length; i++){
             if(competitors[i].include){
-                selectedCompetitors.push(competitors[i].competitor);
+                newCompetitors.push(competitors[i].competitor);
             }
         }
 
-        setSelectedCompetitors(selectedCompetitors);
+        setSelectedCompetitors(newCompetitors);
         resetApplicationMessages();
-        toggleModal("race-results-create-manual-modal", e, user.is_logged_in, user.is_admin, false);
+        openModal("race-create-results")
     }
 
     function handleCompetitorIncludeChange(index){
@@ -36,17 +37,23 @@ export default function RaceSelectCompetitorsCreateModal(){
             return;
         }
 
-        const tempCompetitors = season.competitors_sorted_number.map(competitor => ({
-            competitor: competitor,
-            include: true,
-        }));
-    
-        setCompetitors(tempCompetitors);
+        console.log(selectedCompetitors);
+
+        if(selectedCompetitors.length == 0){
+            const tempCompetitors = season.competitors_sorted_number.map(competitor => ({
+                competitor: competitor,
+                include: true,
+            }));
+            setCompetitors(tempCompetitors);
+        } else {
+            setCompetitors(selectedCompetitors)
+        }
+        
     }, [seasonLoading]);
 
 
     return (
-        <div className="custom-modal hidden" id="competitors-select-modal" onClick={(e) => {e.stopPropagation();}}>
+        <div className="custom-modal" id="competitors-select-modal" onClick={(e) => {e.stopPropagation();}}>
             <div className="custom-modal-header justify-content-center">
                 <h5>Select the riders that participated in the race</h5>
             </div>
@@ -62,7 +69,7 @@ export default function RaceSelectCompetitorsCreateModal(){
                 }
             </div>
             <div className="custom-modal-footer mt-2">
-                <button className="btn btn-primary rounded-15" onClick={(e) => {toggleModal("create-race-details-manual-modal", e, user.is_logged_in, user.is_admin, false)}}>Back</button>
+                <button className="btn btn-primary rounded-15" onClick={(e) => {openModal("race-create-details")}}>Back</button>
                 <button className="btn btn-primary ms-auto rounded-15" onClick={(e) => {next(e)}}>Next</button>
             </div>
         </div>

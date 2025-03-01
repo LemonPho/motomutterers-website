@@ -1,13 +1,15 @@
 import React, {useState} from "react";
 
-import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal, focusDiv, autoResizeTextarea } from "../../../../utils.js";
+import { enterKeySubmit, focusDiv, autoResizeTextarea } from "../../../../utils.js";
 import { useApplicationContext } from "../../../../ApplicationContext.js";
 import { useSeasonContext } from "../../SeasonContext.js"; 
 import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";
 import { useRaceCreateContext } from "./RaceCreateContext.js";
+import { useOpenersContext } from "../../../../OpenersContext.js";
 
 
 export default function RaceCreateAutomatic(){
+    const { closeModal } = useOpenersContext();
     const { setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
     const { season, retrieveSeason } = useSeasonContext();
     const { link, raceDate, raceType, setLink, setRaceDate, setRaceType } = useRaceCreateContext();
@@ -27,7 +29,7 @@ export default function RaceCreateAutomatic(){
 
     async function submitLink(){
         resetApplicationMessages();
-        closeModals();
+        closeModal();
         setLoadingMessage("Loading: Reload to view the progress of the retrieval");
 
         let raceResponse = await submitRaceResultLink(link, raceDate, raceType, season.year);
@@ -90,13 +92,13 @@ export default function RaceCreateAutomatic(){
         }
 
         setLoadingMessage(false);
-        closeModals();
+        closeModal();
         setSuccessMessage("The race has been submited");
         retrieveSeason();
     }
 
     return (
-        <div className="custom-modal hidden" id="race-create-automatic-modal" onClick={(e) => {e.stopPropagation()}}>
+        <div className="custom-modal" id="race-create-automatic-modal" onClick={(e) => {e.stopPropagation()}}>
             <div className="custom-modal-header justify-content-center">
                 <h5>Create Race Automatic</h5>
             </div>

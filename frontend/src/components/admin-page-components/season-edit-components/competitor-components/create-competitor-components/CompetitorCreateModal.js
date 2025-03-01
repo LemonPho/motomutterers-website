@@ -1,21 +1,23 @@
 import React from "react";
 
-import { closeDropdowns, closeModals, enterKeySubmit, toggleDropdown, toggleModal } from "../../../../utils.js";
 import { useApplicationContext } from "../../../../ApplicationContext.js";
 
 import CreateCompetitorManual from "./CompetitorCreateManual.js";
 import CompetitorCreateAutomatic from "./CompetitorCreateAutomatic.js";
 import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost.js";
 import { useSeasonContext } from "../../SeasonContext.js";
+import Modal from "../../../../util-components/Modal.js";
+import { useOpenersContext } from "../../../../OpenersContext.js";
 
 export default function CompetitorCreateModal(){
     const { modalErrorMessage, setErrorMessage, resetApplicationMessages, setLoadingMessage, loadingMessage, setSuccessMessage } = useApplicationContext();
     const { retrieveSeason, season } = useSeasonContext();
-
+    const { openedModal, openModal, closeModal } = useOpenersContext();
+    
     async function retrieveCompetitorsRiderList(){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
-        closeModals();
+        closeModal();
 
         let link = "https://www.motogp.com/en/riders/motogp";
         const competitorResponse = await submitSeasonCompetitorsLink(link, season.year);
@@ -46,17 +48,17 @@ export default function CompetitorCreateModal(){
             return;
         }
 
-        closeModals();
+        closeModal();
         retrieveSeason();
         setSuccessMessage("Riders successfully added");
     }
 
     return (
         <div className="ms-auto">
-            <div className="custom-modal hidden" id="competitor-create-modal" onClick={(e) => {e.stopPropagation()}}>
+            <div className="custom-modal" id="competitor-create-modal" onClick={(e) => {e.stopPropagation()}}>
                 <div className="custom-modal-body">
                     {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                    <div className="card rounded-15 clickable mb-2" onClick={(e) => {resetApplicationMessages();toggleModal("competitor-create-standings-modal", e)}}>
+                    <div className="card rounded-15 clickable mb-2" onClick={() => {resetApplicationMessages();openModal("competitor-create-automatic")}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
                                 <strong>Retrieve season riders through motogp standings page</strong>
@@ -70,7 +72,7 @@ export default function CompetitorCreateModal(){
                             </div>
                         </div>
                     </div>
-                    <div className="card rounded-15 clickable" onClick={(e) => {resetApplicationMessages();toggleModal("competitor-create-manual-modal", e)}}>
+                    <div className="card rounded-15 clickable" onClick={() => {resetApplicationMessages();openModal("competitor-create-manual")}}>
                         <div className="card-body">
                             <div className="d-flex justify-content-center">
                                 <strong>Create riders manually</strong>
@@ -79,10 +81,6 @@ export default function CompetitorCreateModal(){
                     </div>
                 </div>
             </div>
-
-            <CompetitorCreateAutomatic />
-            <CreateCompetitorManual />
-            
         </div>
     )
 }

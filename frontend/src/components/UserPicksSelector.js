@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import { getSeason, getUserPicks, getUsersPicksState } from "./fetch-utils/fetchGet";
 import { useApplicationContext } from "./ApplicationContext";
-import { toggleDropdown } from "./utils";
 import { submitUserPicks } from "./fetch-utils/fetchPost";
+import { useOpenersContext } from "./OpenersContext";
+import Dropdown from "./util-components/Dropdown";
 
 export default function UserPicksSelector(){
     const { setErrorMessage, addErrorMessage, setSuccessMessage, setLoadingMessage, currentSeason, currentSeasonLoading, loggedIn, user, userLoading, selectPicksState, selectPicksStateLoading } = useApplicationContext();
+    const { toggleDropdown, openedDropdown } = useOpenersContext();
 
     const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0])
     const [loading, setLoading] = useState(true);
@@ -182,16 +184,18 @@ export default function UserPicksSelector(){
                                     <h5 className="card-title text-muted">{picksWords[i]} Pick</h5>
                                 </div>
                                 <div className="card-body" style={{padding: "8px"}}>
-                                    <div className="dropdown p-2">
+                                    <div className="dropdown-div p-2">
                                         <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].competitor_points.competitor.first} {userPicks[i].competitor_points.competitor.last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
                                         </button>
-                                        <ul className="dropdown-menu" id={`${picksWords[i]}-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
-                                            {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
-                                                <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor_position)}}>{competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>
-                                            ))}
-                                        </ul>
+                                        <Dropdown isOpen={openedDropdown == `${picksWords[i]}-pick-dropdown`}>
+                                            <ul className="dropdown-menu" id={`${picksWords[i]}-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
+                                                {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
+                                                    <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor_position)}}>{competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>
+                                                ))}
+                                            </ul>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>
@@ -204,16 +208,18 @@ export default function UserPicksSelector(){
                                 </div>
 
                                 <div className="card-body" style={{padding: "8px"}}>
-                                    <div className="dropdown p-2">
+                                    <div className="dropdown-div p-2">
                                         <button className="btn btn-outline-secondary dropdown-toggle rounded-15" id={`${picksWords[i]}-pick-button`} onClick={(e) => toggleDropdown(`${picksWords[i]}-pick-dropdown`, e, loggedIn)}>
                                             {userPicks[i] != 0 && <span>{userPicks[i].competitor_points.competitor.first} {userPicks[i].competitor_points.competitor.last}</span>}
                                             {userPicks[i] == 0 && <span>{picksWords[i]} Pick</span>}
                                         </button>
-                                        <ul className="dropdown-menu" id={`${picksWords[i]}-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
-                                            {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
-                                                <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor_position)}}><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>
-                                            ))}
-                                        </ul>
+                                        <Dropdown isOpen={openedDropdown == `${picksWords[i]}-pick-dropdown`}>
+                                            <ul className="dropdown-menu" id={`${picksWords[i]}-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
+                                                {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
+                                                    <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {addUserPick(i, competitor_position)}}><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>
+                                                ))}
+                                            </ul>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +234,7 @@ export default function UserPicksSelector(){
                         </div>
 
                         <div className="card-body" style={{padding: "8px"}}>
-                            <div className="dropdown p-2">
+                            <div className="dropdown-div p-2">
                                 {invalidIndependent == true && 
                                 <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`independent-pick-button`} onClick={(e) => toggleDropdown(`independent-pick-dropdown`, e, loggedIn)}>
                                     {userIndependentPick != 0 && <span>{userIndependentPick.competitor_points.competitor.first} {userIndependentPick.competitor_points.competitor.last}</span>}
@@ -241,11 +247,13 @@ export default function UserPicksSelector(){
                                     {userIndependentPick == 0 && <span>Independent Pick</span>}
                                 </button>}
                                 
-                                <ul className="dropdown-menu" id={`independent-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
-                                    {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
-                                        (competitor_position.independent && <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {setUserIndependentPick(competitor_position)}}><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>)
-                                    ))}
-                                </ul>
+                                <Dropdown isOpen={openedDropdown == `independent-pick-dropdown`}>
+                                    <ul className="dropdown-menu" id={`independent-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
+                                        {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
+                                            (competitor_position.independent && <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {setUserIndependentPick(competitor_position)}}><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>)
+                                        ))}
+                                    </ul>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>
@@ -259,7 +267,7 @@ export default function UserPicksSelector(){
                         </div>
 
                         <div className="card-body" style={{padding: "8px"}}>
-                            <div className="dropdown p-2">
+                            <div className="dropdown-div p-2">
                                 {invalidRookie == true && 
                                 <button className="btn btn-outline-danger dropdown-toggle rounded-15" id={`rookie-pick-button`} onClick={(e) => toggleDropdown(`rookie-pick-dropdown`, e, loggedIn)}>
                                     {userRookiePick != 0 && <span>{userRookiePick.competitor_points.competitor.first} {userRookiePick.competitor_points.competitor.last}</span>}
@@ -272,11 +280,13 @@ export default function UserPicksSelector(){
                                     {userRookiePick == 0 && <span>Rookie Pick</span>}
                                 </button>}
                                 
-                                <ul className="dropdown-menu" id={`rookie-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
-                                    {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
-                                        (competitor_position.rookie && <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {setUserRookiePick(competitor_position)}}><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>)
-                                    ))}
-                                </ul>
+                                <Dropdown isOpen={openedDropdown == `rookie-pick-dropdown`}>
+                                    <ul className="dropdown-menu" id={`rookie-pick-dropdown`} style={{overflowY: "scroll", maxHeight: "15rem"}}>
+                                        {(!seasonLoading) && season.competitors_sorted_number.map((competitor_position) => (
+                                            (competitor_position.rookie && <li key={`competitor-${competitor_position.competitor_points.competitor.id}`}><a className="dropdown-item" onClick={() => {setUserRookiePick(competitor_position)}}><small>#{competitor_position.competitor_points.competitor.number}</small> {competitor_position.competitor_points.competitor.first} {competitor_position.competitor_points.competitor.last}</a></li>)
+                                        ))}
+                                    </ul>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>

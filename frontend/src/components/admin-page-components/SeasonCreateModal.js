@@ -1,14 +1,15 @@
 import React, { useState } from "react"
 import { useApplicationContext } from "../ApplicationContext";
 import { submitSeason } from "../fetch-utils/fetchPost";
-import { closeModals } from "../utils";
 import { useSeasonCreateContext } from "./SeasonCreateContext";
+import { useOpenersContext } from "../OpenersContext";
 
 export default function SeasonCreateModal(){
     const currentYear = new Date().getFullYear();
 
-    const { modalSuccessMessage, modalErrorMessage, setModalErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage, loadingMessage } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage, loadingMessage } = useApplicationContext();
     const { retrieveSeasons } = useSeasonCreateContext();
+    const { closeModal } = useOpenersContext();
 
     const [seasonYear, setSeasonYear] = useState(currentYear);
     const [seasonTopIndependent, setSeasonTopIndependent] = useState(false);
@@ -22,21 +23,21 @@ export default function SeasonCreateModal(){
 
         if(seasonResponse.error){
             console.log(error);
-            setModalErrorMessage("There was an error creating the season");
+            setErrorMessage("There was an error creating the season");
             return;
         }
 
         if(seasonResponse.status !== 200){
-            setModalErrorMessage("Be sure the year of the season is unique");
+            setErrorMessage("Be sure the year of the season is unique");
             return;
         }
 
         setSuccessMessage("Season created");
-        closeModals();
         setSeasonYear(currentYear);
         setSeasonTopIndependent(false);
         setSeasonTopRookie(false);
         retrieveSeasons();
+        closeModal();
     }
 
     function handleYearChange(event){
@@ -55,10 +56,7 @@ export default function SeasonCreateModal(){
     }
 
     return(
-        <div className="custom-modal hidden" id="season-create-modal" onClick={(e) => {e.stopPropagation()}}>
-            {modalErrorMessage != "" && <div className="alert alert-danger my-2"><small>{modalErrorMessage}</small></div>}
-            {modalSuccessMessage != "" && <div className="alert alert-success my-2"><small>{modalSuccessMessage}</small></div>}
-            {loadingMessage && <div className="alert alert-secondary my-2"><small>{loadingMessage}</small></div>}
+        <div className="custom-modal" id="season-create-modal" onClick={(e) => {e.stopPropagation()}}>
             <div className="custom-modal-header justify-content-center">  
                 <h5>Create season</h5>
             </div>   

@@ -1,23 +1,22 @@
 import React, { useContext, useState, useEffect } from "react";
-import { getScreenDimensions, closeDropdowns, closeModals, toggleDropdown } from "../utils";
 
 import { useApplicationContext } from "../ApplicationContext";
 
 import Footer from "./Footer";
 import Header from "./Header";
 import Content from "./Content";
-import { useLocation } from "react-router-dom";
+import { useOpenersContext } from "../OpenersContext";
 
 function LayoutPage() {
     const { resetApplicationMessages, errorMessage, successMessage, loadingMessage, informationMessage } = useApplicationContext();
-    const location = useLocation();
+    const { closeModal, closeDropdown } = useOpenersContext();
 
 
     function handleGeneralClick(event){
         event.stopPropagation();
 
-        closeModals();
-        closeDropdowns();
+        closeModal();
+        closeDropdown();
         resetApplicationMessages();
 
         return;
@@ -51,7 +50,6 @@ function LayoutPage() {
                 </div>
                 }
             </div>
-            <div id="background-blur" className="overlay hidden"></div>
             <Header />
             <Content/>
             <Footer/>

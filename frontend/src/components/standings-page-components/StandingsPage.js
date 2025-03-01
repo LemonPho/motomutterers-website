@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-import { toggleDropdown, toggleModal } from "../utils";
-
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useStandingsContext } from "./StandingsContext";
 import StandingDetailed from "./StandingDetailed";
 import { Link, useLocation } from "react-router-dom";
 import { useApplicationContext } from "../ApplicationContext";
+import Modal from "../util-components/Modal";
+import { useOpenersContext } from "../OpenersContext";
+import Dropdown from "../util-components/Dropdown";
 
 export default function Standings(){
     const { user, userLoading } = useApplicationContext();
@@ -14,6 +15,7 @@ export default function Standings(){
         retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, seasonList,
         standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks,
         copyStandingsTable } = useStandingsContext();
+    const { openedModal, openModal, openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
 
     const location = useLocation();
 
@@ -39,24 +41,26 @@ export default function Standings(){
                 {!selectedSeasonLoading && selectedSeason.finalized &&
                     <small>‎ (finalized)</small>
                 }
-                <div className="ms-auto btn-group">
+                <div className="ms-auto btn-group dropdown-div">
                     <button className="btn btn-outline-secondary dropdown-toggle rounded-15" data-bs-toggle="dropdown" type="button" aria-expanded="false" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
                         {selectedSeason.year}
                     </button>
-                    <ul className="dropdown-menu dropdown-menu-end" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>
-                    {!seasonListLoading && seasonList.map((season) => (
-                        <li key={`${season.year}`}>
-                            <Link className="dropdown-item" to={`?season=${season.year}`} id={`${season.year}`}>
-                                {season.year}
-                                {season.year == selectedSeason.year && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
-                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                                    </svg>
-                                )}
-                            </Link>
-                        </li>
-                    ))}
-                    </ul>
+                    <Dropdown isOpen={openedDropdown == "season-selector-dropdown"}>
+                        <ul className="dropdown-menu" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>
+                        {!seasonListLoading && seasonList.map((season) => (
+                            <li key={`${season.year}`}>
+                                <Link className="dropdown-item" onClick={closeDropdown} to={`?season=${season.year}`} id={`${season.year}`}>
+                                    {season.year}
+                                    {season.year == selectedSeason.year && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
+                                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                        </svg>
+                                    )}
+                                </Link>
+                            </li>
+                        ))}
+                        </ul>
+                    </Dropdown>
                 </div>
                 {(!userLoading && user.is_admin) && 
                     <div className="dropdown-div ms-2" onClick={(e) => toggleDropdown(`dropdown-standings-options`, e)}>
@@ -65,9 +69,11 @@ export default function Standings(){
                                 <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                             </svg>
                         </div>
-                        <ul id={`dropdown-standings-options`} className="dropdown-menu">
-                            <li><button className="dropdown-item" onClick={() => copyStandingsTable()}>Copy Standings Table</button></li>
-                        </ul>
+                        <Dropdown isOpen={openedDropdown == "dropdown-standings-options"}>
+                            <ul id={`dropdown-standings-options`} className="dropdown-menu">
+                                <li><button className="dropdown-item" onClick={() => copyStandingsTable()}>Copy Standings Table</button></li>
+                            </ul>
+                        </Dropdown>
                     </div>
                 }
             </div>
@@ -77,7 +83,7 @@ export default function Standings(){
             (<div>There are no standings for this season</div>) : 
             (standingsLoading == 0 && standings.users_picks.map((user_picks, i) => (
                 <div key={`standings-user-${user_picks.user.username}`}>
-                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); toggleModal("user-picks-detailed-modal", e); retrieveUserPicks(user_picks.user.id)}}>
+                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); openModal("standing-detailed"); retrieveUserPicks(user_picks.user.id)}}>
                         <div className="d-flex align-items-center">
                             <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user_picks.user.username}/>
                             <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
@@ -97,6 +103,8 @@ export default function Standings(){
                 
             )))}
         </div>
-        <StandingDetailed />
+        <Modal isOpen={openedModal == "standing-detailed"}>
+            <StandingDetailed />
+        </Modal>
     </div>);
 }

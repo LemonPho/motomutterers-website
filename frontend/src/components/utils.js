@@ -77,75 +77,6 @@ export function getScreenDimensions(){
     return result
 }
 
-export function closeModals(clearInputFields){
-    const modals = document.getElementsByClassName("custom-modal");
-    const backgroundBlur = document.getElementById("background-blur");
-    const inputFields = document.querySelectorAll('[data-category="input-field"]');
-
-    //closing modals
-    Array.prototype.forEach.call(modals, (modal) => {
-        if(!modal.classList.contains("hidden")){
-            modal.classList.toggle("hidden");
-        }
-    });
-
-    //Erasing all inputs
-    if(clearInputFields || clearInputFields == undefined){
-        Array.prototype.forEach.call(inputFields, (inputField) => {
-            if(inputField.tagName === "INPUT"){
-                inputField.value = null;
-                inputField.checked = false;
-            } else if(inputField.nodeName == 'SELECT'){
-                inputField.value = 1;
-            } else {
-                inputField.innerHTML = "";
-            }
-        })
-    }
-    
-    if(!backgroundBlur.classList.contains("hidden")){
-        backgroundBlur.classList.toggle("hidden");
-    }
-}
-
-export function toggleModal(elementId, event, isLoggedIn, isAdmin, clearInputFields){
-    const modal = document.getElementById(elementId);
-    const backgroundBlur = document.getElementById("background-blur");
-    event.stopPropagation();
-
-    if(!modal.classList.contains("hidden")){
-        closeModals(clearInputFields);
-        return;
-    }
-
-    if((isLoggedIn === undefined || isLoggedIn === true) && (isAdmin === undefined || isAdmin === true)){
-        closeDropdowns();
-        closeModals(clearInputFields);
-
-        modal.classList.toggle("hidden");
-        backgroundBlur.classList.toggle("hidden");
-    }
-}
-
-export function closeDropdowns(){
-    //this function retrieves all the dropdowns currently on the page, and closes them all
-    //this grabs the dropdown CONTENT divs, not the GENERAL dropdown div, and removes the show class
-    const dropdowns = document.getElementsByClassName("dropdown-menu");
-    const menuDropdowns = document.getElementsByClassName("menu-dropdown-content");
-
-    Array.prototype.forEach.call(dropdowns, (dropdown) => {
-        if(dropdown.classList.contains("show")){
-            dropdown.classList.toggle("show");
-        }
-    });
-
-    Array.prototype.forEach.call(menuDropdowns, (menuDropdown) => {
-        if(menuDropdown.classList.contains("show")){
-            menuDropdown.classList.toggle("show");
-        }
-    })
-}
-
 export function toggleDropdown(elementId, event, loggedIn){
     //finds the dropdown on the page, if it has the show class it closes the dropdowns, if not it adds show
     event.stopPropagation();
@@ -153,11 +84,9 @@ export function toggleDropdown(elementId, event, loggedIn){
     const element = document.getElementById(elementId);
 
     if(element.classList.contains("show")){
-        closeDropdowns();
         return;
     }
 
-    closeDropdowns();
     if(elementId != undefined && (loggedIn == undefined || loggedIn == true)){
         element.classList.toggle("show");
     }

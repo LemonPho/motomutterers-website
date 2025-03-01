@@ -6,10 +6,10 @@ import PageNotFound from "../../PageNotFound";
 import CompetitorsManagement from "./competitor-components/CompetitorsManagement";
 import RacesManagement from "./race-components/RacesManagement";
 import MemberPicks from "./MemberPicks";
-import SeasonFinalize from "./SeasonFinalize";
+import SeasonFinalize from "./season-finalize-components/SeasonFinalize";
 import { useApplicationContext } from "../../ApplicationContext";
 import SetCurrentSeason from "./SetCurrentSeason";
-import DeleteSeason from "./DeleteSeason";
+import DeleteSeason from "./season-delete-components/DeleteSeason";
 import SeleniumStatus from "./SeleniumStatus";
 
 export default function SeasonEdit(){

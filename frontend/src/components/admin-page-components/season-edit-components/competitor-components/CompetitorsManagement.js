@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 import { getSeasonCompetitors, getSeasonCompetitor } from "../../../fetch-utils/fetchGet";
-import { autoResizeTextarea, closeDropdowns, closeModals, enterKeySubmit, toggleModal } from "../../../utils";
 import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import CompetitorCreateModal from "./create-competitor-components/CompetitorCreateModal";
 import CompetitorDeleteModal from "./CompetitorDeleteModal";
 import CompetitorEditModal from "./CompetitorEditModal";
+import Modal from "../../../util-components/Modal";
+import { useOpenersContext } from "../../../OpenersContext";
+import CompetitorCreateAutomatic from "./create-competitor-components/CompetitorCreateAutomatic";
+import CreateCompetitorManual from "./create-competitor-components/CompetitorCreateManual";
 
 
 export default function CompetitorsManagement(){
+    const { openedModal, openModal } = useOpenersContext();
     const { season, seasonLoading, createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, retrieveSeason } = useSeasonContext()    
     const { resetApplicationMessages, modalErrorMessage, setModalErrorMessage, loadingMessage, setLoadingMessage, setSuccessMessage, user } = useApplicationContext();
 
@@ -39,12 +43,12 @@ export default function CompetitorsManagement(){
         }
 
         setEditCompetitor(competitorResponse.competitor);
-        toggleModal("competitor-edit-modal", event);
+        openModal("competitor-edit");
     }
 
     function openDeleteModal(event){
         setResetDeleteModal(true);
-        toggleModal("competitor-delete-modal", event, user.is_logged_in, user.is_admin);
+        openModal("competitor-delete");
     }
 
 
@@ -60,7 +64,7 @@ export default function CompetitorsManagement(){
                         <h3>Riders</h3>
                         {!season.finalized && 
                         <div className="ms-auto">
-                            <button className="btn" id="create-competitor-button" onClick={(e) => toggleModal("competitor-create-modal", e)}>
+                            <button className="btn" id="create-competitor-button" onClick={() => openModal("competitor-create")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="blue" className="bi bi-plus" viewBox="0 0 16 16">
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                 </svg>
@@ -112,10 +116,21 @@ export default function CompetitorsManagement(){
                 }
                 </div>
             </div>
-
-            <CompetitorCreateModal/>
-            <CompetitorDeleteModal reset={resetDeleteModal}/>
-            <CompetitorEditModal competitor={editCompetitor}/>
+            <Modal isOpen={openedModal == "competitor-create-automatic"}>
+                <CompetitorCreateAutomatic />
+            </Modal>
+            <Modal isOpen={openedModal == "competitor-create-manual"}>
+                <CreateCompetitorManual />
+            </Modal>
+            <Modal isOpen={openedModal == "competitor-create"}>
+                <CompetitorCreateModal/>
+            </Modal>
+            <Modal isOpen={openedModal == "competitor-delete"}>
+                <CompetitorDeleteModal reset={resetDeleteModal}/>
+            </Modal>
+            <Modal isOpen={openedModal == "competitor-edit"}>
+                <CompetitorEditModal competitor={editCompetitor}/>
+            </Modal>
         </div>
 
         

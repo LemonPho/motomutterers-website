@@ -1,15 +1,18 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { autoResizeTextarea, toggleDropdown } from "../../utils";
+import { autoResizeTextarea } from "../../utils";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
 import { useApplicationContext } from "../../ApplicationContext";
 import { useCommentsContext } from "./CommentsSectionContext";
+import Dropdown from "../Dropdown";
+import { useOpenersContext } from "../../OpenersContext";
 
 export default function CommentReply({ reply }){
 
     const { postEditComment, postDeleteComment } = useCommentsContext();
     const { user, setErrorMessage } = useApplicationContext();
+    const { openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
 
     const [replyEditText, setReplyEditText] = useState("");
     const replyEditTextDiv = useRef(null);
@@ -32,6 +35,7 @@ export default function CommentReply({ reply }){
             setReplyEditText("");
             replyEditTextInput.value = "";
             toggleReplyEditBox();
+            closeDropdown();
         }
         
     }
@@ -61,10 +65,12 @@ export default function CommentReply({ reply }){
                                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                                     </svg>
                                 </button>
-                                <div id={`reply-${reply.id}-dropdown`} className="dropdown-menu">
-                                    <li><button className="dropdown-item" onClick={() => toggleReplyEditBox()}>Edit</button></li>
-                                    <li><button className="dropdown-item" onClick={() => deleteComment()}>Delete</button></li>
-                                </div>
+                                <Dropdown isOpen={openedDropdown == `reply-${reply.id}-dropdown`}>
+                                    <div id={`reply-${reply.id}-dropdown`} className="dropdown-menu">
+                                        {(user.id == reply.user.id) && <li><button className="dropdown-item" onClick={() => toggleReplyEditBox()}>Edit</button></li>}
+                                        <li><button className="dropdown-item" onClick={() => deleteComment()}>Delete</button></li>
+                                    </div>
+                                </Dropdown>
                             </div>
                         }
                     </div>

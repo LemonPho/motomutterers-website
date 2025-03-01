@@ -213,7 +213,7 @@ def delete_competitor(request):
         return HttpResponse(status=400)
     
     try:
-        season_competitor = SeasonCompetitorPosition.objects.get(pk=competitor_id)
+        season_competitor = SeasonCompetitorPosition.objects.get(competitor_points__competitor=competitor_id)
     except SeasonCompetitorPosition.DoesNotExist:
         return HttpResponse(status=404)
     
