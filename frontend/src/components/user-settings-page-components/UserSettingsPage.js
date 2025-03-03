@@ -26,7 +26,7 @@ export default function UserSettings(){
     return(
         <div>
             <div className="card rounded-15 element-background-color element-border-color">
-                <div className="p-3 d-flex justify-content-center">
+                <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">
                     <div>
                         <div>
                             <strong style={{fontSize: "20px"}}>Profile photo</strong>
@@ -40,8 +40,7 @@ export default function UserSettings(){
                         <ProfilePictureChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData}/>
                     </Modal>
                 </div>
-                <hr />
-                <div className="p-3 d-flex justify-content-center">
+                <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">
                     <div>
                         <strong style={{fontSize: "20px"}}>Username</strong>
                         <div>
@@ -54,8 +53,7 @@ export default function UserSettings(){
                     </Modal>
                 </div>
                 
-                <hr />
-                <div className="p-3 d-flex justify-content-center">
+                <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">
                     <div>
                         <strong style={{fontSize: "20px"}}>Email</strong>
                         <div>{user.email}</div>
@@ -65,8 +63,7 @@ export default function UserSettings(){
                         <EmailChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData} />
                     </Modal>
                 </div>
-                <hr />
-                <div className="p-3 d-flex justify-content-center">
+                <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">
                     <div>
                         <strong style={{fontSize: "20px"}}>Password</strong>
                         <div>••••••••••</div>
@@ -76,9 +73,8 @@ export default function UserSettings(){
                         <PasswordChangeModal closeModal={closeModal}/>
                     </Modal>
                 </div>
-                <hr />
                 <div>
-                    <div className="p-3 d-flex align-items-center">
+                    <div className="p-3 d-flex align-items-center nested-element-color rounded-15 m-2">
                         <strong style={{fontSize: "20px"}}>Delete Account</strong>
                         <button className="ms-auto btn btn-outline-danger rounded-15" onClick={(e) => {resetApplicationMessages();openModal("account-delete")}}>Delete Account</button>
                     </div>

@@ -61,16 +61,18 @@ export default function SeasonEdit(){
                     </div>
                     <div className="row">
                         <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "10px"}}>
-                            <MemberPicks />
-                            
-                            <hr />
-                            <SeasonFinalize />
+                            <div className="rounded-15 nested-element-color p-2">
+                                <MemberPicks />
+                                
+                                <hr />
+                                <SeasonFinalize />
 
-                            <hr />
-                            <SetCurrentSeason />
+                                <hr />
+                                <SetCurrentSeason />
 
-                            <hr />
-                            <DeleteSeason />
+                                <hr />
+                                <DeleteSeason />
+                            </div>
                         </div> 
                     </div>
                             

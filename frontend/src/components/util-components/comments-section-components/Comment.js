@@ -9,6 +9,7 @@ import { useCommentsContext } from "./CommentsSectionContext";
 import Dropdown from "../Dropdown";
 import { useOpenersContext } from "../../OpenersContext";
 import Visible from "../Visble";
+import Textarea from "../Textarea";
 
 export default function Comment({ comment }){
     const { user } = useApplicationContext();
@@ -96,7 +97,7 @@ export default function Comment({ comment }){
                         <Visible isVisible={showStaticComment}><span id={`comment-${comment.id}-text`} style={{overflow: "visible"}} className="">{comment.text}</span></Visible>
                         <Visible isVisible={showEditComment}>
                             <div>
-                                <textarea id={`edit-comment-${comment.id}-text`} className="textarea-expand input-field w-100" rows={1} defaultValue={comment.text} onKeyUp={(e) => setEditCommentText(e.target.value)} onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
+                                <Textarea id={`edit-comment-${comment.id}-text`} value={comment.text} setValue={setEditCommentText} onEnterFunction={editComment}/>
                                 <div className="d-flex">
                                     <button id={`comment-${comment.id}-save-button`} className="btn btn-primary ms-auto me-2 mt-2 rounded-15" onClick={() => editComment(comment.id)}>Save</button>
                                     <button id={`comment-${comment.id}-cancel-button`} className="btn btn-outline-secondary mt-2 rounded-15" onClick={() => toggleEditComment(comment.id)}>Cancel</button>
@@ -104,7 +105,7 @@ export default function Comment({ comment }){
                             </div>
                         </Visible>
                     </div>
-                    <div className="d-flex mb-3">
+                    <div className="d-flex">
                         {parseInt(comment.amount_replies) > 0 && <button className="btn btn-link link-no-decorations p-0 pe-1" style={{color: "blue"}} onClick={() => setShowRepliesDiv(!showRepliesDiv)}><small>Show {comment.amount_replies} replies</small></button>}
                         {user.is_logged_in === true ? (<button className="btn btn-link link-no-decorations p-0" onClick={() => setShowReplyCreate(!showReplyCreate)}><small>Reply</small></button>) : (<div className="my-2"></div>)}
                     </div>
@@ -112,15 +113,15 @@ export default function Comment({ comment }){
             </div>
             
             <Visible isVisible={showReplyCreate}>
-                <div id={`comment-reply-div-${comment.id}`} style={{marginBottom: "0.5rem", marginLeft: "3.4rem"}}>
+                <div id={`comment-reply-div-${comment.id}`} style={{marginBottom: "0.5rem", marginTop: "0.5rem", marginLeft: "3.4rem"}}>
                     <div className="d-flex justify-content-center">
-                        <textarea id={`comment-reply-text-${comment.id}`} role="textbox" className="input-field textarea-expand w-100" placeholder="Add a reply..." rows={1} onClick={() => focusDiv(`comment-reply-text-${comment.id}`)} onChange={(e) => {autoResizeTextarea(e.target)}} onKeyUp={(e) => setReplyCreateText(e.target.value)}></textarea>
-                        <button id={`comment-reply-button-${comment.id}`} className="btn btn-outline-secondary p-1 ms-2" onClick={() => {createCommentReply()}}><small>Reply</small></button>
+                        <Textarea id={`comment-reply-text-${comment.id}`} placeholder="Add a reply..." value={replyCreateText} setValue={setReplyCreateText} onEnterFunction={createCommentReply}/>
+                        <button id={`comment-reply-button-${comment.id}`} className="btn btn-outline-secondary p-1 ms-2 rounded-15" onClick={() => {createCommentReply()}}><small>Reply</small></button>
                     </div>
                 </div>
             </Visible>
             <Visible isVisible={showRepliesDiv}>
-                <div id={`comment-replies-${comment.id}`} className="dynamic-container mb-3" style={{marginLeft: "2.7rem"}}>
+                <div id={`comment-replies-${comment.id}`} className="dynamic-container" style={{marginLeft: "2.7rem"}}>
                     {comment.replies.length > 0 &&
                     comment.replies.map((reply) => (
                         <CommentReply key={reply.id} reply={reply}/>

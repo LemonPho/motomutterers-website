@@ -4,6 +4,7 @@ import {useApplicationContext} from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
 import { enterKeySubmit, closeDropdowns, autoResizeTextarea } from "../../../../utils";
 import { useOpenersContext } from "../../../../OpenersContext";
+import Textarea from "../../../../util-components/Textarea";
 
 export default function CreateCompetitorManual(){
     const { closeModal } = useOpenersContext();
@@ -83,19 +84,18 @@ export default function CreateCompetitorManual(){
             </div>
             <hr />
             <div className="custom-modal-body">
-                {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-                <textarea rows={1} id="competitor-create-first" className='input-field textarea-expand mt-2 w-100' placeholder="First name..." data-category="input-field" autoFocus onKeyUp={(e) => enterKeySubmit(e, createCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
-                <textarea rows={1} id="competitor-create-last" className='input-field textarea-expand mt-2 w-100' placeholder="Last name(s)..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, createCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <Textarea id="competitor-create-first" placeholder="First name..." autoFocus value={competitorFirst} setValue={setCompetitorFirst} onEnterFunction={createCompetitor}/>
+                <Textarea id="competitor-create-last"placeholder="Last name(s)..." value={competitorLast} setValue={setCompetitorLast} onEnterFunction={createCompetitor}/>
                 <div className="d-flex justify-content-around my-2">
-                    <input id="competitor-create-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
-                    <input id="competitor-create-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
+                    <input id="competitor-create-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" data-category="input-field" onChange={(e) => setCompetitorNumber(e.target.value)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
+                    <input id="competitor-create-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" data-category="input-field" onChange={(e) => setCompetitorPoints(e.target.value)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
                 </div>
                 <form className="form-check">
-                    <input id="competitor-create-independent" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
+                    <input id="competitor-create-independent" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => setCompetitorIndependent(e.target.checked)}/>
                     <label className="form-check-label ms-1" htmlFor="competitor-create-independent">Independent Rider</label>
                 </form>
                 <form className="form-check">
-                    <input id="competitor-create-rookie" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, createCompetitor)}/>
+                    <input id="competitor-create-rookie" type="checkbox" className="form-check-input" value="" data-category="input-field" onChange={(e) => setCompetitorRookie(e.target.checked)}/>
                     <label className="form-check-label ms-1" htmlFor="competitor-create-rookie">Rookie Rider</label>
                 </form>
             </div>

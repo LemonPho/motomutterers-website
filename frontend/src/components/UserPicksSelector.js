@@ -8,7 +8,7 @@ import Dropdown from "./util-components/Dropdown";
 
 export default function UserPicksSelector(){
     const { setErrorMessage, addErrorMessage, setSuccessMessage, setLoadingMessage, currentSeason, currentSeasonLoading, loggedIn, user, userLoading, selectPicksState, selectPicksStateLoading } = useApplicationContext();
-    const { toggleDropdown, openedDropdown } = useOpenersContext();
+    const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0])
     const [loading, setLoading] = useState(true);
@@ -36,13 +36,14 @@ export default function UserPicksSelector(){
         
             return newUserPicks;
         });
+        closeDropdown();
     }
 
     function addInvalidPicks(invalidPicks){
         setInvalidPicks(() => {
             const newInvalidPicks = [...invalidPicks];
             return newInvalidPicks;
-        })
+        });
     }
 
     async function submitPicks(){

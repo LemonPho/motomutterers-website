@@ -18,13 +18,6 @@ export default function CompetitorEditModal({ competitor }){
     const [competitorIndependent, setCompetitorIndependent] = useState(false);
     const [competitorRookie, setCompetitorRookie] = useState(false);
 
-    const competitorNumberInput = useRef(null);
-    const competitorPointsInput = useRef(null);
-    const competitorFirstInput = useRef(null);
-    const competitorLastInput = useRef(null);
-    const competitorIndependentInput = useRef(null);
-    const competitorRookieInput = useRef(null);
-
     async function editCompetitor(){
         resetApplicationMessages();
         let newCompetitor = {
@@ -78,13 +71,6 @@ export default function CompetitorEditModal({ competitor }){
         setCompetitorLast(competitor.competitor_points.competitor.last);
         setCompetitorIndependent(competitor.independent);
         setCompetitorRookie(competitor.rookie);
-
-        competitorNumberInput.current.value = competitor.competitor_points.competitor.number;
-        competitorPointsInput.current.value = competitor.competitor_points.points;
-        competitorFirstInput.current.value = competitor.competitor_points.competitor.first;
-        competitorLastInput.current.value = competitor.competitor_points.competitor.last;
-        competitorIndependentInput.current.value = competitor.independent;
-        competitorRookieInput.current.value = competitor.rookie;               
     }
 
     function handleCompetitorData(event){
@@ -119,19 +105,18 @@ export default function CompetitorEditModal({ competitor }){
             <hr />
             <div className="custom-modal-body">
                 <Textarea id="competitor-edit-first" placeholder="First name..." value={competitorFirst} setValue={setCompetitorFirst} onEnterFunction={editCompetitor}/>
-                <textarea ref={competitorFirstInput} rows={1} id="competitor-edit-first" className='input-field textarea-expand mt-1 w-100' placeholder="First name..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, editCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
-                <textarea ref={competitorLastInput} rows={1} id="competitor-edit-last" className='input-field textarea-expand mt-1 w-100' placeholder="Last name(s)..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, editCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <Textarea id="competitor-edit-last" placeholder="Last name..." value={competitorLast} setValue={setCompetitorLast} onEnterFunction={editCompetitor}/>
                 <div className="d-flex justify-content-around mt-1">
-                    <input ref={competitorNumberInput} id="competitor-edit-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" value={competitorNumber} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
-                    <input ref={competitorPointsInput} id="competitor-edit-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" value={competitorPoints} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
+                    <input id="competitor-edit-number" className="input-field flex-grow-1 me-1" type="number" min="1" max="99" step="1" placeholder="Number" value={competitorNumber} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
+                    <input id="competitor-edit-points" className="input-field flex-grow-1" type="number" min="0" max="999" step="1" placeholder="Points" value={competitorPoints} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
                 </div>
                 <form className="form-check">
-                    <input ref={competitorIndependentInput} id="competitor-edit-independent" type="checkbox" className="form-check-input" checked={competitorIndependent} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
+                    <input id="competitor-edit-independent" type="checkbox" className="form-check-input" checked={competitorIndependent} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
                     <label className="form-check-label ms-1" htmlFor="competitor-edit-independent">Independent Rider</label>
                 </form>
 
                 <form className="form-check">
-                    <input ref={competitorRookieInput} id="competitor-edit-rookie" type="checkbox" className="form-check-input" checked={competitorRookie} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
+                    <input id="competitor-edit-rookie" type="checkbox" className="form-check-input" checked={competitorRookie} data-category="input-field" onChange={(e) => handleCompetitorData(e)} onKeyUp={(e) => enterKeySubmit(e, editCompetitor)}/>
                     <label className="form-check-label ms-1" htmlFor="competitor-edit-rookie">Rookie</label>
                 </form>
                 

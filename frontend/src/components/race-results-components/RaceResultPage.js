@@ -42,7 +42,7 @@ export default function RaceResultPage({ raceId }){
     return(
         <div>
             <div className="card rounded-15 element-background-color element-border-color mb-2" id="race-result-card">
-                <div className="card-header rounded-15 clickable" onClick={(e) => {toggleCardBody("race-positions-card-body")}}>
+                <div className="card-header rounded-15 clickable nested-element-color m-2" onClick={(e) => {toggleCardBody("race-positions-card-body")}}>
                     <div className="d-flex align-items-center p-1">
                         <h5 style={{margin: "0px"}}>
                             {raceResultDetails.title}
@@ -57,43 +57,45 @@ export default function RaceResultPage({ raceId }){
                     </div>
                 </div>
                 <div className="card-body custom-card-body" id="race-positions-card-body">
-                    <div className="row g-0 p-1" style={{marginRight: "0"}}>
-                        <strong className="col-2">Pos</strong>
-                        <strong className="col-2">#</strong>
-                        <strong className="col-6">Name</strong>
-                        <strong className="col-2">Points</strong>
+                    <div className="rounded-15 nested-element-color p-1">
+                        <div className="row g-0 p-1" style={{marginRight: "0"}}>
+                            <strong className="col-2">Pos</strong>
+                            <strong className="col-2">#</strong>
+                            <strong className="col-6">Name</strong>
+                            <strong className="col-2">Points</strong>
+                        </div>
+
+                        {raceResultDetails.finalized && raceResultDetails.competitors_positions.map((competitor_position) => (
+                            <div className="row g-0 p-1" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
+                                {competitor_position.position == 0 && <span className="col-2">-</span>}
+                                {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>}                     
+                                <span className="col-2">#{competitor_position.number}</span>
+                                <span className="col-6">{competitor_position.first} {competitor_position.last}</span>
+                                <span className="col-2">{competitor_position.points}</span>
+                            </div>
+                        ))}
+
+                        {!raceResultDetails.finalized && raceResultDetails.qualifying_positions.map((qualifying_position) => (
+                            <div className="row g-0 p-1" key={`competitor-${qualifying_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
+                                {qualifying_position.position == 0 && <span className="col-2">-</span>}
+                                {qualifying_position.position != 0 && <span className="col-2">{qualifying_position.position}</span>}                     
+                                <span className="col-2">#{qualifying_position.number}</span>
+                                <span className="col-6">{qualifying_position.first} {qualifying_position.last}</span>
+                                <span className="col-2">-</span>
+                            </div>
+                        ))}
                     </div>
-
-                    {raceResultDetails.finalized && raceResultDetails.competitors_positions.map((competitor_position) => (
-                        <div className="row g-0 p-1" key={`competitor-${competitor_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
-                            {competitor_position.position == 0 && <span className="col-2">-</span>}
-                            {competitor_position.position != 0 && <span className="col-2">{competitor_position.position}</span>}                     
-                            <span className="col-2">#{competitor_position.number}</span>
-                            <span className="col-6">{competitor_position.first} {competitor_position.last}</span>
-                            <span className="col-2">{competitor_position.points}</span>
-                        </div>
-                    ))}
-
-                    {!raceResultDetails.finalized && raceResultDetails.qualifying_positions.map((qualifying_position) => (
-                        <div className="row g-0 p-1" key={`competitor-${qualifying_position.competitor_id}`} style={{marginRight: "0px"}}>                                       
-                            {qualifying_position.position == 0 && <span className="col-2">-</span>}
-                            {qualifying_position.position != 0 && <span className="col-2">{qualifying_position.position}</span>}                     
-                            <span className="col-2">#{qualifying_position.number}</span>
-                            <span className="col-6">{qualifying_position.first} {qualifying_position.last}</span>
-                            <span className="col-2">-</span>
-                        </div>
-                    ))}
                 </div>
             </div>
             {(raceResultDetails.finalized && raceResultDetails.standings.users_picks.length > 0) && 
             <div className="card rounded-15 element-background-color element-border-color mb-2" id="race-standings-card">
-                <div className="card-header rounded-15 clickable" onClick={(e) => {toggleCardBody("race-standings-card-body")}}>
+                <div className="card-header rounded-15 clickable nested-element-color m-2" onClick={(e) => {toggleCardBody("race-standings-card-body")}}>
                     <div className="p-1">
                         <h5 style={{margin: "0px"}}>Standings</h5>
                     </div>
                     
                 </div>
-                <div className="card-body custom-card-body expanded" id="race-standings-card-body">
+                <div className="card-body custom-card-body expanded rounded-15 nested-element-color me-2 ms-2" id="race-standings-card-body">
                     {raceResultDetails.standings.users_picks.map((user_picks) => (
                         <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={user_picks.user.id} style={{marginRight: "0px"}}>
                             {user_picks.position_change > 0 && 

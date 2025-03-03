@@ -65,10 +65,10 @@ function LoginPage() {
 
     return(
         <div className="card rounded-15 element-background-color element-border-color mx-auto" style={{width: "21rem"}}>
-            <div className="card-header d-flex justify-content-center">
+            <div className="card-header d-flex justify-content-center rounded-15 nested-element-color m-2">
                 <h2>Login</h2>
             </div>
-            <div className="card-body">
+            <div className="card-body rounded-15 nested-element-color m-2">
                 <input type="text" className="input-field w-100 mb-2" placeholder="Username or email" onKeyUp={(e) => {setPrimaryKeyInput(e.target.value);enterKeySubmit(e, login)}}/>
                 <input type="password" className="input-field w-100 mb-2" placeholder="Password" onKeyUp={(e) => {setPassword(e.target.value);enterKeySubmit(e, login)}}/>
                 {loginLoading && 
@@ -82,9 +82,7 @@ function LoginPage() {
                 <div className="container d-flex justify-content-center">
                     <small className="mt-2 px-3"><Link to="/find-account">Forgot your password?</Link></small>
                 </div>
-            </div>
-
-            <div className="card-footer d-flex justify-content-center">
+                <hr />
                 <Link to="/register" className="btn btn-success w-100 rounded-15">Create account</Link>
             </div>
         </div>

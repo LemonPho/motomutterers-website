@@ -48,7 +48,7 @@ export default function CommentReply({ reply }){
     }
 
     return(
-        <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className="dynamic-container mb-2" style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
+        <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className="dynamic-container" style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
             <div className="d-flex align-items-start">
                 <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} username={reply.user.username}/>
                 <div className="dynamic-container">

@@ -21,8 +21,8 @@ export default function RaceResultsPage({ seasonYear }){
     return(
         <div>
             <div className="card rounded-15 element-background-color element-border-color p-2">
-                <div className="card-header d-flex align-items-center rounded-15 nested-element-color mb-2">
-                    <h5>Race results</h5>
+                <div className="card-header d-flex align-items-center rounded-15 nested-element-color mb-3">
+                    <h4>Race results</h4>
                     <div className="dropdown-div ms-auto">
                         <button className="btn btn-outline-secondary dropdown-toggle rounded-15" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
                             {seasonYear}
@@ -47,11 +47,11 @@ export default function RaceResultsPage({ seasonYear }){
                 </div>
                 <div className="card-body p-0">
                     {(!raceResultsLoading && raceResults != undefined && raceResults.length == 0) && (
-                    <h5>No race results have been added for this season.</h5>
+                    <h5 className="rounded-15 nested-element-color p-2">No race results have been added for this season.</h5>
                     )}
             
                     {(!raceResultsLoading && raceResults != undefined) && (raceResults.map((raceResult) => (
-                    <div key={`race-result-${raceResult.id}`}>
+                    <div key={`race-result-${raceResult.id}`} className="mb-2">
                         <div className="p-2 clickable rounded-15 nested-element-color">
                             <Link className="link-no-decorations" to={`/raceresults/${raceResult.id}`}>
                                 <div className="d-flex align-items-center">
@@ -68,7 +68,6 @@ export default function RaceResultsPage({ seasonYear }){
                                 </div>
                             </Link>
                         </div>
-                        <hr />
                     </div>
                     )))}
                 </div>

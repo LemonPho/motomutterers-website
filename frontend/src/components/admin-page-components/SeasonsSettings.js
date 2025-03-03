@@ -38,7 +38,7 @@ export default function SeasonsSettings(){
     if(user.is_admin){
         return(
             <div>                
-                <div className="card-header rounded-15-top">
+                <div className="card-header rounded-15 nested-element-color m-2">
                     <div className="d-flex align-items-center">                        
                         <h3 className="m-0">Seasons editor</h3>
 
@@ -50,11 +50,11 @@ export default function SeasonsSettings(){
                     </div>
                 </div>
 
-                {seasons.map((season) => (
-                    <div className="container my-2" id={`season-${season.year}`} key={`season-${season.year}`}>
-                        <div className="p-2 d-flex">
-                            <Link className="link-no-decorations" to={`seasons/${season.year}`}>Season {season.year}</Link>
-                            <div className="ms-auto dropdown-div" onClick={(e) => toggleDropdown(`dropdown-season-${season.year}`, e)}>
+                <div className="card-body p-2">
+                    {seasons.map((season) => (
+                        <Link className="mb-1 d-flex rounded-15 nested-element-color p-2 clickable link-no-decorations" to={`seasons/${season.year}`} id={`season-${season.year}`} key={`season-${season.year}`}>
+                            <span>Season {season.year}</span>
+                            <div className="ms-auto dropdown-div" onClick={(e) => {toggleDropdown(`dropdown-season-${season.year}`, e); e.preventDefault();}}>
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
                                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
@@ -67,9 +67,9 @@ export default function SeasonsSettings(){
                                     </div>
                                 </Dropdown>
                             </div>
-                        </div>
-                    </div>
-                ))}
+                        </Link>
+                    ))}
+                </div>
 
                 <Modal isOpen={openedModal == "season-create"}>
                     <SeasonCreateModal/>

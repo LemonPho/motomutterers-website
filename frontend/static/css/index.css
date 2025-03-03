@@ -140,6 +140,7 @@ textarea {
 
 .nested-element-color{
     background-color: rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgb(193, 193, 193);
 }
 
 .element-border-color{
@@ -385,7 +386,7 @@ input[type="file"]{
 
 .input-field{
     border: 1px solid lightgrey;
-    border-radius: 0.25rem;
+    border-radius: 15px;
     padding: 6px 10px 6px;
     outline: grey;
 }

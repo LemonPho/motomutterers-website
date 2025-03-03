@@ -147,7 +147,7 @@ export default function RacesManagement(){
 
             
 
-            <div className="card-header rounded-15-top">
+            <div className="card-header rounded-15 nested-element-color m-2">
                 <div className="container" style={{paddingLeft: "0px", paddingRight: "0px"}}>
                     <div className="d-flex">
                         <h3>Races</h3>
@@ -162,10 +162,10 @@ export default function RacesManagement(){
                     </div>
                 </div>
             </div>
-            <div className="card-body">
+            <div className="card-body p-0 m-2">
             {
                 season.races.map((race, i) => (
-                    <div className="container card rounded-15 clickable my-1" id={`race-${race.id}`} key={`race-${race.id}`} onClick={(e) => openViewResultsModal(e, race.id)}>
+                    <div className="container card rounded-15 clickable nested-element-color p-2" id={`race-${race.id}`} key={`race-${race.id}`} onClick={(e) => openViewResultsModal(e, race.id)}>
                         <div className="d-flex align-items-center">
                             <div className="container" style={{padding: "0px"}}>
                                 <div>{race.title} {race.is_sprint && <span>{`(sprint)`}</span>}</div>

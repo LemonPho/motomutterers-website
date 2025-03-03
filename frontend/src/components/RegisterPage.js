@@ -78,10 +78,10 @@ export default function RegisterPage() {
 
     return(
         <div className="card rounded-15 element-background-color element-border-color mx-auto" style={{width: "21rem"}}>
-            <div className="card-header d-flex justify-content-center">
+            <div className="card-header d-flex justify-content-center rounded-15 nested-element-color m-2">
                 <h2>Sign Up</h2>
             </div>
-            <div className="card-body">
+            <div className="card-body rounded-15 nested-element-color m-2">
                 <input type="text" className="input-field w-100 mb-2" placeholder="Username" onKeyUp={(e) => {setUsername(e.target.value);enterKeySubmit(e, registerAccount)}}/>
                 <input type="text" className="input-field w-100 mb-2" placeholder="Email" onKeyUp={(e) => {setEmail(e.target.value);enterKeySubmit(e, registerAccount)}}/>
                 <input type="text" className="input-field w-100 mb-2" placeholder="Password" onKeyUp={(e) => {setPassword(e.target.value);enterKeySubmit(e, registerAccount)}}/>
@@ -89,9 +89,7 @@ export default function RegisterPage() {
 
                 {loading && <button className="btn btn-primary w-100 rounded-15 mt-2" disabled>Loading...</button>}
                 {!loading && <button className="btn btn-primary w-100 rounded-15 mt-2" onClick={registerAccount}>Sign up</button>}
-            </div>
-
-            <div className="card-footer">
+                <hr />
                 <Link to="/login" className="btn btn-success w-100 rounded-15">Login to an account</Link>
             </div>
         </div>

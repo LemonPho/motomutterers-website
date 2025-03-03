@@ -105,8 +105,8 @@ export default function Anouncements(){
                 </Link>
             ))}
             </div>
+            {pages &&
             <div className='card-footer rounded-15 nested-element-color align-items-center'>
-                {pages && 
                 <nav id="pagination-view ">
                     <ul className='pagination justify-content-center'>
                         <li id='previous-page' className={`${previousPage}`}>
@@ -130,8 +130,9 @@ export default function Anouncements(){
                             <Link id='next-page-link' to={`?page=${currentPage+1}`} className='page-link'>Next</Link>
                         </li>
                     </ul>
-                </nav>}
+                </nav>
             </div>
+            }
             <Modal isOpen={openedModal == "announcement-create"}>
                 <CreateAnnouncementModal/>
             </Modal>

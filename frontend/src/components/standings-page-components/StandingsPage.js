@@ -32,8 +32,8 @@ export default function Standings(){
 
 
     return (
-    <div className="card rounded-15 align-middle element-background-color element-border-color">
-        <div className="rounded-15-top card-header">
+    <div className="card rounded-15 align-middle element-background-color element-border-color p-2">
+        <div className="rounded-15-top card-header rounded-15 nested-element-color mb-3">
             <div className="d-flex align-items-center">
                 <h5 className="m-0">
                     <span>Standings</span>
@@ -78,29 +78,25 @@ export default function Standings(){
                 }
             </div>
         </div>
-        <div className="card-body">
+        <div className="card-body p-0">
             {(!standingsLoading && (!standings || standings.users_picks.length == 0)) ? 
-            (<div>There are no standings for this season</div>) : 
+            (<div className="p-2">There are no standings for this season</div>) : 
             (standingsLoading == 0 && standings.users_picks.map((user_picks, i) => (
-                <div key={`standings-user-${user_picks.user.username}`}>
-                    <div className="p-2 clickable rounded-15" onClick={(e) => {e.stopPropagation(); openModal("standing-detailed"); retrieveUserPicks(user_picks.user.id)}}>
-                        <div className="d-flex align-items-center">
-                            <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user_picks.user.username}/>
-                            <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            {user_picks.picks.map((pick) => (
-                                <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
-                            ))}
-
-                            {(user_picks.independent_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}
-                            {(user_picks.rookie_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {user_picks.rookie_pick.first[0]}. {user_picks.rookie_pick.last.slice(0,3)}</strong> - {user_picks.rookie_pick.points}</div>}
-                            
-                        </div>
+                <div key={`standings-user-${user_picks.user.username}`} className="p-2 clickable rounded-15 mb-1 rounded-15 nested-element-color" onClick={(e) => {e.stopPropagation(); openModal("standing-detailed"); retrieveUserPicks(user_picks.user.id)}}>
+                    <div className="d-flex align-items-center">
+                        <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user_picks.user.username}/>
+                        <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
                     </div>
-                    <hr />
-                </div>
-                
+                    <div className="d-flex align-items-center">
+                        {user_picks.picks.map((pick) => (
+                            <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
+                        ))}
+
+                        {(user_picks.independent_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}
+                        {(user_picks.rookie_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {user_picks.rookie_pick.first[0]}. {user_picks.rookie_pick.last.slice(0,3)}</strong> - {user_picks.rookie_pick.points}</div>}
+                        
+                    </div>
+                </div>                
             )))}
         </div>
         <Modal isOpen={openedModal == "standing-detailed"}>

@@ -126,37 +126,43 @@ export default function UserPage(){
             <div className="row">
                 <div className="col-md-4">
                     <div id="user-view" className="card rounded-15 p-3 element-background-color element-border-color">
-                        <div className="d-flex align-items-center justify-content-center">
-                            <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={displayUser.username}/>
+                        <div className="rounded-15 nested-element-color">
+                            <div className="d-flex align-items-center justify-content-center">
+                                <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={displayUser.username}/>
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                <div style={{ fontSize: "30px" }}>{displayUser.username}</div>
+                            </div>
+                            {displayUser.id === user.id && 
+                            <div className="d-flex justify-content-center align-items-center link-no-decorations">
+                                <Link className="link-no-decorations" to={`/settings`}>
+                                    <span>Edit</span>
+                                    <svg style={{marginLeft: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none">
+                                        <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </Link>
+                            </div>}
                         </div>
-                        <div className="d-flex justify-content-center">
-                            <div style={{ fontSize: "30px" }}>{displayUser.username}</div>
-                        </div>
-                        {displayUser.id === user.id && 
-                        <div className="d-flex justify-content-center align-items-center link-no-decorations">
-                            <Link className="link-no-decorations" to={`/settings`}>
-                                <span>Edit</span>
-                                <svg style={{marginLeft: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none">
-                                    <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                            </Link>
-                        </div>}
+                        
                         <hr />
-                        <h5>Account created on</h5>
-                        <span>{new Date(displayUser.date_created).toISOString().substring(0,10)}</span>
+                        <div className="rounded-15 nested-element-color p-2">
+                            <h5>Account created on</h5>
+                            <span>{new Date(displayUser.date_created).toISOString().substring(0,10)}</span>
+                        </div>
+                        
                     </div>
                 </div>
                 <div className="col-md-8">
                     <div id="comments-view" className="card rounded-15 element-background-color element-border-color">
-                        <div className="card-header">
+                        <div className="card-header rounded-15 nested-element-color m-2">
                             <h3>Comments</h3>
                         </div>
-                        <div className="card-body">
-                            {(comments.length === 0) && <div><h6>User hasn't posted any comments</h6></div>}
-                            {(!comments) && <div><h6>Error loading comments</h6></div>}
+                        <div className="card-body p-0">
+                            {(comments.length === 0) && <div className="rounded-15 nested-element-color m-2 p-2"><h6>User hasn't posted any comments</h6></div>}
+                            {(!comments) && <div className="rounded-15 nested-element-color m-2 p-2"><h6>Error loading comments</h6></div>}
                             {(comments) && comments.map((comment) => (
-                                <div key={`comment-${comment.id}`}>
+                                <div key={`comment-${comment.id}`} className="rounded-15 nested-element-color m-2 p-2">
                                     {comment.parent_comment != null ? 
                                     (
                                         <div>
@@ -208,12 +214,12 @@ export default function UserPage(){
                                                 {comment.race != null && 
                                                     <>
                                                         <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" width="1.2rem" height="1.2rem" viewBox="0 0 410 450" space="preserve">
-  <g>
-    <g>
-      <path d="M 355.839 322.508 L 365.987 302.471 C 405.157 221.386 411.618 158.553 386.352 114.688 C 350.827 53.012 245.064 55.986 245.064 55.986 C 149.675 55.986 89.435 122.79 89.435 122.79 C 58.693 155.456 27.517 217.337 13.79 258.975 C 13.79 258.975 11.446 266.186 10.892 268.627 C 10.473 270.471 10.097 272.323 10.097 274.223 L 10.097 324.321 C 10.097 329.678 12.179 334.712 15.962 338.496 C 19.737 342.274 24.757 344.357 30.097 344.357 L 30.118 344.357 L 332.333 344.311 C 339.599 344.302 346.296 340.041 349.812 333.673 C 351.886 329.916 353.89 326.198 355.839 322.508 Z M 239.295 190.74 C 226.516 198.358 196.867 206.167 170.707 213.06 C 158.621 216.245 147.205 219.252 137.264 222.232 C 121.02 227.105 99.628 230.64 80.896 234.872 C 99.117 190.514 129.313 150.635 153.733 129.347 C 153.733 129.347 254.232 129.347 263.26 129.347 C 272.288 129.347 278.215 133.135 278.26 140.51 C 278.26 158.428 265.15 175.329 239.295 190.74 Z" fill="none" stroke="#5A5A5A" strokeWidth="25"/>
-    </g>
-  </g>
-</svg>
+                                                            <g>
+                                                                <g>
+                                                                <path d="M 355.839 322.508 L 365.987 302.471 C 405.157 221.386 411.618 158.553 386.352 114.688 C 350.827 53.012 245.064 55.986 245.064 55.986 C 149.675 55.986 89.435 122.79 89.435 122.79 C 58.693 155.456 27.517 217.337 13.79 258.975 C 13.79 258.975 11.446 266.186 10.892 268.627 C 10.473 270.471 10.097 272.323 10.097 274.223 L 10.097 324.321 C 10.097 329.678 12.179 334.712 15.962 338.496 C 19.737 342.274 24.757 344.357 30.097 344.357 L 30.118 344.357 L 332.333 344.311 C 339.599 344.302 346.296 340.041 349.812 333.673 C 351.886 329.916 353.89 326.198 355.839 322.508 Z M 239.295 190.74 C 226.516 198.358 196.867 206.167 170.707 213.06 C 158.621 216.245 147.205 219.252 137.264 222.232 C 121.02 227.105 99.628 230.64 80.896 234.872 C 99.117 190.514 129.313 150.635 153.733 129.347 C 153.733 129.347 254.232 129.347 263.26 129.347 C 272.288 129.347 278.215 133.135 278.26 140.51 C 278.26 158.428 265.15 175.329 239.295 190.74 Z" fill="none" stroke="#5A5A5A" strokeWidth="25"/>
+                                                                </g>
+                                                            </g>
+                                                        </svg>
                                                         <Link className="link-no-decorations" to={`/raceresults/${comment.race.id}?comment=${comment.id}`}><i>{comment.race.title}</i></Link>                                                
                                                     </>
                                                 }
@@ -236,11 +242,10 @@ export default function UserPage(){
                                             </div>
                                         </div> 
                                     )}
-                                    <hr />                                
                                 </div>
                             ))}
                         </div>
-                        <div className="card-footer">
+                        <div className="card-footer rounded-15 nested-element-color m-2">
                         {comments.length !== 0 && pages && 
                             <nav id="pagination-view">
                                 <ul className='pagination justify-content-center'>
