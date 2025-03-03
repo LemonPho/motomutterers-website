@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse, JsonResponse
 
 from ..models import Notification
-from ..serializers.notification_serializers import NotificationSerializer
+from ..serializers.notification_serializers import NotificationReadSerializer, NotificationWriteSerializer
 
 import json
 
@@ -11,7 +11,7 @@ def get_notifications(request):
         return HttpResponse(status=405)
     
     notifications = request.user.notifications.all()
-    serializer = NotificationSerializer(notifications, many=True) if notifications != None else None
+    serializer = NotificationReadSerializer(notifications, many=True) if notifications != None else None
 
     return JsonResponse(serializer.data, status=200, safe=False)
 
@@ -34,8 +34,22 @@ def read_notification(request):
 
     return HttpResponse(status=200)
 
-def create_notifications(text, path, origin_user, user_list):
-    pass
+def create_notifications(text, path, origin_user, users):
+    data = {
+        "text": text,
+        "path": path,
+        "origin_user": origin_user,
+        "user": None,
+    }
+    temp_data = data
+    for user in users:
+        if user != origin_user:
+            temp_data["user"] = user
+            serializer = NotificationWriteSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+            
+    
 
 def create_announcement_notification(announcement, request):
     path = f"/announcements/{announcement.id}"

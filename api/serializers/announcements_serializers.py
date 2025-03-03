@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
 from . import user_serializers
 
@@ -7,6 +8,7 @@ from .comments_serializers import CommentReadSerializer
 
 
 from ..models import Announcement, CompetitorPoints, CompetitorPosition, Competitor
+from ..views.notification_view import create_notifications
 
 class AnnouncementWriteSerializer(serializers.ModelSerializer):
     text = serializers.CharField(write_only=True, allow_blank=False)
@@ -35,6 +37,8 @@ class AnnouncementWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("User is not an admin")
         
         announcement = Announcement.objects.create(user=request.user, **validated_data)
+
+        create_notifications("created a new announcement", f"announcements/{announcement.id}", request.user, get_user_model().objects.all())
         
         return announcement
 

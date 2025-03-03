@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 
 import { useApplicationContext } from "../../ApplicationContext";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
-import { autoResizeTextarea } from "../../utils";
 import { useCommentsContext } from "./CommentsSectionContext";
 import Textarea from "../Textarea";
 
