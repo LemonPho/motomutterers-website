@@ -108,8 +108,7 @@ export function autoResizeTextarea(textarea){
     textarea.style.height = textarea.scrollHeight + "px";
 }
 
-export function toggleCardBody(divId){
-    const div = document.getElementById(divId);
+export function toggleCardBody(div){
     if(!div || !div.classList.contains("card-body")){
         return;
     }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRaceResultsContext } from "./RaceResultsContext";
 import { useApplicationContext } from "../ApplicationContext";
 import { autoResizeTextarea, toggleCardBody } from "../utils";
@@ -10,6 +10,9 @@ export default function RaceResultPage({ raceId }){
 
     const { user, userLoading } = useApplicationContext();
     const { raceResultDetails, raceResultDetailsLoading, retrieveRaceResultDetails } = useRaceResultsContext();
+
+    const standingsDivRef = useRef(null);
+    const raceDivRef = useRef(null);
 
     useEffect(() => {
         async function fetchData(){
@@ -41,7 +44,7 @@ export default function RaceResultPage({ raceId }){
     return(
         <div>
             <div className="card rounded-15 element-background-color element-border-color mb-2" id="race-result-card">
-                <div className="card-header rounded-15 clickable nested-element-color m-2" onClick={(e) => {toggleCardBody("race-positions-card-body")}}>
+                <div className="card-header rounded-15 clickable nested-element-color m-2" onClick={(e) => {toggleCardBody(raceDivRef.current)}}>
                     <div className="d-flex align-items-center p-1">
                         <h5 style={{margin: "0px"}}>
                             {raceResultDetails.title}
@@ -55,7 +58,7 @@ export default function RaceResultPage({ raceId }){
                         </div>
                     </div>
                 </div>
-                <div className="card-body custom-card-body" id="race-positions-card-body">
+                <div ref={raceDivRef} className="card-body custom-card-body" id="race-positions-card-body">
                     <div className="rounded-15 nested-element-color p-1">
                         <div className="row g-0 p-1" style={{marginRight: "0"}}>
                             <strong className="col-2">Pos</strong>
@@ -88,13 +91,13 @@ export default function RaceResultPage({ raceId }){
             </div>
             {(raceResultDetails.finalized && raceResultDetails.standings.users_picks.length > 0) && 
             <div className="card rounded-15 element-background-color element-border-color mb-2" id="race-standings-card">
-                <div className="card-header rounded-15 clickable nested-element-color m-2" onClick={(e) => {toggleCardBody("race-standings-card-body")}}>
+                <div className="card-header rounded-15 clickable nested-element-color m-2" onClick={(e) => {toggleCardBody(standingsDivRef.current)}}>
                     <div className="p-1">
                         <h5 style={{margin: "0px"}}>Standings</h5>
                     </div>
                     
                 </div>
-                <div className="card-body custom-card-body expanded rounded-15 nested-element-color me-2 ms-2" id="race-standings-card-body">
+                <div ref={standingsDivRef} className="card-body custom-card-body expanded rounded-15 nested-element-color me-2 ms-2" id="race-standings-card-body">
                     {raceResultDetails.standings.users_picks.map((user_picks) => (
                         <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={user_picks.user.id} style={{marginRight: "0px"}}>
                             {user_picks.position_change > 0 && 
