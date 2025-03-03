@@ -8,6 +8,7 @@ import CommentReply from "./CommentReply";
 import { useCommentsContext } from "./CommentsSectionContext";
 import Dropdown from "../Dropdown";
 import { useOpenersContext } from "../../OpenersContext";
+import Visible from "../Visble";
 
 export default function Comment({ comment }){
     const { user } = useApplicationContext();
@@ -15,18 +16,17 @@ export default function Comment({ comment }){
     const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [replyCreateText, setReplyCreateText] = useState("");
-    const replyCreateInput = useRef(null);
-    const replyCreateDiv = useRef(null);
-
-    const commentRepliesDiv = useRef(null);
-
     const [editCommentText, setEditCommentText] = useState("");
-    const editCommentDiv = useRef(null);
-    const editCommentInput = useRef(null);
-    const commentText = useRef(null);
+
+    const [showStaticComment, setShowStaticComment] = useState(true);
+    const [showEditComment, setShowEditComment] = useState(false);
+
+    const [showReplyCreate, setShowReplyCreate] = useState(false);
+    const [showRepliesDiv, setShowRepliesDiv] = useState(false);
 
     async function deleteComment(commentId){
         await postDeleteComment(commentId);
+        closeDropdown();
     }
 
     async function createCommentReply(){
@@ -38,8 +38,7 @@ export default function Comment({ comment }){
 
         if(commentResponse){
             setReplyCreateText("");
-            replyCreateInput.current.value = "";
-            toggleReplyCreateBox();
+            setShowReplyCreate(!showReplyCreate);
         }
     }
 
@@ -51,33 +50,17 @@ export default function Comment({ comment }){
         const commentResponse = await postEditComment(editCommentText, comment.id);
 
         if(commentResponse){
-            commentText.current.innerHTML = editCommentText;
+            comment.text = editCommentText;
+            comment.edited = true;
             setEditCommentText("");
-            editCommentInput.current.value = "";
             toggleEditComment();
         }
     }
 
     function toggleEditComment(){
-        if(editCommentDiv.current){
-            setEditCommentText("");
-            commentText.current.classList.toggle("hidden");
-            editCommentDiv.current.classList.toggle("hidden");
-            closeDropdown();
-        }
-    }
-
-    function toggleRepliesDiv(){
-        if(commentRepliesDiv.current){
-            commentRepliesDiv.current.classList.toggle("hidden");
-        }
-    }
-
-    function toggleReplyCreateBox(){
-        if(replyCreateDiv.current){
-            setReplyCreateText("");
-            replyCreateDiv.current.classList.toggle("hidden");
-        }
+        setShowEditComment(!showEditComment);
+        setShowStaticComment(!showStaticComment);
+        closeDropdown();
     }
 
     if(comment.id == 173){
@@ -85,7 +68,7 @@ export default function Comment({ comment }){
     }
 
     return(
-        <div id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
+        <div className="rounded-15 p-2 mb-2 nested-element-color" id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
             <div className="d-flex align-items-start">
                 <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
                 <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
@@ -110,36 +93,41 @@ export default function Comment({ comment }){
                         }
                     </div>
                     <div className="break-line-text">
-                        <span ref={commentText} id={`comment-${comment.id}-text`} style={{overflow: "visible"}} className="">{comment.text}</span>
-                        <div ref={editCommentDiv} className="hidden">
-                            <textarea ref={editCommentInput} id={`edit-comment-${comment.id}-text`} className="textarea-expand input-field w-100" rows={1} defaultValue={comment.text} onKeyUp={(e) => setEditCommentText(e.target.value)} onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
-                            <div className="d-flex">
-                                <button id={`comment-${comment.id}-save-button`} className="btn btn-primary ms-auto me-2 mt-2" onClick={() => editComment(comment.id)}>Save</button>
-                                <button id={`comment-${comment.id}-cancel-button`} className="btn btn-outline-secondary mt-2" onClick={() => toggleEditComment(comment.id)}>Cancel</button>
+                        <Visible isVisible={showStaticComment}><span id={`comment-${comment.id}-text`} style={{overflow: "visible"}} className="">{comment.text}</span></Visible>
+                        <Visible isVisible={showEditComment}>
+                            <div>
+                                <textarea id={`edit-comment-${comment.id}-text`} className="textarea-expand input-field w-100" rows={1} defaultValue={comment.text} onKeyUp={(e) => setEditCommentText(e.target.value)} onChange={(e) => {autoResizeTextarea(e.target)}}></textarea>
+                                <div className="d-flex">
+                                    <button id={`comment-${comment.id}-save-button`} className="btn btn-primary ms-auto me-2 mt-2 rounded-15" onClick={() => editComment(comment.id)}>Save</button>
+                                    <button id={`comment-${comment.id}-cancel-button`} className="btn btn-outline-secondary mt-2 rounded-15" onClick={() => toggleEditComment(comment.id)}>Cancel</button>
+                                </div>
                             </div>
-                        </div>
+                        </Visible>
                     </div>
                     <div className="d-flex mb-3">
-                        {parseInt(comment.amount_replies) > 0 && <button className="btn btn-link link-no-decorations p-0 pe-1" style={{color: "blue"}} onClick={() => toggleRepliesDiv()}><small>Show {comment.amount_replies} replies</small></button>}
-                        {user.is_logged_in === true ? (<button className="btn btn-link link-no-decorations p-0" onClick={() => toggleReplyCreateBox(comment.id)}><small>Reply</small></button>) : (<div className="my-2"></div>)}
+                        {parseInt(comment.amount_replies) > 0 && <button className="btn btn-link link-no-decorations p-0 pe-1" style={{color: "blue"}} onClick={() => setShowRepliesDiv(!showRepliesDiv)}><small>Show {comment.amount_replies} replies</small></button>}
+                        {user.is_logged_in === true ? (<button className="btn btn-link link-no-decorations p-0" onClick={() => setShowReplyCreate(!showReplyCreate)}><small>Reply</small></button>) : (<div className="my-2"></div>)}
                     </div>
                 </div>
             </div>
             
-            
-            <div ref={replyCreateDiv} id={`comment-reply-div-${comment.id}`} className="hidden" style={{marginBottom: "0.5rem", marginLeft: "3.4rem"}}>
-                <div className="d-flex justify-content-center">
-                    <textarea ref={replyCreateInput} id={`comment-reply-text-${comment.id}`} role="textbox" className="input-field textarea-expand w-100" placeholder="Add a reply..." rows={1} onClick={() => focusDiv(`comment-reply-text-${comment.id}`)} onChange={(e) => {autoResizeTextarea(e.target)}} onKeyUp={(e) => setReplyCreateText(e.target.value)}></textarea>
-                    <button id={`comment-reply-button-${comment.id}`} className="btn btn-outline-secondary p-1 ms-2" onClick={() => {createCommentReply()}}><small>Reply</small></button>
+            <Visible isVisible={showReplyCreate}>
+                <div id={`comment-reply-div-${comment.id}`} style={{marginBottom: "0.5rem", marginLeft: "3.4rem"}}>
+                    <div className="d-flex justify-content-center">
+                        <textarea id={`comment-reply-text-${comment.id}`} role="textbox" className="input-field textarea-expand w-100" placeholder="Add a reply..." rows={1} onClick={() => focusDiv(`comment-reply-text-${comment.id}`)} onChange={(e) => {autoResizeTextarea(e.target)}} onKeyUp={(e) => setReplyCreateText(e.target.value)}></textarea>
+                        <button id={`comment-reply-button-${comment.id}`} className="btn btn-outline-secondary p-1 ms-2" onClick={() => {createCommentReply()}}><small>Reply</small></button>
+                    </div>
                 </div>
-            </div>
-            <div ref={commentRepliesDiv} id={`comment-replies-${comment.id}`} className="dynamic-container hidden mb-3" style={{marginLeft: "2.7rem"}}>
-                {comment.replies.length > 0 &&
-                comment.replies.map((reply) => (
-                    <CommentReply key={reply.id} reply={reply}/>
-                ))
-                }
-            </div>
+            </Visible>
+            <Visible isVisible={showRepliesDiv}>
+                <div id={`comment-replies-${comment.id}`} className="dynamic-container mb-3" style={{marginLeft: "2.7rem"}}>
+                    {comment.replies.length > 0 &&
+                    comment.replies.map((reply) => (
+                        <CommentReply key={reply.id} reply={reply}/>
+                    ))
+                    }
+                </div>
+            </Visible>
             
         </div>
     );

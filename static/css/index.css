@@ -135,7 +135,11 @@ textarea {
 }
 
 .element-background-color{
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.nested-element-color{
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .element-border-color{
@@ -246,10 +250,6 @@ textarea {
 
 }
 
-.show{
-    display: block;
-}
-
 .link-button:hover{
     cursor: pointer;
 }
@@ -335,10 +335,6 @@ textarea {
     display: flex;
     padding: 5px 5px;
     width: 100%;
-}
-
-.hidden{
-    display: none;
 }
 
 .overlay {

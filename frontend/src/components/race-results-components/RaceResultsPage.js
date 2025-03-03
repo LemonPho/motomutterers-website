@@ -20,8 +20,8 @@ export default function RaceResultsPage({ seasonYear }){
 
     return(
         <div>
-            <div className="card rounded-15 element-background-color element-border-color">
-                <div className="card-header d-flex align-items-center">
+            <div className="card rounded-15 element-background-color element-border-color p-2">
+                <div className="card-header d-flex align-items-center rounded-15 nested-element-color mb-2">
                     <h5>Race results</h5>
                     <div className="dropdown-div ms-auto">
                         <button className="btn btn-outline-secondary dropdown-toggle rounded-15" type="button" onClick={(e) => toggleDropdown("season-selector-dropdown", e, undefined)}>
@@ -45,14 +45,14 @@ export default function RaceResultsPage({ seasonYear }){
                         </Dropdown>
                     </div>
                 </div>
-                <div className="card-body">
+                <div className="card-body p-0">
                     {(!raceResultsLoading && raceResults != undefined && raceResults.length == 0) && (
                     <h5>No race results have been added for this season.</h5>
                     )}
             
                     {(!raceResultsLoading && raceResults != undefined) && (raceResults.map((raceResult) => (
                     <div key={`race-result-${raceResult.id}`}>
-                        <div className="p-2 clickable rounded-15">
+                        <div className="p-2 clickable rounded-15 nested-element-color">
                             <Link className="link-no-decorations" to={`/raceresults/${raceResult.id}`}>
                                 <div className="d-flex align-items-center">
                                     <h3 className="p-2">

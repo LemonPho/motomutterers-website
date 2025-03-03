@@ -26,14 +26,13 @@ export default function CommentsSection(){
     }
 
     return(
-        <div className="card rounded-15 mt-2 element-background-color element-border-color" id="comments-card">
-            <div className="card-header">
+        <div className="card rounded-15 mt-2 element-background-color element-border-color p-2" id="comments-card">
+            <div className="card-header nested-element-color rounded-15 mb-2">
                 <h5>Comments</h5>
             </div>
 
-            <div className="card-body">
+            <div className="card-body p-0">
                 <CreateComment/>
-                <hr />
                 {comments.map((comment) => (
                     <Comment key={comment.id} comment={comment}/>
                 ))}

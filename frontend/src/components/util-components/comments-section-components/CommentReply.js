@@ -7,17 +7,18 @@ import { useApplicationContext } from "../../ApplicationContext";
 import { useCommentsContext } from "./CommentsSectionContext";
 import Dropdown from "../Dropdown";
 import { useOpenersContext } from "../../OpenersContext";
+import Visible from "../Visble";
 
 export default function CommentReply({ reply }){
 
     const { postEditComment, postDeleteComment } = useCommentsContext();
-    const { user, setErrorMessage } = useApplicationContext();
+    const { user } = useApplicationContext();
     const { openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
 
     const [replyEditText, setReplyEditText] = useState("");
-    const replyEditTextDiv = useRef(null);
-    const replyEditTextInput = useRef(null);
-    const replyTextDiv = useRef(null);
+
+    const [showStaticDiv, setShowStaticDiv] = useState(true);
+    const [showEditDiv, setShowEditDiv] = useState(false);
 
     async function deleteComment(){
         await postDeleteComment(reply.id);
@@ -31,9 +32,9 @@ export default function CommentReply({ reply }){
         const commentResponse = await postEditComment(replyEditText, reply.id);
 
         if(commentResponse){
-            replyTextDiv.current.innerHTML = replyEditText;
+            reply.text = replyEditText;
+            reply.edited = true;
             setReplyEditText("");
-            replyEditTextInput.value = "";
             toggleReplyEditBox();
             closeDropdown();
         }
@@ -41,11 +42,9 @@ export default function CommentReply({ reply }){
     }
 
     function toggleReplyEditBox(){
-        if(replyEditTextDiv.current && replyTextDiv.current){
-            setReplyEditText("");
-            replyTextDiv.current.classList.toggle("hidden");
-            replyEditTextDiv.current.classList.toggle("hidden")
-        }
+        setShowStaticDiv(!showStaticDiv);
+        setShowEditDiv(!showEditDiv);
+        closeDropdown();
     }
 
     return(
@@ -75,14 +74,16 @@ export default function CommentReply({ reply }){
                         }
                     </div>
                     <div className="break-line-text my-1">
-                        <span ref={replyTextDiv} id={`reply-${reply.id}-text`} className="">{reply.text}</span>
-                        <div ref={replyEditTextDiv} className="hidden">
-                            <textarea ref={replyEditTextInput} rows={1} id={`edit-reply-${reply.id}-text`} className="textarea-expand input-field w-100" defaultValue={reply.text} onChange={(e) => autoResizeTextarea(e.target)} onKeyUp={(e) => setReplyEditText(e.target.value)}></textarea>
-                            <div className="d-flex mt-2">
-                                <button id={`reply-${reply.id}-save-button`} className="btn btn-primary ms-auto me-2" onClick={() => editComment()}>Save</button>
-                                <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary" onClick={() => toggleReplyEditBox()}>Cancel</button>
+                        <Visible isVisible={showStaticDiv}><span id={`reply-${reply.id}-text`} className="">{reply.text}</span></Visible>
+                        <Visible isVisible={showEditDiv}>
+                            <div>
+                                <textarea rows={1} id={`edit-reply-${reply.id}-text`} className="textarea-expand input-field w-100" defaultValue={reply.text} onChange={(e) => autoResizeTextarea(e.target)} onKeyUp={(e) => setReplyEditText(e.target.value)}></textarea>
+                                <div className="d-flex mt-2">
+                                    <button id={`reply-${reply.id}-save-button`} className="btn btn-primary ms-auto me-2 rounded-15" onClick={() => editComment()}>Save</button>
+                                    <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary rounded-15" onClick={() => toggleReplyEditBox()}>Cancel</button>
+                                </div>
                             </div>
-                        </div>
+                        </Visible>
                     </div>
                 </div>
                 

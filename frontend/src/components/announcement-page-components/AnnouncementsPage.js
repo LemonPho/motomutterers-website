@@ -80,12 +80,12 @@ export default function Anouncements(){
     }, [totalAnnouncements, location.search]);
 
     return(
-        <div className='card element-background-color element-border-color rounded-15'>
-            <div className='card-header d-flex align-items-center'>
+        <div className='card element-background-color element-border-color rounded-15 p-2'>
+            <div className='card-header d-flex align-items-center nested-element-color rounded-15'>
                 <h5>Announcements</h5>
                 {(!userLoading && user.is_admin) && <button className='btn btn-primary ms-auto rounded-15' onClick={() => {openModal("announcement-create")}}>Create Announcement</button>}
             </div>
-            <div className='card-body'>
+            <div className='card-body p-0'>
             {(!announcementsLoading && announcements.length != 0) && announcements.map((announcement) => (
                 <Link className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' to={`/announcements/${announcement.id}`} key={announcement.id}>
                     <div className='card-header d-flex align-items-center'>
@@ -105,7 +105,7 @@ export default function Anouncements(){
                 </Link>
             ))}
             </div>
-            <div className='card-footer'>
+            <div className='card-footer rounded-15 nested-element-color align-items-center'>
                 {pages && 
                 <nav id="pagination-view ">
                     <ul className='pagination justify-content-center'>

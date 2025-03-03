@@ -4,6 +4,7 @@ import { useSeasonContext } from "../SeasonContext";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { autoResizeTextarea, closeModal, enterKeySubmit } from "../../../utils";
 import { useOpenersContext } from "../../../OpenersContext";
+import Textarea from "../../../util-components/Textarea";
 
 export default function CompetitorEditModal({ competitor }){
     const { resetApplicationMessages } = useApplicationContext();
@@ -117,6 +118,7 @@ export default function CompetitorEditModal({ competitor }){
             </div>
             <hr />
             <div className="custom-modal-body">
+                <Textarea id="competitor-edit-first" placeholder="First name..." value={competitorFirst} setValue={setCompetitorFirst} onEnterFunction={editCompetitor}/>
                 <textarea ref={competitorFirstInput} rows={1} id="competitor-edit-first" className='input-field textarea-expand mt-1 w-100' placeholder="First name..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, editCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <textarea ref={competitorLastInput} rows={1} id="competitor-edit-last" className='input-field textarea-expand mt-1 w-100' placeholder="Last name(s)..." data-category="input-field" onKeyUp={(e) => enterKeySubmit(e, editCompetitor)} onInput={(e) => handleCompetitorData(e)} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
                 <div className="d-flex justify-content-around mt-1">
