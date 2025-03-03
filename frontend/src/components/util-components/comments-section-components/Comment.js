@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import { useApplicationContext } from "../../ApplicationContext";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
-import { autoResizeTextarea, focusDiv } from "../../utils";
 import CommentReply from "./CommentReply";
 import { useCommentsContext } from "./CommentsSectionContext";
 import Dropdown from "../Dropdown";

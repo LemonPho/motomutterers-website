@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useRaceResultsContext } from "./RaceResultsContext";
 import { useApplicationContext } from "../ApplicationContext";
-import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { autoResizeTextarea, toggleCardBody } from "../utils";
 import CommentsSection from "../util-components/comments-section-components/CommentsSection";
 import CommentsContextProvider from "../util-components/comments-section-components/CommentsSectionContext";

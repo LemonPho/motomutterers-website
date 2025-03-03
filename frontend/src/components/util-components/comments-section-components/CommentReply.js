@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { autoResizeTextarea } from "../../utils";
 import ProfilePictureLazyLoader from "../ProfilePictureLazyLoader";
 import { useApplicationContext } from "../../ApplicationContext";
 import { useCommentsContext } from "./CommentsSectionContext";
 import Dropdown from "../Dropdown";
 import { useOpenersContext } from "../../OpenersContext";
 import Visible from "../Visble";
+import Textarea from "../Textarea";
 
 export default function CommentReply({ reply }){
 
@@ -77,7 +77,7 @@ export default function CommentReply({ reply }){
                         <Visible isVisible={showStaticDiv}><span id={`reply-${reply.id}-text`} className="">{reply.text}</span></Visible>
                         <Visible isVisible={showEditDiv}>
                             <div>
-                                <textarea rows={1} id={`edit-reply-${reply.id}-text`} className="textarea-expand input-field w-100" defaultValue={reply.text} onChange={(e) => autoResizeTextarea(e.target)} onKeyUp={(e) => setReplyEditText(e.target.value)}></textarea>
+                                <Textarea id={`edit-reply-${reply.id}-text`} value={reply.text} setValue={setReplyEditText} onEnterFunction={editComment}/>
                                 <div className="d-flex mt-2">
                                     <button id={`reply-${reply.id}-save-button`} className="btn btn-primary ms-auto me-2 rounded-15" onClick={() => editComment()}>Save</button>
                                     <button id={`reply-${reply.id}-cancel-button`} className="btn btn-outline-secondary rounded-15" onClick={() => toggleReplyEditBox()}>Cancel</button>

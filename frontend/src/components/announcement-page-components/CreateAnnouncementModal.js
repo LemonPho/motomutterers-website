@@ -4,6 +4,7 @@ import { autoResizeTextarea } from "../utils";
 import { useApplicationContext } from "../ApplicationContext";
 import { useOpenersContext } from "../OpenersContext";
 import { submitAnnouncement } from "../fetch-utils/fetchPost";
+import Textarea from "../util-components/Textarea";
 
 export default function CreateAnnouncementModal(){
     const { user, userLoading, resetApplicationMessages, setLoadingMessage, setErrorMessage, setSuccessMessage } = useApplicationContext();
@@ -56,8 +57,8 @@ export default function CreateAnnouncementModal(){
                     {!userLoading && <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>}
                     {!userLoading && <strong className='ms-2'>{user.username}</strong>}
                 </div>
-                <textarea id="announcement-title" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Title..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {setAnnouncementTitle(e.target.value)}}></textarea>
-                <textarea id="break-line-text" className='input-field mt-2 textarea-expand w-100' rows={1} placeholder="Text..." data-category="input-field" onChange={(e) => {autoResizeTextarea(e.target)}} onInput={(e) => {setAnnouncementText(e.target.value)}}></textarea>
+                <Textarea id="announcement-title" className="mt-2" placeholder="Title..." value={announcementTitle} setValue={setAnnouncementTitle} onEnterFunction={postAnnouncement}/>
+                <Textarea id="break-line-text" className="mt-2" placeholder="Text..." value={announcementText} setValue={setAnnouncementText} onEnterFunction={postAnnouncement}/>
             </div>
             <div className="custom-modal-footer">
                 <button id="submit-data" className="btn btn-primary me-auto rounded-15" onClick={postAnnouncement}>Post announcement</button>

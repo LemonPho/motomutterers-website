@@ -9,6 +9,7 @@ import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoade
 import Dropdown from "../util-components/Dropdown";
 import { useOpenersContext } from "../OpenersContext";
 import Visible from "../util-components/Visble";
+import Textarea from "../util-components/Textarea";
 
 export default function AnnouncementContent(){
     const { user, contextLoading } = useApplicationContext();
@@ -93,11 +94,11 @@ export default function AnnouncementContent(){
                 <Visible isVisible={showEditAnnouncement}>
                     <div id="edit-div">
                         <div className="card-header d-flex align-items-center p-3 mb-2 rounded-15 nested-element-color">
-                            <textarea placeholder={announcement.title} rows={1} id="announcement-title-input" className="input-field textarea-expand w-100" defaultValue={announcement.title} onChange={(e) => {autoResizeTextarea(e.target); setTitle(e.target.value)}}></textarea>
+                            <Textarea placeholder={announcement.title} id="announcement-title-input" value={announcement.title} setValue={setTitle} onEnterFunction={saveEditAnnouncement}/>
                         </div>
 
                         <div className="card-body nested-element-color rounded-15">
-                            <textarea placeholder={announcement.text} rows={1} id="announcement-text-input" className="input-field textarea-expand w-100" defaultValue={announcement.text} onChange={(e) => {autoResizeTextarea(e.target); setText(e.target.value)}}></textarea>
+                            <Textarea placeholder={announcement.text} id="announcement-text-input" value={announcement.text} setValue={setText} onEnterFunction={saveEditAnnouncement}/>
                             <div className="d-flex mt-1">
                                 <button id="save-edit-announcement" className="btn btn-primary m-2 rounded-15" onClick={saveEditAnnouncement}>Save</button>
                                 <button id="cancel-edit-announcement" className="me-auto btn btn-outline-secondary m-2 rounded-15" onClick={() => {setShowEditAnnouncement(false);setShowStaticAnnouncement(true)}}>Cancel</button>

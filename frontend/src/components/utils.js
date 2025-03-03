@@ -92,19 +92,10 @@ export function toggleDropdown(elementId, event, loggedIn){
     }
 }
 
-export function enterKeySubmit(event, method){
-    event.stopPropagation();
-    
+export function enterKeySubmit(event, method){    
     if(event.key == "Enter"){
         event.preventDefault();
         method();
-    }
-}
-
-export function focusDiv(divId){
-    const div = document.getElementById(divId);
-    if(div){
-        div.focus();
     }
 }
 

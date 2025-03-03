@@ -13,6 +13,6 @@ export default function Textarea({ id, value, setValue, onEnterFunction, placeho
     }
 
     return(
-        <textarea className={`input-field w-100 textarea-expand nested-element-color rounded-15 ${className}`} id={id} ref={textareaRef} rows={1} defaultValue={value} placeholder={placeholder} onChange={(e) => {keyPress(e)}}></textarea>
+        <textarea className={`input-field w-100 textarea-expand nested-element-color rounded-15 ${className}`} id={id} ref={textareaRef} rows={1} defaultValue={value} placeholder={placeholder} onKeyUp={(e) => {keyPress(e)}}></textarea>
     );
 }

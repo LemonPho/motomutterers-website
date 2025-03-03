@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 
-import { enterKeySubmit, focusDiv, autoResizeTextarea } from "../../../../utils.js";
+import { enterKeySubmit, autoResizeTextarea } from "../../../../utils.js";
 import { useApplicationContext } from "../../../../ApplicationContext.js";
 import { useSeasonContext } from "../../SeasonContext.js"; 
 import { submitRaceResultLink } from "../../../../fetch-utils/fetchPost.js";
 import { useRaceCreateContext } from "./RaceCreateContext.js";
 import { useOpenersContext } from "../../../../OpenersContext.js";
+import Textarea from "../../../../util-components/Textarea.js";
 
 
 export default function RaceCreateAutomatic(){
@@ -107,7 +108,7 @@ export default function RaceCreateAutomatic(){
             
             <div className="custom-modal-body">
                 <div className="alert alert-info"><small>Open the race result on motorsport.com and then paste the link into the textbox</small></div>
-                <textarea rows={1} className="input-field textarea-expand w-100" id="race-automatic-link" role="textbox" placeholder="Link..." data-category="input-field" onInput={(e) => {handleLinkChange(e)}} onClick={(e) => {focusDiv("race-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <Textarea id="race-automatic-link" placeholder={"Link..."} value={link} setValue={setLink} onEnterFunction={submitLink}/>
                 <div className="d-flex justify-content-center align-items-center mt-2">
                     <input id="race-automatic-date" type="date" className="input-field" data-category="input-field" onChange={(e) => handleDateChange(e)} onKeyUp={(e) => {enterKeySubmit(e, submitLink)}}/>
                     <select className="input-field ms-2" data-category="input-field" onChange={(e) => {handleRaceTypeChange(e)}}>

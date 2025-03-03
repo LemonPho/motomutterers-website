@@ -3,13 +3,14 @@ import { useApplicationContext } from "../../../../../ApplicationContext";
 import { autoResizeTextarea, enterKeySubmit } from "../../../../../utils";
 import { useRaceCreateContext } from "../RaceCreateContext";
 import { useOpenersContext } from "../../../../../OpenersContext";
+import Textarea from "../../../../../util-components/Textarea";
 
 export default function RaceDetailsCreateModal(){
     const { openModal } = useOpenersContext();
     const { loggedIn, user, setErrorMessage, resetApplicationMessages } = useApplicationContext();
     const { track, title, timestamp, isSprint, setTrack, setTitle, setTimestamp, setIsSprint, resetVariables } = useRaceCreateContext();
 
-    function next(e){
+    function next(){
         if(track == "" || title == "" || timestamp == 0){
             setErrorMessage("Make sure the fields are filled in");
             return;
@@ -44,13 +45,12 @@ export default function RaceDetailsCreateModal(){
             <hr />
 
             <div className="custom-modal-body">
-                <textarea rows={1} id="race-create-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Track name..." defaultValue={track} onKeyUp={(e) => {enterKeySubmit(e, next);handleTrackChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
-                <textarea rows={1} id="race-create-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="Race title..." defaultValue={title} onKeyUp={(e) => {enterKeySubmit(e, next);handleTitleNameChange(e)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <Textarea id={"race-create-track"} className={"mt-2"} placeholder={"Track name..."} value={track} setValue={setTrack} onEnterFunction={next}/>
+                <Textarea id={"race-create-title"} className={"mt-2"} placeholder={"Race title..."} value={title} setValue={setTitle} onEnterFunction={next}/>
                 <div className="d-flex justify-content-center">
                     <input id="race-create-date" type="date" className="input-field flex-grow-1 mt-2" data-category="input-field" defaultValue={timestamp} onChange={(e) => handleTimestampChange(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
                 </div>
                 <div className="form-check mt-1">
-                    {console.log(isSprint)}
                     <input id="race-create-sprint" type="checkbox" className="form-check-input" data-category="input-field" defaultChecked={isSprint} onChange={(e) => handleSprintSelection(e)} onKeyUp={(e) => enterKeySubmit(e, next)}/>
                     <label className="form-check-label" htmlFor="race-create-sprint">Sprint Race</label>
                 </div>

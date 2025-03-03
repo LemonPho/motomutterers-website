@@ -64,7 +64,6 @@ export default function Anouncements(){
 
     //when totalAnnouncements is asigned, we can generate the pagination necessary, no need to check if its 0, it will just generate a disabled pagination menu
     useEffect(() => {
-        console.log("setting pagination");
         const params = new URLSearchParams(location.search);
         const page = parseInt(params.get("page"));
         setCurrentPage(page);

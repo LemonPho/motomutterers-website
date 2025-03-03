@@ -1,10 +1,10 @@
 import React, {useRef, useState} from "react";
 
-import { focusDiv, enterKeySubmit, autoResizeTextarea } from "../../../../utils";
 import { submitSeasonCompetitorsLink } from "../../../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../../../ApplicationContext";
 import { useSeasonContext } from "../../SeasonContext";
 import { useOpenersContext } from "../../../../OpenersContext";
+import Textarea from "../../../../util-components/Textarea";
 
 export default function CompetitorCreateAutomatic(){
     const { closeModal } = useOpenersContext();
@@ -63,7 +63,7 @@ export default function CompetitorCreateAutomatic(){
 
             <div className="custom-modal-body">
                 <div className="alert alert-info"><small>Paste the link of the motogp.com standings page</small></div>
-                <textarea rows={1} ref={linkInput} className="input-field textarea-expand w-100" id="competitor-automatic-link" role="textbox" placeholder="Link..." data-category="input-field" onClick={(e) => {focusDiv("competitor-automatic-link");e.stopPropagation()}} onKeyUp={(e) => {enterKeySubmit(e, submitLink); setLink(e.target.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>
+                <Textarea id="competitor-automatic-link" placeholder="Link..." value={link} setValue={setLink} onEnterFunction={submitLink}/>
             </div>
 
             <div className="custom-modal-footer">

@@ -3,14 +3,13 @@ import { useApplicationContext } from "../../../../ApplicationContext";
 import { autoResizeTextarea, enterKeySubmit } from "../../../../utils";
 import { useSeasonContext } from "../../SeasonContext";
 import { getRace } from "../../../../fetch-utils/fetchGet";
-import { submitEditRace } from "../../../../fetch-utils/fetchPost";
+import { submitDeleteRace, submitEditRace } from "../../../../fetch-utils/fetchPost";
 import { useOpenersContext } from "../../../../OpenersContext";
+import Textarea from "../../../../util-components/Textarea";
  
 export default function RaceEditModal({ raceId }){
-    const { modalErrorMessage } = useApplicationContext();
-
-    const { setModalErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
-    const { retrieveSeason } = useSeasonContext();
+    const { setErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
+    const { retrieveSeason, season } = useSeasonContext();
     const { closeModal } = useOpenersContext();
 
     const [originalRaceData, setOriginalRaceData] = useState({});
@@ -38,7 +37,7 @@ export default function RaceEditModal({ raceId }){
         const raceResponse = await getRace(raceId);
 
         if(raceResponse.status != 200 && raceResponse.status != 201){
-            setModalErrorMessage("There was an error retrieving the race data");
+            setErrorMessage("There was an error retrieving the race data");
             return;
         }
 
@@ -63,11 +62,25 @@ export default function RaceEditModal({ raceId }){
         const raceResponse = await submitEditRace(newRace);
 
         if(raceResponse.error || raceResponse.status != 201){
-            setModalErrorMessage("There has been an error editing the race, make sure the data inputted is correct")
+            setErrorMessage("There has been an error editing the race, make sure the data inputted is correct")
             return;
         }
 
         setSuccessMessage("Race edited");
+        retrieveSeason();
+        resetVariables();
+        closeModal();
+    }
+
+    async function deleteRace(){
+        const raceResponse = await submitDeleteRace(raceId, season.year);
+
+        if(raceResponse.error || raceResponse.status != 200){
+            setErrorMessage("There was an error deleting the race");
+            return;
+        }
+
+        setSuccessMessage("Race deleted");
         retrieveSeason();
         resetVariables();
         closeModal();
@@ -100,13 +113,11 @@ export default function RaceEditModal({ raceId }){
 
             <hr />
 
-            {modalErrorMessage && <div className="alert alert-danger"><small>{modalErrorMessage}</small></div>}
-
             <div className="custom-modal-body">
-                {track == "" && <textarea rows={1} id="race-edit-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="No track set" onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
-                {track != "" && <textarea rows={1} id="race-edit-track" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder={track} onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTrack(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
-                {title == "" && <textarea rows={1} id="race-edit-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder="No title set" onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
-                {title != "" && <textarea rows={1} id="race-edit-title" className='input-field textarea-expand mt-2 w-100' data-category="input-field" placeholder={title} onKeyUp={(e) => {enterKeySubmit(e, saveChanges);setTitle(e.currentTarget.value)}} onChange={(e) => autoResizeTextarea(e.target)}></textarea>}
+                {track == "" && <Textarea id="race-edit-track" className="mt-2" data-category="input-field" placeholder="No track set" value={track} setValue={setTrack} onEnterFunction={saveChanges}/>}
+                {track != "" && <Textarea id="race-edit-track" className="mt-2" data-category="input-field" placeholder={track} value={track} setValue={setTrack} onEnterFunction={saveChanges}/>}
+                {title == "" && <Textarea id="race-edit-title" className="mt-2" data-category="input-field" placeholder="No title set" value={title} setValue={setTitle} onEnterFunction={saveChanges}/>}
+                {title != "" && <Textarea id="race-edit-title" className="mt-2" data-category="input-field" placeholder={title} value={title} setValue={setTitle} onEnterFunction={saveChanges}/>}
                 <div className="d-flex justify-content-center">
                     <input id="race-edit-date" type="date" data-category="input-field" className="input-field flex-grow-1 mt-2" value={timestamp} onChange={(e) => setTimestamp(e.currentTarget.value)} onKeyUp={(e) => enterKeySubmit(e, saveChanges)}/>
                 </div>
@@ -116,8 +127,9 @@ export default function RaceEditModal({ raceId }){
                 </div>
             </div>
 
-            <div className="custom-modal-footer">
+            <div className="custom-modal-footer d-flex flex-column">
                 <button className="btn btn-primary rounded-15 w-100" onClick={saveChanges}>Save changes</button>
+                <button className="btn btn-outline-danger rounded-15 w-100" onClick={deleteRace}>Delete</button>
             </div>
         </div>
     )
