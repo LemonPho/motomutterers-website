@@ -59,21 +59,26 @@ export default function SeasonEdit(){
                         <CompetitorsManagement/>
                         <RacesManagement/>
                     </div>
-                    <div className="row">
+                    <div className="row mb-2">
                         <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "10px"}}>
                             <div className="rounded-15 nested-element-color p-2">
                                 <MemberPicks />
                                 
                                 <hr />
-                                <SeasonFinalize />
-
-                                <hr />
                                 <SetCurrentSeason />
+                            </div>
+                        </div> 
+                    </div>
+
+                    <div className="row">
+                        <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "10px"}}>
+                            <div className="rounded-15 nested-element-color p-2">
+                                <SeasonFinalize />
 
                                 <hr />
                                 <DeleteSeason />
                             </div>
-                        </div> 
+                        </div>
                     </div>
                             
                 </div>  

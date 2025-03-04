@@ -109,7 +109,7 @@ class UserSerializer(serializers.ModelSerializer):
         notifications = user.notifications.all()
         if notifications is None:
             return notifications
-        serializer = importlib.import_module("api.serializers.notification_serializers").NotificationSerializer(notifications, many=True)
+        serializer = importlib.import_module("api.serializers.notification_serializers").NotificationReadSerializer(notifications, many=True)
         return serializer.data
     
     #validate functions

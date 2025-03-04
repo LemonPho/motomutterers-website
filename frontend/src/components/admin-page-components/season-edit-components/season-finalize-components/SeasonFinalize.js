@@ -15,15 +15,12 @@ export default function SeasonFinalize() {
     return (
         <div className="d-flex align-items-center w-100 ps-1">
             <strong>Finalize season</strong>
-            {seasonFinalizeState || !season.current && 
-            <div className="form-check form-switch ms-auto mb-0" onClick={(e) => {e.stopPropagation();setErrorMessage("You need to set this season as the current season to enable picks or finalize")}}>
-                <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} disabled/>
-            </div>
+            {console.log(seasonFinalizeState)}
+            {(seasonFinalizeState || !season.current) && 
+            <button type="button" className="btn btn-outline-danger ms-auto rounded-15" disabled={true} onClick={() => setErrorMessage("Season is already finalized")}>Season finalized</button>
             }
-            {!seasonFinalizeState && season.current && 
-            <div className="form-check form-switch ms-auto mb-0">
-                <input className="form-check-input" type="checkbox" checked={seasonFinalizeState} onChange={(e) => {openModal("season-finalize")}}/>
-            </div>
+            {(!seasonFinalizeState && season.current) && 
+            <button className="btn btn-outline-danger ms-auto rounded-15" onClick={(e) => {openModal("season-finalize")}}>Finalize season</button>
             }
             <Modal isOpen={openedModal == "season-finalize"}>
                 <SeasonFinalizeModal/>

@@ -128,7 +128,7 @@ export default function RaceEditModal({ raceId }){
             </div>
 
             <div className="custom-modal-footer d-flex flex-column">
-                <button className="btn btn-primary rounded-15 w-100" onClick={saveChanges}>Save changes</button>
+                <button className="btn btn-primary rounded-15 w-100 mb-2" onClick={saveChanges}>Save changes</button>
                 <button className="btn btn-outline-danger rounded-15 w-100" onClick={deleteRace}>Delete</button>
             </div>
         </div>
