@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import User, UserPicks, UserPicksRace, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus, SeasonMessage
 
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ["username", "is_admin", "last_login"]
+
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = ["title", "user"]
 
@@ -67,3 +70,6 @@ admin.site.register(Standings, StandingsAdmin)
 admin.site.register(SeleniumStatus, SeleniumStatusAdmin)
 admin.site.register(UserPicksRace, UserPicksRaceAdmin)
 admin.site.register(SeasonMessage, SeasonMessageAdmin)
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
