@@ -34,7 +34,7 @@ export default function CommentsContextProvider({ parentElement, children }){
             return false;
         }
 
-        await retrieveComments();
+        //await retrieveComments();
         return true;
     }
 
@@ -64,7 +64,7 @@ export default function CommentsContextProvider({ parentElement, children }){
 
     return(
         <CommentsContext.Provider value={{
-            comments, commentsLoading, retrieveComments, postComment, postEditComment, postDeleteComment,
+            comments, commentsLoading, setComments, retrieveComments, postComment, postEditComment, postDeleteComment,
             parentElement,
         }}>
         {children}
