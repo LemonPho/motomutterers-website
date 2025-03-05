@@ -11,7 +11,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ["id", "text", "user__username"]
 
 class RaceAdmin(admin.ModelAdmin):
-    list_display = ["title", "track", "timestamp", "finalized"]
+    list_display = ["title", "track"]
 
 class StandingsRaceAdmin(admin.ModelAdmin):
     list_display = ["id"]
