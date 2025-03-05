@@ -6,12 +6,13 @@ import { useCommentsContext } from "./CommentsSectionContext";
 import Textarea from "../Textarea";
 
 export default function CreateComment(){
-    const { user, userLoading } = useApplicationContext();
-    const { postComment } = useCommentsContext();
+    const { user, userLoading, resetApplicationMessages } = useApplicationContext();
+    const { postComment, comments, setComments, parentElement } = useCommentsContext();
 
     const [commentText, setCommentText] = useState("");
 
     async function createComment(){
+        resetApplicationMessages();
         const commentResponse = await postComment(commentText, null);
 
         if(commentResponse){

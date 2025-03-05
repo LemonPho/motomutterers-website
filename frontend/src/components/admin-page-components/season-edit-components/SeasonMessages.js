@@ -31,15 +31,14 @@ export default function SeasonMessages(){
 
     return(
         <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
-            <div className="card-header">
+            <div className="card-header m-2 nested-element-color rounded-15">
                 <h5>Season messages</h5>
             </div>
-            <div className="card-body">
-                {console.log(openedModal)}
+            <div className="card-body p-0 m-2">
                 {season.season_messages && season.season_messages.map((seasonMessage) => (
                     <div key={seasonMessage.id}>
-                        <div className="d-flex">
-                            <div className="truncate d-flex align-items-center clickable rounded-15 p-1" onClick={() => {setSelectedSeasonMessage(seasonMessage); openModal("season-message")}}>
+                        <div className="d-flex rounded-15 nested-element-color align-items-center">
+                            <div className="truncate clickable rounded-15 p-2" onClick={() => {setSelectedSeasonMessage(seasonMessage); openModal("season-message")}}>
                                 {seasonMessage.message}
                             </div>
                             <button className="btn btn-link" onClick={() => deleteSeasonMessage(seasonMessage.id)}>
@@ -48,7 +47,6 @@ export default function SeasonMessages(){
                                 </svg>
                             </button>
                         </div>
-                        <hr />
                     </div>
                 ))}
                 <Modal isOpen={openedModal == "season-message"}>

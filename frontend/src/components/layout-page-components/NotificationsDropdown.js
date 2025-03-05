@@ -31,6 +31,10 @@ export default function NotificationsDropdown(){
             return;
         }
 
+        setNotifications((prevNotifications) =>
+            prevNotifications.filter(notification => notification.id !== notificationId)
+        );        
+
         navigate(link);
     };
 
@@ -44,10 +48,10 @@ export default function NotificationsDropdown(){
         if(notifications == null){
             return;
         }
-        for(let notification in notifications){
-            if(notification.read === false){
-                setNewNotifications(true);
-            }
+        if(notifications.length == 0){
+            setNewNotifications(false);
+        } else {
+            setNewNotifications(true);
         }
     }, [notifications])
 
@@ -84,7 +88,7 @@ export default function NotificationsDropdown(){
                 <ul style={{width: "320px"}} id="notifications-dropdown-content" className="dropdown-menu">
                     {notifications.length === 0 ? 
                     (
-                        <li><span className="dropdown-item m-2">No notifications</span></li>
+                        <li><span className="dropdown-item">No notifications</span></li>
                         
                     )
                     :
@@ -92,9 +96,8 @@ export default function NotificationsDropdown(){
                         notifications.map((notification) => (
                             <li id={`notification-${notification.id}`} key={`notification-${notification.id}`} className="dropdown-item">
                                 <Link className="d-flex link-no-decorations" to={`${notification.path}`} onClick={(e) => notificationClick(e, notification.id)}>
-                                    <span className="m-2">
-                                        {`${notification.origin_user.username} ${notification.text}`}
-                                    </span>
+                                    {notification.origin_user == null && <span>{`${notification.text}`}</span>}
+                                    {notification.origin_user && <span>{`${notification.origin_user.username} ${notification.text}`}</span>}
                                 </Link>
                             </li>
                         ))

@@ -14,7 +14,7 @@ class NotificationReadSerializer(serializers.ModelSerializer):
 
 class NotificationWriteSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
-    origin_user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
+    origin_user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), allow_null=True)
 
     class Meta:
         model = Notification

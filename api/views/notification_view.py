@@ -18,6 +18,8 @@ def get_notifications(request):
 def read_notification(request):
     data = json.loads(request.body)
     notification_id = data.get("notification_id")
+
+    print(notification_id)
     
     try:
         notification = Notification.objects.get(pk=notification_id)
@@ -38,73 +40,19 @@ def create_notifications(text, path, origin_user, users):
     data = {
         "text": text,
         "path": path,
-        "origin_user": origin_user,
+        "origin_user": origin_user.id if origin_user is not None else None,
         "user": None,
     }
     temp_data = data
-    for user in users:
-        if user != origin_user:
-            temp_data["user"] = user
-            serializer = NotificationWriteSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-            
-    
-
-def create_announcement_notification(announcement, request):
-    path = f"/announcements/{announcement.id}"
-    origin_user = request.user
-    text = "posted a new announcement"
-    User = get_user_model()
-
-    users = User.objects.all()
-
     notifications = []
 
     for user in users:
         if user != origin_user:
-            notification = Notification.objects.create(
-                user = user,
-                origin_user = origin_user,
-                path = path,
-                text = text,
-            )
-            notifications.append(notification)
+            temp_data["user"] = user.id
+            serializer = NotificationWriteSerializer(data=data)
+            if serializer.is_valid():
+                notifications.append(serializer.save())
+            else:
+                print(serializer.errors)
 
     return notifications
-
-def create_announcement_comment_notification(announcement, comment, request):
-    path = f"/announcements/{announcement.id}?comment={comment.id}"
-    origin_user = request.user
-    text = "commented on your announcement"
-    user = announcement.user
-
-    if user == origin_user:
-        return None
-    
-    notification = Notification.objects.create(
-        user = user,
-        origin_user = origin_user,
-        path = path,
-        text = text,
-    )
-
-    return notification
-
-def create_comment_response_notification(parent_comment, child_comment, announcement, request):
-    path = f"/announcements/{announcement.id}?comment={parent_comment.id}&response={child_comment.id}"
-    origin_user = request.user
-    text = "replied to your comment"
-    user = parent_comment.user
-
-    if user == origin_user:
-        return None
-    
-    notification = Notification.objects.create(
-        user = user,
-        origin_user = origin_user,
-        path = path,
-        text = text,
-    )
-
-    return notification

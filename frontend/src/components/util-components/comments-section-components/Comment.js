@@ -12,7 +12,7 @@ import Textarea from "../Textarea";
 
 export default function Comment({ comment }){
     const { user } = useApplicationContext();
-    const { postDeleteComment, postComment, postEditComment } = useCommentsContext();
+    const { postDeleteComment, postComment, postEditComment, } = useCommentsContext();
     const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [replyCreateText, setReplyCreateText] = useState("");
@@ -25,8 +25,10 @@ export default function Comment({ comment }){
     const [showRepliesDiv, setShowRepliesDiv] = useState(false);
 
     async function deleteComment(commentId){
-        await postDeleteComment(commentId);
-        closeDropdown();
+        if(await postDeleteComment(commentId)){
+            setComments((prevComment) => prevComment.id !== commentId);
+            closeDropdown();
+        }
     }
 
     async function createCommentReply(){
@@ -61,10 +63,6 @@ export default function Comment({ comment }){
         setShowEditComment(!showEditComment);
         setShowStaticComment(!showStaticComment);
         closeDropdown();
-    }
-
-    if(comment.id == 173){
-        console.log(comment);
     }
 
     return(

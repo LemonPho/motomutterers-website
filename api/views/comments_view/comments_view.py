@@ -47,21 +47,8 @@ def post_comment(request):
 
     if request.method != "POST" or not request.user.is_authenticated:
         return HttpResponse(status=405)
-        
-    if parent_element == "ANNOUNCEMENT":
-        try:
-            announcement = Announcement.objects.get(pk=parent_element_id)
-        except Announcement.DoesNotExist:
-            return HttpResponse(status=404)
-    elif parent_element == "RACE":
-        try:
-            race = Race.objects.get(pk=parent_element_id)
-        except Race.DoesNotExist:
-            return HttpResponse(status=404)
-    else:
-        return HttpResponse(status=400)
     
-    validated_data = validate_generate_comment_data(data, request)
+    validated_data = validate_generate_comment_data(data, request, parent_element, parent_element_id)
     
     serializer = CommentWriteSerializer(data=validated_data)
 
@@ -69,17 +56,7 @@ def post_comment(request):
         print(serializer.errors)
         return HttpResponse(status=400)
     
-    comment = serializer.save()
-
-    #if the comment doesn't have a parent comment, then its not a reply and we need to add it to the post
-    #if the comment has a parent comment, when its saved its automatically associated to the parent comment, no need to add it to the post (it would get duplicated)
-    if comment.parent_comment is None:
-        if announcement:
-            announcement.comments.add(comment)
-            announcement.save()
-        elif race:
-            race.comments.add(comment)
-            race.save()
+    serializer.save()
 
     return HttpResponse(status=201)
 

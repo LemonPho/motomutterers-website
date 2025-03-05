@@ -3,7 +3,6 @@ from django.http import HttpResponse, JsonResponse
 import json
 
 from ...models import Announcement
-from ..notification_view import create_announcement_notification, create_announcement_comment_notification, create_comment_response_notification
 from ...serializers.announcements_serializers import AnnouncementWriteSerializer, AnnouncementSerializer, AnnouncementSimpleSerializer
 
 #retrieving the 10 announcements of this page
@@ -66,12 +65,6 @@ def post_announcement(request):
         return HttpResponse(status=400)
     
     announcement = serializer.save()
-
-    notifications = create_announcement_notification(announcement=announcement, request=request)
-
-    if len(notifications) > 0:
-        for notification in notifications:
-            announcement.notifications.add(notification)
 
     announcement.save()
 

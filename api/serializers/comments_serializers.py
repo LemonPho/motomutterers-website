@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from ..models import Comment
+from ..models import Comment, Announcement, Race
+from ..views.notification_view import create_notifications
 from .serializers_util import sanitize_html
 
 from ..utils import sanitize_text
@@ -13,10 +14,12 @@ class CommentWriteSerializer(serializers.ModelSerializer):
     text = serializers.CharField(allow_blank=False)
     user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     parent_comment = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), required=False)
+    announcement = serializers.PrimaryKeyRelatedField(queryset=Announcement.objects.all(), required=False)
+    race = serializers.PrimaryKeyRelatedField(queryset=Race.objects.all(), required=False)
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "parent_comment"]
+        fields = ["text", "user", "parent_comment", "announcement", "race"]
 
     def create(self, validated_data):
         text = validated_data.pop("text")
@@ -30,10 +33,22 @@ class CommentWriteSerializer(serializers.ModelSerializer):
 
         if parent_comment:
             instance = Comment.objects.create(text=text, user=user, parent_comment=parent_comment)
+            if hasattr(parent_comment, "announcement"):
+                notification = create_notifications("responded to your comment", f"announcements/{parent_comment.announcement.first().id}?comment={instance.id}", user, [parent_comment.user])
+            else:
+                notification = create_notifications("responded to your comment", f"raceresults/{parent_comment.race.first().id}?comment={instance.id}", user, [parent_comment.user])
         else:
             instance = Comment.objects.create(text=text, user=user)
+            if hasattr(instance, "announcement"):
+                notification = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
 
-        #TODO: create notifications for comment
+        instance.notifications.add(*notification)
+
+        if parent_comment is None:
+            if validated_data['announcement']:
+                validated_data['announcement'].comments.add(instance)
+            elif validated_data['race']:
+                validated_data['race'].comments.add(instance)
 
         return instance
     
