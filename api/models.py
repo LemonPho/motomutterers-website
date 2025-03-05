@@ -233,7 +233,7 @@ class Comment(models.Model):
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
-    origin_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    origin_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     text = models.CharField(max_length=4096)
     path = models.CharField(max_length=256)
     date_created = models.DateTimeField(null=True, auto_now_add=True)

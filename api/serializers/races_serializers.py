@@ -1,10 +1,12 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
 from . import competitors_serializers, user_serializers
 
 from ..models import Race
 
 from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
+from ..views.notification_view import create_notifications
 
 import importlib
 
@@ -121,7 +123,8 @@ class RaceWriteSerializer(serializers.ModelSerializer):
             instance.qualifying_positions.add(*qualifying_positions)
         if competitors_positions:
             instance.competitors_positions.add(*competitors_positions)
-              
-        instance.save()
+
+        notifications = create_notifications("A new race has been submitted", f"raceresults/{instance.id}", None, get_user_model().objects.all())
+        instance.notifications.set(notifications)
 
         return instance

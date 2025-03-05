@@ -16,20 +16,7 @@ export default function CreateComment(){
         const commentResponse = await postComment(commentText, null);
 
         if(commentResponse){
-            let newComment = {
-                user: user,
-                text: commentText,
-                amount_replies: 0,
-                replies: [],
-                parent_comment: null,
-                date_created: new Date().toISOString(),
-            }
-            setComments((prevComments) => [
-                newComment,
-                ...prevComments,
-            ])
             setCommentText("");
-            console.log(comments);
         }
     }
 

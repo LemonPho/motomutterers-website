@@ -40,7 +40,7 @@ def create_notifications(text, path, origin_user, users):
     data = {
         "text": text,
         "path": path,
-        "origin_user": origin_user.id,
+        "origin_user": origin_user.id if origin_user is not None else None,
         "user": None,
     }
     temp_data = data

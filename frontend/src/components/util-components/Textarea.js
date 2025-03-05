@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { autoResizeTextarea, enterKeySubmit } from "../utils";
 
 export default function Textarea({ id, value, setValue, onEnterFunction, placeholder, className }){
@@ -11,6 +11,12 @@ export default function Textarea({ id, value, setValue, onEnterFunction, placeho
             enterKeySubmit(event, onEnterFunction);
         }
     }
+
+    useEffect(() => {
+        if(value != textareaRef.current.value){
+            textareaRef.current.value = value;
+        }
+    }, [value])
 
     return(
         <textarea className={`input-field w-100 textarea-expand nested-element-color rounded-15 ${className}`} id={id} ref={textareaRef} rows={1} defaultValue={value} placeholder={placeholder} onKeyUp={(e) => {keyPress(e)}}></textarea>

@@ -38,13 +38,13 @@ export default function SeleniumStatus(){
 
     return(
         <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
-            <div className="card-header">
+            <div className="card-header nested-element-color rounded-15 m-2">
                 <h5>Retrieval in progress</h5>
             </div>
-            <div className="card-body">
+            <div className="card-body p-0 m-2">
                 {season.selenium_status.map((selenium) => (
                     <div key={selenium.pid}>
-                        <div className="card rounded-15 p-2">
+                        <div className="card rounded-15 p-2 nested-element-color">
                             <div className="d-flex align-items-center ">
                                 <ProfilePictureLazyLoader username={selenium.user.username} height={"2.5rem"} width={"2.5rem"}/>
                                 <strong className="ms-2 me-2">{selenium.user.username}</strong>
@@ -52,7 +52,6 @@ export default function SeleniumStatus(){
                                 <button ref={stopButton} className="ms-auto btn btn-outline-danger rounded-15" onClick={() => terminateSelenium(selenium.pid)}>Stop</button>
                             </div>
                         </div>
-                        <hr />
                     </div>
                     
                 ))}

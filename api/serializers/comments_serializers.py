@@ -40,7 +40,7 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         else:
             instance = Comment.objects.create(text=text, user=user)
             if hasattr(instance, "announcement"):
-                notification = create_notifications("responded to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
+                notification = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
 
         instance.notifications.add(*notification)
 

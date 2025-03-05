@@ -96,9 +96,8 @@ export default function NotificationsDropdown(){
                         notifications.map((notification) => (
                             <li id={`notification-${notification.id}`} key={`notification-${notification.id}`} className="dropdown-item">
                                 <Link className="d-flex link-no-decorations" to={`${notification.path}`} onClick={(e) => notificationClick(e, notification.id)}>
-                                    <span>
-                                        {`${notification.origin_user.username} ${notification.text}`}
-                                    </span>
+                                    {notification.origin_user == null && <span>{`${notification.text}`}</span>}
+                                    {notification.origin_user && <span>{`${notification.origin_user.username} ${notification.text}`}</span>}
                                 </Link>
                             </li>
                         ))

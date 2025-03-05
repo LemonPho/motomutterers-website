@@ -34,7 +34,7 @@ export default function CommentsContextProvider({ parentElement, children }){
             return false;
         }
 
-        //await retrieveComments();
+        await retrieveComments();
         return true;
     }
 
