@@ -1,12 +1,12 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_standings
+from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_standings, validate_race_weekend_data
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
 from .races_util import add_points_to_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
-from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer, RaceWeekendWriteSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
@@ -63,6 +63,63 @@ def get_season_races(request):
     return JsonResponse({
         "races": serializer.data,
     }, status=200)
+
+def create_race_weekend(request):
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated or not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to create a race weekend (they weren't an admin or not logged in)",
+            type = 0
+        )
+        return HttpResponse(status=403)
+
+    data = json.loads(request.body)
+    
+    validated_data = validate_race_weekend_data(data)
+
+    if validated_data["invalid_link"]:
+        SeasonMessage.objects.create(
+            season = validated_data["season"],
+            message = f"When trying to create a race weekend the link was found to not be valid or found",
+            type = 0,
+        )
+        validated_data.pop("season")
+        validated_data.pop("link")
+        return JsonResponse(validated_data, status=400)
+    
+    if validated_data["invalid_season"]:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"The season year given was invalid when trying to create a race weekend",
+            type = 0,
+        )
+        validated_data.pop("season")
+        validated_data.pop("link")
+        return JsonResponse(validated_data, status=400)
+    
+    
+    generated_data = {
+        "title": data.get("title"),
+        "url": validated_data.get("url"),
+        "season": validated_data.get("season").id
+    }
+
+    serializer = RaceWeekendWriteSerializer(data=generated_data)
+
+    if not serializer.is_valid():
+        SeasonMessage.objects.create(
+            season = validated_data.get("season"),
+            message = f"When creating the race weekend, some data was invalid",
+            type = 0,
+        )
+        return HttpResponse(status=400)
+    
+    serializer.save()
+
+    return HttpResponse(status=201)
 
 def create_complete_race(request):
     if request.method != 'POST':

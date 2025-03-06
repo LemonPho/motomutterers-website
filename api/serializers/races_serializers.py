@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from . import competitors_serializers, user_serializers
 
-from ..models import Race
+from ..models import Race, RaceWeekend, Season
 
 from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
 from ..views.notification_view import create_notifications
@@ -79,19 +79,15 @@ class RaceReadSerializer(serializers.ModelSerializer):
         return serializer.data
 
 class RaceWriteSerializer(serializers.ModelSerializer):
-    competitors_positions = serializers.JSONField(required=False)
-    qualifying_positions = serializers.JSONField(required=False)
-    url = serializers.URLField(required=False)
+    competitors_positions = serializers.JSONField()
+    race_weekend = serializers.PrimaryKeyRelatedField(queryset=RaceWeekend.objects.all())
+    is_sprint = serializers.BooleanField()
 
     class Meta:
         model = Race
-        fields = ["id", "title", "track", "timestamp", "is_sprint", "finalized", "competitors_positions", "qualifying_positions", "url"]
+        fields = ["id", "track", "timestamp", "competitors_positions", "is_sprint"]
     
     def validate_track(self, value):
-        value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
-        return value
-    
-    def validate_title(self, value):
         value = importlib.import_module("api.serializers.serializers_util").sanitize_html(value)
         return value
     
@@ -104,6 +100,38 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         instances = serializer.save()
         return instances
     
+    def create(self, validated_data):
+        competitors_positions = validated_data.pop("competitors_positions", False)
+        race_weekend = validated_data.pop("race_weekend")
+        is_sprint = validated_data.pop("is_sprint");
+
+        instance = Race.objects.create(**validated_data)
+        instance.competitors_positions.add(*competitors_positions)
+        notifications = create_notifications("A new race has been submitted", f"raceresults/{instance.id}", None, get_user_model().objects.all())
+        instance.notifications.set(notifications)
+        
+        if not is_sprint:
+            race_weekend.race = instance
+        else:
+            race_weekend.sprint_race = instance
+        race_weekend.save()
+
+        return instance
+    
+
+# -------------------------------------RACE WEEKEND------------------------------------- #
+
+class RaceWeekendWriteSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(write_only=True)
+    url = serializers.URLField(write_only=True)
+    standings = importlib.import_module("api.serializers.standings_serializers").StandingsWriteSerializer()
+    qualifying_positions = serializers.JSONField(required=False)
+    season = serializers.PrimaryKeyRelatedField(queryset=Season.objects.all())
+
+    class Meta:
+        fields = ["title", "url", "standings", "qualifying_positions"]
+        model = RaceWeekend
+
     def validate_qualifying_positions(self, qualifying_positions):
         serializer = competitors_serializers.CompetitorPositionWriteSerializer(data=qualifying_positions, many=True)
 
@@ -115,16 +143,19 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         return instances
     
     def create(self, validated_data):
-        qualifying_positions = validated_data.pop("qualifying_positions", False)
-        competitors_positions = validated_data.pop("competitors_positions", False)
-        instance = Race.objects.create(**validated_data)
+        season = validated_data.pop("season")
+        standings = validated_data.pop("standings")
 
-        if qualifying_positions:
-            instance.qualifying_positions.add(*qualifying_positions)
-        if competitors_positions:
-            instance.competitors_positions.add(*competitors_positions)
+        instance = RaceWeekend.objects.create(**validated_data)
+        instance.standings = standings
+        season.race_weekends.add(instance)
+        instance.save()
+        season.save()
 
-        notifications = create_notifications("A new race has been submitted", f"raceresults/{instance.id}", None, get_user_model().objects.all())
-        instance.notifications.set(notifications)
+        return instance
 
+    def update(self, instance, validated_data):
+        qualifying_positions = validated_data.pop("qualifying_positions")
+        instance.qualifying_positions.set(qualifying_positions)
+        instance.save()
         return instance

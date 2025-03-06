@@ -22,6 +22,40 @@ RACE_TYPE_SPRINT = 3
 
 # ---------------------// FUNCTIONS USED FOR CREATING RACES FROM LINKS //---------------------
 
+def validate_race_weekend_data(data):
+    response = {
+        "invalid_link": False,
+        "invalid_season": False,
+        "url": None,
+        "season": None,
+    }
+
+    url = data.get("url", False)
+    season_year = data.get("season_year", False)
+
+    if not url:
+        response["invalid_link"] = True
+
+    if not season_year:
+        response["invalid_season"] = True
+
+    try:
+        response["season"] = Season.objects.filter(visible=True).get(year=season_year)
+    except Season.DoesNotExist:
+        response["invalid_season"] = True
+
+    url = sanitize_html(url)
+
+    if "https://www.motorsport.com/motogp/results/" not in url:
+        response["invalid_link"] = True
+
+    if "?" in url:
+        url = url.split("?")[0] #read up until the question mark
+
+    response["url"] = url
+
+    return response
+
 #validate the link and data received
 def validate_race_link_data(data):
     response = {
@@ -39,9 +73,6 @@ def validate_race_link_data(data):
     try:
         season = Season.objects.filter(visible=True).get(year=season_year)
     except Season.DoesNotExist:
-        season = False
-
-    if not season:
         response["invalid_season"] = True
 
     url = sanitize_html(url)

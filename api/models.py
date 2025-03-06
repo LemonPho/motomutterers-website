@@ -156,9 +156,9 @@ class Announcement(models.Model):
         super().delete(*args, **kwargs)
 
 class Race(models.Model):
-    title = models.CharField(max_length=128)
     track = models.CharField(max_length=64, blank=True)
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
+    timestamp = models.DateField()
 
     def delete(self, *args, **kwargs):
         self.competitors_positions.all().delete()
@@ -166,10 +166,11 @@ class Race(models.Model):
         super().delete(*args, **kwargs)
 
 class RaceWeekend(models.Model):
+    title = models.CharField(max_length=128)
     sprint_race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, related_name="sprint_race_weekend")
     race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, related_name="main_race_weekend")
+    qualifying_positions = models.ManyToManyField(CompetitorPosition)
     url = models.URLField(null=True, blank=True)
-    notifications = models.ManyToManyField("Notification")
     comments = models.ManyToManyField("Comment", blank=True)
     standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, null=True, blank=True)
     timestamp = models.DateField()
@@ -177,6 +178,7 @@ class RaceWeekend(models.Model):
     def delete(self, *args, **kwargs):
         self.comments.all().delete()
         self.notifications.all().delete()
+        self.qualifying_positions.all().delete()
 
         return super().delete(*args, **kwargs)
 
