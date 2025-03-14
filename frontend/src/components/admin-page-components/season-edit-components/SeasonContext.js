@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getSeasonAdmin } from "../../fetch-utils/fetchGet";
 import { Outlet, useParams } from "react-router-dom";
-import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults, submitDeleteSeason } from "../../fetch-utils/fetchPost";
+import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults, submitDeleteSeason, submitEditRaceWeekend, submitDeleteRaceWeekend } from "../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../ApplicationContext";
 import { useSeasonCreateContext } from "../SeasonCreateContext";
 
@@ -208,7 +208,8 @@ export default function SeasonContextProvider(){
 
     return(
         <SeasonContext.Provider value={{ season, seasonLoading, setSeason, retrieveSeason, deleteSeason,
-                                        createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace,
+                                        createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace, 
+                                        deleteSeasonRaceWeekend, editSeasonRaceWeekend,
                                         createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, }}>
             <Outlet/>
         </SeasonContext.Provider>

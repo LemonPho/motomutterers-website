@@ -563,6 +563,27 @@ export async function getRaceComments(raceId){
     return response;
 }
 
+export async function getRaceWeekendAdmin(raceWeekendId){
+    let response = {
+        error: false,
+        raceWeekend: {},
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-race-weekend-admin?id=${raceWeekendId}`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.raceWeekend = apiResponse.status === 200 ? apiResult.race_weekend : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getSeasonRaces(year){
     let response = {
         error: false,

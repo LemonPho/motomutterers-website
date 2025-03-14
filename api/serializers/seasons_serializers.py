@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from django.db.models import Q
 
-from . import competitors_serializers, races_serializers
-
 from ..models import Season, SeasonCompetitorPosition, CompetitorPoints, Standings, SeleniumStatus, SeasonMessage
 from ..views.seasons_view.seasons_util import get_competitors_sorted_number
 
@@ -85,7 +83,7 @@ class SeasonCompetitorPositionSimpleSerializer(serializers.ModelSerializer):
         return season_competitor_position.competitor_points.competitor.number
     
 class SeasonCompetitorPositionSerializer(serializers.ModelSerializer):
-    competitor_points = competitors_serializers.CompetitorPointsSerializer()
+    competitor_points = importlib.import_module("api.serializers.competitors_serializers").CompetitorPointsSerializer()
     class Meta:
         model = SeasonCompetitorPosition
         fields = ["independent", "rookie", "id", "competitor_points"]
@@ -108,7 +106,7 @@ class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
             return instance
         
         elif isinstance(competitor_points, dict):
-            serializer = competitors_serializers.CompetitorPointsWriteSerializer(data=competitor_points)
+            serializer = importlib.import_module("api.serializers.competitors_serializers").CompetitorPointsWriteSerializer(data=competitor_points)
             if not serializer.is_valid():
                 raise serializers.ValidationError("competitor points data given was not valid for creation")
             
@@ -190,7 +188,8 @@ class SeasonSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     year = serializers.IntegerField()
     competitors = SeasonCompetitorPositionSerializer(many=True)
-    races = races_serializers.RaceSimpleSerializer(many=True)
+    races = importlib.import_module("api.serializers.races_serializers").RaceSimpleSerializer(many=True)
+    race_weekends = importlib.import_module("api.serializers.races_serializers").RaceWeekendSimpleSerializer(many=True)
     visible = serializers.BooleanField()
     selection_open = serializers.BooleanField()
     top_independent = serializers.BooleanField()
@@ -203,7 +202,7 @@ class SeasonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Season
-        fields = ["id", "year", "competitors", "races", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "competitors_sorted_number", "selenium_status", "season_messages"]
+        fields = ["id", "year", "competitors", "races", "race_weekends", "visible", "top_independent", "top_rookie", "finalized", "selection_open", "current", "competitors_sorted_number", "selenium_status", "season_messages"]
 
     def get_current(self, season):
         if hasattr(season, 'current'):

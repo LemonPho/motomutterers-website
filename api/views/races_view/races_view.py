@@ -1,12 +1,12 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_standings, validate_race_weekend_data
-from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL
+from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_standings, validate_race_weekend_data, generate_qualifying_positions_data, generate_race_data
+from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL, RACE, SPRINT_RACE, GRID
 from .races_util import add_points_to_season_competitors
 
-from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage
+from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage, RaceWeekend
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
-from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer, RaceWeekendWriteSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer, RaceWeekendWriteSerializer, RaceWeekendAdminSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
@@ -64,6 +64,34 @@ def get_season_races(request):
         "races": serializer.data,
     }, status=200)
 
+def get_race_weekend_admin(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to retrieve a race weekend admin version",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+    
+    race_weekend_id = request.GET.get("id", -1)
+
+    if race_weekend_id == -1:
+        return HttpResponse(status=400)
+    
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=race_weekend_id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    serializer = RaceWeekendAdminSerializer(race_weekend)
+
+    return JsonResponse({
+        "race_weekend": serializer.data,
+    }, status=200)
+
 def create_race_weekend(request):
     if request.method != 'POST':
         return HttpResponse(status=405)
@@ -87,7 +115,7 @@ def create_race_weekend(request):
             type = 0,
         )
         validated_data.pop("season")
-        validated_data.pop("link")
+        validated_data.pop("url")
         return JsonResponse(validated_data, status=400)
     
     if validated_data["invalid_season"]:
@@ -102,6 +130,8 @@ def create_race_weekend(request):
     
     
     generated_data = {
+        "start": data.get("start"),
+        "end": data.get("end"),
         "title": data.get("title"),
         "url": validated_data.get("url"),
         "season": validated_data.get("season").id
@@ -112,7 +142,7 @@ def create_race_weekend(request):
     if not serializer.is_valid():
         SeasonMessage.objects.create(
             season = validated_data.get("season"),
-            message = f"When creating the race weekend, some data was invalid",
+            message = f"When creating the race weekend, some data was invalid: {serializer.errors}",
             type = 0,
         )
         return HttpResponse(status=400)
@@ -120,6 +150,154 @@ def create_race_weekend(request):
     serializer.save()
 
     return HttpResponse(status=201)
+
+def edit_race_weekend(request):
+    if request.method != "PUT":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to edit a race weekend (they aren't an admin)",
+            type= 0,
+        )
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    new_race_weekend = data.get("race_weekend_data")
+    id = new_race_weekend["id"]
+
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+        
+    race_weekend_serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=new_race_weekend)
+
+    if not race_weekend_serializer.is_valid():
+        SeasonMessage.objects.create(
+            season=race_weekend.season.first(),
+            message=f"Some data was invalid when validating the {race_weekend.title} edits: {race_weekend_serializer.errors}",
+            type = 0,
+        )
+        return HttpResponse(status=400)
+    
+    race_weekend_serializer.save()
+    return HttpResponse(status=201)
+
+def post_race_weekend_event(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to post a race weekend event",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    id = data.get("id", -1)
+    event_type = data.get("event_type", False)
+
+    if id == -1 or not event_type:
+        return HttpResponse(status = 400)
+    
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    url = race_weekend.url
+    season = race_weekend.season.first()
+    if event_type == RACE:
+        race_data = generate_race_data(race_weekend, False, request, season)
+
+    response = {
+        "competitors_not_found": ["competitors_not_found"],
+        "timeout": race_data["timeout"],
+        "selenium_busy": race_data["selenium_busy"],
+    }
+
+    if any(response["competitors_not_found"]) or response["timeout"] or response["selenium_busy"]:
+        return JsonResponse(response, status=400)
+
+    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=race_data["race"])
+
+    if not serializer.is_valid():
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"These errors ocurred when trying to retrieve a race result for {race_weekend.title}: {serializer.errors}",
+            type = 0,
+        )
+        return HttpResponse(status=400)
+    
+    serializer.save()
+    return HttpResponse(status=201)
+
+
+
+def delete_race_weekend(request):
+    if request.method != "PUT":
+        return HttpResponse(status=405)
+    
+    if not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to delete a race weekend",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    race_weekend_id = data.get("id")
+
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=race_weekend_id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    race_weekend.delete()
+    return HttpResponse(status=201)
+
+
+def create_race_weekend_qualifying_positions(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    if not request.user.is_admin:
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    race_weekend_id = data.get("race_weekend_id")
+
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=race_weekend_id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    qualifying_positions_data = generate_qualifying_positions_data(race_weekend.url, race_weekend.season.first())
+    if qualifying_positions_data["timeout"]:
+        SeasonMessage.objects.create(
+            season = race_weekend.season.first(),
+            message = f"failed to connect to motorsport.com",
+            type = 0,
+        )
+        qualifying_positions_data.pop("data")
+        return JsonResponse(qualifying_positions_data, status=400)
+
+    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=qualifying_positions_data["data"])
+
+    if not serializer.is_valid():
+        SeasonMessage.objects.create(
+            season=race_weekend.season.first(),
+            message = f"There was a problem validating the qualifying positions: {serializer.errors}",
+            type = 0,
+        )
+
+    serializer.save()
+    return HttpResponse(status=201)        
 
 def create_complete_race(request):
     if request.method != 'POST':

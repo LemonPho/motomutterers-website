@@ -15,7 +15,6 @@ export default function SeasonFinalize() {
     return (
         <div className="d-flex align-items-center w-100 ps-1">
             <strong>Finalize season</strong>
-            {console.log(seasonFinalizeState)}
             {(seasonFinalizeState || !season.current) && 
             <button type="button" className="btn btn-outline-danger ms-auto rounded-15" disabled={true} onClick={() => setErrorMessage("Season is already finalized")}>Season finalized</button>
             }

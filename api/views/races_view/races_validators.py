@@ -20,24 +20,34 @@ RACE_TYPE_UPCOMING = 1
 RACE_TYPE_FINAL = 2
 RACE_TYPE_SPRINT = 3
 
+RACE = 1
+SPRINT_RACE = 2
+GRID = 3
+
 # ---------------------// FUNCTIONS USED FOR CREATING RACES FROM LINKS //---------------------
 
 def validate_race_weekend_data(data):
     response = {
         "invalid_link": False,
         "invalid_season": False,
+        "invalid_date": False,
         "url": None,
         "season": None,
     }
 
     url = data.get("url", False)
     season_year = data.get("season_year", False)
+    start = data.get("start", False)
+    end = data.get("end", False)
 
     if not url:
         response["invalid_link"] = True
 
     if not season_year:
         response["invalid_season"] = True
+
+    if (not start or not end) or (end == start):
+        response["invalid_date"] = True
 
     try:
         response["season"] = Season.objects.filter(visible=True).get(year=season_year)
@@ -162,6 +172,98 @@ def process_race_row(row, season):
         
 # ---------------------// FUNCTIONS THAT BUILD THE RACE DATA FROM THE LINK //--------------------- #
 
+def generate_qualifying_positions_data(url, season, request):
+    response = {
+        "timeout": False,
+        "competitors_not_found": [],
+        "data": {
+            "qualifying_positions": [],
+        }
+    }
+
+    q1_url = url + "?st=Q1"
+    q2_url = url + "?st=Q2"
+
+    #windows
+    if os.name == "nt":
+        browser = webdriver.Chrome()
+    #linux
+    else:
+        service = Service("/usr/bin/chromedriver")
+        options = webdriver.ChromeOptions()
+        options.add_argument('--disable-blink-features=AutomationControlled')
+
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        browser = webdriver.Chrome(service=service, options=options)
+
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving qualifying positions", request=request, browser=browser)
+    browser.get(q2_url)
+    delay = 10
+
+    try:
+        table = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-table.ms-table--result")))
+    except TimeoutException:
+        response["timeout"] = True
+        browser.quit()
+        close_selenium_status(selenium_instance)
+        return response
+        
+    table_body = table.find_element(By.TAG_NAME, "tbody")
+    table_rows = table_body.find_elements(By.TAG_NAME, "tr")
+
+    position = 1
+
+    for table_row in table_rows:
+        table_row_response = process_qualifying_row(table_row, season, position)
+        if table_row_response["competitor_not_found"]:
+            response["competitors_not_found"].append(table_row_response["competitor_not_found"])
+        else:
+            response["data"]["qualifying_positions"].append({
+                "competitor_points": {
+                    "competitor": table_row_response["competitor_points"]["competitor"],
+                    "points": 0,
+                },
+                "position": table_row_response["position"],
+            })
+
+            position += 1
+    
+    browser.get(q1_url)
+
+    try:
+        table = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-table.ms-table--result")))
+    except TimeoutException:
+        response["timeout"] = True
+        browser.quit()
+        close_selenium_status(selenium_instance)
+        return response
+
+    table_body = table.find_element(By.TAG_NAME, "tbody")
+    table_rows = table_body.find_elements(By.TAG_NAME, "tr")
+
+    for i in range(2, len(table_rows)):
+        table_row_response = process_qualifying_row(table_rows[i], season, position)
+        if table_row_response["competitor_not_found"]:
+            response["competitors_not_found"].append(table_row_response["competitor_not_found"])
+        else:
+            response["data"]["qualifying_positions"].append({
+                "competitor_points": {
+                    "competitor": table_row_response["competitor_points"]["competitor"],
+                    "points": 0,
+                },
+                "position": table_row_response["position"],
+            })
+
+            position += 1
+
+    browser.quit()
+    close_selenium_status(selenium_instance)
+    return response
+
+
 def generate_link_upcoming_data(data, season):
     response = {
         "timeout": False,
@@ -280,6 +382,76 @@ def generate_link_upcoming_data(data, season):
     browser.quit()
     close_selenium_status(selenium_instance)
     return response
+
+def generate_race_data(race_weekend, is_sprint, request, season):
+    response = {
+        "timeout": False,
+        "competitors_not_found": [],
+        "selenium_busy": False,
+        "race": {
+            "competitors_positions": [],
+            "race_weekend": race_weekend.id,
+            "is_sprint": is_sprint,
+        }
+    }
+
+    #windows
+    if os.name == "nt":
+        browser = webdriver.Chrome()
+    #linux
+    else:
+        service = Service("/usr/bin/chromedriver")
+        options = webdriver.ChromeOptions()
+        options.add_argument('--disable-blink-features=AutomationControlled')
+
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        browser = webdriver.Chrome(service=service, options=options)
+
+    selenium_instance = create_selenium_status(pid=browser.service.process.pid, message=f"Retrieving race result for {race_weekend.title}", request=request, browser=browser)
+
+    if not selenium_instance:
+        response["selenium_busy"] = True
+        return response
+
+    if not is_sprint:
+        browser.get(race_weekend.url + "?st=RACE")
+    else:
+        browser.get(race_weekend.url + "?st=SPR")
+
+    delay = 10
+
+    try:
+        table = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-table.ms-table--result")))
+    except TimeoutException:
+        response["timeout"] = True
+        browser.quit()
+        close_selenium_status(selenium_instance)
+        return response
+    
+    table_body = table.find_element(By.TAG_NAME, "tbody")
+    table_rows = table_body.find_elements(By.TAG_NAME, "tr")
+
+    for table_row in table_rows:
+        table_row_response = process_race_row(table_row, season)
+        
+        if table_row_response["competitor_not_found"]:
+            response["competitors_not_found"].append(table_row_response["competitor_not_found"])
+        else:
+            response["race"]["competitors_positions"].append({
+                "competitor_points": {
+                    "competitor": table_row_response["competitor_points"]["competitor"],
+                    "points": table_row_response["competitor_points"]["points"],
+                },
+                "position": table_row_response["position"]
+            })
+        
+    browser.quit()
+    close_selenium_status(selenium_instance)
+    return response
+
 
 def generate_link_final_data(data, season):
     response = {
