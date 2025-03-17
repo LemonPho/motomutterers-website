@@ -254,7 +254,7 @@ def create_race_link(request):
     if any(response["competitors_not_found"]):
         SeasonMessage.objects.create(
             season = season,
-            message = f"Couldn't create the race: {data['race']['title']}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+            message = f"Couldn't create the race: {data['title']}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
             type = 0
         )
         return JsonResponse(response, status=400)

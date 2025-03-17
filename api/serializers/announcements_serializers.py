@@ -38,8 +38,8 @@ class AnnouncementWriteSerializer(serializers.ModelSerializer):
         
         announcement = Announcement.objects.create(user=request.user, **validated_data)
 
-        notifications = create_notifications("created a new announcement", f"announcements/{announcement.id}", request.user, get_user_model().objects.all())
-        announcement.notifications.set(notifications)
+        #notifications = create_notifications("created a new announcement", f"announcements/{announcement.id}", request.user, get_user_model().objects.all())
+        #announcement.notifications.set(notifications)
 
         return announcement
 

@@ -33,16 +33,16 @@ class CommentWriteSerializer(serializers.ModelSerializer):
 
         if parent_comment:
             instance = Comment.objects.create(text=text, user=user, parent_comment=parent_comment)
-            if hasattr(parent_comment, "announcement"):
-                notification = create_notifications("responded to your comment", f"announcements/{parent_comment.announcement.first().id}?comment={instance.id}", user, [parent_comment.user])
-            else:
-                notification = create_notifications("responded to your comment", f"raceresults/{parent_comment.race.first().id}?comment={instance.id}", user, [parent_comment.user])
+            #if hasattr(parent_comment, "announcement"):
+             #   notification = create_notifications("responded to your comment", f"announcements/{parent_comment.announcement.first().id}?comment={instance.id}", user, [parent_comment.user])
+            #else:
+            #    notification = create_notifications("responded to your comment", f"raceresults/{parent_comment.race.first().id}?comment={instance.id}", user, [parent_comment.user])
         else:
             instance = Comment.objects.create(text=text, user=user)
-            if hasattr(instance, "announcement"):
-                notification = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
+            #if hasattr(instance, "announcement"):
+            #    notification = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
 
-        instance.notifications.add(*notification)
+        #instance.notifications.add(*notification)
 
         if parent_comment is None:
             if validated_data['announcement']:

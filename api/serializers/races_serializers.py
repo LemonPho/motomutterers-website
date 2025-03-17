@@ -124,7 +124,7 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         if competitors_positions:
             instance.competitors_positions.add(*competitors_positions)
 
-        notifications = create_notifications("A new race has been submitted", f"raceresults/{instance.id}", None, get_user_model().objects.all())
-        instance.notifications.set(notifications)
+        #notifications = create_notifications("A new race has been submitted", f"raceresults/{instance.id}", None, get_user_model().objects.all())
+        #instance.notifications.set(notifications)
 
         return instance

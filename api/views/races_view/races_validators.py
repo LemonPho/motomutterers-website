@@ -105,7 +105,7 @@ def process_race_row(row, season):
     number = int(number_element.find_element(By.CLASS_NAME, "ms-table_row-value").get_attribute('innerHTML'))
     points = points_element.find_element(By.CLASS_NAME, "ms-table_row-value").get_attribute("innerHTML")
 
-    if position == "dnf" or position == "dns" or position == "nc":
+    if position == "dnf" or position == "dns" or position == "nc" or position == "dq":
         position = 0
     else:
         position = int(position)
@@ -508,6 +508,7 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
+                print(f"competitor not found: {pick.competitor_points.competitor.first} {pick.competitor_points.competitor.last}")
                 response["competitor_not_found"] = True
                 return response
             
@@ -524,6 +525,7 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
+                print(f"independent competitor not found: {standing.independent_pick.competitor_points.competitor}")
                 response["competitor_not_found"] = True
                 return response
             
@@ -540,6 +542,7 @@ def generate_race_standings(competitors_positions, season):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
+                print(f"rookie competitor not found: {standing.rookie_pick.competitor_points.competitor}")
                 response["competitor_not_found"] = True
                 return response
             
