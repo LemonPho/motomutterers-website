@@ -40,8 +40,10 @@ export default function FindAccount() {
     }
 
     async function sendEmail(){
+        if(!accountFound) return;
+
         setLoading(true);
-        let emailResponse = await sendNewPasswordEmail(accountUsername);
+        let emailResponse = await sendNewPasswordEmail(searchInput);
 
         if(emailResponse.error){
             console.log(emailResponse.error);
@@ -65,7 +67,8 @@ export default function FindAccount() {
             <div className="card-body">
                 <input type="text" className="input-field w-100" placeholder="Write your email or password" onKeyUp={(e) => {setSearchInput(e.target.value); enterKeySubmit(e, searchAccount)}}/>
                 <div className="mt-3">
-                    {(accountFound == true) && <button className="btn btn-success rounded-15 w-100 mb-2">Send reset password email</button>}
+                    {(accountFound == true && !loading) && <button className="btn btn-success rounded-15 w-100 mb-2" onClick={sendEmail}>Send reset password email</button>}
+                    {(accountFound && loading) && <button className="btn btn-success rounded-15 w-100 mb-2" disabled>Sending email...</button>}
                     <button className="btn btn-primary rounded-15 w-100" onClick={searchAccount}>Search</button>
                 </div>
             </div>
