@@ -7,6 +7,8 @@ def validate_generate_comment_data(data, request, parent_element, parent_element
     }
 
     parent_comment_id = data.pop("commentId")
+    announcement = None
+    race = None
 
     if parent_comment_id:
         response["parent_comment"] = parent_comment_id

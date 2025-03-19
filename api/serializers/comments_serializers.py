@@ -45,10 +45,12 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         #instance.notifications.add(*notification)
 
         if parent_comment is None:
-            if validated_data['announcement']:
-                validated_data['announcement'].comments.add(instance)
-            elif validated_data['race']:
-                validated_data['race'].comments.add(instance)
+            announcement = validated_data.get("announcement", False)
+            race = validated_data.get("race", False)
+            if announcement:
+                announcement.comments.add(instance)
+            elif race:
+                race.comments.add(instance)
 
         return instance
     
