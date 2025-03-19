@@ -999,6 +999,9 @@ export async function submitEditRaceWeekend(newRaceWeekend){
 export async function submitRaceWeekendEvent(raceWeekendId, eventType){
     let response = {
         error: false,
+        competitorsNotFound: [],
+        timeout: false,
+        seleniumBusy: false,
         status: null,
     }
 
@@ -1017,7 +1020,12 @@ export async function submitRaceWeekendEvent(raceWeekendId, eventType){
             }),
         });
 
+        const apiResult = await apiResponse.json();
+
         response.error = apiResponse.status === 500 ? apiResponse : false,
+        response.competitorsNotFound = apiResponse.status == 400 ? apiResult.competitors_not_found : [],
+        response.timeout = apiResponse.status == 400 ? apiResult.timeout : false;
+        response.seleniumBusy = apiResponse.status == 400 ? apiResult.selenium_busy : false;
         response.status = apiResponse.status;
     } catch(error) {
         response.error = error;

@@ -213,17 +213,40 @@ def post_race_weekend_event(request):
     season = race_weekend.season.first()
     if event_type == RACE:
         race_data = generate_race_data(race_weekend, False, request, season)
+    elif event_type == SPRINT_RACE:
+        race_data = generate_race_data(race_weekend, True, request, season)
 
     response = {
-        "competitors_not_found": ["competitors_not_found"],
-        "timeout": race_data["timeout"],
-        "selenium_busy": race_data["selenium_busy"],
+        "competitors_not_found": race_data.pop("competitors_not_found"),
+        "timeout": race_data.pop("timeout"),
+        "selenium_busy": race_data.pop("selenium_busy"),
     }
 
     if any(response["competitors_not_found"]) or response["timeout"] or response["selenium_busy"]:
+        if any(response["competitors_not_found"]):
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"Couldn't create the race for {race_weekend.title}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+                type = 0
+            )
+        
+        if response["timeout"]:
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"Motorsport.com took too long to response",
+                type = 0,
+            )
+
+        if response['selenium_busy']:
+            SeasonMessage.objects.create(
+                season = season,
+                message = f"There is already another process in progress",
+                type = 0,
+            )
+
         return JsonResponse(response, status=400)
 
-    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=race_data["race"])
+    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=race_data)
 
     if not serializer.is_valid():
         SeasonMessage.objects.create(

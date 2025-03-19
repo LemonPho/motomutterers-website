@@ -156,12 +156,13 @@ class Announcement(models.Model):
         super().delete(*args, **kwargs)
 
 class Race(models.Model):
-    track = models.CharField(max_length=64, blank=True)
+    track = models.CharField(max_length=64, null=True)
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
-    timestamp = models.DateField()
+    notifications = models.ManyToManyField("Notification", related_name="race")
 
     def delete(self, *args, **kwargs):
         self.competitors_positions.all().delete()
+        self.notifications.all().delete()
 
         super().delete(*args, **kwargs)
 

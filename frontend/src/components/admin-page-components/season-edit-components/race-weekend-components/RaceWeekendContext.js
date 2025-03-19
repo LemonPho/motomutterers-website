@@ -33,6 +33,7 @@ export default function RaceWeekendContextProvider({ children }){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
         const raceWeekendResponse = await submitRaceWeekendEvent(selectedRaceWeekend.id, eventType);
+        console.log(raceWeekendResponse);
         if(raceWeekendResponse.error){
             setErrorMessage("There was an error retrieving the race weekend event");
             setLoadingMessage(false);
@@ -41,8 +42,8 @@ export default function RaceWeekendContextProvider({ children }){
 
         if(raceWeekendResponse.competitorsNotFound.length > 0){
             let string = "Competitors with the numbers: ";
-            for(let i = 0; i < raceResponse.competitorNumbersNotFound.length; i++){
-                string += String(raceResponse.competitorNumbersNotFound[i]);
+            for(let i = 0; i < raceWeekendResponse.competitorsNotFound.length; i++){
+                string += String(raceWeekendResponse.competitorsNotFound[i]);
                 string += " ";
             }
 

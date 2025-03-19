@@ -390,7 +390,6 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         "selenium_busy": False,
         "race": {
             "competitors_positions": [],
-            "race_weekend": race_weekend.id,
             "is_sprint": is_sprint,
         }
     }

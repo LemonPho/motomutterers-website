@@ -26,6 +26,7 @@ export default function RaceWeekendModal(){
     }
 
     async function retrieveSprintRace(){
+        await retrieveRaceWeekendEvent(2);
 
     }
 
@@ -45,7 +46,7 @@ export default function RaceWeekendModal(){
                     <div className="card-header">
                         Grid
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{"maxHeight": "100px"}}>
                         {selectedRaceWeekend.grid.length != 0 && 
                         <div>
                             qualifying data goes here
@@ -57,10 +58,25 @@ export default function RaceWeekendModal(){
                     <div className="card-header">
                         Race
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{"maxHeight": "100px"}}>
                         {selectedRaceWeekend.race != null && 
                         <div>
-                            Race data goes here
+                            {selectedRaceWeekend.race.competitors_positions.map((competitorPosition) => (
+                                <div className="row">
+                                    <div className="col-2">
+                                        <strong>{competitorPosition.position}.</strong>
+                                    </div>
+                                    <div className="col-2">
+                                        <span>#{competitorPosition.number}</span>
+                                    </div>
+                                    <div className="col-4">
+                                        <span>{competitorPosition.first} {competitorPosition.last}</span>
+                                    </div>
+                                    <div className="col-2">
+                                        <span>{competitorPosition.points}</span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>}
                         {selectedRaceWeekend.race == null && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
                     </div>  
@@ -70,12 +86,12 @@ export default function RaceWeekendModal(){
                     <div className="card-header">
                         Sprint Race
                     </div>
-                    <div className="card-body">
-                        {selectedRaceWeekend.race != null && 
+                    <div className="card-body" style={{"maxHeight": "100px"}}>
+                        {selectedRaceWeekend.sprint_race != null && 
                         <div>
                             Sprint Race data goes here
                         </div>}
-                        {selectedRaceWeekend.race == null && <button className="btn btn-primary rounded-15">Retrieve</button>}
+                        {selectedRaceWeekend.sprint_race == null && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
                     </div>  
                 </div>
             </div>
