@@ -7,6 +7,8 @@ from ..models import Race, RaceWeekend, Season, SeasonMessage
 
 from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
 from ..views.notification_view import create_notifications
+from ..views.standings_view.standings_util import sort_race_standings
+
 
 import importlib
 
@@ -36,6 +38,18 @@ class RaceReadSerializer(serializers.ModelSerializer):
 
     def get_competitors_positions(self, race):
         competitors_positions = race.competitors_positions.all()
+        competitors_positions = list(competitors_positions)
+
+        competitors_dnf = []
+        i=0
+
+        while i < len(competitors_positions):
+            if competitors_positions[i].position == 0 and len(competitors_positions) > 1:
+                competitors_dnf.append(competitors_positions.pop(i))
+            else:
+                i += 1
+        
+        competitors_positions += competitors_dnf
         
         serializer = competitors_serializers.CompetitorPositionSimpleSerializer(competitors_positions, many=True)
         return serializer.data
@@ -62,7 +76,6 @@ class RaceWriteSerializer(serializers.ModelSerializer):
         return instances
     
     def create(self, validated_data):
-        print(validated_data)
         competitors_positions = validated_data.pop("competitors_positions", False)
 
         instance = Race.objects.create(**validated_data)
@@ -77,7 +90,7 @@ class RaceWriteSerializer(serializers.ModelSerializer):
 class RaceWeekendWriteSerializer(serializers.ModelSerializer):
     title = serializers.CharField(write_only=True, required=False)
     url = serializers.URLField(write_only=True, required=False)
-    standings = importlib.import_module("api.serializers.standings_serializers").StandingsWriteSerializer(required=False)
+    standings = serializers.JSONField(required=False)
     grid = serializers.JSONField(required=False)
     race = serializers.JSONField(required=False)
     sprint_race = serializers.JSONField(required=False)
@@ -88,6 +101,18 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ["title", "url", "standings", "grid", "race", "sprint_race", "start", "end", "season"]
         model = RaceWeekend
+
+    def validate_standings(self, standings_data):
+        standings_serializer = importlib.import_module("api.serializers.standings_serializers").StandingsRaceWriteSerializer(data=standings_data)
+        if not standings_serializer.is_valid():
+            SeasonMessage.objects.create(
+                season = None,
+                message = f"There was a problem with the standings data: {standings_serializer.errors}",
+                type = 0,
+            )
+            raise serializers.ValidationError("Standings data was invalid")
+        standings = standings_serializer.save()
+        return standings
     
     def create(self, validated_data):
         season = validated_data.pop("season")
@@ -100,10 +125,13 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
+        STATUS_IN_PROGRESS = 1
+        STATUS_FINAL = 2
+
         grid_data = validated_data.get("grid", False)
-        standings_data = validated_data.get("standings", False)
+        standings = validated_data.get("standings", False)
         race_data = validated_data.get("race", False)
-        if not grid_data and not standings_data and not race_data:
+        if not grid_data and not standings and not race_data:
             title = validated_data.get("title", False)
             url = validated_data.get("url", False)
             start = validated_data.get("start", False)
@@ -123,18 +151,14 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
             instance.url = url
             instance.start = start
             instance.end = end
+            instance.save()
+
+            return instance
         
-        if standings_data:
-            standings_serializer = importlib.import_module("api.serializers.standings_serializers").StandingsRaceWriteSerializer(data=standings)
-            if not standings_serializer.is_valid():
-                SeasonMessage.objects.create(
-                    season = None,
-                    message = f"There was a problem with the standings data: {standings_serializer.errors}",
-                    type = 0,
-                )
-                raise serializers.ValidationError("Standings data was invalid")
-            standings = standings_serializer.save()
+        if standings:
+            instance.status = STATUS_FINAL
             instance.standings = standings
+            sort_race_standings(instance.standings, instance.season.first())
 
         if grid_data:
             if instance.grid.count() != 0:
@@ -156,6 +180,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
             instance.grid.set(grid)
 
         if race_data:
+            instance.status = STATUS_IN_PROGRESS
             if not race_data.get("is_sprint") and instance.race != None:
                 SeasonMessage.objects.create(
                     season = None,
@@ -191,7 +216,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
     
 class RaceWeekendSimpleSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ["title", "start", "end", "id"]
+        fields = ["title", "start", "end", "id", "status"]
         model = RaceWeekend
 
 class RaceWeekendAdminSerializer(serializers.ModelSerializer):
@@ -204,5 +229,5 @@ class RaceWeekendAdminSerializer(serializers.ModelSerializer):
     end = serializers.DateField()
 
     class Meta:
-        fields = ["id", "race", "sprint_race", "grid", "url", "standings", "start", "end", "title"]
+        fields = ["id", "race", "sprint_race", "grid", "url", "standings", "start", "end", "title", "status"]
         model = RaceWeekend

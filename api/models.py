@@ -177,7 +177,7 @@ class RaceWeekend(models.Model):
     notifications = models.ManyToManyField("Notification", related_name="race_weekend")
     start = models.DateField()
     end = models.DateField()
-    final = models.BooleanField(default=False)
+    status = models.PositiveIntegerField(default=0)
 
     def delete(self, *args, **kwargs):
         self.comments.all().delete()

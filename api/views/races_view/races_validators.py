@@ -146,7 +146,7 @@ def process_race_row(row, season):
     number = int(number_element.find_element(By.CLASS_NAME, "ms-table_row-value").get_attribute('innerHTML'))
     points = points_element.find_element(By.CLASS_NAME, "ms-table_row-value").get_attribute("innerHTML")
 
-    if position == "dnf" or position == "dns" or position == "nc":
+    if position == "dnf" or position == "dns" or position == "nc" or position == "dq":
         position = 0
     else:
         position = int(position)
@@ -451,6 +451,11 @@ def generate_race_data(race_weekend, is_sprint, request, season):
     close_selenium_status(selenium_instance)
     return response
 
+def finalize_race_weekend(race_weekend, season):
+    response = {
+        "standings": generate_race_standings(race_weekend, season),
+    }
+
 
 def generate_link_final_data(data, season):
     response = {
@@ -689,14 +694,13 @@ def process_retrieve_race_result(race, request):
 
     return response
 
-
 #generates standings after race
-def generate_race_standings(competitors_positions, season):
+def generate_race_weekend_standings(race_weekend, season):
     response = {
-        "data":{
+        "standings":{
             "users_picks": [],
         },
-        "competitor_not_found": False,
+        "competitors_not_found": [],
     }
 
     standings = season.standings
@@ -704,63 +708,85 @@ def generate_race_standings(competitors_positions, season):
     season_competitors = season.competitors.all()
     position = 1
 
+    print("starting race weekend standings generation")
+
     for standing in list(standings.users_picks.all()):
         points = 0
         for pick in list(standing.picks.all()):
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
-                response["competitor_not_found"] = True
+                response["competitors_not_found"].append(pick.competitor_points.competitor.number)
                 return response
             
             try:
-                competitor_position = competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                competitor_position = None
+                race_competitor_position = None
+
+            try:
+                sprint_competitor_positions = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+            except CompetitorPosition.DoesNotExist:
+                sprint_competitor_positions = None
             
             points += season_competitor.competitor_points.points
-            if competitor_position is not None:
-                points += competitor_position.competitor_points.points
+            if race_competitor_position:
+                points += race_competitor_position.competitor_points.points
+            if sprint_competitor_positions:
+                points += sprint_competitor_positions.competitor_points.points
 
         if season.top_independent:
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
-                response["competitor_not_found"] = True
+                response["competitors_not_found"].append(standing.independent_pick.competitor_points.competitor.number)
                 return response
             
             try:
-                competitor_position = competitors_positions.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
+                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                competitor_position = None
+                race_competitor_position = None
+
+            try:
+                sprint_competitor_positions = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+            except CompetitorPosition.DoesNotExist:
+                sprint_competitor_positions = None
             
             points += season_competitor.competitor_points.points
-            if competitor_position is not None:
-                points += competitor_position.competitor_points.points
+            if race_competitor_position:
+                points += race_competitor_position.competitor_points.points
+            if sprint_competitor_positions:
+                points += sprint_competitor_positions.competitor_points.points
             
         if season.top_rookie:
             try:
                 season_competitor = season_competitors.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
             except SeasonCompetitorPosition.DoesNotExist:
-                response["competitor_not_found"] = True
+                response["competitors_not_found"].append(standing.rookie_pick.competitor_points.competitor.number)
                 return response
             
             try:
-                competitor_position = competitors_positions.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
+                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                competitor_position = None
+                race_competitor_position = None
+
+            try:
+                sprint_competitor_positions = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+            except CompetitorPosition.DoesNotExist:
+                sprint_competitor_positions = None
             
             points += season_competitor.competitor_points.points
-            if competitor_position is not None:
-                points += competitor_position.competitor_points.points
+            if race_competitor_position:
+                points += race_competitor_position.competitor_points.points
+            if sprint_competitor_positions:
+                points += sprint_competitor_positions.competitor_points.points
 
-        response["data"]["users_picks"].append({
+        response["standings"]["users_picks"].append({
             "points": points,
             "user": standing.user.id,
             "position_change": 0,
             "position": position,
         })
-
         position += 1
 
     return response

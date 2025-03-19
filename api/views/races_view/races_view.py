@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 
-from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_standings, validate_race_weekend_data, generate_qualifying_positions_data, generate_race_data
+from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_weekend_standings, validate_race_weekend_data, generate_qualifying_positions_data, generate_race_data
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL, RACE, SPRINT_RACE, GRID
 from .races_util import add_points_to_season_competitors
 
@@ -259,7 +259,79 @@ def post_race_weekend_event(request):
     serializer.save()
     return HttpResponse(status=201)
 
+def finalize_race_weekend(request):
+    if request.method != 'PUT':
+        return HttpResponse(status=405)
+    
+    if not request.user.is_authenticated:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"A user that isn't logged in tried to finalize a race weekend",
+            type = 0,
+        )
+    
+    if not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to finalize a race weekend event",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+    
+    data = json.loads(request.body)
+    id = data.get("id", -1)
 
+    if id == -1:
+        return HttpResponse(status=400)
+    
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+    
+    season = race_weekend.season.first()
+
+    response = {
+        "cant_be_finalized": race_weekend.race == None or race_weekend.sprint_race == None,
+        "competitors_not_found": [],
+    }
+
+    if response["cant_be_finalized"]:
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When trying to finalize the {race_weekend.title} weekend, make sure both the race and sprint race have been retrieved",
+            type = 0,
+        )
+        return JsonResponse(response, status=400)
+
+    standings_data = generate_race_weekend_standings(race_weekend, season)
+    print(standings_data)
+
+    response["competitors_not_found"] = standings_data["competitors_not_found"]
+
+    if any(response["competitors_not_found"]):
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When creating the standings for the {race_weekend.title} weekend, these competitors were not found: {" ".join(standings_data["competitors_not_found"])} in the season competitors list",
+            type = 0,
+        )
+        return JsonResponse(response, status=400)
+
+    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=standings_data)
+    
+    if not serializer.is_valid():
+        standings_data.pop("standings")
+        SeasonMessage.objects.create(
+            season = season,
+            message = f"When validating the standings data for the {race_weekend.title} weekend, these errors occured: {serializer.errors}",
+            type = 0,
+        )
+        return JsonResponse(response, status=400)
+    
+    instance = serializer.save()
+    add_points_to_season_competitors(season, instance)
+
+    return HttpResponse(status=201)
 
 def delete_race_weekend(request):
     if request.method != "PUT":

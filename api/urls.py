@@ -21,6 +21,13 @@ from .views.standings_view import standings_view
 from .views.races_view import races_view
 
 urlpatterns = [
+    #race weekends
+    path('get-race-weekend-admin', races_view.get_race_weekend_admin),
+    path('create-race-weekend/', races_view.create_race_weekend),
+    path('delete-race-weekend/', races_view.delete_race_weekend),
+    path('post-race-weekend-event/', races_view.post_race_weekend_event),
+    path('finalize-race-weekend/', races_view.finalize_race_weekend),    
+
     #get
     path('find-account', utils_view.find_account),
     path('find-image', utils_view.find_image),
@@ -33,7 +40,6 @@ urlpatterns = [
     path('get-current-user/', user_view.get_current_user),
     path('get-logged-in/', user_view.get_logged_in),
     path('get-notifications/', notification_view.get_notifications),
-    path('get-race-weekend-admin', races_view.get_race_weekend_admin),
     path('get-race', races_view.get_race),
     path('get-race-results', races_view.get_season_races),
     path('get-season-admin', seasons_view.get_season_admin),
@@ -63,7 +69,6 @@ urlpatterns = [
     path('create-season-competitors-link/', competitors_view.create_season_competitors_link),
     path('create-season/', seasons_view.create_season),
     path('create-race/', races_view.create_race),
-    path('create-race-weekend/', races_view.create_race_weekend),
     path('create-complete-race/', races_view.create_complete_race),
     path('create-race-link/', races_view.create_race_link),
     path('delete-account/', user_view.delete_account),
@@ -73,7 +78,6 @@ urlpatterns = [
     path('delete-competitor/', competitors_view.delete_competitor),
     path('delete-competitors/', competitors_view.delete_competitors),
     path('delete-race/', races_view.delete_race),
-    path('delete-race-weekend/', races_view.delete_race_weekend),
     path('delete-season/', seasons_view.delete_season),
     path('delete-season-message/', seasons_view.delete_season_message),
     path('edit-announcement/', announcements_view.edit_announcement),
@@ -83,7 +87,6 @@ urlpatterns = [
     path('edit-comment/', comments_view.edit_comment),
     path('post-comment/', comments_view.post_comment),
     path('post-announcement/', announcements_view.post_announcement),
-    path('post-race-weekend-event/', races_view.post_race_weekend_event),
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),

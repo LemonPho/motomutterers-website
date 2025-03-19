@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { useSeasonContext } from "../SeasonContext";
-import { submitCreateRaceWeekend, submitDeleteRaceWeekend, submitEditRaceWeekend, submitRaceWeekendEvent } from "../../../fetch-utils/fetchPost";
+import { submitCreateRaceWeekend, submitDeleteRaceWeekend, submitEditRaceWeekend, submitFinalizeRaceWeekend, submitRaceWeekendEvent } from "../../../fetch-utils/fetchPost";
 import { useOpenersContext } from "../../../OpenersContext";
 import { getRaceWeekendAdmin } from "../../../fetch-utils/fetchGet";
 
@@ -145,10 +145,59 @@ export default function RaceWeekendContextProvider({ children }){
         closeModal();
     }
 
+    async function postFinalizeRaceWeekend(){
+        resetApplicationMessages();
+        setLoadingMessage("Loading...");
+
+        const raceWeekendResponse = await submitFinalizeRaceWeekend(selectedRaceWeekend.id);
+        setLoadingMessage(false);
+        console.log(raceWeekendResponse);
+
+        if(raceWeekendResponse.error){
+            setErrorMessage("There was an error finalizing the race weekend");
+            
+            return;
+        }
+
+        if(raceWeekendResponse.competitorsNotFound.length > 0){
+            let string = "Competitors with the numbers: ";
+            for(let i = 0; i < raceWeekendResponse.competitorsNotFound.length; i++){
+                string += String(raceWeekendResponse.competitorsNotFound[i]);
+                string += " ";
+            }
+
+            string += "were not found in the database";
+
+            setErrorMessage(string);
+            
+            return;
+        }
+
+        if(raceWeekendResponse.cantBeFinalized){
+            setErrorMessage("Make sure both the sprint race and race are retrieved before finalizing");
+            return;
+        }
+
+        if(raceWeekendResponse.status == 404){
+            setErrorMessage("The race weekend was not found");
+            
+            return;
+        }
+
+        if(raceWeekendResponse.status != 201){
+            setErrorMessage("There was an error finalizing the race weekend");
+            
+            return;
+        }
+
+        setSuccessMessage("Race weekend finalized");
+        retrieveSeason();
+    }
+
     return(
         <RaceWeekendContext.Provider value={{
             postRaceWeekend, deleteRaceWeekend, editRaceWeekend, retrieveRaceWeekendEvent,
-            selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekend,
+            selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekend, postFinalizeRaceWeekend,
         }}>
 
             {children}

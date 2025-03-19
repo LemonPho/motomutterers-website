@@ -1034,6 +1034,41 @@ export async function submitRaceWeekendEvent(raceWeekendId, eventType){
     return response;
 }
 
+export async function submitFinalizeRaceWeekend(raceWeekendId){
+    let response = {
+        error: false,
+        cantBeFinalized: false,
+        competitorsNotFound: [],
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/finalize-race-weekend/`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                id: raceWeekendId,
+            }),
+        });
+
+        const apiResult = apiResponse.status == 400 ? await apiResponse.json() : false;
+        response.error = apiResponse.status == 500;
+        response.cantBeFinalized = apiResult ? apiResult.cant_be_finalized : false;
+        response.competitorsNotFound = apiResult ? apiResult.competitors_not_found : [];
+        response.status = apiResponse.status;
+
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function submitDeleteRaceWeekend(raceWeekendId){
     let response = {
         error: false,

@@ -3,10 +3,12 @@ import { useRaceWeekendContext } from "./RaceWeekendContext";
 import { useOpenersContext } from "../../../OpenersContext";
 
 export default function RaceWeekendModal(){
-    const { deleteRaceWeekend, selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekendEvent } = useRaceWeekendContext();
+    const { deleteRaceWeekend, selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekendEvent, postFinalizeRaceWeekend } = useRaceWeekendContext();
     const { openModal } = useOpenersContext();
 
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [retrieveLoading, setRetrieveLoading] = useState(false);
+    const [finalizeLoading, setFinalizeLoading] = useState(false);
 
     async function handleDeleteClicked(){
         if(!confirmDelete){
@@ -22,12 +24,22 @@ export default function RaceWeekendModal(){
     }
 
     async function retrieveRace(){
+        setRetrieveLoading(true);
         await retrieveRaceWeekendEvent(1);
+        setRetrieveLoading(false);
     }
 
     async function retrieveSprintRace(){
+        setRetrieveLoading(true);
         await retrieveRaceWeekendEvent(2);
+        setRetrieveLoading(false);
 
+    }
+
+    async function finalizeRaceWeekend(){
+        setFinalizeLoading(true);
+        await postFinalizeRaceWeekend();
+        setFinalizeLoading(false);
     }
 
     if(selectedRaceWeekendLoading){
@@ -43,60 +55,67 @@ export default function RaceWeekendModal(){
             <hr />
             <div className="custom-modal-body">
                 <div className="card text-center rounded-15 mb-2">
-                    <div className="card-header">
-                        Grid
+                    <div className="card-header d-flex align-items-center">
+                        <h5>Race</h5>
+                        {selectedRaceWeekend.race != null && <button className="ms-auto btn btn-outline-danger rounded-15">Delete</button>}
                     </div>
-                    <div className="card-body" style={{"maxHeight": "100px"}}>
-                        {selectedRaceWeekend.grid.length != 0 && 
-                        <div>
-                            qualifying data goes here
-                        </div>}
-                        {selectedRaceWeekend.grid.length == 0 && <button className="btn btn-primary rounded-15">Retrieve</button>}
-                    </div>
-                </div>
-                <div className="card text-center rounded-15 mb-2">
-                    <div className="card-header">
-                        Race
-                    </div>
-                    <div className="card-body" style={{"maxHeight": "100px"}}>
+                    <div className="card-body" style={{"maxHeight": "175px", 'overflowY': "auto"}}>
                         {selectedRaceWeekend.race != null && 
-                        <div>
-                            {selectedRaceWeekend.race.competitors_positions.map((competitorPosition) => (
-                                <div className="row">
-                                    <div className="col-2">
-                                        <strong>{competitorPosition.position}.</strong>
+                            selectedRaceWeekend.race.competitors_positions.map((competitorPosition) => (
+                                <div className="d-flex align-items-center p-2 mb-2 bg-light border rounded shadow-sm" key={competitorPosition.number}>
+                                    <div style={{ width: "30px" }} className="text-center">
+                                        {(competitorPosition.position == 0) && <span className="fw-bold">-</span>}
+                                        {(competitorPosition.position != 0) && <span className="fw-bold">{competitorPosition.position}</span>}
                                     </div>
-                                    <div className="col-2">
-                                        <span>#{competitorPosition.number}</span>
+                                    <div style={{ width: "50px" }} className="text-muted text-center">
+                                        #{competitorPosition.number}
                                     </div>
-                                    <div className="col-4">
-                                        <span>{competitorPosition.first} {competitorPosition.last}</span>
+                                    <div style={{ width: "200px" }} className="fw-semibold">
+                                        {competitorPosition.first} {competitorPosition.last}
                                     </div>
-                                    <div className="col-2">
-                                        <span>{competitorPosition.points}</span>
+                                    <div style={{ width: "50px" }} className="fw-bold text-center">
+                                        {competitorPosition.points}
                                     </div>
                                 </div>
                             ))}
-                        </div>}
-                        {selectedRaceWeekend.race == null && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.race == null && !retrieveLoading) && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.race == null && retrieveLoading) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
                     </div>  
                 </div>
             
                 <div className="card text-center rounded-15 mb-2">
-                    <div className="card-header">
-                        Sprint Race
+                    <div className="card-header d-flex align-items-center">
+                        <h5>Sprint race</h5>
+                        {selectedRaceWeekend.sprint_race != null && <button className="ms-auto btn btn-outline-danger rounded-15">Delete</button>}
                     </div>
-                    <div className="card-body" style={{"maxHeight": "100px"}}>
+                    <div className="card-body" style={{"maxHeight": "175px", "overflowY": "auto"}}>
                         {selectedRaceWeekend.sprint_race != null && 
-                        <div>
-                            Sprint Race data goes here
-                        </div>}
-                        {selectedRaceWeekend.sprint_race == null && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
+                            selectedRaceWeekend.sprint_race.competitors_positions.map((competitorPosition) => (
+                                <div className="d-flex align-items-center p-2 mb-2 bg-light border rounded shadow-sm" key={competitorPosition.number}>
+                                    <div style={{ width: "30px" }} className="text-center">
+                                        {(competitorPosition.position == 0) && <span className="fw-bold">-</span>}
+                                        {(competitorPosition.position != 0) && <span className="fw-bold">{competitorPosition.position}</span>}
+                                    </div>
+                                    <div style={{ width: "50px" }} className="text-muted text-center">
+                                        #{competitorPosition.number}
+                                    </div>
+                                    <div style={{ width: "200px" }} className="fw-semibold">
+                                        {competitorPosition.first} {competitorPosition.last}
+                                    </div>
+                                    <div style={{ width: "50px" }} className="fw-bold text-center">
+                                        {competitorPosition.points}
+                                    </div>
+                                </div>
+                            ))}
+                        {(selectedRaceWeekend.sprint_race == null && !retrieveLoading) && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.sprint_race == null && retrieveLoading) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
                     </div>  
                 </div>
             </div>
-            <div className="custom-modal-footer">
-                {!confirmDelete && <button className="btn btn-outline-danger rounded-15 w-100" onClick={handleDeleteClicked}>Delete race weekend</button>}
+            <div className="custom-modal-footer d-flex flex-column">
+                {(selectedRaceWeekend.status == 1 || selectedRaceWeekend.status == 0) && <button className="btn btn-primary rounded-15 w-100" onClick={finalizeRaceWeekend}>Finalize</button>}
+                {(selectedRaceWeekend.status == 2) && <button className="btn btn-primary rounded-15 mb-1 w-100">Un-finalize</button>}
+                {!confirmDelete && <button className="btn btn-outline-danger rounded-15 w-100 mb-1" onClick={handleDeleteClicked}>Delete race weekend</button>}
                 {confirmDelete && <button className="btn btn-outline-danger rounded-15 w-100" onClick={handleDeleteClicked}>Click again to delete</button>}
             </div>
         </div>
