@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { getComments } from "../../fetch-utils/fetchGet";
 import { useApplicationContext } from "../../ApplicationContext";
 import { submitComment, submitDeleteComment, submitEditComment } from "../../fetch-utils/fetchPost";
+import { useSearchParams } from "react-router-dom";
 
 const CommentsContext = createContext();
 
@@ -10,6 +11,9 @@ export default function CommentsContextProvider({ parentElement, children }){
 
     const [comments, setComments] = useState([]);
     const [commentsLoading, setCommentsLoading] = useState();
+
+    const [highlightedCommentId, setHighlightedCommentId] = useState(null);
+    const [searchParams] = useSearchParams();
 
     async function retrieveComments(){
         setCommentsLoading(true);
@@ -62,10 +66,21 @@ export default function CommentsContextProvider({ parentElement, children }){
         return true;
     }
 
+    useEffect(() => {
+        async function fetchData(){
+            await retrieveComments();
+            if(searchParams.get("comment")){
+                setHighlightedCommentId(searchParams.get("comment"));
+            }
+        }
+
+        fetchData();
+    }, [])
+
     return(
         <CommentsContext.Provider value={{
             comments, commentsLoading, setComments, retrieveComments, postComment, postEditComment, postDeleteComment,
-            parentElement,
+            parentElement, highlightedCommentId,
         }}>
         {children}
 

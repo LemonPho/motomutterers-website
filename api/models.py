@@ -172,12 +172,15 @@ class RaceWeekend(models.Model):
     race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, related_name="main_race_weekend")
     grid = models.ManyToManyField(CompetitorPosition)
     url = models.URLField(null=True, blank=True)
-    comments = models.ManyToManyField("Comment", blank=True)
+    comments = models.ManyToManyField("Comment", related_name="race_weekend", blank=True)
     standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, null=True, blank=True)
     notifications = models.ManyToManyField("Notification", related_name="race_weekend")
     start = models.DateField()
     end = models.DateField()
     status = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["-start"]
 
     def delete(self, *args, **kwargs):
         self.comments.all().delete()

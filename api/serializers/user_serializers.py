@@ -48,12 +48,11 @@ class ProfilePictureSerializer(serializers.Serializer):
 
 class UserSimpleSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
-    id = serializers.IntegerField()
     date_created = serializers.DateTimeField()
 
     class Meta:
         model = User
-        fields = ["username", "id", "date_created"]
+        fields = ["username", "date_created"]
         
 class UserSerializer(serializers.ModelSerializer):
     notifications = serializers.SerializerMethodField()

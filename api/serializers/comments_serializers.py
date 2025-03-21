@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from ..models import Comment, Announcement, Race
+from ..models import Comment, Announcement, RaceWeekend, Notification
 from ..views.notification_view import create_notifications
 from .serializers_util import sanitize_html
 
@@ -15,40 +15,48 @@ class CommentWriteSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     parent_comment = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), required=False)
     announcement = serializers.PrimaryKeyRelatedField(queryset=Announcement.objects.all(), required=False)
-    race = serializers.PrimaryKeyRelatedField(queryset=Race.objects.all(), required=False)
+    race_weekend = serializers.PrimaryKeyRelatedField(queryset=RaceWeekend.objects.all(), required=False)
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "parent_comment", "announcement", "race"]
+        fields = ["text", "user", "parent_comment", "announcement", "race_weekend"]
 
     def create(self, validated_data):
+        print(validated_data)
+
         text = validated_data.pop("text")
         text = sanitize_html(text)
 
         parent_comment = validated_data.pop("parent_comment", None)
         user = validated_data.pop("user", None)
+        notifications = None
 
         if user is None:
             raise serializers.ValidationError("Need to have user data when creating comment")
 
         if parent_comment:
             instance = Comment.objects.create(text=text, user=user, parent_comment=parent_comment)
-            if hasattr(parent_comment, "announcement"):
-                notification = create_notifications("responded to your comment", f"announcements/{parent_comment.announcement.first().id}?comment={instance.id}", user, [parent_comment.user])
+            if parent_comment.announcement.first() is not None:
+                notifications = create_notifications("responded to your comment", f"announcements/{parent_comment.announcement.first().id}?comment={instance.id}", user, [parent_comment.user])
             else:
-                notification = create_notifications("responded to your comment", f"raceresults/{parent_comment.race.first().id}?comment={instance.id}", user, [parent_comment.user])
+                notifications = create_notifications("responded to your comment", f"race-weekends/{parent_comment.race_weekend.first().id}?comment={instance.id}", user, [parent_comment.user])
         else:
             instance = Comment.objects.create(text=text, user=user)
-            if hasattr(instance, "announcement"):
-                notification = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
 
-        instance.notifications.add(*notification)
+            if instance.announcement.first() is not None:
+                notifications = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
+
+        if notifications:
+            if isinstance(notifications, Notification):
+                instance.notifications.add(notifications)
+            else:
+                instance.notifications.add(*notifications)
 
         if parent_comment is None:
-            if validated_data['announcement']:
+            if validated_data.get("announcement", None):
                 validated_data['announcement'].comments.add(instance)
-            elif validated_data['race']:
-                validated_data['race'].comments.add(instance)
+            elif validated_data.get("race_weekend", None):
+                validated_data['race_weekend'].comments.add(instance)
 
         return instance
     
@@ -63,11 +71,11 @@ class ParentCommentReadSerializer(serializers.ModelSerializer):
     user = importlib.import_module("api.serializers.user_serializers").UserSimpleSerializer()
     date_created = serializers.DateTimeField()
     announcement = serializers.SerializerMethodField()
-    race = serializers.SerializerMethodField()
+    race_weekend = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "date_created", "announcement", "race", "id"]
+        fields = ["text", "user", "date_created", "announcement", "race_weekend", "id"]
 
     def get_announcement(self, comment):        
         announcement = comment.announcement.first()
@@ -76,12 +84,12 @@ class ParentCommentReadSerializer(serializers.ModelSerializer):
         serializer = importlib.import_module("api.serializers.announcements_serializers").AnnouncementSimpleSerializer(announcement)
         return serializer.data
     
-    def get_race(self, comment):
-        race = comment.race.first()
-        if race is None:
+    def get_race_weekend(self, comment):
+        race_weekend = comment.race_weekend.first()
+        if race_weekend is None:
             return None
         
-        serializer = importlib.import_module("api.serializers.races_serializers").RaceSimpleSerializer(race)
+        serializer = importlib.import_module("api.serializers.races_serializers").RaceWeekendSimpleSerializer(race_weekend)
 
         return serializer.data
     
@@ -93,12 +101,12 @@ class CommentReadSerializer(serializers.ModelSerializer):
     parent_comment = serializers.SerializerMethodField()
     date_created = serializers.DateTimeField()
     announcement = serializers.SerializerMethodField()
-    race = serializers.SerializerMethodField()
+    race_weekend = serializers.SerializerMethodField()
 
 
     class Meta:
         model = Comment
-        fields = ["text", "user", "amount_replies", "replies", "parent_comment", "date_created", "edited", "announcement", "race", "id"]
+        fields = ["text", "user", "amount_replies", "replies", "parent_comment", "date_created", "edited", "announcement", "race_weekend", "id"]
 
     def get_amount_replies(self, comment):
         amount_replies = str(comment.replies.count())
@@ -123,11 +131,11 @@ class CommentReadSerializer(serializers.ModelSerializer):
         serializer = importlib.import_module("api.serializers.announcements_serializers").AnnouncementSimpleSerializer(announcement)
         return serializer.data
     
-    def get_race(self, comment):
-        race = comment.race.first()
-        if race is None:
+    def get_race_weekend(self, comment):
+        race_weekend = comment.race_weekend.first()
+        if race_weekend is None:
             return None
         
-        serializer = importlib.import_module("api.serializers.races_serializers").RaceSimpleSerializer(race)
+        serializer = importlib.import_module("api.serializers.races_serializers").RaceWeekendSimpleSerializer(race_weekend)
 
         return serializer.data

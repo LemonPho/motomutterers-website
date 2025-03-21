@@ -6,18 +6,11 @@ import { getComments } from "../../fetch-utils/fetchGet";
 import Comment from "./Comment";
 import CreateComment from "./CreateComment";
 import { useCommentsContext } from "./CommentsSectionContext";
+import { useSearchParams } from "react-router-dom";
 
 export default function CommentsSection(){
-    const { setErrorMessage } = useApplicationContext();
-    const { comments, commentsLoading, retrieveComments, parentElement } = useCommentsContext();
+    const { comments, commentsLoading, highlightedCommentId } = useCommentsContext();
 
-    useEffect(() => {
-        async function getData(){
-            await retrieveComments();
-        }
-
-        getData();
-    }, []);
 
     if(commentsLoading){
         return(
@@ -34,7 +27,7 @@ export default function CommentsSection(){
             <div className="card-body p-0">
                 <CreateComment/>
                 {comments.map((comment) => (
-                    <Comment key={comment.id} comment={comment}/>
+                    <Comment key={comment.id} comment={comment} highlighted={comment.id == highlightedCommentId}/>
                 ))}
             </div>
         </div>

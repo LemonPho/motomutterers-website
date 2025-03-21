@@ -13,7 +13,7 @@ import PageNotFound from './PageNotFound.js';
 import LoginPage from './LoginPage.js';
 import RegisterPage from "./RegisterPage.js";
 import StandingsPage from "./standings-page-components/StandingsPage.js";
-import UserPage from "./UserPage.js";
+import UserPage from "./user-page-components/UserPage.js";
 import Announcements from "./announcement-page-components/AnnouncementsPage.js";
 import AccountActivation from "./AccountActivationPage.js";
 import FindAccount from "./FindAccountPage.js";

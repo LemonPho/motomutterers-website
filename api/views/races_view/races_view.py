@@ -100,7 +100,7 @@ def get_race_weekends(request):
         response["invalid_season"] = True
         return JsonResponse(response, status=400)
 
-    race_weekends = season.race_weekends
+    race_weekends = season.race_weekends.all()
     serializer = RaceWeekendSimpleSerializer(race_weekends, many=True)
     response["race_weekends"] = serializer.data
 

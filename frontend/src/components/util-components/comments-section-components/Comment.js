@@ -10,9 +10,9 @@ import { useOpenersContext } from "../../OpenersContext";
 import Visible from "../Visble";
 import Textarea from "../Textarea";
 
-export default function Comment({ comment }){
+export default function Comment({ comment, highlighted }){
     const { user } = useApplicationContext();
-    const { postDeleteComment, postComment, postEditComment, } = useCommentsContext();
+    const { postDeleteComment, postComment, postEditComment, highlightedCommentId, setComments } = useCommentsContext();
     const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [replyCreateText, setReplyCreateText] = useState("");
@@ -22,7 +22,7 @@ export default function Comment({ comment }){
     const [showEditComment, setShowEditComment] = useState(false);
 
     const [showReplyCreate, setShowReplyCreate] = useState(false);
-    const [showRepliesDiv, setShowRepliesDiv] = useState(false);
+    const [showRepliesDiv, setShowRepliesDiv] = useState(() => comment.replies.some(item => item.id == highlightedCommentId));
 
     async function deleteComment(commentId){
         if(await postDeleteComment(commentId)){
@@ -66,7 +66,7 @@ export default function Comment({ comment }){
     }
 
     return(
-        <div className="rounded-15 p-2 mb-2 nested-element-color" id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
+        <div className={`rounded-15 p-2 mb-2 nested-element-color ${highlighted ? "highlighted" : ""}`} id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
             <div className="d-flex align-items-start">
                 <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
                 <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
@@ -121,7 +121,7 @@ export default function Comment({ comment }){
                 <div id={`comment-replies-${comment.id}`} className="dynamic-container" style={{marginLeft: "2.7rem"}}>
                     {comment.replies.length > 0 &&
                     comment.replies.map((reply) => (
-                        <CommentReply key={reply.id} reply={reply}/>
+                        <CommentReply key={reply.id} reply={reply} highlighted={highlightedCommentId == reply.id}/>
                     ))
                     }
                 </div>
