@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { useSeasonContext } from "../SeasonContext";
-import { submitCreateRaceWeekend, submitDeleteRaceWeekend, submitEditRaceWeekend, submitFinalizeRaceWeekend, submitRaceWeekendEvent } from "../../../fetch-utils/fetchPost";
+import { submitCreateRaceWeekend, submitDeleteRaceWeekend, submitEditRaceWeekend, submitFinalizeRaceWeekend, submitRaceWeekendEvent, submitUnFinalizeRaceWeekend } from "../../../fetch-utils/fetchPost";
 import { useOpenersContext } from "../../../OpenersContext";
 import { getRaceWeekendAdmin } from "../../../fetch-utils/fetchGet";
 
@@ -114,6 +114,7 @@ export default function RaceWeekendContextProvider({ children }){
         setSuccessMessage("Race weekend deleted");
         setLoadingMessage(false);
         retrieveSeason();
+        closeModal();
     }
 
     async function editRaceWeekend(newRaceWeekend){
@@ -190,14 +191,46 @@ export default function RaceWeekendContextProvider({ children }){
             return;
         }
 
+        let temporaryRaceWeekend = selectedRaceWeekend;
+        temporaryRaceWeekend.status = 2;
+        setSelectedRaceWeekend(temporaryRaceWeekend);
         setSuccessMessage("Race weekend finalized");
         retrieveSeason();
     }
 
+    async function postUnFinalizeRaceWeekend(){
+        resetApplicationMessages();
+        setLoadingMessage("Loading...");
+
+        const raceWeekendResponse = await submitUnFinalizeRaceWeekend(selectedRaceWeekend.id);
+        setLoadingMessage(false);
+
+        if(raceWeekendResponse.error){
+            setErrorMessage("There was an error trying to un finalize the race weekend");
+            return;
+        }
+
+        if(raceWeekendResponse.status == 404){
+            setErrorMessage("The race weekend was not found");
+            return;
+        }
+
+        if(raceWeekendResponse.status != 201){
+            setErrorMessage("There was an error trying to un finalize the race weekend");
+            return;
+        }
+
+        setSuccessMessage("Race weekend successfully unfinalized");
+        let temporaryRaceWeekend = selectedRaceWeekend;
+        temporaryRaceWeekend.status = 1;
+        setSelectedRaceWeekend(temporaryRaceWeekend);
+        return;
+    }
+
     return(
         <RaceWeekendContext.Provider value={{
-            postRaceWeekend, deleteRaceWeekend, editRaceWeekend, retrieveRaceWeekendEvent,
-            selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekend, postFinalizeRaceWeekend,
+            postRaceWeekend, deleteRaceWeekend, editRaceWeekend, retrieveRaceWeekendEvent, setSelectedRaceWeekend,
+            selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekend, postFinalizeRaceWeekend, postUnFinalizeRaceWeekend,
         }}>
 
             {children}

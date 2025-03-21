@@ -207,6 +207,7 @@ class Season(models.Model):
 
         self.competitors.all().delete()
         self.races.all().delete()
+        self.race_weekends.all().delete()
 
         super().delete(*args, **kwargs)
 

@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_weekend_standings, validate_race_weekend_data, generate_qualifying_positions_data, generate_race_data
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL, RACE, SPRINT_RACE, GRID
-from .races_util import add_points_to_season_competitors
+from .races_util import add_points_to_season_competitors, remove_points_from_season_competitors
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage, RaceWeekend
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
@@ -278,6 +278,7 @@ def finalize_race_weekend(request):
         )
         return HttpResponse(status=403)
     
+    STATUS_FINAL = 2
     data = json.loads(request.body)
     id = data.get("id", -1)
 
@@ -305,7 +306,6 @@ def finalize_race_weekend(request):
         return JsonResponse(response, status=400)
 
     standings_data = generate_race_weekend_standings(race_weekend, season)
-    print(standings_data)
 
     response["competitors_not_found"] = standings_data["competitors_not_found"]
 
@@ -329,9 +329,69 @@ def finalize_race_weekend(request):
         return JsonResponse(response, status=400)
     
     instance = serializer.save()
-    add_points_to_season_competitors(season, instance)
 
-    return HttpResponse(status=201)
+    #TODO: move to serializer
+    if add_points_to_season_competitors(season, instance):
+        instance.status = STATUS_FINAL
+        instance.save()
+        return HttpResponse(status=201)
+    else:
+        SeasonMessage.objects.create(
+            season=season,
+            message=f"When trying to add the points from the race weekend to the season competitors, one or more weren't found",
+            type = 0,
+        )
+        return HttpResponse(status=409)
+
+def un_finalize_race_weekend(request):
+    if request.method != "PUT":
+        return HttpResponse(status=405)
+
+    if not request.user.is_authenticated:
+        SeasonMessage.objects.create(
+            season = None,
+            message = "A user that isn't logged in tried to un finalize a race weekend",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+
+    if not request.user.is_admin:
+        SeasonMessage.objects.create(
+            season = None,
+            message = f"User: {request.user.username} tried to un finalize a race weekend (they aren't an admin)",
+            type = 0,
+        )
+        return HttpResponse(status=403)
+
+    STATUS_IN_PROGRESS = 1
+
+
+    data = json.loads(request.body)
+    id = data.get("id", -1)
+
+    if id == -1:
+        return HttpResponse(status=400)
+
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+
+    race_weekend.standings.delete()
+    race_weekend.refresh_from_db()  # Refresh to clear deleted references
+    race_weekend.save()
+
+    if remove_points_from_season_competitors(race_weekend.season.first(), race_weekend):
+        race_weekend.status = STATUS_IN_PROGRESS
+        race_weekend.save()
+        return HttpResponse(status=201)
+    else:
+        SeasonMessage.objects.create(
+            season=season,
+            message=f"When trying to remove the points from the race weekend to the season competitors, one or more weren't found",
+            type = 0,
+        )
+        return HttpResponse(status=409)
 
 def delete_race_weekend(request):
     if request.method != "PUT":
@@ -352,9 +412,18 @@ def delete_race_weekend(request):
         race_weekend = RaceWeekend.objects.get(pk=race_weekend_id)
     except RaceWeekend.DoesNotExist:
         return HttpResponse(status=404)
+
+    if remove_points_from_season_competitors(race_weekend.season.first(), race_weekend):
+        race_weekend.delete()
+        return HttpResponse(status=201)
+    else:
+        SeasonMessage.objects.create(
+            season=season,
+            message=f"When trying to remove the points from the race weekend to the season competitors, one or more weren't found",
+            type = 0,
+        )
+        return HttpResponse(status=409)
     
-    race_weekend.delete()
-    return HttpResponse(status=201)
 
 
 def create_race_weekend_qualifying_positions(request):
@@ -995,46 +1064,5 @@ def delete_race(request):
         )
         return HttpResponse(status=400)
 
-    if race.finalized:
-        try:
-            competitors_positions = CompetitorPosition.objects.filter(final_race=race)
-        except CompetitorPosition.DoesNotExist:
-            SeasonMessage.objects.create(
-                season = season,
-                message = f"No competitors are associated to the race: {race.title}",
-                type = 0
-            )
-            return HttpResponse(status=400)
-        
-        if race.is_sprint:
-            points_list = [12, 9, 7, 6, 5, 4, 3, 2, 1]
-        else:
-            points_list = [25, 20, 16, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-
-        for competitor_position in competitors_positions:
-            if competitor_position.position != 0:
-                index = competitor_position.position - 1
-                if index < len(points_list):
-                    try:
-                        season_competitor_position = SeasonCompetitorPosition.objects.filter(season=season).get(competitor_points__competitor__number=competitor_position.competitor_points.competitor.number)
-                    except SeasonCompetitorPosition.DoesNotExist:
-                        season_competitor_position = None
-
-                    if season_competitor_position is not None:
-                        season_competitor_position.competitor_points.points -= points_list[index]
-                        if season_competitor_position.competitor_points.points < 0:
-                            season_competitor_position.competitor_points.points = 0
-                        season_competitor_position.competitor_points.save()
-
-                    
-
     race.delete()
-    update_members_points()
-    sort_standings(season)
-
-    SeasonMessage.objects.create(
-        season = season,
-        message = f"Race deleted",
-        type = 0,
-    )
-    return HttpResponse(status=200)
+    return HttpResponse(status=201)

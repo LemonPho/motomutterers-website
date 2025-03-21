@@ -1069,6 +1069,35 @@ export async function submitFinalizeRaceWeekend(raceWeekendId){
     return response;
 }
 
+export async function submitUnFinalizeRaceWeekend(raceWeekendId){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch('/api/un-finalize-race-weekend/', {
+            method: "PUT",
+            headers: {
+                "X-CSRFTOken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                id: raceWeekendId,
+            }),
+        });
+
+        response.error = apiResponse.status == 500;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function submitDeleteRaceWeekend(raceWeekendId){
     let response = {
         error: false,

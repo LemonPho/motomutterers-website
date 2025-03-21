@@ -126,7 +126,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         STATUS_IN_PROGRESS = 1
-        STATUS_FINAL = 2
+        
 
         grid_data = validated_data.get("grid", False)
         standings = validated_data.get("standings", False)
@@ -156,7 +156,6 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
             return instance
         
         if standings:
-            instance.status = STATUS_FINAL
             instance.standings = standings
             sort_race_standings(instance.standings, instance.season.first())
 
