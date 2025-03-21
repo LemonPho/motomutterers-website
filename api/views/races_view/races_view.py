@@ -6,7 +6,7 @@ from .races_util import add_points_to_season_competitors, remove_points_from_sea
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage, RaceWeekend
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
-from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer, RaceWeekendWriteSerializer, RaceWeekendAdminSerializer
+from ...serializers.races_serializers import RaceWriteSerializer, RaceSimpleSerializer, RaceReadSerializer, RaceWeekendWriteSerializer, RaceWeekendAdminSerializer, RaceWeekendSimpleSerializer, RaceWeekendReadSerializer
 from ...serializers.standings_serializers import StandingsRaceWriteSerializer
 
 from ..picks_view.picks_util import update_members_points
@@ -63,6 +63,49 @@ def get_season_races(request):
     return JsonResponse({
         "races": serializer.data,
     }, status=200)
+
+def get_race_weekend(request):
+    if request.method != 'GET':
+        return HttpResponse(status=405)
+
+    race_weekend_id = request.GET.get("id", -1)
+    if race_weekend_id == -1:
+        return HttpResponse(status=404)
+
+    try:
+        race_weekend = RaceWeekend.objects.get(pk=race_weekend_id)
+    except RaceWeekend.DoesNotExist:
+        return HttpResponse(status=404)
+
+    serializer = RaceWeekendReadSerializer(race_weekend)
+
+    return JsonResponse({"race_weekend": serializer.data}, status=200)
+
+def get_race_weekends(request):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+
+    season_year = request.GET.get("season", False)
+    response = {
+        "invalid_season": not season_year,
+        "race_weekends": [],
+    }
+
+    if not season_year:
+        return JsonResponse(response, status=400)
+
+    try:
+        season = Season.objects.filter(visible=True).get(year=season_year)
+    except season.DoesNotExist:
+        response["invalid_season"] = True
+        return JsonResponse(response, status=400)
+
+    race_weekends = season.race_weekends
+    serializer = RaceWeekendSimpleSerializer(race_weekends, many=True)
+    response["race_weekends"] = serializer.data
+
+    return JsonResponse(response, status=200)
+    
 
 def get_race_weekend_admin(request):
     if request.method != "GET":
@@ -412,6 +455,10 @@ def delete_race_weekend(request):
         race_weekend = RaceWeekend.objects.get(pk=race_weekend_id)
     except RaceWeekend.DoesNotExist:
         return HttpResponse(status=404)
+
+    if not race_weekend.status == 2:
+        race_weekend.delete()
+        return HttpResponse(status=201)
 
     if remove_points_from_season_competitors(race_weekend.season.first(), race_weekend):
         race_weekend.delete()

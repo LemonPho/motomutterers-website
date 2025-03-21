@@ -39,7 +39,7 @@ export default function Header(){
                     <Dropdown isOpen={openedDropdown == "menu-dropdown-content"}>
                         <div id="menu-dropdown-content" className="dropdown-menu" style={{top: "100%", left: "0"}}>
                             {(!currentSeasonLoading && !currentSeason) && <span className="navbar-text dropdown-item">No current season</span>}
-                            {(!currentSeasonLoading && currentSeason) && <Link to={`/raceresults?season=${currentSeason.year}`} className="navbar-text dropdown-item">Races</Link> }       
+                            {(!currentSeasonLoading && currentSeason) && <Link to={`/race-weekends?season=${currentSeason.year}`} className="navbar-text dropdown-item">Race Weekends</Link> }       
                             <Link to="/announcements?page=1" className="navbar-text dropdown-item">Announcements</Link>
                             {(!currentSeasonLoading && currentSeason) && <Link to={`/standings?season=${currentSeason.year}`} className="navbar-text dropdown-item">Standings</Link>}
                             {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) && <Link to="/select-picks" className="navbar-text dropdown-item">Select your picks!</Link>}
@@ -77,7 +77,7 @@ export default function Header(){
                 <div className="d-flex align-items-center">
                     <Link to="/" className="menu-bar-title link-no-decorations" style={{marginLeft: "2rem"}}>Home</Link>
                     {(!currentSeasonLoading && !currentSeason) && <span className="menu-bar-item ps-2">No current season</span>}
-                    {(!currentSeasonLoading && currentSeason) && <Link to={`/raceresults?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Races</Link>}
+                    {(!currentSeasonLoading && currentSeason) && <Link to={`/race-weekends?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Race Weekends</Link>}
                     <Link to="/announcements?page=1" className="menu-bar-item link-no-decorations ps-2">Announcements</Link>
                     {(!currentSeasonLoading && currentSeason) && <Link to={`/standings?season=${currentSeason.year}`} className="menu-bar-item link-no-decorations ps-2">Standings</Link>}
                     {(!selectPicksStateLoading && selectPicksState && !userLoading && user.is_logged_in) &&

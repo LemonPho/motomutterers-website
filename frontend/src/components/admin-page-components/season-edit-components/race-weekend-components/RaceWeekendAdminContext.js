@@ -5,9 +5,9 @@ import { submitCreateRaceWeekend, submitDeleteRaceWeekend, submitEditRaceWeekend
 import { useOpenersContext } from "../../../OpenersContext";
 import { getRaceWeekendAdmin } from "../../../fetch-utils/fetchGet";
 
-const RaceWeekendContext = createContext();
+const RaceWeekendAdminContext = createContext();
 
-export default function RaceWeekendContextProvider({ children }){
+export default function RaceWeekendAdminContextProvider({ children }){
     const { setErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage } = useApplicationContext();
     const { retrieveSeason } = useSeasonContext();
     const { closeModal } = useOpenersContext();
@@ -72,8 +72,9 @@ export default function RaceWeekendContextProvider({ children }){
             return;
         }
 
+        console.log(selectedRaceWeekend);
+        retrieveRaceWeekend(selectedRaceWeekend.id);
         setSuccessMessage("Race weekend event was successfully retrieved");
-        closeModal();
         retrieveSeason();
     }
 
@@ -224,20 +225,21 @@ export default function RaceWeekendContextProvider({ children }){
         let temporaryRaceWeekend = selectedRaceWeekend;
         temporaryRaceWeekend.status = 1;
         setSelectedRaceWeekend(temporaryRaceWeekend);
+        retrieveSeason();
         return;
     }
 
     return(
-        <RaceWeekendContext.Provider value={{
+        <RaceWeekendAdminContext.Provider value={{
             postRaceWeekend, deleteRaceWeekend, editRaceWeekend, retrieveRaceWeekendEvent, setSelectedRaceWeekend,
             selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekend, postFinalizeRaceWeekend, postUnFinalizeRaceWeekend,
         }}>
 
             {children}
-        </RaceWeekendContext.Provider>
+        </RaceWeekendAdminContext.Provider>
     )
 }
 
-export function useRaceWeekendContext(){
-    return useContext(RaceWeekendContext);
+export function useRaceWeekendAdminContext(){
+    return useContext(RaceWeekendAdminContext);
 }

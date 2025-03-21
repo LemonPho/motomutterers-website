@@ -13,7 +13,7 @@ import DeleteSeason from "./season-delete-components/DeleteSeason";
 import SeleniumStatus from "./SeleniumStatus";
 import SeasonMessages from "./SeasonMessages";
 import RaceWeekendsManagement from "./race-weekend-components/RaceWeekendsManagement";
-import RaceWeekendContextProvider from "./race-weekend-components/RaceWeekendContext";
+import RaceWeekendContextProvider from "./race-weekend-components/RaceWeekendAdminContext";
 
 export default function SeasonEdit(){
     const { retrieveSeason, season, seasonLoading } = useSeasonContext();

@@ -6,12 +6,12 @@ import { useApplicationContext } from "../../../ApplicationContext";
 import CreateRaceWeekendModal from "./CreateRaceWeekendModal";
 import Dropdown from "../../../util-components/Dropdown";
 import EditRaceWeekendModal from "./EditRaceWeekendModal";
-import { useRaceWeekendContext } from "./RaceWeekendContext";
+import { useRaceWeekendAdminContext } from "./RaceWeekendAdminContext";
 import RaceWeekendModal from "./RaceWeekendModal";
 
 export default function RaceWeekendsManagement(){
     const { season } = useSeasonContext();
-    const { deleteRaceWeekend, retrieveRaceWeekend } = useRaceWeekendContext();
+    const { deleteRaceWeekend, retrieveRaceWeekend } = useRaceWeekendAdminContext();
     const { openedModal, openModal, openedDropdown, toggleDropdown } = useOpenersContext();
     const { resetApplicationMessages } = useApplicationContext();
 
@@ -48,8 +48,9 @@ export default function RaceWeekendsManagement(){
                                 <div>{raceWeekend.title}</div>
                                 <small><strong>{raceWeekend.start} - {raceWeekend.end}</strong></small>
                             </div>
-                            {raceWeekend.final && <span className="badge rounded-pill text-bg-success ms-auto">Final</span>}
-                            {!raceWeekend.final && <span className="badge rounded-pill text-bg-secondary ms-auto">Upcoming</span>}
+                            {raceWeekend.status == 0 && <span className="badge rounded-pill text-bg-secondary ms-auto">Upcoming</span>}
+                            {raceWeekend.status == 1 && <span className="badge rounded-pill text-bg-warning ms-auto">In progress</span>}
+                            {raceWeekend.status == 2 && <span className="badge rounded-pill text-bg-success ms-auto">Final</span>}
                             <div className="dropdown-div" onClick={(e) => toggleDropdown(`dropdown-race-weekend-${raceWeekend.id}`, e)}>
                                 <div className="d-flex align-items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">

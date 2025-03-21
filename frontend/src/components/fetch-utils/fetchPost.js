@@ -1020,7 +1020,7 @@ export async function submitRaceWeekendEvent(raceWeekendId, eventType){
             }),
         });
 
-        const apiResult = await apiResponse.json();
+        const apiResult = apiResponse.status == 400 ? await apiResponse.json() : null;
 
         response.error = apiResponse.status === 500 ? apiResponse : false,
         response.competitorsNotFound = apiResponse.status == 400 ? apiResult.competitors_not_found : [],

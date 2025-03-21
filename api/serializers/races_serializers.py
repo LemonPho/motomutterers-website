@@ -218,6 +218,15 @@ class RaceWeekendSimpleSerializer(serializers.ModelSerializer):
         fields = ["title", "start", "end", "id", "status"]
         model = RaceWeekend
 
+class RaceWeekendReadSerializer(serializers.ModelSerializer):
+    race = RaceReadSerializer()
+    sprint_race = RaceReadSerializer()
+    standings = importlib.import_module("api.serializers.standings_serializers").StandingsRaceSerializer()
+    
+    class Meta:
+        fields = ["id", "race", "sprint_race", "standings", "start", "end", "title", "status"]
+        model = RaceWeekend
+
 class RaceWeekendAdminSerializer(serializers.ModelSerializer):
     race = RaceReadSerializer()
     sprint_race = RaceReadSerializer()

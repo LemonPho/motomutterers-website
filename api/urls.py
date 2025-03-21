@@ -27,7 +27,10 @@ urlpatterns = [
     path('delete-race-weekend/', races_view.delete_race_weekend),
     path('post-race-weekend-event/', races_view.post_race_weekend_event),
     path('finalize-race-weekend/', races_view.finalize_race_weekend),
-    path('un-finalize-race-weekend/', races_view.un_finalize_race_weekend),  
+    path('un-finalize-race-weekend/', races_view.un_finalize_race_weekend),
+
+    path('get-race-weekends', races_view.get_race_weekends),
+    path('get-race-weekend', races_view.get_race_weekend),
 
     #get
     path('find-account', utils_view.find_account),

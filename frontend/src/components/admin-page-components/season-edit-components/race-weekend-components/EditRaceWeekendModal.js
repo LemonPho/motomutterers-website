@@ -4,11 +4,11 @@ import Textarea from "../../../util-components/Textarea";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { useOpenersContext } from "../../../OpenersContext";
 import { useSeasonContext } from "../SeasonContext";
-import { useRaceWeekendContext } from "./RaceWeekendContext";
+import { useRaceWeekendAdminContext } from "./RaceWeekendAdminContext";
 
 export default function EditRaceWeekendModal(){
     const { closeModal } = useOpenersContext();
-    const { editRaceWeekend, selectedRaceWeekend, selectedRaceWeekendLoading } = useRaceWeekendContext();
+    const { editRaceWeekend, selectedRaceWeekend, selectedRaceWeekendLoading } = useRaceWeekendAdminContext();
 
     const [urlInput, setUrlInput] = useState("");
     const [titleInput, setTitleInput] = useState("");

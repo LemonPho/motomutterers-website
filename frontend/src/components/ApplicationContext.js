@@ -133,6 +133,7 @@ export function ApplicationContextProvider({children}){
             profilePictures, retrieveProfilePicture,
             setErrorMessage, addErrorMessage, setSuccessMessage, setInformationMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
             resetApplicationMessages }}>
+                
             {children}
         </ApplicationContext.Provider>
     );

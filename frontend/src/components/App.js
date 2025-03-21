@@ -28,6 +28,8 @@ import RaceResultsContextProvider from "./race-results-components/RaceResultsCon
 import RaceResultsHandler from "./race-results-components/RaceResultsHandler.js";
 import UserPicksSelector from "./UserPicksSelector.js";
 import UserSettings from "./user-settings-page-components/UserSettingsPage.js"
+import RaceWeekendsHandler from "./race-weekends-components/RaceWeekendsHandler.js";
+import RaceWeekendsContextProvider from "./race-weekends-components/RaceWeekendsContext.js";
 
 export default function App() {
     const { retrieveApplicationContextData } = useApplicationContext();
@@ -57,9 +59,9 @@ export default function App() {
                     <Route path="change-email" element={<EmailActivation />}/>
                     <Route path="find-account" element={<FindAccount />}/>
                     <Route path="login" element={<LoginPage />} />
-                    <Route path="raceresults" element={<RaceResultsContextProvider/>}>
-                        <Route index element={<RaceResultsHandler />}/>
-                        <Route path=":raceId" element={<RaceResultsHandler/>}/>
+                    <Route path="race-weekends" element={<RaceWeekendsContextProvider/>}>
+                        <Route index element={<RaceWeekendsHandler />}/>
+                        <Route path=":raceWeekendId" element={<RaceWeekendsHandler/>}/>
                     </Route>
                     <Route path="register" element={<RegisterPage />} />
                     <Route path="select-picks" element={<UserPicksSelector />}/>

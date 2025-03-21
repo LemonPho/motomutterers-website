@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRaceWeekendContext } from "./RaceWeekendContext";
+import { useRaceWeekendAdminContext } from "./RaceWeekendAdminContext";
 import { useOpenersContext } from "../../../OpenersContext";
 import { submitDeleteRace } from "../../../fetch-utils/fetchPost";
 import { useSeasonContext } from "../SeasonContext";
@@ -7,14 +7,13 @@ import { useApplicationContext } from "../../../ApplicationContext";
 
 export default function RaceWeekendModal(){
     const { season } = useSeasonContext();
-    const { setErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
     
-    const { deleteRaceWeekend, selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekendEvent, postFinalizeRaceWeekend, postUnFinalizeRaceWeekend, setSelectedRaceWeekend, retrieveRaceWeekend } = useRaceWeekendContext();
+    const { deleteRaceWeekend, selectedRaceWeekend, selectedRaceWeekendLoading, retrieveRaceWeekendEvent, postFinalizeRaceWeekend, postUnFinalizeRaceWeekend, setSelectedRaceWeekend } = useRaceWeekendAdminContext();
     const { openModal } = useOpenersContext();
 
     const [confirmDelete, setConfirmDelete] = useState(false);
-    const [retrieveLoading, setRetrieveLoading] = useState(false);
-    const [finalizeLoading, setFinalizeLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     async function handleDeleteClicked(){
         if(!confirmDelete){
@@ -30,33 +29,32 @@ export default function RaceWeekendModal(){
     }
 
     async function retrieveRace(){
-        setRetrieveLoading(true);
+        setLoading(true);
         await retrieveRaceWeekendEvent(1);
-        setRetrieveLoading(false);
-        await retrieveRaceWeekend(selectedRaceWeekend.id);
+        setLoading(false);
 
     }
 
     async function retrieveSprintRace(){
-        setRetrieveLoading(true);
+        setLoading(true);
         await retrieveRaceWeekendEvent(2);
-        setRetrieveLoading(false);
-        await retrieveRaceWeekend(selectedRaceWeekend.id);
+        setLoading(false);
     }
 
     async function finalizeRaceWeekend(){
-        setFinalizeLoading(true);
+        setLoading(true);
         await postFinalizeRaceWeekend();
-        setFinalizeLoading(false);
+        setLoading(false);
     }
 
     async function unFinalizeRaceWeekend(){
-        setFinalizeLoading(true);
+        setLoading(true);
         await postUnFinalizeRaceWeekend();
-        setFinalizeLoading(false);
+        setLoading(false);
     }
 
     async function deleteRace(raceId){
+        resetApplicationMessages();
         const raceResponse = await submitDeleteRace(raceId, season.year);
 
         if(raceResponse.error || raceResponse.status != 201){
@@ -120,8 +118,8 @@ export default function RaceWeekendModal(){
                                     </div>
                                 </div>
                             ))}
-                        {(selectedRaceWeekend.race == null && !retrieveLoading) && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
-                        {(selectedRaceWeekend.race == null && retrieveLoading) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
+                        {(selectedRaceWeekend.race == null && !loading) && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.race == null && loading) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
                     </div>  
                 </div>
             
@@ -149,17 +147,19 @@ export default function RaceWeekendModal(){
                                     </div>
                                 </div>
                             ))}
-                        {(selectedRaceWeekend.sprint_race == null && !retrieveLoading) && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
-                        {(selectedRaceWeekend.sprint_race == null && retrieveLoading) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
+                        {(selectedRaceWeekend.sprint_race == null && !loading) && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.sprint_race == null && loading) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
                     </div>  
                 </div>
             </div>
             <div className="custom-modal-footer d-flex flex-column">
-                {((selectedRaceWeekend.status == 1 || selectedRaceWeekend.status == 0) && !finalizeLoading) && <button className="btn btn-primary rounded-15 w-100 mb-2" onClick={finalizeRaceWeekend}>Finalize</button>}
-                {(selectedRaceWeekend.status == 2 && !finalizeLoading) && <button className="btn btn-primary rounded-15 mb-2 w-100" onClick={unFinalizeRaceWeekend}>Un-finalize</button>}
-                {finalizeLoading && <button className="btn btn-primary rounded-15 mb-2 w-100" disabled>Loading...</button>}
-                {!confirmDelete && <button className="btn btn-outline-danger rounded-15 w-100 mb-1" onClick={handleDeleteClicked}>Delete race weekend</button>}
-                {confirmDelete && <button className="btn btn-outline-danger rounded-15 w-100" onClick={handleDeleteClicked}>Click again to delete</button>}
+                {((selectedRaceWeekend.status == 1 || selectedRaceWeekend.status == 0) && !loading) && <button className="btn btn-primary rounded-15 w-100 mb-2" onClick={finalizeRaceWeekend}>Finalize</button>}
+                {(selectedRaceWeekend.status == 2 && !loading) && <button className="btn btn-primary rounded-15 mb-2 w-100" onClick={unFinalizeRaceWeekend}>Un-finalize</button>}
+                {loading && <button className="btn btn-primary rounded-15 mb-2 w-100" disabled>Loading...</button>}
+                
+                {(!confirmDelete && !loading) && <button className="btn btn-outline-danger rounded-15 w-100 mb-1" onClick={handleDeleteClicked}>Delete race weekend</button>}
+                {(confirmDelete && loading) && <button className="btn btn-outline-danger rounded-15 w-100" onClick={handleDeleteClicked}>Click again to delete</button>}
+                {loading && <button className="btn btn-outline-danger rounded-15 w-100" disabled>Loading...</button>}
             </div>
         </div>
     )
