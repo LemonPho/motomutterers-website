@@ -396,7 +396,10 @@ def generate_race_data(race_weekend, is_sprint, request, season):
 
     #windows
     if os.name == "nt":
-        browser = webdriver.Chrome()
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        browser = webdriver.Chrome(options=options)
     #linux
     else:
         service = Service("/usr/bin/chromedriver")
@@ -450,12 +453,6 @@ def generate_race_data(race_weekend, is_sprint, request, season):
     browser.quit()
     close_selenium_status(selenium_instance)
     return response
-
-def finalize_race_weekend(race_weekend, season):
-    response = {
-        "standings": generate_race_standings(race_weekend, season),
-    }
-
 
 def generate_link_final_data(data, season):
     response = {
@@ -708,8 +705,6 @@ def generate_race_weekend_standings(race_weekend, season):
     season_competitors = season.competitors.all()
     position = 1
 
-    print("starting race weekend standings generation")
-
     for standing in list(standings.users_picks.all()):
         points = 0
         for pick in list(standing.picks.all()):
@@ -725,15 +720,15 @@ def generate_race_weekend_standings(race_weekend, season):
                 race_competitor_position = None
 
             try:
-                sprint_competitor_positions = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+                sprint_competitor_position = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                sprint_competitor_positions = None
+                sprint_competitor_position = None
             
             points += season_competitor.competitor_points.points
             if race_competitor_position:
                 points += race_competitor_position.competitor_points.points
-            if sprint_competitor_positions:
-                points += sprint_competitor_positions.competitor_points.points
+            if sprint_competitor_position:
+                points += sprint_competitor_position.competitor_points.points
 
         if season.top_independent:
             try:
@@ -743,20 +738,20 @@ def generate_race_weekend_standings(race_weekend, season):
                 return response
             
             try:
-                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
                 race_competitor_position = None
 
             try:
-                sprint_competitor_positions = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+                sprint_competitor_position = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=standing.independent_pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                sprint_competitor_positions = None
+                sprint_competitor_position = None
             
             points += season_competitor.competitor_points.points
             if race_competitor_position:
                 points += race_competitor_position.competitor_points.points
-            if sprint_competitor_positions:
-                points += sprint_competitor_positions.competitor_points.points
+            if sprint_competitor_position:
+                points += sprint_competitor_position.competitor_points.points
             
         if season.top_rookie:
             try:
@@ -766,20 +761,20 @@ def generate_race_weekend_standings(race_weekend, season):
                 return response
             
             try:
-                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+                race_competitor_position = race_weekend.race.competitors_positions.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
                 race_competitor_position = None
 
             try:
-                sprint_competitor_positions = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=pick.competitor_points.competitor)
+                sprint_competitor_position = race_weekend.sprint_race.competitors_positions.get(competitor_points__competitor=standing.rookie_pick.competitor_points.competitor)
             except CompetitorPosition.DoesNotExist:
-                sprint_competitor_positions = None
+                sprint_competitor_position = None
             
             points += season_competitor.competitor_points.points
             if race_competitor_position:
                 points += race_competitor_position.competitor_points.points
-            if sprint_competitor_positions:
-                points += sprint_competitor_positions.competitor_points.points
+            if sprint_competitor_position:
+                points += sprint_competitor_position.competitor_points.points
 
         response["standings"]["users_picks"].append({
             "points": points,

@@ -59,7 +59,11 @@ def remove_points_from_season_competitors(season, race_weekend):
         except CompetitorPosition.DoesNotExist:
             return False
 
-        updated_competitors[season_competitor_position.id].competitor_points.points -= sprint_competitor_position.competitor_points.points   
+        if season_competitor_position.id in updated_competitors:
+            updated_competitors[season_competitor_position.id].competitor_points.points -= sprint_competitor_position.competitor_points.points   
+        else:
+            season_competitor_position.competitor_points.points -= race_competitor_position.competitor_points.points
+            updated_competitors[season_competitor_position.id] = season_competitor_position
 
     for season_competitor in updated_competitors.values():
         season_competitor.competitor_points.save()
