@@ -70,9 +70,9 @@ export default function StandingsContextProvider(){
         setSeasonListLoading(false);
     }
 
-    async function retrieveUserPicks(userId){
+    async function retrieveUserPicks(username){
         setUserPicksDetailedLoading(true);
-        const userPicksResponse = await getUserPicksSimple(selectedSeason.id, userId);
+        const userPicksResponse = await getUserPicksSimple(selectedSeason.id, username);
 
         if(userPicksResponse.error){
             setErrorMessage("There was an error retrieving the user picks");

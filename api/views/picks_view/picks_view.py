@@ -44,8 +44,11 @@ def get_user_picks_simple(request):
     if request.method != "GET":
         return HttpResponse(status=405)
     
+    print(request.GET)
+    
     season_id = request.GET.get("season")
-    uid = request.GET.get("uid")
+    username = request.GET.get("username")
+    print(username)
     User = get_user_model()
 
     try:
@@ -54,7 +57,7 @@ def get_user_picks_simple(request):
         return HttpResponse(status=404)
     
     try:
-        user = User.objects.get(pk=uid)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponse(status=404)
     
