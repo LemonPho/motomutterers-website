@@ -19,9 +19,9 @@ export default function HomePage(){
             <div className="row">
                 {
                 currentSeason.year && 
-                    <Link className="col card rounded-15 clickable link-no-decorations me-1 element-background-color element-border-color" to={`/raceresults?season=${currentSeason.year}`}>
+                    <Link className="col card rounded-15 clickable link-no-decorations me-1 element-background-color element-border-color" to={`/race-weekends?season=${currentSeason.year}`}>
                         <div className="card-body">
-                            <h1>Race Results</h1>
+                            <h1>Race Weekends</h1>
                         </div>
                     </Link>
                 }
