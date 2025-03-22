@@ -18,8 +18,6 @@ def get_notifications(request):
 def read_notification(request):
     data = json.loads(request.body)
     notification_id = data.get("notification_id")
-
-    print(notification_id)
     
     try:
         notification = Notification.objects.get(pk=notification_id)

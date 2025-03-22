@@ -43,12 +43,9 @@ def get_user_picks(request):
 def get_user_picks_simple(request):
     if request.method != "GET":
         return HttpResponse(status=405)
-    
-    print(request.GET)
-    
+        
     season_id = request.GET.get("season")
     username = request.GET.get("username")
-    print(username)
     User = get_user_model()
 
     try:
@@ -78,7 +75,6 @@ def set_user_picks(request):
     current_season = CurrentSeason.objects.first()
 
     if request.method != "POST" or not request.user.is_authenticated or not current_season.season.selection_open or current_season is None or current_season.season.finalized:
-        print(current_season.season.selection_open)
         return HttpResponse(status=400)
     
     user_has_picks = True
@@ -96,14 +92,12 @@ def set_user_picks(request):
     #check for problems in picks
     if any(response["invalid_picks"]) or response["invalid_independent"] or response["picks_already_selected"] or response["invalid_season"] or response["cant_select_picks"]:
         response.pop("new_data")
-        print(response)
         return JsonResponse(response, status=400)
         
     #validate with serializer
     serializer = UserPicksWriteSerializer(data=response["new_data"])
 
     if not serializer.is_valid():
-        print(serializer.errors)
         response.pop("new_data")
         return JsonResponse(response, status=400)
     

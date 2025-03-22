@@ -11,6 +11,5 @@ def finalize_members_points(season):
         picks = list(user_picks[i].picks.all())
         for j in range(0, 5):
             if picks[j].competitor_points.competitor == competitors[j].competitor_points.competitor:
-                print(picks[j].competitor_points.points * additional_points[j])
                 user_picks[i].points += picks[j].competitor_points.points * additional_points[j]
                 user_picks[i].save()

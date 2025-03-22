@@ -142,7 +142,6 @@ def create_season_competitors_link(request):
     serializer = SeasonCompetitorPositionWriteSerializer(data=table_data_response["data"], many=True)
 
     if not serializer.is_valid():
-        print(serializer.errors)
         SeasonMessage.objects.create(
             season = season,
             message = f"When creating the season competitors, these errors occurred: {serializer.errors}",
@@ -182,7 +181,6 @@ def create_competitor(request):
     serializer = SeasonCompetitorPositionWriteSerializer(data=data)
 
     if not serializer.is_valid():
-        print(serializer.errors)
         return JsonResponse(result, status=400)
     
     competitor_position = serializer.save()
@@ -197,7 +195,6 @@ def edit_season_competitor(request):
         return HttpResponse(status=405)
         
     data = json.loads(request.body)
-    print(data)
     competitor_position_id = int(data.get("id", False))
 
     if not competitor_position_id:
@@ -214,7 +211,6 @@ def edit_season_competitor(request):
     serializer = SeasonCompetitorPositionWriteSerializer(data=data, instance=competitor_position)
     
     if not serializer.is_valid():
-        print(serializer.errors)
         return HttpResponse(status=400)
         
     competitor_position = serializer.save()

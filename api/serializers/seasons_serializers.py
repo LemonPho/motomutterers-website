@@ -115,9 +115,7 @@ class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
         
         raise serializers.ValidationError("competitor points given was not a valid data type (int, dict)")
 
-    def update(self, instance, validated_data):
-        print(validated_data)
-        
+    def update(self, instance, validated_data):        
         competitor_points = validated_data.pop("competitor_points", False)
 
         if not competitor_points:

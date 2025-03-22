@@ -8,7 +8,6 @@ from .storage import OverwriteStorage
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password):
-        print(f"username: {username}, email: {email}, password: {password}")
         if not email:
             raise ValueError('User must have a valid email')
         

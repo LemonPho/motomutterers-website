@@ -61,7 +61,6 @@ def post_announcement(request):
     serializer = AnnouncementWriteSerializer(data=data, context={'request': request})
 
     if not serializer.is_valid():
-        print(serializer.errors)
         return HttpResponse(status=400)
     
     announcement = serializer.save()
@@ -90,7 +89,6 @@ def edit_announcement(request):
     
     serializer = AnnouncementWriteSerializer(data=data, instance=announcement)
     if not serializer.is_valid():
-        print(serializer.errors)
         return HttpResponse(status=400)
     
     serializer.save()

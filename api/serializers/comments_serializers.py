@@ -22,8 +22,6 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         fields = ["text", "user", "parent_comment", "announcement", "race_weekend"]
 
     def create(self, validated_data):
-        print(validated_data)
-
         text = validated_data.pop("text")
         text = sanitize_html(text)
 

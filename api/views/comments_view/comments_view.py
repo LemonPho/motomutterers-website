@@ -53,7 +53,6 @@ def post_comment(request):
     serializer = CommentWriteSerializer(data=validated_data)
 
     if not serializer.is_valid():
-        print(serializer.errors)
         return HttpResponse(status=400)
     
     serializer.save()
@@ -80,7 +79,6 @@ def edit_comment(request):
     
     serializer = CommentWriteSerializer(data=data, instance=comment)
     if not serializer.is_valid():
-        print(serializer.errors)
         return HttpResponse(status=400)
         
     comment = serializer.save()
