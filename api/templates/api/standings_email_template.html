@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border: 0px;
+            font-family: Arial, sans-serif;
+        }
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+        .race-standings-row {
+            background-color: #f3f3f3;
+            text-decoration: none;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding: 5px 0px 5px 0px;
+            color: black;
+            box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.40);
+        }
+        .race-standings-username {
+            margin-left: 5px;
+        }
+        .race-standings-position {
+            color: #333;
+        }
+        .race-standings-points {
+            color: rgb(80, 80, 80);
+            margin-left: auto;
+            margin-right: 10px;
+        }
+        .race-standings-position-change {
+            color: grey;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h4>{{ race_weekend.title }}</h4>
+    <span>The {{ race_weekend.title }} race results have been registered, you can check the standings here: <a href="{{ race_weekend.url }}">{{ race_weekend.url }}</a></span>
+    <table>
+        {% for row in standings.users_picks %}
+        <tr>
+            <td>
+                <a class="race-standings-row">
+                    {% if row.position_change == 0 %}
+                        <span class="race-standings-position-change"> - </span>
+                    {% elif row.position_change > 0 %}
+                        <span style="color: green" class="race-standings-position-change">&#9650;</span>
+                    {% elif row.position_change < 0 %}
+                        <span style="color: red" class="race-standings-position-change">&#9660;</span>
+                    {% endif %}
+                    <span class="race-standings-position">{{ row.position }}</span>
+                    <span class="race-standings-username">{{ row.user.username }}</span>
+                    <span class="race-standings-points">{{ row.points }}</span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

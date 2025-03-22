@@ -72,6 +72,9 @@ class User(AbstractUser):
     date_username_edited = models.DateTimeField(null=True, blank=True)
     profile_picture = models.ImageField(null=True, blank=True, upload_to=generate_image_path, storage=OverwriteStorage)
 
+    #Email notifications settings
+    race_weekends_finalize_emails = models.BooleanField(default=True)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'username'

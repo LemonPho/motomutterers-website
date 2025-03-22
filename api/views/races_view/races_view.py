@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .races_validators import validate_race_link_data, generate_link_race_data, validate_generate_complete_manual_race, process_retrieve_race_result, generate_race_weekend_standings, validate_race_weekend_data, generate_qualifying_positions_data, generate_race_data
 from .races_validators import RACE_TYPE_UPCOMING, RACE_TYPE_SPRINT, RACE_TYPE_FINAL, RACE, SPRINT_RACE, GRID
-from .races_util import add_points_to_season_competitors, remove_points_from_season_competitors
+from .races_util import add_points_to_season_competitors, remove_points_from_season_competitors, send_finalize_emails
 
 from ...models import Race, Season, CompetitorPosition, Competitor, CurrentSeason, SeasonCompetitorPosition, SeasonMessage, RaceWeekend
 from ...serializers.competitors_serializers import CompetitorPositionWriteSerializer
@@ -377,6 +377,7 @@ def finalize_race_weekend(request):
     if add_points_to_season_competitors(season, instance):
         instance.status = STATUS_FINAL
         instance.save()
+        send_finalize_emails(race_weekend.standings, instance, request)
         return HttpResponse(status=201)
     else:
         SeasonMessage.objects.create(

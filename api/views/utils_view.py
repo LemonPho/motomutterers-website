@@ -8,6 +8,7 @@ import pathlib
 import json
 
 from ..tokens import account_activation_token
+from ..utils import send_email
 
 def get_token(request):
     if request.method != "GET":
@@ -95,3 +96,7 @@ def find_image(request):
         })
     else:
         return HttpResponse(status=405)
+
+def send_emails(subject, body, user_list):
+    email = send_email("louismatthew1112@gmail.com", subject, body, content_subtype="html")
+    email.send()

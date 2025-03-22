@@ -29,8 +29,11 @@ def is_email_valid(email):
         return False
 
 #@ratelimit(key='ip', rate='10/h', block=True) 
-def send_email(recipient, subject, body):
-    return EmailMessage(subject, body, to=[recipient])
+def send_email(recipient, subject, body, content_subtype):
+    email = EmailMessage(subject, body, to=[recipient])
+    if content_subtype:
+        email.content_subtype = content_subtype
+    return email
     
 
 def sanitize_text(text):
