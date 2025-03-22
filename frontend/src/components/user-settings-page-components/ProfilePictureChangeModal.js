@@ -77,7 +77,6 @@ export default function ProfilePictureChangeModal({ closeModal, retrieveUserData
 
         if(profilePictureResponse.error){
             setErrorMessage("There was an error while submiting the new profile picture");
-            console.log(profilePictureResponse.error);
             setChangeProfilePictureLoading(false);
             return;
         }

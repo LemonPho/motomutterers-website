@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserPicks, UserPicksRace, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus, SeasonMessage
+from .models import User, UserPicks, UserPicksRace, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus, SeasonMessage, RaceWeekend
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ["username", "is_admin", "last_login"]
@@ -11,7 +11,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ["id", "text", "user__username"]
 
 class RaceAdmin(admin.ModelAdmin):
-    list_display = ["title", "track", "timestamp", "finalized"]
+    list_display = ["track"]
 
 class StandingsRaceAdmin(admin.ModelAdmin):
     list_display = ["id"]
@@ -52,6 +52,9 @@ class UserPicksRaceAdmin(admin.ModelAdmin):
 class SeasonMessageAdmin(admin.ModelAdmin):
     list_display = ["message", "timestamp"]
 
+class RaceWeekendAdmin(admin.ModelAdmin):
+    list_display = ["title", "start", "end"]
+
 # Register your models here.
 admin.site.register(User)
 admin.site.register(Announcement, AnnouncementAdmin)
@@ -70,6 +73,7 @@ admin.site.register(Standings, StandingsAdmin)
 admin.site.register(SeleniumStatus, SeleniumStatusAdmin)
 admin.site.register(UserPicksRace, UserPicksRaceAdmin)
 admin.site.register(SeasonMessage, SeasonMessageAdmin)
+admin.site.register(RaceWeekend, RaceWeekendAdmin)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)

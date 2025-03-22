@@ -11,7 +11,6 @@ export default function SetCurrentSeason(){
         let currentSeasonResponse = await submitCurrentSeason(season.year);
 
         if(currentSeasonResponse.error){
-            console.log(currentSeasonResponse.error);
             setErrorMessage("There was an error submiting the current season");
             return;
         }

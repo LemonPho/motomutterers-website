@@ -156,29 +156,38 @@ class Announcement(models.Model):
         super().delete(*args, **kwargs)
 
 class Race(models.Model):
-    title = models.CharField(max_length=128)
-    track = models.CharField(max_length=64, blank=True)
-    timestamp = models.DateField()
-    is_sprint = models.BooleanField()
-    finalized = models.BooleanField(default=False)
-    qualifying_positions = models.ManyToManyField(CompetitorPosition, related_name="qualifying_race")
+    track = models.CharField(max_length=64, null=True)
     competitors_positions = models.ManyToManyField(CompetitorPosition, related_name="final_race")
-    standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, related_name="race_standings", null=True, blank=True)
-    url = models.URLField(null=True, blank=True)
-    notifications = models.ManyToManyField("Notification", related_name="race", blank=True)
-    comments = models.ManyToManyField("Comment", blank=True, related_name="race")
-
-    class Meta:
-        ordering = ["timestamp"]
+    notifications = models.ManyToManyField("Notification", related_name="race")
 
     def delete(self, *args, **kwargs):
-        for notification in self.notifications.all():
-            notification.delete()
-
-        for comment in self.comments.all():
-            comment.delete()
+        self.competitors_positions.all().delete()
+        self.notifications.all().delete()
 
         super().delete(*args, **kwargs)
+
+class RaceWeekend(models.Model):
+    title = models.CharField(max_length=128)
+    sprint_race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, related_name="sprint_race_weekend")
+    race = models.ForeignKey(Race, on_delete=models.SET_NULL, null=True, related_name="main_race_weekend")
+    grid = models.ManyToManyField(CompetitorPosition)
+    url = models.URLField(null=True, blank=True)
+    comments = models.ManyToManyField("Comment", related_name="race_weekend", blank=True)
+    standings = models.ForeignKey(StandingsRace, on_delete=models.SET_NULL, null=True, blank=True)
+    notifications = models.ManyToManyField("Notification", related_name="race_weekend")
+    start = models.DateField()
+    end = models.DateField()
+    status = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["-start"]
+
+    def delete(self, *args, **kwargs):
+        self.comments.all().delete()
+        self.notifications.all().delete()
+        self.grid.all().delete()
+
+        return super().delete(*args, **kwargs)
 
 class Season(models.Model):
     year = models.IntegerField()
@@ -190,6 +199,7 @@ class Season(models.Model):
     top_rookie = models.BooleanField(default=True)
     finalized = models.BooleanField(default=False)
     standings = models.ForeignKey(Standings, on_delete=models.SET_NULL, null=True, blank=True)
+    race_weekends = models.ManyToManyField(RaceWeekend, related_name="season")
 
     def delete(self, *args, **kwargs):
         for competitor in self.competitors.all():
@@ -197,6 +207,10 @@ class Season(models.Model):
 
         for race in self.races.all():
             race.delete()
+
+        self.competitors.all().delete()
+        self.races.all().delete()
+        self.race_weekends.all().delete()
 
         super().delete(*args, **kwargs)
 

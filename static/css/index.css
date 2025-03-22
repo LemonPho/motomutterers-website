@@ -1,3 +1,7 @@
+html {
+    overflow-y: scroll;
+}
+
 body {
     height: 100%;           
     margin: 0;
@@ -29,6 +33,20 @@ textarea {
 .card-body.custom-card-body.expanded{
     max-height: 5000px;
     padding: 8px;
+}
+
+.username-text {
+    font-size: clamp(15px, 20px, 30px);  /* Shrinks if needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.highlighted {
+    border-radius: 15px;
+    background-color:rgb(255, 234, 167);
+    padding: 5px
 }
 
 .main{

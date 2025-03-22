@@ -934,6 +934,199 @@ export async function submitDeleteSeason(seasonId){
     return response;
 }
 
+export async function submitCreateRaceWeekend(newRaceWeekend){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/create-race-weekend/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                url: newRaceWeekend.url,
+                title: newRaceWeekend.title,
+                start: newRaceWeekend.start,
+                end: newRaceWeekend.end,
+                season_year: newRaceWeekend.seasonYear,
+            }),
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse : false,
+        response.status = apiResponse.status;
+    } catch(error){
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitEditRaceWeekend(newRaceWeekend){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/edit-race-weekend/`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                race_weekend_data: newRaceWeekend,
+            }),
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse : false,
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitRaceWeekendEvent(raceWeekendId, eventType){
+    let response = {
+        error: false,
+        competitorsNotFound: [],
+        timeout: false,
+        seleniumBusy: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/post-race-weekend-event/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                id: raceWeekendId,
+                event_type: eventType,
+            }),
+        });
+
+        const apiResult = apiResponse.status == 400 ? await apiResponse.json() : null;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false,
+        response.competitorsNotFound = apiResponse.status == 400 ? apiResult.competitors_not_found : [],
+        response.timeout = apiResponse.status == 400 ? apiResult.timeout : false;
+        response.seleniumBusy = apiResponse.status == 400 ? apiResult.selenium_busy : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitFinalizeRaceWeekend(raceWeekendId){
+    let response = {
+        error: false,
+        cantBeFinalized: false,
+        competitorsNotFound: [],
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/finalize-race-weekend/`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                id: raceWeekendId,
+            }),
+        });
+
+        const apiResult = apiResponse.status == 400 ? await apiResponse.json() : false;
+        response.error = apiResponse.status == 500;
+        response.cantBeFinalized = apiResult ? apiResult.cant_be_finalized : false;
+        response.competitorsNotFound = apiResult ? apiResult.competitors_not_found : [];
+        response.status = apiResponse.status;
+
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitUnFinalizeRaceWeekend(raceWeekendId){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch('/api/un-finalize-race-weekend/', {
+            method: "PUT",
+            headers: {
+                "X-CSRFTOken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                id: raceWeekendId,
+            }),
+        });
+
+        response.error = apiResponse.status == 500;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function submitDeleteRaceWeekend(raceWeekendId){
+    let response = {
+        error: false,
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/delete-race-weekend/`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "content-type": "application/json",
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                id: raceWeekendId,
+            }),
+        });
+
+        response.error = apiResponse.status === 500 ? apiResponse: false,
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function submitRace(newRace){
     let response = {
         error: false,

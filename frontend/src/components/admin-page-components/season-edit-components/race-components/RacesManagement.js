@@ -40,7 +40,6 @@ export default function RacesManagement(){
         const raceResponse = await getRace(raceId);
 
         if(raceResponse.error || raceResponse.status != 200){
-            console.log(raceResponse);
             setErrorMessage("There was an error loading the race");
             return;
         }

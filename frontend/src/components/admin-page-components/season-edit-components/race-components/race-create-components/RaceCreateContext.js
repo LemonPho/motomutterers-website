@@ -59,7 +59,6 @@ export default function RaceCreateContextProvider({children}){
         let raceResponse = await submitFullRace(newRace, season.year);
 
         if(raceResponse.error){
-            console.log(raceResponse);
             setErrorMessage("There was an error submiting the race");
             return;
         }

@@ -51,7 +51,6 @@ export function ApplicationContextProvider({children}){
 
         if(selectPicksStateResponse.error){
             setErrorMessage("There was an error loading the users picks state.");
-            console.log(selectPicksStateResponse.error);
             return;
         }
 
@@ -133,6 +132,7 @@ export function ApplicationContextProvider({children}){
             profilePictures, retrieveProfilePicture,
             setErrorMessage, addErrorMessage, setSuccessMessage, setInformationMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
             resetApplicationMessages }}>
+                
             {children}
         </ApplicationContext.Provider>
     );

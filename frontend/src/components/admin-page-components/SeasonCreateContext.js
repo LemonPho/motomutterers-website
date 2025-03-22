@@ -16,7 +16,6 @@ export default function SeasonCreateContextProvider(){
         let seasonsResponse = await getSeasonsSimpleYear();
 
         if(seasonsResponse.error){
-            console.log(seasonsResponse.error);
             setErrorMessage("There was an error loading the seasons");
             return;
         }

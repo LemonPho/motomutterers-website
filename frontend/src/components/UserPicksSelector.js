@@ -64,7 +64,6 @@ export default function UserPicksSelector(){
 
         if(picksResponse.error){
             setErrorMessage("There has been an error submiting the picks.");
-            console.log(picksResponse.error);
             return;
         }
 
@@ -137,11 +136,9 @@ export default function UserPicksSelector(){
 
         const userPicksResponse = await getUserPicks(currentSeason.id, user.id);
 
-        console.log(userPicksResponse);
 
         if(userPicksResponse.error){
             setErrorMessage("There has been an error loading the selected picks");
-            console.log(userPicksResponse.error);
             return;
         }
 

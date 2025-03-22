@@ -12,6 +12,8 @@ import SetCurrentSeason from "./SetCurrentSeason";
 import DeleteSeason from "./season-delete-components/DeleteSeason";
 import SeleniumStatus from "./SeleniumStatus";
 import SeasonMessages from "./SeasonMessages";
+import RaceWeekendsManagement from "./race-weekend-components/RaceWeekendsManagement";
+import RaceWeekendContextProvider from "./race-weekend-components/RaceWeekendAdminContext";
 
 export default function SeasonEdit(){
     const { retrieveSeason, season, seasonLoading } = useSeasonContext();
@@ -55,9 +57,11 @@ export default function SeasonEdit(){
                         <SeasonMessages />
                     </div>
                     }
-                    <div className="row">
+                    <div className="row mb-2">
                         <CompetitorsManagement/>
-                        <RacesManagement/>
+                        <RaceWeekendContextProvider>
+                            <RaceWeekendsManagement/>
+                        </RaceWeekendContextProvider>
                     </div>
                     <div className="row mb-2">
                         <div className="card rounded-15 col-md element-background-color element-border-color" style={{padding: "10px"}}>

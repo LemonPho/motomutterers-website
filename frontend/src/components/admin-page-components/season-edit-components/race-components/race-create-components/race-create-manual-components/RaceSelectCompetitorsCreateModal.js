@@ -37,8 +37,6 @@ export default function RaceSelectCompetitorsCreateModal(){
             return;
         }
 
-        console.log(selectedCompetitors);
-
         if(selectedCompetitors.length == 0){
             const tempCompetitors = season.competitors_sorted_number.map(competitor => ({
                 competitor: competitor,

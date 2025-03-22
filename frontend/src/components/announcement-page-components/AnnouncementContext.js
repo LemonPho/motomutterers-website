@@ -36,7 +36,6 @@ export default function AnnouncementContextProvider(){
         }
 
         if(announcementResponse.error || announcementResponse.status != 200){
-            console.log(announcementResponse.error)
             setErrorMessage("There was an error loading the announcement");
             setAnnouncementLoading(false);
             return;
@@ -50,7 +49,6 @@ export default function AnnouncementContextProvider(){
         const announcementResponse = await submitEditAnnouncement(title, text, announcementId);
 
         if(announcementResponse.error){
-            console.log(announcementResponse.error);
             setErrorMessage("There was an error saving the changes");
             return false;
         }
@@ -73,7 +71,6 @@ export default function AnnouncementContextProvider(){
         const announcementResponse = await submitDeleteAnnouncement(announcementId);
 
         if(announcementResponse.error || announcementResponse.status != 200){
-            console.log(announcementResponse.error);
             setErrorMessage("There was an error deleting the announcement");
             return;
         }

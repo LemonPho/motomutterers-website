@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getSeasonAdmin } from "../../fetch-utils/fetchGet";
 import { Outlet, useParams } from "react-router-dom";
-import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults, submitDeleteSeason } from "../../fetch-utils/fetchPost";
+import { submitCompetitor, submitDeleteCompetitor, submitDeleteRace, submitEditSeasonCompetitor, submitEditRace, submitRace, submitRaceResults, submitDeleteSeason, submitEditRaceWeekend, submitDeleteRaceWeekend } from "../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../ApplicationContext";
 import { useSeasonCreateContext } from "../SeasonCreateContext";
 
@@ -29,7 +29,6 @@ export default function SeasonContextProvider(){
         if(seasonResponse.error || seasonResponse.status != 200){
             setErrorMessage("There was an error loading the season");
             setSeasonLoading(false);
-            console.log(seasonResponse.error);
             return;
         }
 
@@ -60,7 +59,6 @@ export default function SeasonContextProvider(){
 
         if(raceResponse.error || raceResponse.status != 200){
             setErrorMessage("There was an error creating the race");
-            console.log(raceResponse.error)
             return false;
         }
 
@@ -76,7 +74,6 @@ export default function SeasonContextProvider(){
 
         if(raceResponse.error){
             setErrorMessage("There was an error adding the results");
-            console.log(raceResponse.error);
             return false;
         }
 
@@ -96,7 +93,6 @@ export default function SeasonContextProvider(){
 
         if(raceResponse.error){
             setErrorMessage("There was an error editing the race")
-            console.log(raceResponse.error)
             return false;
         }
 
@@ -116,7 +112,6 @@ export default function SeasonContextProvider(){
         let raceResponse = await submitDeleteRace(raceId, seasonYear);
 
         if(raceResponse.error || raceResponse.status != 200){
-            console.log(raceResponse.error);
             setErrorMessage("There was an error deleting the race");
             setErrorMessage("There was an error deleting the race");
             return;
@@ -137,7 +132,6 @@ export default function SeasonContextProvider(){
 
         if(competitorResponse.error){
             setErrorMessage("There was an error submiting the competitor");
-            console.log(competitorResponse.error);
             return false;
         }
 
@@ -166,7 +160,6 @@ export default function SeasonContextProvider(){
         const competitorResponse = await submitEditSeasonCompetitor(newCompetitor);
 
         if(competitorResponse.error){
-            console.log(competitorResponse.error);
             setErrorMessage("There was an error editing the rider");
             return false;
         }
@@ -187,7 +180,6 @@ export default function SeasonContextProvider(){
 
         if(competitorResponse.error){
             setErrorMessage("There was an error deleting the rider");
-            console.log(competitorResponse.error);
             return false;
         }
 
@@ -208,7 +200,7 @@ export default function SeasonContextProvider(){
 
     return(
         <SeasonContext.Provider value={{ season, seasonLoading, setSeason, retrieveSeason, deleteSeason,
-                                        createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace,
+                                        createSeasonRace, addSeasonRaceResults, editSeasonRace, deleteSeasonRace, 
                                         createSeasonCompetitor, editSeasonCompetitor, deleteSeasonCompetitor, }}>
             <Outlet/>
         </SeasonContext.Provider>

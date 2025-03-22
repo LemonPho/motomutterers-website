@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 
-from ...models import Announcement, Comment, Race
+from ...models import Announcement, Comment, Race, RaceWeekend
 from ...serializers.comments_serializers import CommentWriteSerializer, CommentReadSerializer
 
 from .comments_validators import validate_generate_comment_data
@@ -17,10 +17,10 @@ def get_comments(request):
     if not parent_element or parent_id == -1:
         return HttpResponse(status=400)
     
-    if parent_element == "RACE":
+    if parent_element == "RACE_WEEKEND":
         try:
-            element = Race.objects.get(pk=parent_id)
-        except Race.DoesNotExist:
+            element = RaceWeekend.objects.get(pk=parent_id)
+        except RaceWeekend.DoesNotExist:
             return HttpResponse(status=404)
     elif parent_element == "ANNOUNCEMENT":
         try:

@@ -256,27 +256,6 @@ export async function getComments(parentElement){
     return response;
 }
 
-export async function getAnnouncementComments(id){
-    let response = {
-        error: false,
-        comments: {},
-        status: null,
-    }
-
-    try{
-        const apiResponse = await fetch(`/api/get-announcement-comments?id=${id}`);
-        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
-
-        response.error = apiResponse.status === 500 ? apiResponse : false;
-        response.comments = apiResponse.status === 200 ? apiResult : false;
-        response.status = apiResponse.status;
-    } catch(error){
-        response.error = error;
-    }
-
-    return response;
-}
-
 export async function getCommentReplies(commentId){
     let response = {
         error: false,
@@ -521,6 +500,50 @@ export async function getSeasonCompetitors(year){
     return response;
 }
 
+export async function getRaceWeekend(raceWeekendId){
+    let response = {
+        error: false,
+        raceWeekend: {},
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-race-weekend?id=${raceWeekendId}`);
+        const apiResult = apiResponse.status == 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status == 500;
+        response.status = apiResponse.status;
+        response.raceWeekend = apiResult ? apiResult.race_weekend : false;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function getRaceWeekends(seasonYear){
+    let response = {
+        error: false,
+        raceWeekends: [],
+        invalidSeason: false,
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-race-weekends?season=${seasonYear}`);
+        const apiResult = await apiResponse.json();
+
+        response.error = apiResponse.status == 500;
+        response.status = apiResponse.status;
+        response.raceWeekends = apiResult.race_weekends;
+        response.invalidSeason = apiResult.invalid_season;
+    } catch(error){
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getRace(raceId){
     let response = {
         error: false,
@@ -557,6 +580,27 @@ export async function getRaceComments(raceId){
         response.comments = apiResponse.status === 200 ? apiResult.comments : false;
         response.status = apiResponse.status;
     } catch(error){
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function getRaceWeekendAdmin(raceWeekendId){
+    let response = {
+        error: false,
+        raceWeekend: {},
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-race-weekend-admin?id=${raceWeekendId}`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.raceWeekend = apiResponse.status === 200 ? apiResult.race_weekend : false;
+        response.status = apiResponse.status;
+    } catch(error) {
         response.error = error;
     }
 

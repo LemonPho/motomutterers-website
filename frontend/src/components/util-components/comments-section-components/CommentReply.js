@@ -9,7 +9,7 @@ import { useOpenersContext } from "../../OpenersContext";
 import Visible from "../Visble";
 import Textarea from "../Textarea";
 
-export default function CommentReply({ reply }){
+export default function CommentReply({ reply, highlighted }){
 
     const { postEditComment, postDeleteComment } = useCommentsContext();
     const { user } = useApplicationContext();
@@ -48,7 +48,7 @@ export default function CommentReply({ reply }){
     }
 
     return(
-        <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className="dynamic-container" style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
+        <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className={`dynamic-container ${highlighted ? "highlighted" : ""}`} style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
             <div className="d-flex align-items-start">
                 <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} username={reply.user.username}/>
                 <div className="dynamic-container">

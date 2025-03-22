@@ -46,7 +46,6 @@ export default function FindAccount() {
         let emailResponse = await sendNewPasswordEmail(searchInput);
 
         if(emailResponse.error){
-            console.log(emailResponse.error);
             return;
         }
 

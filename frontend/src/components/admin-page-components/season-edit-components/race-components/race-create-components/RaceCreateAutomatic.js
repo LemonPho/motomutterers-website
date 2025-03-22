@@ -38,7 +38,6 @@ export default function RaceCreateAutomatic(){
         if(raceResponse.error){
             setErrorMessage("There was an error processing the link.");
             setLoadingMessage(false);
-            console.log(raceResponse.error);
             return;
         }
 

@@ -37,7 +37,6 @@ export default function Anouncements(){
         const announcementsResponse = await getAnnouncements(page);
         if(announcementsResponse.error || announcementsResponse.status !== 200){
             setErrorMessage("There was an error while loading the announcements");
-            console.log(announcementsResponse.error);
             return;
         }
 

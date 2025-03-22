@@ -36,7 +36,6 @@ function LoginPage() {
 
         if(loginResponse.error){
             setErrorMessage("Error logging in");
-            console.log(loginResponse.error);
             return;
         }
 

@@ -1,4 +1,4 @@
-from ...models import Announcement, Race
+from ...models import Announcement, RaceWeekend
 
 def validate_generate_comment_data(data, request, parent_element, parent_element_id):
     response = {
@@ -10,6 +10,9 @@ def validate_generate_comment_data(data, request, parent_element, parent_element
     announcement = None
     race = None
 
+    announcement = None
+    race_weekend = None
+
     if parent_comment_id:
         response["parent_comment"] = parent_comment_id
 
@@ -18,15 +21,15 @@ def validate_generate_comment_data(data, request, parent_element, parent_element
             announcement = Announcement.objects.get(pk=parent_element_id)
         except Announcement.DoesNotExist:
             announcement = None
-    elif parent_element == "RACE":
+    elif parent_element == "RACE_WEEKEND":
         try:
-            race = Race.objects.get(pk=parent_element_id)
+            race_weekend = RaceWeekend.objects.get(pk=parent_element_id)
         except Race.DoesNotExist:
-            race = None
+            race_weekend = None
     
     if announcement:
         response["announcement"] = announcement.id
     else:
-        response["race"] = race.id
+        response["race_weekend"] = race_weekend.id
 
     return response

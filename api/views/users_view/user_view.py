@@ -110,8 +110,8 @@ def get_user_comments(request):
     data = json.loads(request.body)
     username = data.get("username", False)
     page = int(request.GET.get("page", 1))
-    end = (page * 10) + 5
-    start = end - 15
+    start = (page - 1) * 15
+    end = start + 15
 
     if not username:
         return HttpResponse(status=405)

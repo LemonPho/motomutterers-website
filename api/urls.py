@@ -21,6 +21,17 @@ from .views.standings_view import standings_view
 from .views.races_view import races_view
 
 urlpatterns = [
+    #race weekends
+    path('get-race-weekend-admin', races_view.get_race_weekend_admin),
+    path('create-race-weekend/', races_view.create_race_weekend),
+    path('delete-race-weekend/', races_view.delete_race_weekend),
+    path('post-race-weekend-event/', races_view.post_race_weekend_event),
+    path('finalize-race-weekend/', races_view.finalize_race_weekend),
+    path('un-finalize-race-weekend/', races_view.un_finalize_race_weekend),
+
+    path('get-race-weekends', races_view.get_race_weekends),
+    path('get-race-weekend', races_view.get_race_weekend),
+
     #get
     path('find-account', utils_view.find_account),
     path('find-image', utils_view.find_image),
@@ -53,7 +64,6 @@ urlpatterns = [
     path('get-users-picks-state/', seasons_view.get_users_picks_state),
 
     #post
-    path('add-race-results/', races_view.add_race_results),
     path('change-email/', user_view.change_email),
     path('change-password/', user_view.change_password),
     path('change-profile-picture/', user_view.change_profile_picture),
@@ -61,9 +71,6 @@ urlpatterns = [
     path('create-competitor/', competitors_view.create_competitor),
     path('create-season-competitors-link/', competitors_view.create_season_competitors_link),
     path('create-season/', seasons_view.create_season),
-    path('create-race/', races_view.create_race),
-    path('create-complete-race/', races_view.create_complete_race),
-    path('create-race-link/', races_view.create_race_link),
     path('delete-account/', user_view.delete_account),
     path('delete-announcement/', announcements_view.delete_announcement),
     path('delete-all-competitors/', competitors_view.delete_all_competitors),
@@ -75,14 +82,13 @@ urlpatterns = [
     path('delete-season-message/', seasons_view.delete_season_message),
     path('edit-announcement/', announcements_view.edit_announcement),
     path('edit-season-competitor/', competitors_view.edit_season_competitor),
-    path('edit-race/', races_view.edit_race),
+    path('edit-race-weekend/', races_view.edit_race_weekend),
     path('edit-comment/', comments_view.edit_comment),
     path('post-comment/', comments_view.post_comment),
     path('post-announcement/', announcements_view.post_announcement),
     path('read-notification/', notification_view.read_notification),
     path('register/', authentication_view.register),
     path('reset-password/', user_view.reset_password),
-    path('retrieve-race-result/', races_view.retrieve_race_result),
     path('set-current-season/', seasons_view.set_current_season),
     path('set-user-picks/', picks_view.set_user_picks),
     path('finalize-season/', seasons_view.finalize_season),
@@ -95,5 +101,5 @@ urlpatterns = [
     path('activate-email', activation_view.activate_email),
     path('login/', authentication_view.login_view),
     path('logout/', authentication_view.logout_view),
-    path('send-reset-email', user_view.email_new_password),   
+    path('send-reset-email', user_view.email_new_password),
 ]

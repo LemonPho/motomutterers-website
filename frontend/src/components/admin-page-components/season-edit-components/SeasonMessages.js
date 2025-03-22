@@ -16,7 +16,6 @@ export default function SeasonMessages(){
     async function deleteSeasonMessage(id){
         const seasonMessageResponse = await submitDeleteSeasonMessage(id);
 
-        console.log(seasonMessageResponse);
 
         if(seasonMessageResponse.error || seasonMessageResponse.status != 201){
             setErrorMessage("There was an error deleting the season message");

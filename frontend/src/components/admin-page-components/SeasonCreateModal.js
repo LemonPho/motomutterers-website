@@ -22,7 +22,6 @@ export default function SeasonCreateModal(){
         setLoadingMessage(false);
 
         if(seasonResponse.error){
-            console.log(error);
             setErrorMessage("There was an error creating the season");
             return;
         }

@@ -26,7 +26,6 @@ export default function NotificationsDropdown(){
         let readResponse = await readNotification(notificationId);
 
         if(readResponse.error || readResponse.status !== 200){
-            console.log(error);
             setErrorOcurred(true);
             return;
         }
