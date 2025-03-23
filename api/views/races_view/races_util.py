@@ -99,7 +99,7 @@ def send_finalize_emails(standings, race_weekend, request):
     standings_serializer = StandingsRaceSerializer(standings)
     standings_data = standings_serializer.data
     race_weekend_data = {
-        "url": f"{protocol}:{domain}/race-weekends/{race_weekend.id}",
+        "url": f"{protocol}://{domain}/race-weekends/{race_weekend.id}",
         "title": race_weekend.title,
     }
 
