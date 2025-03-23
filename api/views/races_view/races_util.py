@@ -90,7 +90,7 @@ def send_finalize_emails(standings, race_weekend, request):
     domain = get_current_site(request).domain
     protocol = 'https' if request.is_secure() else 'http'
 
-    users_picks = standings.users_picks.all().filter(user__race_weekends_finalize_emails = True)
+    users_picks = standings.users_picks.all().filter(user__race_weekends_emails = True)
     users = [pick.user for pick in users_picks]
 
     standings = race_weekend.standings

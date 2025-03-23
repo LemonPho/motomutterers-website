@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 
 import { useApplicationContext } from "../ApplicationContext";
 import Modal from "../util-components/Modal";
@@ -9,10 +9,15 @@ import ProfilePictureChangeModal from "./ProfilePictureChangeModal";
 import PasswordChangeModal from "./PasswordChangeModal";
 import EmailChangeModal from "./EmailChangeModal";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
+import Expand from "../util-components/Expand";
+import EmailNotificationsSettings from "./EmailNotificationsSettings";
 
 export default function UserSettings(){
+    
     const {user, userLoading, setErrorMessage, retrieveUserData, resetApplicationMessages} = useApplicationContext();
     const { openedModal, openModal, closeModal } = useOpenersContext();
+
+    const [ emailSettingsExpanded, setEmailSettingsExpanded ] = useState(false);
 
     if(userLoading){
         return null;
@@ -21,7 +26,7 @@ export default function UserSettings(){
     if(!userLoading && !user.is_logged_in){
         setErrorMessage("You must be logged in to use this page");
         return null;
-    }
+    }    
 
     return(
         <div>
@@ -73,6 +78,32 @@ export default function UserSettings(){
                         <PasswordChangeModal closeModal={closeModal}/>
                     </Modal>
                 </div>
+
+                <div>
+                    <div className="nested-element-color rounded-15 m-2">
+                        <div className="p-3 rounded-15 d-flex align-items-center clickable" onClick={() => setEmailSettingsExpanded(!emailSettingsExpanded)}>
+                            <strong style={{"fontSize": "20px"}}>Email Settings</strong>
+                            <button className="ms-auto btn btn-light">
+                                {emailSettingsExpanded && 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up" viewBox="0 0 16 16">
+                                    <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
+                                </svg>
+                                }
+
+                                {!emailSettingsExpanded && 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down" viewBox="0 0 16 16">
+                                    <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659"/>
+                                </svg>
+                                }
+                            </button>
+                        </div>
+                        
+                        <Expand expanded={emailSettingsExpanded} id={"email-settings"}>
+                            <EmailNotificationsSettings />
+                        </Expand>
+                    </div>
+                </div>
+
                 <div>
                     <div className="p-3 d-flex align-items-center nested-element-color rounded-15 m-2">
                         <strong style={{fontSize: "20px"}}>Delete Account</strong>
@@ -82,7 +113,6 @@ export default function UserSettings(){
                         <DeleteAccountModal closeModal={closeModal} retrieveUserData={retrieveUserData}/>
                     </Modal>
                 </div>
-                
                 <hr />
             </div>
         </div>

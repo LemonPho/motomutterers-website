@@ -63,7 +63,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_logged_in = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications", "race_weekends_finalize_emails"]
+        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications", "race_weekends_emails"]
 
     #get functions
     def get_is_admin(self, user):

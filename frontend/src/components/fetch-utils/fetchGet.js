@@ -649,7 +649,7 @@ export async function getUserPicks(seasonId, userId){
     return response;
 }
 
-export async function getUserPicksSimple(seasonId, username){
+export async function getUserPicksSimple(seasonYear, username){
     let response = {
         error: false,
         userPicks:null,
@@ -657,7 +657,7 @@ export async function getUserPicksSimple(seasonId, username){
     }
 
     try{
-        const apiResponse = await fetch(`/api/get-user-picks-simple?season=${seasonId}&username=${username}`);
+        const apiResponse = await fetch(`/api/get-user-picks-simple?season=${seasonYear}&username=${username}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;

@@ -10,6 +10,8 @@ export default function MemberPicks() {
     const [memberPicksCheckboxState, setMemberPicksCheckboxState] = useState(season.selection_open);
 
     async function handleToggleUsersPicks() {
+        const tempMemberPicksCheckboxState = memberPicksCheckboxState;
+        setMemberPicksCheckboxState(!memberPicksCheckboxState);
         if(season.competitors.length == 0){
             setErrorMessage("Be sure to have competitors added before enabling member picks");
             return;
@@ -19,23 +21,18 @@ export default function MemberPicks() {
 
         const memberPicksResponse = await submitToggleUsersPicksState();
 
-        if (memberPicksResponse.error) {
+        if (memberPicksResponse.error || memberPicksResponse.status != 200) {
+            setMemberPicksCheckboxState(tempMemberPicksCheckboxState);
             setErrorMessage("There was an error toggling the member picks.");
             return;
         }
 
-        if (memberPicksResponse.status === 200) {
-            setLoadingMessage(false);
-            setSuccessMessage(`Member picks successfully ${season.selection_open ? 'disabled' : 'enabled'}.`);
-            setMemberPicksCheckboxState(!season.selection_open);
-            await retrieveSeason();
-            await retrieveCurrentSeason();
-            await retrievePicksState();
-
-            return;
-        }
-
-        setErrorMessage("It was not possible to enable member picks");
+        setLoadingMessage(false);
+        setSuccessMessage(`Member picks successfully ${season.selection_open ? 'disabled' : 'enabled'}.`);
+        setMemberPicksCheckboxState(!season.selection_open);
+        await retrieveSeason();
+        await retrieveCurrentSeason();
+        await retrievePicksState();
     }
 
     return (

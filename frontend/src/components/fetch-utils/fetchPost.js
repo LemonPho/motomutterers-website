@@ -355,6 +355,35 @@ export async function submitChangeProfilePicture(newProfilePictureForm){
     return response;
 }
 
+export async function submitToggleEmailsNotifications(type){
+    let response = {
+        error: false,
+        status: null,
+    }
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch("/api/toggle-email-notifications/", {
+            method: "PUT",
+            mode: "same-origin",
+            headers: {
+                "content-type": "application/json",
+                "X-CSRFTOKen": csrftoken,
+            },
+            body: JSON.stringify({
+                type: type,
+            }),
+        });
+
+        response.error = apiResponse.status == 500;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function submitDeleteAccount(){
     let response = {
         error: false,

@@ -44,12 +44,12 @@ def get_user_picks_simple(request):
     if request.method != "GET":
         return HttpResponse(status=405)
         
-    season_id = request.GET.get("season")
+    season_year = request.GET.get("season")
     username = request.GET.get("username")
     User = get_user_model()
 
     try:
-        season = Season.objects.filter(visible=True).get(pk=season_id)
+        season = Season.objects.filter(visible=True).get(year=season_year)
     except Season.DoesNotExist:
         return HttpResponse(status=404)
     

@@ -291,6 +291,25 @@ def change_profile_picture(request):
     else:
         return HttpResponse(status=400)
 
+def toggle_email_notifications(request):
+    if request.method != "PUT" or not request.user.is_authenticated:
+        return HttpResponse(status=405)
+    
+    TYPE_RACE_WEEKENDS = 1
+    
+    data = json.loads(request.body)
+    type = data.get("type", False)
+
+    if not type:
+        return HttpResponse(status=400)
+        
+    if type == TYPE_RACE_WEEKENDS:
+        request.user.race_weekends_emails = not request.user.race_weekends_emails
+
+    request.user.save()
+    
+    return HttpResponse(status=201)
+
 
 def email_new_password(request):
     username = request.GET.get("username", False)

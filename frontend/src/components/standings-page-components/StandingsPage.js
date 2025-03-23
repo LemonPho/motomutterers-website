@@ -12,7 +12,7 @@ import Dropdown from "../util-components/Dropdown";
 export default function Standings(){
     const { user, userLoading } = useApplicationContext();
     const { 
-        retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, seasonList,
+        retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, selectedSeasonYear, seasonList,
         standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks,
         copyStandingsTable } = useStandingsContext();
     const { openedModal, openModal, openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
@@ -43,7 +43,7 @@ export default function Standings(){
                 }
                 <div className="ms-auto btn-group dropdown-div">
                     <button className="btn btn-outline-secondary dropdown-toggle rounded-15" data-bs-toggle="dropdown" type="button" aria-expanded="false" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
-                        {selectedSeason.year}
+                        {selectedSeasonYear}
                     </button>
                     <Dropdown isOpen={openedDropdown == "season-selector-dropdown"}>
                         <ul className="dropdown-menu" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>

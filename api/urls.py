@@ -32,6 +32,9 @@ urlpatterns = [
     path('get-race-weekends', races_view.get_race_weekends),
     path('get-race-weekend', races_view.get_race_weekend),
 
+    #user
+    path('toggle-email-notifications/', user_view.toggle_email_notifications),
+
     #get
     path('find-account', utils_view.find_account),
     path('find-image', utils_view.find_image),

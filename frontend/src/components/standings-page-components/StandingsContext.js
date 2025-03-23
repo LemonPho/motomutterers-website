@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useSearchParams } from "react-router-dom";
 import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getSeasonStandings, getUserPicksSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 
@@ -7,6 +7,8 @@ const StandingsContext = createContext();
 
 export default function StandingsContextProvider(){
     const { setErrorMessage, setSuccessMessage } = useApplicationContext();
+
+    const [searchParams] = useSearchParams();
 
     const [standings, setStandings] = useState({});
     const [standingsLoading, setStandingsLoading] = useState(true);
@@ -16,12 +18,13 @@ export default function StandingsContextProvider(){
     const [seasonList, setSeasonList] = useState([]);
     const [seasonListLoading, setSeasonListLoading] = useState(true);
     const [selectedSeason, setSelectedSeason] = useState({});
+    const [selectedSeasonYear, setSelectedSeasonYear] = useState(searchParams.get("season"));
     const [selectedSeasonLoading, setSelectedSeasonLoading] = useState(true);
 
     async function retrieveStandings(){
         setStandingsLoading(true);
-        const params = new URLSearchParams(location.search);
-        const seasonYear = params.get("season");
+        
+        const seasonYear = searchParams.get("season");
 
         const usersStandingsResponse = await getSeasonStandings(seasonYear);
 
@@ -38,8 +41,9 @@ export default function StandingsContextProvider(){
 
     async function retrieveSelectedSeason(){
         setSelectedSeasonLoading(true);
-        const params = new URLSearchParams(location.search);
-        const seasonYear = params.get("season");
+        
+        const seasonYear = searchParams.get("season");
+        setSelectedSeasonYear(seasonYear);
 
         const seasonResponse = await getSeasonSimple(seasonYear);
 
@@ -72,7 +76,7 @@ export default function StandingsContextProvider(){
 
     async function retrieveUserPicks(username){
         setUserPicksDetailedLoading(true);
-        const userPicksResponse = await getUserPicksSimple(selectedSeason.id, username);
+        const userPicksResponse = await getUserPicksSimple(selectedSeasonYear, username);
 
         if(userPicksResponse.error){
             setErrorMessage("There was an error retrieving the user picks");
@@ -140,7 +144,7 @@ export default function StandingsContextProvider(){
         <StandingsContext.Provider value={{
             retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, retrieveUserPicks,
             standings, userPicksDetailed, seasonList, selectedSeason,
-            standingsLoading, userPicksDetailedLoading, seasonListLoading, selectedSeasonLoading,
+            standingsLoading, userPicksDetailedLoading, seasonListLoading, selectedSeasonLoading, selectedSeasonYear,
             copyStandingsTable,
         }}>
             <Outlet />

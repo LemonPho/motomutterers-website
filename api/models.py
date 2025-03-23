@@ -73,7 +73,7 @@ class User(AbstractUser):
     profile_picture = models.ImageField(null=True, blank=True, upload_to=generate_image_path, storage=OverwriteStorage)
 
     #Email notifications settings
-    race_weekends_finalize_emails = models.BooleanField(default=True)
+    race_weekends_emails = models.BooleanField(default=False)
 
     objects = UserManager()
 
