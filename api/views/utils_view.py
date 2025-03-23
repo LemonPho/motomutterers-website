@@ -97,6 +97,7 @@ def find_image(request):
     else:
         return HttpResponse(status=405)
 
-def send_emails(subject, body, user_list):
-    email = send_email("louismatthew1112@gmail.com", subject, body, content_subtype="html")
-    email.send()
+def send_emails(subject, body, user_list, content_subtype):
+    for user in user_list:
+        email = send_email(user.email, subject, body, content_subtype)
+        email.send()

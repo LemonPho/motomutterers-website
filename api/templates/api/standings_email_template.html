@@ -44,8 +44,10 @@
     </style>
 </head>
 <body>
-    <h4>{{ race_weekend.title }}</h4>
-    <span>The {{ race_weekend.title }} race results have been registered, you can check the standings here: <a href="{{ race_weekend.url }}">{{ race_weekend.url }}</a></span>
+    <span>
+        The {{ race_weekend.title }}'s race results have been registered, you can check the standings here (no spoilers): <a href="{{ race_weekend.url }}">{{ race_weekend.url }}</a>.
+        The races are hidden by default.
+    </span>
     <table>
         {% for row in standings.users_picks %}
         <tr>

@@ -93,7 +93,10 @@ def send_finalize_emails(standings, race_weekend, request):
     users_picks = standings.users_picks.all().filter(user__race_weekends_finalize_emails = True)
     users = [pick.user for pick in users_picks]
 
-    standings_serializer = StandingsRaceSerializer(race_weekend.standings.all()[0:10], many=True)
+    standings = race_weekend.standings
+    standings.users_picks.set(standings.users_picks.all()[0:10])
+
+    standings_serializer = StandingsRaceSerializer(standings)
     standings_data = standings_serializer.data
     race_weekend_data = {
         "url": f"{protocol}:{domain}/race-weekends/{race_weekend.id}",
@@ -109,6 +112,6 @@ def send_finalize_emails(standings, race_weekend, request):
     subject = f"{race_weekend.title}'s race results have been posted"
     body = html_content_string
 
-    send_emails(subject, body, users)
+    send_emails(subject, body, users, "html")
 
 
