@@ -25,10 +25,7 @@ export default function Comment({ comment, highlighted }){
     const [showRepliesDiv, setShowRepliesDiv] = useState(() => comment.replies.some(item => item.id == highlightedCommentId));
 
     async function deleteComment(commentId){
-        if(await postDeleteComment(commentId)){
-            setComments((prevComment) => prevComment.id !== commentId);
-            closeDropdown();
-        }
+        await postDeleteComment(commentId);
     }
 
     async function createCommentReply(){
