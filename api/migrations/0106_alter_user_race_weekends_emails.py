@@ -2,6 +2,9 @@
 
 from django.db import migrations, models
 
+def set_false(apps, schema_editor):
+    User = apps.get_model("api", "User")
+    User.objects.all().update(race_weekends_emails=False)
 
 class Migration(migrations.Migration):
 
@@ -15,4 +18,5 @@ class Migration(migrations.Migration):
             name='race_weekends_emails',
             field=models.BooleanField(default=False),
         ),
+        migrations.RunPython(set_false)
     ]
