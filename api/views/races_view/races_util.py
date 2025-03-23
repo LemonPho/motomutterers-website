@@ -89,15 +89,18 @@ def send_finalize_emails(standings, race_weekend, request):
 
     domain = get_current_site(request).domain
     protocol = 'https' if request.is_secure() else 'http'
+    if protocol == "http": return #to prevent accidently sending test emails to real users emails
 
     users_picks = standings.users_picks.all().filter(user__race_weekends_emails = True)
     users = [pick.user for pick in users_picks]
 
     standings = race_weekend.standings
+    temp_users_picks = standings.users_picks.copy()
     standings.users_picks.set(standings.users_picks.all()[0:10])
-
     standings_serializer = StandingsRaceSerializer(standings)
     standings_data = standings_serializer.data
+    standings.users_picks.set(temp_users_picks) #this is to put the users_picks back
+    
     race_weekend_data = {
         "url": f"{protocol}://{domain}/race-weekends/{race_weekend.id}",
         "title": race_weekend.title,
@@ -113,5 +116,6 @@ def send_finalize_emails(standings, race_weekend, request):
     body = html_content_string
 
     send_emails(subject, body, users, "html")
+
 
 
