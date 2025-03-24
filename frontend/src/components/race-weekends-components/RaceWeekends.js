@@ -3,6 +3,7 @@ import { useRaceWeekendContext } from "./RaceWeekendsContext";
 import { useOpenersContext } from "../OpenersContext";
 import Dropdown from "../util-components/Dropdown";
 import { Link } from "react-router-dom";
+import RaceWeekendCard from "./RaceWeekendCard";
 
 export default function RaceWeekends(){
     const { openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
@@ -40,23 +41,8 @@ export default function RaceWeekends(){
                 )}
         
                 {(!raceWeekendsLoading && raceWeekends != undefined) && (raceWeekends.map((raceWeekend) => (
-                <div key={`race-result-${raceWeekend.id}`} className="mb-2">
-                    <div className="p-2 clickable rounded-15 nested-element-color">
-                        <Link className="link-no-decorations" to={`/race-weekends/${raceWeekend.id}`}>
-                            <div className="d-flex align-items-center">
-                                <h3 className="p-2">
-                                    {raceWeekend.title}
-                                </h3>
-                                <div className="ms-auto">
-                                    <div className="container">
-                                    {raceWeekend.status == 0 && <span className="badge rounded-pill text-bg-secondary ms-auto">Upcoming</span>}
-                                    {raceWeekend.status == 1 && <span className="badge rounded-pill text-bg-warning ms-auto">In progress</span>}
-                                    {raceWeekend.status == 2 && <span className="badge rounded-pill text-bg-success ms-auto">Final</span>}
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
-                    </div>
+                <div key={raceWeekend.id} className="mb-2 p-2 clickable rounded-15 nested-element-color">
+                    <RaceWeekendCard raceWeekend={raceWeekend} loading={raceWeekendsLoading}/>
                 </div>
                 )))}
             </div>

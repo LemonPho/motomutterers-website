@@ -5,6 +5,14 @@ import json
 from ...models import Announcement
 from ...serializers.announcements_serializers import AnnouncementWriteSerializer, AnnouncementSerializer, AnnouncementSimpleSerializer
 
+def get_latest_announcement(request):
+    if request.method != 'GET':
+        return HttpResponse(status=405)
+    
+    announcement = Announcement.objects.latest("date_created")
+    serializer = AnnouncementSimpleSerializer(announcement)
+    return JsonResponse({"announcement": serializer.data}, status=200)
+
 #retrieving the 10 announcements of this page
 def get_announcements(request):
     if request.method != "GET":

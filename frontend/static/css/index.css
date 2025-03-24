@@ -184,7 +184,6 @@ textarea {
 }
 
 .announcement-card-body{
-    max-height: 50vh;
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;

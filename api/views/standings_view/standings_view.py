@@ -1,5 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import get_user_model
+from copy import deepcopy
 
 from ...models import Season, UserPicks
 from ...serializers.standings_serializers import StandingsSimpleSerializer
@@ -12,6 +13,7 @@ def get_standings(request):
         return HttpResponse(status=405)
     
     season_year = request.GET.get("season", 0)
+    amount = int(request.GET.get("amount", False))
 
     if not season_year:
         return HttpResponse(status=400)
@@ -23,6 +25,8 @@ def get_standings(request):
         
     standings = season.standings
     serializer = StandingsSimpleSerializer(standings)
+    serializer_data = serializer.data.copy()
+    serializer_data["users_picks"] = serializer_data["users_picks"][0:amount] if amount else serializer_data["users_picks"]
 
     if standings == None:
         return JsonResponse({
@@ -30,7 +34,7 @@ def get_standings(request):
         }, status=200)
             
     return JsonResponse({
-        "standings": serializer.data,
+        "standings": serializer_data,
     }, status=200)
 
 def get_standing(request):

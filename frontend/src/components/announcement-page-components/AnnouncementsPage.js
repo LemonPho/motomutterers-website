@@ -10,6 +10,7 @@ import ProfilePictureLazyLoader from '../util-components/ProfilePictureLazyLoade
 import Modal from '../util-components/Modal';
 import { useOpenersContext } from '../OpenersContext';
 import CreateAnnouncementModal from './CreateAnnouncementModal';
+import AnnouncementCard from './AnnouncementCard';
 
 export default function Anouncements(){
     const [announcements, setAnnouncements] = useState([]);
@@ -77,6 +78,12 @@ export default function Anouncements(){
         
     }, [totalAnnouncements, location.search]);
 
+    if(announcementsLoading){
+        return(
+            <AnnouncementCard announcement={false} loading={true} maxHeight={"50vh"}/>
+        )
+    }
+
     return(
         <div className='card element-background-color element-border-color rounded-15 p-2'>
             <div className='card-header d-flex align-items-center nested-element-color rounded-15'>
@@ -85,22 +92,9 @@ export default function Anouncements(){
             </div>
             <div className='card-body p-0'>
             {(!announcementsLoading && announcements.length != 0) && announcements.map((announcement) => (
-                <Link className='clickable card mx-auto my-3 rounded-15 element-background-color link-no-decorations' to={`/announcements/${announcement.id}`} key={announcement.id}>
-                    <div className='card-header d-flex align-items-center'>
-                        <ProfilePictureLazyLoader width={"2rem"} height="2rem" username={announcement.user.username}/>
-                        <small className='ms-2'>{announcement.user.username}</small>
-                        <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
-                    </div>
-                    
-                    <div className='card-body announcement-card-body'>
-                        <h5>{announcement.title}</h5>
-                        <span>{announcement.text}</span>
-                    </div>
-
-                    <div className='card-footer'>
-                        <small>Comments: {announcement.amount_comments}</small>
-                    </div>                 
-                </Link>
+                <div className='my-3' key={announcement.id}>
+                    <AnnouncementCard announcement={announcement} loading={announcementsLoading} maxHeight={"50vh"}/>
+                </div>
             ))}
             </div>
             {pages &&

@@ -86,6 +86,7 @@ def get_race_weekends(request):
         return HttpResponse(status=405)
 
     season_year = request.GET.get("season", False)
+    amount = int(request.GET.get("amount", False))
     response = {
         "invalid_season": not season_year,
         "race_weekends": [],
@@ -101,6 +102,7 @@ def get_race_weekends(request):
         return JsonResponse(response, status=400)
 
     race_weekends = season.race_weekends.all()
+    race_weekends = race_weekends[0:amount] if amount else race_weekends
     serializer = RaceWeekendSimpleSerializer(race_weekends, many=True)
     response["race_weekends"] = serializer.data
 

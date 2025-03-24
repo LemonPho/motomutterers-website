@@ -24,12 +24,11 @@ import Announcement from "./announcement-page-components/Announcement.js";
 import SeasonContextProvider from "./admin-page-components/season-edit-components/SeasonContext.js";
 import AnnouncementContextProvider from "./announcement-page-components/AnnouncementContext.js";
 import SeasonCreateContextProvider from "./admin-page-components/SeasonCreateContext.js";
-import RaceResultsContextProvider from "./race-results-components/RaceResultsContext.js";
-import RaceResultsHandler from "./race-results-components/RaceResultsHandler.js";
 import UserPicksSelector from "./UserPicksSelector.js";
 import UserSettings from "./user-settings-page-components/UserSettingsPage.js"
 import RaceWeekendsHandler from "./race-weekends-components/RaceWeekendsHandler.js";
 import RaceWeekendsContextProvider from "./race-weekends-components/RaceWeekendsContext.js";
+import Home from "./home-page-components/Home.js";
 
 export default function App() {
     const { retrieveApplicationContextData } = useApplicationContext();
@@ -42,7 +41,7 @@ export default function App() {
         <Suspense fallback={<LoadingPage />}>
             <Routes>
                 <Route path="/" element={<LayoutPage />}>
-                    <Route index element={<HomePage />}/>
+                    <Route index element={<Home />}/>
                     <Route path="activate" element={<AccountActivation />}/>
                     <Route path="administration" element={<SeasonCreateContextProvider />}>
                         <Route index element={<Admin />}/>

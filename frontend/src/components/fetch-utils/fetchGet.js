@@ -235,6 +235,27 @@ export async function getAnnouncement(id){
     return response;
 }
 
+export async function getLatestAnnouncement(){
+    let response = {
+        error: false,
+        announcement: {},
+        status: null,
+    }
+
+    try{
+        const apiResponse = await fetch(`/api/get-latest-announcement/`);
+        const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
+        
+        response.error = apiResponse.status === 500 ? apiResponse : false;
+        response.announcement = apiResponse.status === 200 ? apiResult.announcement : false;
+        response.status = apiResponse.status;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getComments(parentElement){
     let response = {
         error: false,
@@ -521,7 +542,7 @@ export async function getRaceWeekend(raceWeekendId){
     return response;
 }
 
-export async function getRaceWeekends(seasonYear){
+export async function getRaceWeekends(seasonYear, amount){
     let response = {
         error: false,
         raceWeekends: [],
@@ -530,7 +551,8 @@ export async function getRaceWeekends(seasonYear){
     }
 
     try{
-        const apiResponse = await fetch(`/api/get-race-weekends?season=${seasonYear}`);
+        amount = amount == undefined ? 0 : amount;
+        const apiResponse = await fetch(`/api/get-race-weekends?season=${seasonYear}&amount=${amount}`);
         const apiResult = await apiResponse.json();
 
         response.error = apiResponse.status == 500;
@@ -691,7 +713,7 @@ export async function getSelectPicksState(){
     return response;
 } 
 
-export async function getSeasonStandings(year){
+export async function getSeasonStandings(year, amount){
     let response = {
         error: false,
         standings: false,
@@ -699,7 +721,8 @@ export async function getSeasonStandings(year){
     }
 
     try{
-        const apiResponse = await fetch(`/api/get-standings?season=${year}`);
+        amount = amount == undefined ? 0 : amount;
+        const apiResponse = await fetch(`/api/get-standings?season=${year}&amount=${amount}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;

@@ -13,10 +13,6 @@ export default function RaceWeekend(){
     const [standingsBodyExpanded, setStandingsBodyExpanded] = useState(true);
 
     if(!selectedRaceWeekend) return null;
-
-    const raceDivRef = useRef(null);
-    const sprintRaceDivRef = useRef(null);
-    const standingsDivRef = useRef(null);
     
     return(
         <>
@@ -49,7 +45,7 @@ export default function RaceWeekend(){
                             <CardBodyExpand expanded={racesBodiesExpanded} className="overflow-auto" maxHeight="175px" id="race-positions-card-body">
                                 <div className="nested-element-color p-2 rounded-15 w-100" style={{"border": "0px"}}>
                                     {selectedRaceWeekend.race.competitors_positions.map((competitorPosition) => (
-                                        <div className="d-flex align-items-center p-2 mb-2 bg-light border rounded shadow-sm" key={competitorPosition.number}>
+                                        <div className="d-flex align-items-center p-2 mb-2 bg-light border rounded shadow-sm" key={`race-position-${competitorPosition.number}`}>
                                             <div style={{ width: "30px" }} className="text-center">
                                                 {(competitorPosition.position == 0) && <span className="fw-bold">-</span>}
                                                 {(competitorPosition.position != 0) && <span className="fw-bold">{competitorPosition.position}</span>}
@@ -83,7 +79,7 @@ export default function RaceWeekend(){
                                 <CardBodyExpand expanded={racesBodiesExpanded} className="overflow-auto" maxHeight="175px" id="sprint-race-positions-card-body">
                                     <div className="nested-element-color p-2 rounded-15 w-100" style={{"border": "0px"}}>
                                         {selectedRaceWeekend.sprint_race.competitors_positions.map((competitorPosition) => (
-                                            <div className="d-flex align-items-center p-2 mb-2 bg-light border rounded shadow-sm" key={competitorPosition.number}>
+                                            <div className="d-flex align-items-center p-2 mb-2 bg-light border rounded shadow-sm" key={`sprint-position-${competitorPosition.number}`}>
                                                 <div style={{ width: "30px" }} className="text-center">
                                                     {(competitorPosition.position == 0) && <span className="fw-bold">-</span>}
                                                     {(competitorPosition.position != 0) && <span className="fw-bold">{competitorPosition.position}</span>}
@@ -115,7 +111,7 @@ export default function RaceWeekend(){
                             <CardBodyExpand expanded={standingsBodyExpanded} className={"overflow-auto"} maxHeight={"60vh"} id="race-standings-card-body">
                                 <div className="nested-element-color p-2 rounded-15 w-100" style={{"border": "0px"}}>
                                 {selectedRaceWeekend.standings.users_picks.map((user_picks) => (
-                                    <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={user_picks.user.id} style={{marginRight: "0px"}}>
+                                    <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={user_picks.user.username} style={{marginRight: "0px"}}>
                                         {user_picks.position_change > 0 && 
                                         <span className="race-standings-position-change">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" className="bi bi-caret-up-fill" viewBox="0 0 16 16">

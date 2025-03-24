@@ -8,6 +8,7 @@ import { useApplicationContext } from "../ApplicationContext";
 import Modal from "../util-components/Modal";
 import { useOpenersContext } from "../OpenersContext";
 import Dropdown from "../util-components/Dropdown";
+import Standing from "./Standing";
 
 export default function Standings(){
     const { user, userLoading } = useApplicationContext();
@@ -81,21 +82,9 @@ export default function Standings(){
         <div className="card-body p-0">
             {(!standingsLoading && (!standings || standings.users_picks.length == 0)) ? 
             (<div className="p-2">There are no standings for this season</div>) : 
-            (standingsLoading == 0 && standings.users_picks.map((user_picks, i) => (
-                <div key={`standings-user-${user_picks.user.username}`} className="p-2 clickable rounded-15 mb-1 rounded-15 nested-element-color" onClick={(e) => {e.stopPropagation(); openModal("standing-detailed"); retrieveUserPicks(user_picks.user.username)}}>
-                    <div className="d-flex align-items-center">
-                        <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={user_picks.user.username}/>
-                        <div className="ms-1"><strong>{i+1}. {user_picks.user.username} - {user_picks.points}</strong></div>
-                    </div>
-                    <div className="d-flex align-items-center">
-                        {user_picks.picks.map((pick) => (
-                            <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${user_picks.user.id}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
-                        ))}
-
-                        {(user_picks.independent_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {user_picks.independent_pick.first[0]}. {user_picks.independent_pick.last.slice(0,3)}</strong> - {user_picks.independent_pick.points}</div>}
-                        {(user_picks.rookie_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| R: {user_picks.rookie_pick.first[0]}. {user_picks.rookie_pick.last.slice(0,3)}</strong> - {user_picks.rookie_pick.points}</div>}
-                        
-                    </div>
+            (standingsLoading == 0 && standings.users_picks.map((userPicks, i) => (
+                <div key={`standings-user-${userPicks.user.username}`} className="clickable mb-1 rounded-15" onClick={(e) => {e.stopPropagation(); openModal("standing-detailed"); retrieveUserPicks(userPicks.user.username)}}>
+                    <Standing userPicks={userPicks} i={i} small={false}/>
                 </div>                
             )))}
         </div>

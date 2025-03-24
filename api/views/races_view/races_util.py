@@ -94,12 +94,10 @@ def send_finalize_emails(standings, race_weekend, request):
     users = [pick.user for pick in users_picks]
     if protocol == "http": users = [request.user] #to avoid accidently sending emails to real users
 
-    standings = race_weekend.standings
-    temp_users_picks = list(standings.users_picks.all())
-    standings.users_picks.set(standings.users_picks.all()[0:10])
+    standings = race_weekend.standings    
     standings_serializer = StandingsRaceSerializer(standings)
-    standings_data = standings_serializer.data
-    standings.users_picks.set(temp_users_picks) #this is to put the users_picks back
+    serializer_data = standings_serializer.data.copy()
+    serializer_data["users_picks"] = serializer_data["users_picks"][0:10]
 
     race_weekend_data = {
         "url": f"{protocol}://{domain}/race-weekends/{race_weekend.id}",
@@ -107,7 +105,7 @@ def send_finalize_emails(standings, race_weekend, request):
     }
 
     context = {
-        "standings": standings_data,
+        "standings": serializer_data,
         "race_weekend": race_weekend_data,
     }
 

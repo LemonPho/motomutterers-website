@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import SeasonContextProvider, { useSeasonContext } from "./SeasonContext";
 import PageNotFound from "../../PageNotFound";
 import CompetitorsManagement from "./competitor-components/CompetitorsManagement";
-import RacesManagement from "./race-components/RacesManagement";
 import MemberPicks from "./MemberPicks";
 import SeasonFinalize from "./season-finalize-components/SeasonFinalize";
 import { useApplicationContext } from "../../ApplicationContext";
