@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function Expand({ children, expanded, id }){
+export default function Expand({ children, expanded, id, className }){
     const divRef = useRef(null);
     const [height, setHeight] = useState("0px");
 
@@ -10,7 +10,7 @@ export default function Expand({ children, expanded, id }){
     }, [expanded]);
 
     return (
-        <div ref={divRef} className={`expand`} style={{"maxHeight": height}} id={id}>
+        <div ref={divRef} className={`expand ${className}`} style={{"maxHeight": height}} id={id}>
             {children}
         </div>
     );   

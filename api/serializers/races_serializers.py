@@ -155,8 +155,9 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
             return instance
         
         if standings:
-            instance.standings = standings
-            sort_race_standings(instance.standings, instance.season.first())
+            if len(list(standings.users_picks.all())) != 0:
+                instance.standings = standings
+                sort_race_standings(instance.standings, instance.season.first())
 
         if grid_data:
             if instance.grid.count() != 0:
