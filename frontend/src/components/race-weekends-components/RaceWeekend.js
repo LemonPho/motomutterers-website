@@ -10,7 +10,6 @@ export default function RaceWeekend(){
 
     const [expandRacesDiv, setExpandRacesDiv] = useState(false);
 
-    const [racesBodiesExpanded, setRacesBodiesExpanded] = useState(false);
     const [standingsBodyExpanded, setStandingsBodyExpanded] = useState(true);
 
     if(!selectedRaceWeekend) return null;
@@ -42,7 +41,7 @@ export default function RaceWeekend(){
                             </h4>
                         </div>
                         <div className="card-body" style={{paddingBottom: "0px"}}>
-                            <Expand expanded={expandRacesDiv} id={"races-card-body"}>
+                            <Expand expanded={expandRacesDiv} className={"overflow-hidden"} id={"races-card-body"}>
                                 <div className="row g-0">
                                     {selectedRaceWeekend.race != null &&
                                     <div className="col-sm card rounded-15 mb-2" id="race-result-card">
@@ -113,7 +112,7 @@ export default function RaceWeekend(){
                             </div>
                         </div>
                         <div className="card-body" style={{paddingBottom: "0px"}}>
-                            <Expand expanded={standingsBodyExpanded} id="race-standings-card-body">
+                            <Expand maxHeight={"40vh"} expanded={standingsBodyExpanded} id="race-standings-card-body">
                                 <div className="nested-element-color p-2 rounded-15 w-100 overflow-auto" style={{"border": "0px"}}>
                                 {selectedRaceWeekend.standings.users_picks.map((user_picks) => (
                                     <Link className="race-standings-row p-1 link-no-decorations rounded-15 clickable" to={`/users/${user_picks.user.username}?page=1`} key={user_picks.user.username} style={{marginRight: "0px"}}>

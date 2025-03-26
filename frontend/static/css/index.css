@@ -39,11 +39,11 @@ textarea {
     max-height: 0px;
     transition: padding 0.15s ease, max-height 0.15s ease;
     padding: 0px;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .username-text {
-    font-size: clamp(15px, 20px, 30px);  /* Shrinks if needed */
+    font-size: clamp(15px, 20px, 30px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

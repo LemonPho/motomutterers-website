@@ -254,7 +254,6 @@ def post_race_weekend_event(request):
     except RaceWeekend.DoesNotExist:
         return HttpResponse(status=404)
     
-    url = race_weekend.url
     season = race_weekend.season.first()
     if event_type == RACE:
         race_data = generate_race_data(race_weekend, False, request, season)
@@ -365,7 +364,6 @@ def finalize_race_weekend(request):
     serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=standings_data)
     
     if not serializer.is_valid():
-        standings_data.pop("standings")
         SeasonMessage.objects.create(
             season = season,
             message = f"When validating the standings data for the {race_weekend.title} weekend, these errors occured: {serializer.errors}",

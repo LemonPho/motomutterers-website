@@ -98,7 +98,7 @@ export default function UserSettings(){
                             </button>
                         </div>
                         
-                        <Expand expanded={emailSettingsExpanded} id={"email-settings"}>
+                        <Expand expanded={emailSettingsExpanded} className={"overflow-hidden"} id={"email-settings"}>
                             <EmailNotificationsSettings />
                         </Expand>
                     </div>
