@@ -14,7 +14,7 @@ def get_user_picks(request):
         return HttpResponse(status=405)
     
     season_id = request.GET.get("season")
-    uid = request.GET.get("uid")
+    username = request.GET.get("user")
     User = get_user_model()
 
     try:
@@ -23,7 +23,7 @@ def get_user_picks(request):
         return HttpResponse(status=404)
     
     try:
-        user = User.objects.get(pk=uid)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponse(status=404)
     

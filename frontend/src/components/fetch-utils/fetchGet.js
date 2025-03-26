@@ -650,7 +650,7 @@ export async function getSeasonRaces(year){
     return response;
 }
 
-export async function getUserPicks(seasonId, userId){
+export async function getUserPicks(seasonId, username){
     let response = {
         error: false,
         userPicks: null,
@@ -658,7 +658,7 @@ export async function getUserPicks(seasonId, userId){
     }
 
     try{
-        const apiResponse = await fetch(`/api/get-user-picks?season=${seasonId}&uid=${userId}`);
+        const apiResponse = await fetch(`/api/get-user-picks?season=${seasonId}&user=${username}`);
         const apiResult = apiResponse.status === 200 ? await apiResponse.json() : false;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;

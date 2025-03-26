@@ -134,7 +134,7 @@ export default function UserPicksSelector(){
             return;
         }
 
-        const userPicksResponse = await getUserPicks(currentSeason.id, user.id);
+        const userPicksResponse = await getUserPicks(currentSeason.id, user.username);
 
 
         if(userPicksResponse.error){

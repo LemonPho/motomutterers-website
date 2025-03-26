@@ -57,7 +57,7 @@ export default function CommentReply({ reply, highlighted }){
                         <span className="ms-2" style={{fontSize: "0.75rem"}}>{new Date(reply.date_created).toISOString().substring(0,10)} {new Date(reply.date_created).toLocaleTimeString().substring(0,5)}</span>
                         {reply.edited && <small className="ms-1">{`(edited)`}</small>}
                         { 
-                        user.id === reply.user.id && 
+                        (user.username === reply.user.username || user.is_admin) && 
                             <div className="ms-auto dropdown-div d-flex align-items-start">
                                 <button id="reply-dropdown-button" className="btn btn-link link-no-decorations ms-auto" style={{padding: "0"}} onClick={(e) => toggleDropdown(`reply-${reply.id}-dropdown`, e)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
@@ -66,7 +66,7 @@ export default function CommentReply({ reply, highlighted }){
                                 </button>
                                 <Dropdown isOpen={openedDropdown == `reply-${reply.id}-dropdown`}>
                                     <div id={`reply-${reply.id}-dropdown`} className="dropdown-menu">
-                                        {(user.id == reply.user.id) && <li><button className="dropdown-item" onClick={() => toggleReplyEditBox()}>Edit</button></li>}
+                                        {(user.username == reply.user.username) && <li><button className="dropdown-item" onClick={() => toggleReplyEditBox()}>Edit</button></li>}
                                         <li><button className="dropdown-item" onClick={() => deleteComment()}>Delete</button></li>
                                     </div>
                                 </Dropdown>

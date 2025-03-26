@@ -45,7 +45,7 @@ export default function Standing({ userPicks, i, loading, small }){
                     </div>
                     <div className="d-flex align-items-center">
                         {screenWidth > 500 && userPicks.picks.map((pick) => (
-                            <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${userPicks.user.id}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
+                            <div className="me-1" style={{fontSize: "0.75rem"}} key={`user-${userPicks.user.username}-pick-${pick.competitor_id}`}><strong>{pick.first[0]}. {pick.last.slice(0,3)}</strong> - {pick.points}</div>
                         ))}
         
                         {(screenWidth > 500 && userPicks.independent_pick != null) && <div className="me-1" style={{fontSize: "0.75rem"}}><strong>| I: {userPicks.independent_pick.first[0]}. {userPicks.independent_pick.last.slice(0,3)}</strong> - {userPicks.independent_pick.points}</div>}

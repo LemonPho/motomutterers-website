@@ -71,7 +71,7 @@ export default function Comment({ comment, highlighted }){
                         <Link className="link-no-decorations" to={`/users/${comment.user.username}?page=1`}><strong>{comment.user.username}</strong></Link>
                         <span className="flex-item ms-2" style={{fontSize: "0.75rem"}}>{new Date(comment.date_created).toISOString().substring(0,10)} {new Date(comment.date_created).toLocaleTimeString().substring(0,5)}</span>
                         {comment.edited && <small className="ms-1">{`(edited)`}</small>}
-                        {(user.id === comment.user.id || user.is_admin == true) && 
+                        {(user.username === comment.user.username || user.is_admin == true) && 
                             <div className="ms-auto dropdown-div d-flex align-items-start">
                                 <button id="announcement-dropdown-button" className="btn btn-link link-no-decorations ms-auto" style={{padding: "0"}} onClick={(e) => toggleDropdown(`comment-${comment.id}-dropdown`, e)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
@@ -80,7 +80,7 @@ export default function Comment({ comment, highlighted }){
                                 </button>
                                 <Dropdown isOpen={openedDropdown == `comment-${comment.id}-dropdown`}>
                                     <div id={`comment-${comment.id}-dropdown`} className="dropdown-menu">
-                                        {(user.id == comment.user.id) && <li><button className="dropdown-item" onClick={() => toggleEditComment(comment.id)}>Edit</button></li>}
+                                        {(user.username == comment.user.username) && <li><button className="dropdown-item" onClick={() => toggleEditComment(comment.id)}>Edit</button></li>}
                                         <li><a className="dropdown-item" onClick={() => deleteComment(comment.id)}>Delete</a></li>
                                     </div>
                                 </Dropdown>
