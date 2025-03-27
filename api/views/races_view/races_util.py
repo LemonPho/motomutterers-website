@@ -10,7 +10,8 @@ from ..standings_view.standings_util import sort_standings, sort_race_standings
 
 from ..utils_view import send_emails
 
-def add_points_to_season_competitors(season, race_weekend):
+def add_points_to_season_competitors(race_weekend):
+    season = race_weekend.season.first()
     race_competitors_positions = race_weekend.race.competitors_positions.all()
     sprint_competitors_positions = race_weekend.sprint_race.competitors_positions.all()
     season_competitors = season.competitors.all()

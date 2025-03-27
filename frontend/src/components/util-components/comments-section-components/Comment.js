@@ -63,8 +63,8 @@ export default function Comment({ comment, highlighted }){
     }
 
     return(
-        <div className={`rounded-15 p-2 mb-2 nested-element-color ${highlighted ? "highlighted" : ""}`} id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
-            <div className="d-flex align-items-start">
+        <div className={`rounded-15 mb-2 nested-element-color`} id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
+            <div className={`d-flex align-items-start p-2 ${highlighted ? "highlighted" : ""}`}>
                 <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
                 <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
                     <div className="d-flex align-items-center">
@@ -91,7 +91,7 @@ export default function Comment({ comment, highlighted }){
                         <Visible isVisible={showStaticComment}><span id={`comment-${comment.id}-text`} style={{overflow: "visible"}} className="">{comment.text}</span></Visible>
                         <Visible isVisible={showEditComment}>
                             <div>
-                                <Textarea id={`edit-comment-${comment.id}-text`} value={comment.text} setValue={setEditCommentText} onEnterFunction={editComment}/>
+                                <Textarea id={`edit-comment-${comment.id}-text`} value={comment.text} setValue={setEditCommentText}/>
                                 <div className="d-flex">
                                     <button id={`comment-${comment.id}-save-button`} className="btn btn-primary ms-auto me-2 mt-2 rounded-15" onClick={() => editComment(comment.id)}>Save</button>
                                     <button id={`comment-${comment.id}-cancel-button`} className="btn btn-outline-secondary mt-2 rounded-15" onClick={() => toggleEditComment(comment.id)}>Cancel</button>
@@ -109,7 +109,7 @@ export default function Comment({ comment, highlighted }){
             <Visible isVisible={showReplyCreate}>
                 <div id={`comment-reply-div-${comment.id}`} style={{marginBottom: "0.5rem", marginTop: "0.5rem", marginLeft: "3.4rem"}}>
                     <div className="d-flex justify-content-center">
-                        <Textarea id={`comment-reply-text-${comment.id}`} placeholder="Add a reply..." value={replyCreateText} setValue={setReplyCreateText} onEnterFunction={createCommentReply}/>
+                        <Textarea id={`comment-reply-text-${comment.id}`} placeholder="Add a reply..." value={replyCreateText} setValue={setReplyCreateText}/>
                         <button id={`comment-reply-button-${comment.id}`} className="btn btn-outline-secondary p-1 ms-2 rounded-15" onClick={() => {createCommentReply()}}><small>Reply</small></button>
                     </div>
                 </div>

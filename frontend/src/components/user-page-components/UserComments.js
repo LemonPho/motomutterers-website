@@ -74,8 +74,8 @@ export default function UserComments({ username }){
                                                 fill="grey"
                                             />
                                         </svg>
-                                        {comment.parent_comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.parent_comment.id}`}><span>{comment.text}</span></Link>}
-                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race_weekend/${comment.parent_comment.race_weekend.id}?comment=${comment.parent_comment.id}`}><span>{comment.text}</span></Link>}                                            
+                                        {comment.parent_comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}
+                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race_weekend/${comment.parent_comment.race_weekend.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}                                            
                                     </div>
                                 </div>
                             ) 

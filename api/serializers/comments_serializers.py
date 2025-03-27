@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 from ..models import Comment, Announcement, RaceWeekend, Notification
 from ..views.notification_view import create_notifications
+from ..views.utils_view import send_emails
 from .serializers_util import sanitize_html
 
 from ..utils import sanitize_text
@@ -35,6 +36,8 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         if parent_comment:
             instance = Comment.objects.create(text=text, user=user, parent_comment=parent_comment)
             if parent_comment.announcement.first() is not None:
+                subject = f"{instance.user.username} responded to your comment"
+                body = f""
                 notifications = create_notifications("responded to your comment", f"announcements/{parent_comment.announcement.first().id}?comment={instance.id}", user, [parent_comment.user])
             else:
                 notifications = create_notifications("responded to your comment", f"race-weekends/{parent_comment.race_weekend.first().id}?comment={instance.id}", user, [parent_comment.user])
@@ -45,10 +48,7 @@ class CommentWriteSerializer(serializers.ModelSerializer):
                 notifications = create_notifications("added a comment to your announcement", f"announcements/{validated_data['announcement'].id}?comment={instance.id}", user, [validated_data['announcement'].user])
 
         if notifications:
-            if isinstance(notifications, Notification):
-                instance.notifications.add(notifications)
-            else:
-                instance.notifications.add(*notifications)
+            instance.notifications.add(*notifications)
 
         if parent_comment is None:
             if validated_data.get("announcement", None):

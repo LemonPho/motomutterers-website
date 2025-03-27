@@ -6,6 +6,7 @@ from . import competitors_serializers, user_serializers
 from ..models import Race, RaceWeekend, Season, SeasonMessage
 
 from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
+from ..views.races_view.races_util import add_points_to_season_competitors, send_finalize_emails, remove_points_from_season_competitors
 from ..views.notification_view import create_notifications
 from ..views.standings_view.standings_util import sort_race_standings
 
@@ -125,11 +126,13 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         STATUS_IN_PROGRESS = 1
+        STATUS_FINAL = 2
         
-
         grid_data = validated_data.get("grid", False)
         standings = validated_data.get("standings", False)
         race_data = validated_data.get("race", False)
+        finalize = self.context.get("finalize", False)
+        request = self.context.get("request", False)
         if not grid_data and not standings and not race_data:
             title = validated_data.get("title", False)
             url = validated_data.get("url", False)
@@ -209,6 +212,21 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
                 instance.sprint_race = race_instance
             else:
                 instance.race = race_instance
+
+        if finalize and request:
+            if add_points_to_season_competitors(instance):
+                instance.status = STATUS_FINAL
+                instance.save()
+                send_finalize_emails(instance.standings, instance, request)
+                User = get_user_model()
+                notifications = create_notifications(f"The {instance.title} was posted", f"race-weekends/{instance.id}", None, User.objects.all())
+                instance.notifications.set(notifications)
+            else:
+                SeasonMessage.objects.create(
+                    season=instance.season.first(),
+                    message=f"When trying to add the points from the race weekend to the season competitors, one or more weren't found",
+                    type = 0,
+                )
 
         instance.save()
         return instance

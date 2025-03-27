@@ -97,7 +97,7 @@ def get_race_weekends(request):
 
     try:
         season = Season.objects.filter(visible=True).get(year=season_year)
-    except season.DoesNotExist:
+    except Season.DoesNotExist:
         response["invalid_season"] = True
         return JsonResponse(response, status=400)
 
@@ -360,8 +360,13 @@ def finalize_race_weekend(request):
             type = 0,
         )
         return JsonResponse(response, status=400)
+    
+    context = {
+        "finalize": True,
+        "request": request,
+    }
 
-    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=standings_data)
+    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data=standings_data, context=context)
     
     if not serializer.is_valid():
         SeasonMessage.objects.create(
@@ -371,21 +376,8 @@ def finalize_race_weekend(request):
         )
         return JsonResponse(response, status=400)
     
-    instance = serializer.save()
-
-    #TODO: move to serializer
-    if add_points_to_season_competitors(season, instance):
-        instance.status = STATUS_FINAL
-        instance.save()
-        send_finalize_emails(race_weekend.standings, instance, request)
-        return HttpResponse(status=201)
-    else:
-        SeasonMessage.objects.create(
-            season=season,
-            message=f"When trying to add the points from the race weekend to the season competitors, one or more weren't found",
-            type = 0,
-        )
-        return HttpResponse(status=409)
+    serializer.save()
+    return HttpResponse(status=201)
 
 def un_finalize_race_weekend(request):
     if request.method != "PUT":
@@ -424,6 +416,11 @@ def un_finalize_race_weekend(request):
     if race_weekend.standings is not None:
         race_weekend.standings.delete()
         race_weekend.refresh_from_db()  # Refresh to clear deleted references
+        race_weekend.save()
+
+    if race_weekend.notifications is not None:
+        race_weekend.notifications.all().delete()
+        race_weekend.refresh_from_db()
         race_weekend.save()
 
     if remove_points_from_season_competitors(race_weekend.season.first(), race_weekend):

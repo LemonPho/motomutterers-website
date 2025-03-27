@@ -11,7 +11,6 @@ import { useSearchParams } from "react-router-dom";
 export default function CommentsSection(){
     const { comments, commentsLoading, highlightedCommentId } = useCommentsContext();
 
-
     if(commentsLoading){
         return(
             <div>Loading...</div>
