@@ -1,18 +1,18 @@
 {
   "status": "done",
   "assets": {
-    "main.a93e81513c8b86d24b36.js": {
-      "name": "main.a93e81513c8b86d24b36.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.a93e81513c8b86d24b36.js"
+    "main.895b403d6f12e60d6a58.js": {
+      "name": "main.895b403d6f12e60d6a58.js",
+      "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.895b403d6f12e60d6a58.js"
     },
-    "main.a93e81513c8b86d24b36.js.LICENSE.txt": {
-      "name": "main.a93e81513c8b86d24b36.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.a93e81513c8b86d24b36.js.LICENSE.txt"
+    "main.895b403d6f12e60d6a58.js.LICENSE.txt": {
+      "name": "main.895b403d6f12e60d6a58.js.LICENSE.txt",
+      "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.895b403d6f12e60d6a58.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.a93e81513c8b86d24b36.js"
+      "main.895b403d6f12e60d6a58.js"
     ]
   }
 }

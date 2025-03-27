@@ -85,7 +85,7 @@ def register(request):
     protocol = 'https' if request.is_secure() else 'http'
     email_subject = "Activate your motomutterers fantasy league account"
     email_body = f"Hello {user.username},\nPlease activate your account with this link, it will be valid for 15 minutes: {protocol}://{domain}/activate?uid={uid}&token={token}"
-    email = send_email(email, email_subject, email_body)
+    email = send_email(email, email_subject, email_body, "plain")
     if email.send():
         return HttpResponse(json_context, status=200)
     else:
