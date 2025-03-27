@@ -8,7 +8,7 @@ function AccountActivation(){
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { setSuccessMessage, setErrorMessage, setLoadingMessage, retrieveUserData } = useApplicationContext();
+    const { setSuccessMessage, setErrorMessage, setLoadingMessage, retrieveUserData, resetApplicationMessages } = useApplicationContext();
 
     const [uid, setUid] = useState(new URLSearchParams(location.search).get("uid"));
     const [token, setToken] = useState(new URLSearchParams(location.search).get("token"));
@@ -17,6 +17,7 @@ function AccountActivation(){
 
 
     async function requestNewActivationToken(){
+        resetApplicationMessages();
         setLoadingMessage("Loading...");
         const requestActivationTokenResponse = await requestAccountActivationToken(uid);
         setLoadingMessage(false);

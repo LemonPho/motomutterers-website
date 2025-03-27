@@ -7,7 +7,7 @@ import { useOpenersContext } from "../../../OpenersContext";
 export default function CompetitorDeleteModal({reset}){
     const { closeModal } = useOpenersContext();
     const { season, seasonLoading, retrieveSeason } = useSeasonContext();
-    const { user, setLoadingMessage, loadingMessage, setErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { user, setLoadingMessage, loadingMessage, setErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
 
     const [selectedCompetitors, setSelectedCompetitors] = useState(season.competitors_sorted_number.map((competitor) => ({competitor: competitor, selected: false})));
     const [allCompetitorsSelected, setAllCompetitorsSelected] = useState(false);
@@ -28,6 +28,7 @@ export default function CompetitorDeleteModal({reset}){
     }
 
     async function deleteCompetitors(){
+        resetApplicationMessages();
         if(!confirmDelete){
             setConfirmDelete(true);
             return;

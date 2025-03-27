@@ -7,6 +7,9 @@ import { useApplicationContext } from "./ApplicationContext";
 
 import { enterKeySubmit } from "./utils";
 
+import Textarea from "./util-components/Textarea";
+import TextInput from "./util-components/TextInput";
+
 export default function RegisterPage() {
     const {loggedIn, contextLoading, setErrorMessage, setSuccessMessage, setLoadingMessage, resetApplicationMessages} = useApplicationContext();
 
@@ -17,12 +20,19 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
+    const [usernameInvalid, setUsernameInvalid] = useState(false);
+    const [emailInvalid, setEmailInvalid] = useState(false);
+    const [passwordInvalid, setPasswordInvalid] = useState(false);
+
     async function registerAccount(){
         if(loading){
             return;
         }
 
         resetApplicationMessages();
+        setUsernameInvalid(false);
+        setEmailInvalid(false);
+        setPasswordInvalid(false);
         setLoading(true);
         setLoadingMessage("Loading...");
 
@@ -42,8 +52,22 @@ export default function RegisterPage() {
             message += registerResponse.emailValid ? "" : "Email isn't valid\n";
             message += registerResponse.passwordsMatch ? "" : "Passwords don't match\n";
             message += registerResponse.passwordValid ? "" : "Passwords need at least 8 characters and can't be 'simple'\n";
+
+            if(!registerResponse.usernameUnique || !registerResponse.usernameValid){
+                setUsernameInvalid(true);
+            }
+
+            if(!registerResponse.emailUnique || !registerResponse.emailValid){
+                setEmailInvalid(true);
+            }
+
+            if(!registerResponse.passwordValid || !registerResponse.passwordsMatch){
+                setPasswordInvalid(true);
+            }
+
             if(registerResponse.usernameUnique && registerResponse.usernameValid && registerResponse.emailUnique && registerResponse.emailValid && registerResponse.passwordValid && registerResponse.passwordsMatch && registerResponse.invalidData){
                 setErrorMessage("Be sure the data is valid (password can not be simple and more than 8 characters)");
+                setPasswordInvalid(true);
             }
             setErrorMessage(message);
             setLoading(false);
@@ -82,10 +106,10 @@ export default function RegisterPage() {
                 <h2>Sign Up</h2>
             </div>
             <div className="card-body rounded-15 nested-element-color m-2">
-                <input type="text" className="input-field w-100 mb-2" placeholder="Username" onKeyUp={(e) => {setUsername(e.target.value);enterKeySubmit(e, registerAccount)}}/>
-                <input type="text" className="input-field w-100 mb-2" placeholder="Email" onKeyUp={(e) => {setEmail(e.target.value);enterKeySubmit(e, registerAccount)}}/>
-                <input type="text" className="input-field w-100 mb-2" placeholder="Password" onKeyUp={(e) => {setPassword(e.target.value);enterKeySubmit(e, registerAccount)}}/>
-                <input type="text" className="input-field w-100 mb-2" placeholder="Confirm password" onKeyUp={(e) => {setPasswordConfirmation(e.target.value);enterKeySubmit(e, registerAccount)}}/>
+                <TextInput type={"text"} className={"mb-2"} placeholder={"Username"} value={username} setValue={setUsername} onEnterFunction={registerAccount} outline={usernameInvalid}/>
+                <TextInput type={"text"} className={"mb-2"} placeholder={"Email"} value={email} setValue={setEmail} onEnterFunction={registerAccount} outline={emailInvalid} />
+                <TextInput type="password" className={"mb-2"} placeholder="Password" value={password} setValue={setPassword} onEnterFunction={registerAccount} outline={passwordInvalid}/>
+                <TextInput type="password" className={"mb-2"} placeholder="Confirm password" value={passwordConfirmation} setValue={setPasswordConfirmation} onEnterFunction={registerAccount} outline={passwordInvalid}/>
 
                 {loading && <button className="btn btn-primary w-100 rounded-15 mt-2" disabled>Loading...</button>}
                 {!loading && <button className="btn btn-primary w-100 rounded-15 mt-2" onClick={registerAccount}>Sign up</button>}

@@ -7,7 +7,7 @@ import { useOpenersContext } from "./OpenersContext";
 import Dropdown from "./util-components/Dropdown";
 
 export default function UserPicksSelector(){
-    const { setErrorMessage, addErrorMessage, setSuccessMessage, setLoadingMessage, currentSeason, currentSeasonLoading, loggedIn, user, userLoading, selectPicksState, selectPicksStateLoading } = useApplicationContext();
+    const { setErrorMessage, addErrorMessage, setSuccessMessage, setLoadingMessage, currentSeason, currentSeasonLoading, loggedIn, user, userLoading, resetApplicationMessages, selectPicksState, selectPicksStateLoading } = useApplicationContext();
     const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [invalidPicks, setInvalidPicks] = useState([0, 0, 0, 0, 0])
@@ -47,6 +47,7 @@ export default function UserPicksSelector(){
     }
 
     async function submitPicks(){
+        resetApplicationMessages();
         setNewUserPicksLoading(true);
         let picks = userPicks.map(pick => pick.competitor_points.competitor.id);
         let picksResponse;
@@ -156,11 +157,16 @@ export default function UserPicksSelector(){
     }
 
     useEffect(() => {
-        setLoading(true);
-        retrieveUserPicks();
-        retrieveSeason();
-        setLoading(false);
-        setLoadingMessage(false);
+        async function fetchData(){
+            setLoading(true);
+            await retrieveUserPicks();
+            await retrieveSeason();
+            setLoading(false);
+            setLoadingMessage(false);
+        }
+
+        fetchData();
+        
     }, [currentSeasonLoading, userLoading]);
 
     if(!season){

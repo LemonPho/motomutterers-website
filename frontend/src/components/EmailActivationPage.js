@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { submitEmailActivation } from "./fetch-utils/fetchPost";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import { useApplicationContext } from "./ApplicationContext";
 
 function EmailActivation(){
+    const { setSuccessMessage, setErrorMessage } = useApplicationContext();
     const [errorOcurred, setErrorOcurred] = useState(false);
 
     const [emailActivated, setEmailActivated] = useState(null);
@@ -25,14 +27,20 @@ function EmailActivation(){
     }, []);
 
     if(emailActivated){
+        setSuccessMessage("Email activated, you can use the website");
         return(
-            <div>Email was successfully activated, you may continue to use the website</div>
+            <div>
+                <Navigate replace to="/"/>
+            </div>
         );
     } 
 
     if(errorOcurred){
+        setErrorMessage("There was an error activating the email, please try again or send an email to motomutterersfantasyleague@gmail.com")
         return(
-            <div>There was an error during activation, please try again or contact admin</div>
+            <div>
+                <Navigate replace to="/"/>
+            </div>
         )
     }
 }

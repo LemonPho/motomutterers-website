@@ -4,9 +4,10 @@ import { Navigate, Link, useNavigate } from "react-router-dom";
 import { submitLogin } from "./fetch-utils/fetchPost";
 import { useApplicationContext } from "./ApplicationContext";
 import { enterKeySubmit } from "./utils";
+import TextInput from "./util-components/TextInput";
 
 function LoginPage() {
-    const { user, userLoading, contextLoading, setLoadingMessage, retrieveUserData, setErrorMessage} = useApplicationContext();
+    const { user, resetApplicationMessages, contextLoading, setLoadingMessage, retrieveUserData, setErrorMessage} = useApplicationContext();
 
     const [loginLoading, setLoginLoading] = useState(false);
 
@@ -20,6 +21,7 @@ function LoginPage() {
             return;
         }
 
+        resetApplicationMessages();
         setLoginLoading(true);
         setLoadingMessage("Loading...");
 
@@ -62,14 +64,22 @@ function LoginPage() {
         return null;
     }
 
+    if(user.is_logged_in){
+        return(
+            <div>
+                <Navigate replace to="/"/>
+            </div>
+        );
+    }
+
     return(
         <div className="card rounded-15 element-background-color element-border-color mx-auto" style={{width: "21rem"}}>
             <div className="card-header d-flex justify-content-center rounded-15 nested-element-color m-2">
                 <h2>Login</h2>
             </div>
             <div className="card-body rounded-15 nested-element-color m-2">
-                <input type="text" className="input-field w-100 mb-2" placeholder="Username or email" onKeyUp={(e) => {setPrimaryKeyInput(e.target.value);enterKeySubmit(e, login)}}/>
-                <input type="password" className="input-field w-100 mb-2" placeholder="Password" onKeyUp={(e) => {setPassword(e.target.value);enterKeySubmit(e, login)}}/>
+                <TextInput type="text" className="mb-2" placeholder="Username or email" value={primaryKeyInput} setValue={setPrimaryKeyInput} onEnterFunction={login} />
+                <TextInput type="password" className="mb-2" placeholder="Password" value={password} setValue={setPassword} onEnterFunction={login}/>
                 {loginLoading && 
                 <div className="input-group mx-auto">
                     <button type="submit" className="btn btn-primary w-100 rounded-15" disabled>Loading...</button>

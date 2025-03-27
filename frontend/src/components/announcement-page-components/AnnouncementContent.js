@@ -25,6 +25,8 @@ export default function AnnouncementContent(){
     const [title, setTitle] = useState("");
 
     function toggleEditAnnouncement(){
+        setText(announcement.text);
+        setTitle(announcement.title);
         setShowEditAnnouncement(!showEditAnnouncement);
         setShowStaticAnnouncement(!showStaticAnnouncement);
         closeDropdown();

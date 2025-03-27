@@ -1,6 +1,7 @@
 {
   "status": "done",
   "assets": {
+<<<<<<< HEAD
     "main.895b403d6f12e60d6a58.js": {
       "name": "main.895b403d6f12e60d6a58.js",
       "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.895b403d6f12e60d6a58.js"
@@ -8,11 +9,24 @@
     "main.895b403d6f12e60d6a58.js.LICENSE.txt": {
       "name": "main.895b403d6f12e60d6a58.js.LICENSE.txt",
       "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.895b403d6f12e60d6a58.js.LICENSE.txt"
+=======
+    "main.ebcccbb0ce29e1c55359.js": {
+      "name": "main.ebcccbb0ce29e1c55359.js",
+      "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.ebcccbb0ce29e1c55359.js"
+    },
+    "main.ebcccbb0ce29e1c55359.js.LICENSE.txt": {
+      "name": "main.ebcccbb0ce29e1c55359.js.LICENSE.txt",
+      "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.ebcccbb0ce29e1c55359.js.LICENSE.txt"
+>>>>>>> textarea_outline
     }
   },
   "chunks": {
     "main": [
+<<<<<<< HEAD
       "main.895b403d6f12e60d6a58.js"
+=======
+      "main.ebcccbb0ce29e1c55359.js"
+>>>>>>> textarea_outline
     ]
   }
 }

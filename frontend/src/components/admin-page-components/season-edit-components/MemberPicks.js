@@ -6,10 +6,11 @@ import { submitToggleUsersPicksState } from "../../fetch-utils/fetchPost";
 
 export default function MemberPicks() {
     const { season, retrieveSeason } = useSeasonContext();
-    const { setErrorMessage, setSuccessMessage, retrieveCurrentSeason, retrievePicksState, setLoadingMessage } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, retrieveCurrentSeason, retrievePicksState, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
     const [memberPicksCheckboxState, setMemberPicksCheckboxState] = useState(season.selection_open);
 
     async function handleToggleUsersPicks() {
+        resetApplicationMessages();
         const tempMemberPicksCheckboxState = memberPicksCheckboxState;
         setMemberPicksCheckboxState(!memberPicksCheckboxState);
         if(season.competitors.length == 0){
