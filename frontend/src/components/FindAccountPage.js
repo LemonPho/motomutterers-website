@@ -4,16 +4,19 @@ import { Link } from "react-router-dom";
 import { sendNewPasswordEmail } from "./fetch-utils/fetchPost";
 import { useApplicationContext } from "./ApplicationContext";
 import { enterKeySubmit } from "./utils";
+import TextInput from "./util-components/TextInput";
 
 export default function FindAccount() {
     const [loading, setLoading] = useState(null);
     const [account, setAccount] = useState(null);
     const [accountFound, setAccountFound] = useState(null);
     const [searchInput, setSearchInput] = useState("");
+    const [searchInvalid, setSearchInvalid] = useState(false);
 
     const { setErrorMessage, setSuccessMessage } = useApplicationContext();
 
     async function searchAccount(){
+        setSearchInvalid(false);
         try{            
             let queryString = "/api/find-account?";
 
@@ -32,6 +35,7 @@ export default function FindAccount() {
             } else {
                 setAccountFound(false);
                 setErrorMessage(`There was no accout found for: ${searchInput}`);
+                setSearchInvalid(true);
                 setAccount(null);
             }
         } catch(error){
@@ -60,18 +64,18 @@ export default function FindAccount() {
 
     return(
         <div className="card element-background-color element-border-color rounded-15 mx-auto" style={{width: "21rem"}}>
-            <div className="card-header d-flex justify-content-center">
+            <div className="card-header d-flex justify-content-center rounded-15 nested-element-color m-2">
                 <h2>Search Account</h2>
             </div>
-            <div className="card-body">
-                <input type="text" className="input-field w-100" placeholder="Write your email or password" onKeyUp={(e) => {setSearchInput(e.target.value); enterKeySubmit(e, searchAccount)}}/>
+            <div className="card-body rounded-15 nested-element-color m-2">
+                <TextInput type="text" placeholder="Write your email or username" value={searchInput} setValue={setSearchInput} onEnterFunction={searchAccount} outline={searchInvalid}/>
                 <div className="mt-3">
                     {(accountFound == true && !loading) && <button className="btn btn-success rounded-15 w-100 mb-2" onClick={sendEmail}>Send reset password email</button>}
                     {(accountFound && loading) && <button className="btn btn-success rounded-15 w-100 mb-2" disabled>Sending email...</button>}
                     <button className="btn btn-primary rounded-15 w-100" onClick={searchAccount}>Search</button>
                 </div>
             </div>
-            <div className="card-footer d-flex justify-content-center">
+            <div className="card-footer d-flex justify-content-center nested-element-color m-2 rounded-15">
                 <Link to="/contact"><small>Contact admin</small></Link>
             </div>
         </div>

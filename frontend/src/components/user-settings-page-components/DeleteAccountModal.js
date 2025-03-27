@@ -2,15 +2,19 @@ import React, { useState } from "react";
 import { submitDeleteAccount } from "../fetch-utils/fetchPost";
 import { useNavigate } from "react-router-dom";
 import { useApplicationContext } from "../ApplicationContext";
+import TextInput from "../util-components/TextInput";
 
 export default function DeleteAccountModal({ closeModal, retrieveUserData }){
     const {user, setErrorMessage, setSuccessMessage} = useApplicationContext();
 
-    const [inputtedUsername, setInputtedUsername] = useState();
+    const [usernameInput, setUsernameInput] = useState("");
+    const [usernameInvalid, setUsernameInvalid] = useState(false);
     const navigate = useNavigate();
 
     async function deleteAccount(){
-        if(inputtedUsername != user.username){
+        setUsernameInvalid(false);
+        if(usernameInput != user.username){
+            setUsernameInvalid(true);
             setErrorMessage("Username inputted isn't correct");
             return;
         }
@@ -39,7 +43,7 @@ export default function DeleteAccountModal({ closeModal, retrieveUserData }){
                 <h5>Delete Account</h5>
             </div>
             <div className="custom-modal-body">
-                <input type="text" className="input-field w-100" placeholder="Write your username here" data-category="input-field" onChange={(e) => {setInputtedUsername(e.target.value)}}/>
+                <TextInput type="text" placeholder="Write your username here" value={usernameInput} setValue={setUsernameInput} outline={usernameInvalid}/>
             </div>
             <div className="custom-modal-footer justify-content-center" style={{flexDirection: "column"}}>
                 <button className="btn btn-danger w-100 rounded-15" onClick={deleteAccount}>Delete Account</button>
