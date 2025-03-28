@@ -12,7 +12,7 @@ import Textarea from "../Textarea";
 
 export default function Comment({ comment, highlighted }){
     const { user } = useApplicationContext();
-    const { postDeleteComment, postComment, postEditComment, highlightedCommentId, setComments } = useCommentsContext();
+    const { postDeleteComment, postComment, postEditComment, highlightedCommentId } = useCommentsContext();
     const { toggleDropdown, openedDropdown, closeDropdown } = useOpenersContext();
 
     const [replyCreateText, setReplyCreateText] = useState("");
@@ -38,6 +38,7 @@ export default function Comment({ comment, highlighted }){
         if(commentResponse){
             setReplyCreateText("");
             setShowReplyCreate(!showReplyCreate);
+            setShowRepliesDiv(true);
         }
     }
 

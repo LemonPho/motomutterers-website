@@ -10,7 +10,9 @@ import PasswordChangeModal from "./PasswordChangeModal";
 import EmailChangeModal from "./EmailChangeModal";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import Expand from "../util-components/Expand";
-import EmailNotificationsSettings from "./EmailNotificationsSettings";
+import RaceWeekendEmails from "./RaceWeekendEmails";
+import CommentResponseEmails from "./CommentResponseEmails";
+import AnnouncementResponseEmails from "./AnnouncementResponseEmails";
 
 export default function UserSettings(){
     
@@ -99,7 +101,17 @@ export default function UserSettings(){
                         </div>
                         
                         <Expand expanded={emailSettingsExpanded} className={"overflow-hidden"} id={"email-settings"}>
-                            <EmailNotificationsSettings />
+                            <div className="m-3">
+                                <RaceWeekendEmails />
+                            </div>
+                            <div className="mb-3 mx-3">
+                                <CommentResponseEmails />
+                            </div>
+                            {user.is_admin && 
+                            <div className="mb-3 mx-3">
+                                <AnnouncementResponseEmails />
+                            </div>
+                            }
                         </Expand>
                     </div>
                 </div>

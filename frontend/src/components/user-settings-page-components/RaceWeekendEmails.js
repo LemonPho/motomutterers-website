@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
 import { submitToggleEmailsNotifications } from "../fetch-utils/fetchPost";
 
-export default function EmailNotificationsSettings(){
+export default function RaceWeekendEmails(){
     const { user, setErrorMessage } = useApplicationContext();
 
     const [ checked, setChecked ] = useState(user.race_weekends_emails);
 
-    //TODO: finish api side
     async function toggleRaceWeekendsEmails(){
         const tempChecked = checked;
         setChecked(!checked);
@@ -23,7 +22,7 @@ export default function EmailNotificationsSettings(){
     }
 
     return(
-        <div className="p-3 d-flex align-items-center rounded-15">
+        <div className="d-flex align-items-center rounded-15">
             <strong style={{"fontSize": "15px"}}>Race Weekends Notifications</strong>
             <div className="ms-auto form-check form-switch">
                 <input type="checkbox" className="ms-auto form-check-input" defaultChecked={checked} onChange={toggleRaceWeekendsEmails}/>

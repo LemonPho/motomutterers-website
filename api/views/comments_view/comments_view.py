@@ -42,22 +42,24 @@ def post_comment(request):
     data = json.loads(request.body)
     parent_element = data.get("parentElement", False)
     parent_element_id = data.get("id", False)
-    race = None
-    announcement = None
 
     if request.method != "POST" or not request.user.is_authenticated:
         return HttpResponse(status=405)
     
     validated_data = validate_generate_comment_data(data, request, parent_element, parent_element_id)
+    context = {
+        "request": request,
+    }
     
-    serializer = CommentWriteSerializer(data=validated_data)
+    serializer = CommentWriteSerializer(data=validated_data, context=context)
 
     if not serializer.is_valid():
         return HttpResponse(status=400)
     
-    serializer.save()
+    instance = serializer.save()
+    print(instance.id)
 
-    return HttpResponse(status=201)
+    return JsonResponse({"new_comment_id": instance.id}, status=201)
 
 def edit_comment(request):
     if request.method != "PUT" or not request.user.is_authenticated:
@@ -69,15 +71,18 @@ def edit_comment(request):
     
     try:
         comment = Comment.objects.get(pk=comment_id)
-    except CommentWriteSerializer.DoesNotExist:
+    except Comment.DoesNotExist:
         return HttpResponse(status=400)
     
     if comment.user.id != request.user.id:
         return HttpResponse(status=403)
     
     data["user"] = request.user.id
+    context = {
+        "request": request
+    }
     
-    serializer = CommentWriteSerializer(data=data, instance=comment)
+    serializer = CommentWriteSerializer(data=data, context=context, instance=comment)
     if not serializer.is_valid():
         return HttpResponse(status=400)
         

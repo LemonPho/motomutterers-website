@@ -1,164 +1,18 @@
 {
   "status": "done",
   "assets": {
-    "main.017094be5316e7150eb4.js": {
-      "name": "main.017094be5316e7150eb4.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.017094be5316e7150eb4.js"
+    "main.7090a8fda98354288895.js": {
+      "name": "main.7090a8fda98354288895.js",
+      "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.7090a8fda98354288895.js"
     },
-    "main.017094be5316e7150eb4.js.LICENSE.txt": {
-      "name": "main.017094be5316e7150eb4.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.017094be5316e7150eb4.js.LICENSE.txt"
-    },
-    "main.0fc227a6e6a1c39310e6.js": {
-      "name": "main.0fc227a6e6a1c39310e6.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.0fc227a6e6a1c39310e6.js"
-    },
-    "main.0fc227a6e6a1c39310e6.js.LICENSE.txt": {
-      "name": "main.0fc227a6e6a1c39310e6.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.0fc227a6e6a1c39310e6.js.LICENSE.txt"
-    },
-    "main.262115deb69332314615.js": {
-      "name": "main.262115deb69332314615.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.262115deb69332314615.js"
-    },
-    "main.262115deb69332314615.js.LICENSE.txt": {
-      "name": "main.262115deb69332314615.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.262115deb69332314615.js.LICENSE.txt"
-    },
-    "main.276db94ec9799290b628.js": {
-      "name": "main.276db94ec9799290b628.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.276db94ec9799290b628.js"
-    },
-    "main.276db94ec9799290b628.js.LICENSE.txt": {
-      "name": "main.276db94ec9799290b628.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.276db94ec9799290b628.js.LICENSE.txt"
-    },
-    "main.2deb6065d0d38aef737a.js": {
-      "name": "main.2deb6065d0d38aef737a.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.2deb6065d0d38aef737a.js"
-    },
-    "main.2deb6065d0d38aef737a.js.LICENSE.txt": {
-      "name": "main.2deb6065d0d38aef737a.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.2deb6065d0d38aef737a.js.LICENSE.txt"
-    },
-    "main.3f59f2d748bf36876a86.js": {
-      "name": "main.3f59f2d748bf36876a86.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.3f59f2d748bf36876a86.js"
-    },
-    "main.3f59f2d748bf36876a86.js.LICENSE.txt": {
-      "name": "main.3f59f2d748bf36876a86.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.3f59f2d748bf36876a86.js.LICENSE.txt"
-    },
-    "main.403efc3e93663f9ae1c9.js": {
-      "name": "main.403efc3e93663f9ae1c9.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.403efc3e93663f9ae1c9.js"
-    },
-    "main.403efc3e93663f9ae1c9.js.LICENSE.txt": {
-      "name": "main.403efc3e93663f9ae1c9.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.403efc3e93663f9ae1c9.js.LICENSE.txt"
-    },
-    "main.420ec32f7de95aa2c40b.js": {
-      "name": "main.420ec32f7de95aa2c40b.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.420ec32f7de95aa2c40b.js"
-    },
-    "main.420ec32f7de95aa2c40b.js.LICENSE.txt": {
-      "name": "main.420ec32f7de95aa2c40b.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.420ec32f7de95aa2c40b.js.LICENSE.txt"
-    },
-    "main.4ee2aa33cadff47d2751.js": {
-      "name": "main.4ee2aa33cadff47d2751.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.4ee2aa33cadff47d2751.js"
-    },
-    "main.4ee2aa33cadff47d2751.js.LICENSE.txt": {
-      "name": "main.4ee2aa33cadff47d2751.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.4ee2aa33cadff47d2751.js.LICENSE.txt"
-    },
-    "main.5716c186a164b6b841b1.js": {
-      "name": "main.5716c186a164b6b841b1.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.5716c186a164b6b841b1.js"
-    },
-    "main.5716c186a164b6b841b1.js.LICENSE.txt": {
-      "name": "main.5716c186a164b6b841b1.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.5716c186a164b6b841b1.js.LICENSE.txt"
-    },
-    "main.868f3c6a0b596e7355c7.js": {
-      "name": "main.868f3c6a0b596e7355c7.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.868f3c6a0b596e7355c7.js"
-    },
-    "main.868f3c6a0b596e7355c7.js.LICENSE.txt": {
-      "name": "main.868f3c6a0b596e7355c7.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.868f3c6a0b596e7355c7.js.LICENSE.txt"
-    },
-    "main.a0847e1c9f87cc0cb83c.js": {
-      "name": "main.a0847e1c9f87cc0cb83c.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.a0847e1c9f87cc0cb83c.js"
-    },
-    "main.a0847e1c9f87cc0cb83c.js.LICENSE.txt": {
-      "name": "main.a0847e1c9f87cc0cb83c.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.a0847e1c9f87cc0cb83c.js.LICENSE.txt"
-    },
-    "main.b9ad6d1afdede2615d89.js": {
-      "name": "main.b9ad6d1afdede2615d89.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.b9ad6d1afdede2615d89.js"
-    },
-    "main.b9ad6d1afdede2615d89.js.LICENSE.txt": {
-      "name": "main.b9ad6d1afdede2615d89.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.b9ad6d1afdede2615d89.js.LICENSE.txt"
-    },
-    "main.c23d09424af36f94f2e0.js": {
-      "name": "main.c23d09424af36f94f2e0.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.c23d09424af36f94f2e0.js"
-    },
-    "main.c23d09424af36f94f2e0.js.LICENSE.txt": {
-      "name": "main.c23d09424af36f94f2e0.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.c23d09424af36f94f2e0.js.LICENSE.txt"
-    },
-    "main.d8f6a1a7dae3c036e053.js": {
-      "name": "main.d8f6a1a7dae3c036e053.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.d8f6a1a7dae3c036e053.js"
-    },
-    "main.d8f6a1a7dae3c036e053.js.LICENSE.txt": {
-      "name": "main.d8f6a1a7dae3c036e053.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.d8f6a1a7dae3c036e053.js.LICENSE.txt"
-    },
-    "main.e8528df3ef8552de18ef.js": {
-      "name": "main.e8528df3ef8552de18ef.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.e8528df3ef8552de18ef.js"
-    },
-    "main.e8528df3ef8552de18ef.js.LICENSE.txt": {
-      "name": "main.e8528df3ef8552de18ef.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.e8528df3ef8552de18ef.js.LICENSE.txt"
-    },
-    "main.f2d81148ec3c10778f50.js": {
-      "name": "main.f2d81148ec3c10778f50.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.f2d81148ec3c10778f50.js"
-    },
-    "main.f2d81148ec3c10778f50.js.LICENSE.txt": {
-      "name": "main.f2d81148ec3c10778f50.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.f2d81148ec3c10778f50.js.LICENSE.txt"
-    },
-    "main.f64ff5af8344fa2ea371.js": {
-      "name": "main.f64ff5af8344fa2ea371.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.f64ff5af8344fa2ea371.js"
-    },
-    "main.f64ff5af8344fa2ea371.js.LICENSE.txt": {
-      "name": "main.f64ff5af8344fa2ea371.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.f64ff5af8344fa2ea371.js.LICENSE.txt"
-    },
-    "main.f79b7fbee68b7a813447.js": {
-      "name": "main.f79b7fbee68b7a813447.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.f79b7fbee68b7a813447.js"
-    },
-    "main.f79b7fbee68b7a813447.js.LICENSE.txt": {
-      "name": "main.f79b7fbee68b7a813447.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.f79b7fbee68b7a813447.js.LICENSE.txt"
+    "main.7090a8fda98354288895.js.LICENSE.txt": {
+      "name": "main.7090a8fda98354288895.js.LICENSE.txt",
+      "path": "/home/Luigi/Documents/Motomutterers/website/frontend/static/frontend/main.7090a8fda98354288895.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.868f3c6a0b596e7355c7.js"
+      "main.7090a8fda98354288895.js"
     ]
-  },
-  "error": "ModuleBuildError",
-  "message": "Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\src\\components\\util-components\\comments-section-components\\Comment.js: Unexpected token, expected \"...\" (67:18)\n\n  65 |     return(\n  66 |         <div className={`rounded-15 p-2 mb-2 nested-element-color`} id={`comment-${comment.id}`} key={`comment-${comment.id}`}>\n> 67 |             <div {`className=\"d-flex align-items-start ${highlighted ? \"highlighted\" : \"\"}`}>\n     |                   ^\n  68 |                 <ProfilePictureLazyLoader width={\"2.5rem\"} height={\"2.5rem\"} username={comment.user.username}/>\n  69 |                 <div className=\"dynamic-container ms-2\" style={{maxWidth: \"calc(100% - 48px)\"}}>\n  70 |                     <div className=\"d-flex align-items-center\">\n    at constructor (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:359:19)\n    at JSXParserMixin.raise (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:3266:19)\n    at JSXParserMixin.unexpected (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:3286:16)\n    at JSXParserMixin.expect (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:3596:12)\n    at JSXParserMixin.jsxParseAttribute (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6699:12)\n    at JSXParserMixin.jsxParseOpeningElementAfterName (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6721:28)\n    at JSXParserMixin.jsxParseOpeningElementAt (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6716:17)\n    at JSXParserMixin.jsxParseElementAt (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6740:33)\n    at JSXParserMixin.jsxParseElementAt (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6752:32)\n    at JSXParserMixin.jsxParseElement (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6803:17)\n    at JSXParserMixin.parseExprAtom (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6813:19)\n    at JSXParserMixin.parseExprSubscripts (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10619:23)\n    at JSXParserMixin.parseUpdate (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10604:21)\n    at JSXParserMixin.parseMaybeUnary (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10584:23)\n    at JSXParserMixin.parseMaybeUnaryOrPrivate (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10438:61)\n    at JSXParserMixin.parseExprOps (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10443:23)\n    at JSXParserMixin.parseMaybeConditional (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10420:23)\n    at JSXParserMixin.parseMaybeAssign (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10383:21)\n    at E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10353:39\n    at JSXParserMixin.allowInAnd (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:11955:12)\n    at JSXParserMixin.parseMaybeAssignAllowIn (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10353:17)\n    at JSXParserMixin.parseParenAndDistinguishExpression (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:11214:28)\n    at JSXParserMixin.parseExprAtom (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10867:23)\n    at JSXParserMixin.parseExprAtom (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:6818:20)\n    at JSXParserMixin.parseExprSubscripts (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10619:23)\n    at JSXParserMixin.parseUpdate (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10604:21)\n    at JSXParserMixin.parseMaybeUnary (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10584:23)\n    at JSXParserMixin.parseMaybeUnaryOrPrivate (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10438:61)\n    at JSXParserMixin.parseExprOps (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10443:23)\n    at JSXParserMixin.parseMaybeConditional (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10420:23)\n    at JSXParserMixin.parseMaybeAssign (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10383:21)\n    at JSXParserMixin.parseExpressionBase (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10337:23)\n    at E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10333:39\n    at JSXParserMixin.allowInAnd (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:11950:16)\n    at JSXParserMixin.parseExpression (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:10333:17)\n    at JSXParserMixin.parseReturnStatement (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12640:28)\n    at JSXParserMixin.parseStatementContent (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12292:21)\n    at JSXParserMixin.parseStatementLike (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12261:17)\n    at JSXParserMixin.parseStatementListItem (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12241:17)\n    at JSXParserMixin.parseBlockOrModuleBlockBody (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12814:61)\n    at JSXParserMixin.parseBlockBody (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12807:10)\n    at JSXParserMixin.parseBlock (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12795:10)\n    at JSXParserMixin.parseFunctionBody (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:11638:24)\n    at JSXParserMixin.parseFunctionBodyAndFinish (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:11624:10)\n    at E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12939:12\n    at JSXParserMixin.withSmartMixTopicForbiddingContext (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:11932:14)\n    at JSXParserMixin.parseFunction (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12938:10)\n    at JSXParserMixin.parseExportDefaultExpression (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:13393:19)\n    at JSXParserMixin.parseExport (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:13319:25)\n    at JSXParserMixin.parseStatementContent (E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\node_modules\\@babel\\parser\\lib\\index.js:12374:27)"
+  }
 }

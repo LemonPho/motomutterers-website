@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 const CommentsContext = createContext();
 
 export default function CommentsContextProvider({ parentElement, children }){
-    const { setErrorMessage } = useApplicationContext();
+    const { setErrorMessage, user, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
 
     const [comments, setComments] = useState([]);
     const [commentsLoading, setCommentsLoading] = useState();
@@ -31,14 +31,40 @@ export default function CommentsContextProvider({ parentElement, children }){
     }
 
     async function postComment(text, commentId){
+        resetApplicationMessages();
+        setLoadingMessage("Loading...");
         const commentResponse = await submitComment(text, parentElement, commentId);
+        setLoadingMessage(false);
 
         if(commentResponse.error || commentResponse.status != 201){
             setErrorMessage("There was an error posting the comment");
             return false;
         }
 
-        await retrieveComments();
+        const newCommentId = commentResponse.newCommentId;
+        const newComment = {
+            text: text,
+            user: user,
+            id: newCommentId,
+            replies: [],
+            amount_replies: 0,
+            date_created: new Date().toISOString(),
+        }
+
+        if(commentId){
+            let newCommentsArray = comments;
+            for(let i=0; i < newCommentsArray.length; i++){
+                if(newCommentsArray[i].id == commentId){
+                    newCommentsArray[i].amount_replies++;
+                    newCommentsArray[i].replies.unshift(newComment);
+                    break;
+                }
+            }
+            setComments(newCommentsArray);
+        } else {
+            setComments(prevComments => [newComment, ...prevComments]);
+        }
+        
         return true;
     }
 
@@ -61,8 +87,7 @@ export default function CommentsContextProvider({ parentElement, children }){
             return false;
         }
 
-        //TODO: work on a way to just insert the new comment into the comment list
-        await retrieveComments();
+        setComments(prevComments => prevComments.filter(comment => comment.id != commentId));
         return true;
     }
 

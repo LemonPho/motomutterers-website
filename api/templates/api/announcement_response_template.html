@@ -8,7 +8,7 @@
             padding: 20px;
         }
 
-        .comment-container {
+        .container {
             max-width: 600px;
             background: white;
             padding: 15px;
@@ -17,7 +17,7 @@
             margin-bottom: 20px;
         }
 
-        .parent-comment {
+        .announcement {
             font-size: 0.85rem;
             color: #555;
             background: #eef2f7;
@@ -26,7 +26,7 @@
             margin-bottom: 10px;
         }
 
-        .response-comment {
+        .comment {
             font-size: 1rem;
             color: #333;
             padding: 10px;
@@ -68,20 +68,20 @@
 </head>
 <body>
 
-    <div class="comment-container">
-        <div class="parent-comment">
+    <div class="container">
+        <div class="announcement">
             <div class="flex">
-                <strong>{{ parent_comment.username }}</strong>
-                <small style="margin-left: 2rem">{{ parent_comment.timestamp }}</small>
+                <strong>{{ announcement.username }}</strong>
+                <small style="margin-left: 2rem">{{ announcement.timestamp }}</small>
             </div>
-            <span>{{ parent_comment.text }}</span>
+            <span>{{ announcement.title }}</span>
         </div>
-        <div class="response-comment">
+        <div class="comment">
             <div class="flex">
-                <strong>{{ response_comment.username }}</strong>
-                <small style="margin-left: 2rem">{{ response_comment.timestamp }}</small>
+                <strong>{{ comment.username }}</strong>
+                <small style="margin-left: 2rem">{{ comment.timestamp }}</small>
             </div>
-            <span>{{ response_comment.text }}</span>
+            <span>{{ comment.text }}</span>
         </div>
         <div style="text-align: center;">
             <a href="{{ url }}" class="view-comment-button">View Comment</a>

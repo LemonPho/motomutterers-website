@@ -296,6 +296,8 @@ def toggle_email_notifications(request):
         return HttpResponse(status=405)
     
     TYPE_RACE_WEEKENDS = 1
+    TYPE_COMMENT_RESPONSE = 2
+    TYPE_ANNOUNCEMENT_RESPONSE = 3
     
     data = json.loads(request.body)
     type = data.get("type", False)
@@ -305,6 +307,10 @@ def toggle_email_notifications(request):
         
     if type == TYPE_RACE_WEEKENDS:
         request.user.race_weekends_emails = not request.user.race_weekends_emails
+    elif type == TYPE_COMMENT_RESPONSE:
+        request.user.comment_response_emails = not request.user.comment_response_emails
+    elif type == TYPE_ANNOUNCEMENT_RESPONSE and request.user.is_admin:
+        request.user.announcement_response_emails = not request.user.announcement_response_emails
 
     request.user.save()
     

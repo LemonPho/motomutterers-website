@@ -24,7 +24,7 @@ def validate_generate_comment_data(data, request, parent_element, parent_element
     elif parent_element == "RACE_WEEKEND":
         try:
             race_weekend = RaceWeekend.objects.get(pk=parent_element_id)
-        except Race.DoesNotExist:
+        except RaceWeekend.DoesNotExist:
             race_weekend = None
     
     if announcement:

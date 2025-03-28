@@ -502,6 +502,7 @@ export async function submitDeleteAnnouncement(announcementId){
 export async function submitComment(text, parentElement, commentId){
     let response = {
         error: false,
+        newCommentId: null,
         status: null,
     };
 
@@ -519,10 +520,13 @@ export async function submitComment(text, parentElement, commentId){
                 text: text,
                 commentId: commentId,
             })
-        })
+        });
+        
+        const apiResult = apiResponse.status == 201 ? await apiResponse.json() : null;
 
         response.error = apiResponse.status === 500 ? apiResponse : false;
         response.status = apiResponse.status;
+        if(apiResult) response.newCommentId = apiResult.new_comment_id;
         
     } catch(error) {
         response.error = error;

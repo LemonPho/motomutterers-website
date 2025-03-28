@@ -52,8 +52,8 @@ textarea {
 
 .highlighted {
     border-radius: 15px;
-    background-color:rgb(255, 234, 167);
-    padding: 5px
+    background-color:rgb(255, 234, 167) !important;
+    padding: 5px;
 }
 
 .main{
@@ -480,6 +480,13 @@ input[type="file"]{
 .menu-bar-title{
     font-size: larger;
     font-weight: bold;
+}
+
+.notification-text{
+    font-size: clamp(0.75rem, 1rem, 1.25rem) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .race-standings-row{

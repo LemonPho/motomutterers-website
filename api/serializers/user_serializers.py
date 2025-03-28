@@ -61,9 +61,10 @@ class UserSerializer(serializers.ModelSerializer):
     is_admin = serializers.SerializerMethodField()
     is_active = serializers.SerializerMethodField()
     is_logged_in = serializers.SerializerMethodField()
+    announcement_response_emails = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications", "race_weekends_emails"]
+        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications", "race_weekends_emails", "comment_response_emails", "announcement_response_emails"]
 
     #get functions
     def get_is_admin(self, user):
@@ -111,6 +112,12 @@ class UserSerializer(serializers.ModelSerializer):
         serializer = importlib.import_module("api.serializers.notification_serializers").NotificationReadSerializer(notifications, many=True)
         return serializer.data
     
+    def get_announcement_response_emails(self, user):
+        if not user.is_admin:
+            return None
+        else:
+            return user.announcement_response_emails
+
     #validate functions
     def validate_profile_picture(self, value):
         if not value:

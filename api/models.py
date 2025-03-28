@@ -74,6 +74,8 @@ class User(AbstractUser):
 
     #Email notifications settings
     race_weekends_emails = models.BooleanField(default=False)
+    comment_response_emails = models.BooleanField(default=False)
+    announcement_response_emails = models.BooleanField(default=False)
 
     objects = UserManager()
 
