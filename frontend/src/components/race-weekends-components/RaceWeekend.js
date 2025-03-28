@@ -34,6 +34,7 @@ export default function RaceWeekend(){
 
             <div className="card-body p-2">
                 <div className="row m-0">
+                    {(selectedRaceWeekend.race != null || selectedRaceWeekend.sprint_race != null) &&
                     <div className="col card nested-element-color rounded-15 mb-2 p-0" id="races-card">
                         <div className="card-header rounded-15 clickable nested-element-color mt-2 mx-2" onClick={() => {setExpandRacesDiv(!expandRacesDiv)}}>
                             <h4 style={{margin: "0px"}}>
@@ -101,7 +102,7 @@ export default function RaceWeekend(){
                                 </div>
                             </Expand>
                         </div>
-                    </div>
+                    </div>}
                 </div>
                 <div className="row g-0">
                 {(selectedRaceWeekend.standings != null) && 
