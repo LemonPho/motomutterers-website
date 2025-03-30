@@ -4,5 +4,5 @@ from django.shortcuts import render
 # Create your views here.
 def index(request, *args, **kwargs):
     #get token is for retrieving the csrftoken, it seems that without it, django doesn't set the csrftoken in the cookies, making the website basically unusable
-    #get_token(request) seems to be fixed, will leave just in case
+    get_token(request)
     return render(request, "frontend/index.html")
