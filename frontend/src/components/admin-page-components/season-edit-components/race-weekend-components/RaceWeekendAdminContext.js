@@ -33,9 +33,9 @@ export default function RaceWeekendAdminContextProvider({ children }){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
         const raceWeekendResponse = await submitRaceWeekendEvent(selectedRaceWeekend.id, eventType);
+        setLoadingMessage(false);
         if(raceWeekendResponse.error){
             setErrorMessage("There was an error retrieving the race weekend event");
-            setLoadingMessage(false);
             return;
         }
 
@@ -49,25 +49,21 @@ export default function RaceWeekendAdminContextProvider({ children }){
             string += "were not found in the database";
 
             setErrorMessage(string);
-            setLoadingMessage(false);
             return;
         }
 
         if(raceWeekendResponse.timeout){
             setErrorMessage("Didn't receive a response from motorsport.com")
-            setLoadingMessage(false);
             return;
         }
 
         if(raceWeekendResponse.seleniumBusy){
             setErrorMessage("There is already an instance of some sort of retrieval, please wait or terminate the process before trying again");
-            setLoadingMessage(false);
             return;
         }
 
         if(raceWeekendResponse.status != 201){
             setErrorMessage("There was a problem retrieving the race weekend event");
-            setLoadingMessage(false);
             return;
         }
 
