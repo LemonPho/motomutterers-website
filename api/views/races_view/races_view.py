@@ -270,7 +270,7 @@ def post_race_weekend_event(request):
         if any(response["competitors_not_found"]):
             SeasonMessage.objects.create(
                 season = season,
-                message = f"Couldn't create the race for {race_weekend.title}, because the competitors: {', '.join(response['competitors_not_found'])} were not found in the season riders",
+                message = f"Couldn't create the race for {race_weekend.title}, because the competitors: {', '.join(str(response['competitors_not_found']))} were not found in the season riders",
                 type = 0
             )
         
@@ -356,7 +356,7 @@ def finalize_race_weekend(request):
     if any(response["competitors_not_found"]):
         SeasonMessage.objects.create(
             season = season,
-            message = f"When creating the standings for the {race_weekend.title} weekend, these competitors were not found: " + " ".join(standings_data["competitors_not_found"]) + " in the season competitors list",
+            message = f"When creating the standings for the {race_weekend.title} weekend, these competitors were not found: " + " ".join(str(standings_data["competitors_not_found"])) + " in the season competitors list",
             type = 0,
         )
         return JsonResponse(response, status=400)
