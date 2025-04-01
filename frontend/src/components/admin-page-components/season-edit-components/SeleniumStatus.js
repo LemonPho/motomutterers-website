@@ -1,12 +1,14 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSeasonContext } from "./SeasonContext";
 import ProfilePictureLazyLoader from "../../util-components/ProfilePictureLazyLoader";
 import { submitTerminateSelenium } from "../../fetch-utils/fetchPost";
 import { useApplicationContext } from "../../ApplicationContext";
+import useImagesContext from "../../ImagesContext";
 
 export default function SeleniumStatus(){
-    const { season, retrieveSeason } = useSeasonContext();
+    const { season, seasonLoading, retrieveSeason } = useSeasonContext();
     const { setErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const stopButton = useRef(null);
 
@@ -36,6 +38,12 @@ export default function SeleniumStatus(){
         retrieveSeason();
     }
 
+    useEffect(() => {
+        if(seasonLoading) return;
+        const userList = season.selenium_status.map(selenium => selenium.user);
+        prepareProfilePictures([userList]);
+    }, [seasonLoading])
+
     return(
         <div className="card rounded-15 col-md mb-2 element-background-color element-border-color" style={{padding: "0px"}}>
             <div className="card-header nested-element-color rounded-15 m-2">
@@ -46,7 +54,7 @@ export default function SeleniumStatus(){
                     <div key={selenium.pid}>
                         <div className="card rounded-15 p-2 nested-element-color">
                             <div className="d-flex align-items-center ">
-                                <ProfilePictureLazyLoader username={selenium.user.username} height={"2.5rem"} width={"2.5rem"}/>
+                                <ProfilePictureLazyLoader user={selenium.user} height={"2.5rem"} width={"2.5rem"}/>
                                 <strong className="ms-2 me-2">{selenium.user.username}</strong>
                                 <span>{selenium.message}</span>
                                 <button ref={stopButton} className="ms-auto btn btn-outline-danger rounded-15" onClick={() => terminateSelenium(selenium.pid)}>Stop</button>

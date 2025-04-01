@@ -4,23 +4,23 @@ import { useApplicationContext } from "../ApplicationContext";
 import { getAnnouncement } from "../fetch-utils/fetchGet";
 import { Outlet, useParams } from "react-router-dom";
 import { submitAnnouncementComment, submitAnnouncementCommentReply, submitDeleteAnnouncement, submitDeleteAnnouncementComment, submitEditAnnouncement, submitEditAnnouncementComment } from "../fetch-utils/fetchPost";
+import useImagesContext from "../ImagesContext";
 
 
 const AnnouncementContext = createContext()
 
 export default function AnnouncementContextProvider(){
-    const { setErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, resetApplicationMessages, setLoadingMessage } = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const {announcementId} = useParams();
     const [announcement, setAnnouncement] = useState({});
     const [announcementLoading, setAnnouncementLoading] = useState(true);
 
-    function resetAnnouncementsMessages(){
-        setCommentsErrorMessage(false);
-    }
-
     //--------------------------------ANNOUNCEMENTS-------------------------------------------//
     async function retrieveAnnouncement(){
+        resetApplicationMessages();
+        setLoadingMessage("Loading...");
         setAnnouncementLoading(true);
         if(announcementId === null){
             setAnnouncement(false);
@@ -28,6 +28,7 @@ export default function AnnouncementContextProvider(){
         }
 
         const announcementResponse = await getAnnouncement(announcementId);
+        setLoadingMessage(false);
 
         if(announcementResponse.status == 404){
             setAnnouncement(false);
@@ -42,11 +43,15 @@ export default function AnnouncementContextProvider(){
         }
 
         setAnnouncement(announcementResponse.announcement);
+        prepareProfilePictures([announcementResponse.announcement.user]);
         setAnnouncementLoading(false);
     };
 
     async function editAnnouncement(title, text, announcementId){
+        resetApplicationMessages();
+        setLoadingMessage("Loading...");
         const announcementResponse = await submitEditAnnouncement(title, text, announcementId);
+        setLoadingMessage(false);
 
         if(announcementResponse.error){
             setErrorMessage("There was an error saving the changes");
@@ -68,7 +73,10 @@ export default function AnnouncementContextProvider(){
     }
 
     async function deleteAnnouncement(announcementId){
+        resetApplicationMessages();
+        setLoadingMessage("Loading...");
         const announcementResponse = await submitDeleteAnnouncement(announcementId);
+        setLoadingMessage(false);
 
         if(announcementResponse.error || announcementResponse.status != 200){
             setErrorMessage("There was an error deleting the announcement");
@@ -80,9 +88,7 @@ export default function AnnouncementContextProvider(){
     }
 
     return(
-        <AnnouncementContext.Provider value={{  announcement, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, 
-                                                resetAnnouncementsMessages,
-                                                }}>
+        <AnnouncementContext.Provider value={{  announcement, retrieveAnnouncement, editAnnouncement, deleteAnnouncement, announcementLoading, }}>
             <Outlet/>
         </AnnouncementContext.Provider>
     );

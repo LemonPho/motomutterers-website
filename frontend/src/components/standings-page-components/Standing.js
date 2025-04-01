@@ -31,7 +31,7 @@ export default function Standing({ userPicks, i, loading, small }){
             return(
                 <div className="p-2 rounded-15 nested-element-color">
                 <div className="d-flex align-items-center">
-                    <ProfilePictureLazyLoader width="2rem" height="2rem" username={userPicks.user.username}/>
+                    <ProfilePictureLazyLoader width="2rem" height="2rem" user={userPicks.user}/>
                     <div className="ms-1"><strong>{i+1}. {userPicks.user.username} - {userPicks.points}</strong></div>
                 </div>
             </div>
@@ -40,7 +40,7 @@ export default function Standing({ userPicks, i, loading, small }){
             return(
                 <div className="p-2 rounded-15 nested-element-color">
                     <div className="d-flex align-items-center">
-                        <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" username={userPicks.user.username}/>
+                        <ProfilePictureLazyLoader width="3.5rem" height="3.5rem" user={userPicks.user}/>
                         <div className="ms-1"><strong>{i+1}. {userPicks.user.username} - {userPicks.points}</strong></div>
                     </div>
                     <div className="d-flex align-items-center">

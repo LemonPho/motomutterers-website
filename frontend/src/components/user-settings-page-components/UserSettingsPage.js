@@ -39,12 +39,12 @@ export default function UserSettings(){
                             <strong style={{fontSize: "20px"}}>Profile photo</strong>
                         </div>
                         <div>
-                            <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={user.username}/>
+                            <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} user={user}/>
                         </div>
                     </div>
                     <button id="profile-picture-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("profile-picture-change")}}>Change</button>          
                     <Modal isOpen={openedModal == "profile-picture-change"}>
-                        <ProfilePictureChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData}/>
+                        <ProfilePictureChangeModal closeModal={closeModal}/>
                     </Modal>
                 </div>
                 <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">

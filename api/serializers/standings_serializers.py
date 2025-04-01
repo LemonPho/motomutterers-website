@@ -11,13 +11,6 @@ class StandingsSimpleSerializer(serializers.ModelSerializer):
         model = Standings
         fields = ["users_picks"]
 
-class StandingsSerializer(serializers.ModelSerializer):
-    users_picks = importlib.import_module("api.serializers.picks_serializers").UserPicksSerializer(many=True)
-
-    class Meta:
-        model = Standings
-        fields = ["users_picks"]
-
 class StandingsWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Standings

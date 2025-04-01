@@ -3,9 +3,11 @@ import { getUser } from "../fetch-utils/fetchGet";
 import { Link } from "react-router-dom";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useApplicationContext } from "../ApplicationContext";
+import useImagesContext from "../ImagesContext";
 
 export default function UserInformation({ username }){
     const {setErrorMessage, user, userLoading} = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const [loading, setLoading] = useState(true);
     const [displayUser, setDisplayUser] = useState({});
@@ -32,6 +34,7 @@ export default function UserInformation({ username }){
         }
 
         setDisplayUser(userResponse.user);
+        prepareProfilePictures([userResponse.user]);
     } 
 
     useEffect(() => {
@@ -47,7 +50,7 @@ export default function UserInformation({ username }){
             <div id="user-view" className="card rounded-15 p-3 element-background-color element-border-color">
                 <div className="rounded-15 nested-element-color p-1">
                     <div className="d-flex align-items-center justify-content-center">
-                        <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} username={username}/>
+                        <ProfilePictureLazyLoader width={"7rem"} height={"7rem"} user={displayUser}/>
                     </div>
                     <div className="d-flex justify-content-center w-100">
                         {!loading && <div className="username-text">{displayUser.username}</div>}

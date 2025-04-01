@@ -1,10 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
-import PageNotFound from "../PageNotFound";
 import { useAnnouncementContext } from "./AnnouncementContext";
 import { useApplicationContext } from "../ApplicationContext";
-import { autoResizeTextarea } from "../utils";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import Dropdown from "../util-components/Dropdown";
 import { useOpenersContext } from "../OpenersContext";
@@ -12,11 +10,10 @@ import Visible from "../util-components/Visble";
 import Textarea from "../util-components/Textarea";
 
 export default function AnnouncementContent(){
-    const { user, contextLoading } = useApplicationContext();
+    const { user, contextLoading, setLoadingMessage } = useApplicationContext();
     const { announcement, editAnnouncement, retrieveAnnouncement, deleteAnnouncement, announcementLoading } = useAnnouncementContext();
     const { openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
 
-    const [announcementEditLoading, setAnnouncementEditLoading] = useState(false);
     const [showEditAnnouncement, setShowEditAnnouncement] = useState(false);
     const [showStaticAnnouncement, setShowStaticAnnouncement] = useState(true);
     const [announcementDeleted, setAnnouncementDeleted] = useState(false);
@@ -33,20 +30,16 @@ export default function AnnouncementContent(){
     }
 
     async function saveEditAnnouncement(){
-        setAnnouncementEditLoading(true);
         if(await editAnnouncement(title, text, announcement.id)){
             await retrieveAnnouncement();
             toggleEditAnnouncement();
         }
-        setAnnouncementEditLoading(false);
     }
 
     function saveDeleteAnnouncement(){
-        setAnnouncementEditLoading(true);
         if(deleteAnnouncement(announcement.id)){
             setAnnouncementDeleted(true);
         }
-        setAnnouncementEditLoading(false);
     }
 
     if(contextLoading){
@@ -59,15 +52,14 @@ export default function AnnouncementContent(){
 
     return(
         <div>
-            { announcementEditLoading && <div className="alert alert-secondary">Loading...</div>}
             <div className="card rounded-15 element-background-color element-border-color p-2" id="announcement-card">
                 <Visible isVisible={showStaticAnnouncement}>
                     <div id="static-div" className="">
                         <div className="card-header d-flex align-items-center p-3 mb-2 nested-element-color rounded-15">
                             <h3 id="announcement-title" className="">{announcement.title}</h3>
                             <span className="ms-2 me-2">•</span>
-                            <Link to={`/users/${announcement.user.username}?page=1`} className="link-no-decorations">
-                                <ProfilePictureLazyLoader width={"2.75rem"} height={"2.75rem"} username={announcement.user.username}/>
+                            <Link to={`/users/${announcement.user.username}?page=1`} className="d-flex align-items-center link-no-decorations">
+                                <ProfilePictureLazyLoader width={"2.75rem"} height={"2.75rem"} user={announcement.user}/>
                                 <span className="ms-2"><strong>{announcement.user.username}</strong></span>
                             </Link>
                             { 

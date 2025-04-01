@@ -15,6 +15,7 @@ from pillow_heif import register_heif_opener, from_bytes
 import os
 import json
 import datetime
+import base64
 
 from ...tokens import account_activation_token
 from ...utils import is_username_valid, is_email_valid
@@ -51,35 +52,36 @@ def get_default_profile_picture(request):
     if request.method != "GET":
         return HttpResponse(status=405)
     
-    picture = Image.open("../../../../media/profile_picutres/default.webp")
+    image_data = {
+        "format": "webp",
+        "data": None
+    }
+    
+    with open("media/profile_pictures/default.webp", 'rb') as picture_file:
+        image_data["data"] = base64.b64encode(picture_file.read()).decode("utf-8")
 
-    serializer = ProfilePictureSerializer(picture)
+    return JsonResponse({"profile_picture": image_data}, status=200)
 
-    return JsonResponse(serializer.data, status=200)
-
-def get_profile_picture(request):
-    if request.method != "GET":
+def get_profile_pictures(request):
+    if request.method != "POST":
         return HttpResponse(status=405)
     
-    username = request.GET.get("username", -1)
+    body = json.loads(request.body)
+    user_list = body.get("userList", False)
 
-    if username == -1:
-        return HttpResponse(status=404)
+    if not user_list:
+        return HttpResponse(status=400)
 
     User = get_user_model()
 
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return HttpResponse(status=404)
+    users = User.objects.filter(username__in=user_list)
         
-    serializer = ProfilePictureSerializer(user.profile_picture)
-
-    context = {
-        "profile_picture": serializer.data,
+    serializer = ProfilePictureSerializer(users, many=True)
+    profile_pictures_data = {
+        user["username"]: user for user in serializer.data
     }
 
-    return JsonResponse(context, status=200)
+    return JsonResponse({"profile_pictures": profile_pictures_data}, status=200)
     
 def get_current_user(request):
     #getting user data

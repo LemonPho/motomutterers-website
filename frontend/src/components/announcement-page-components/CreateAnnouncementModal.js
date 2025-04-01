@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { autoResizeTextarea } from "../utils";
 import { useApplicationContext } from "../ApplicationContext";
@@ -54,7 +54,7 @@ export default function CreateAnnouncementModal(){
             <div className="custom-modal-body">
                 <hr className='m-1' />
                 <div className='d-flex align-items-center'>
-                    {!userLoading && <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>}
+                    {!userLoading && <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} user={user}/>}
                     {!userLoading && <strong className='ms-2'>{user.username}</strong>}
                 </div>
                 <Textarea id="announcement-title" className="mt-2" placeholder="Title..." value={announcementTitle} setValue={setAnnouncementTitle} onEnterFunction={postAnnouncement}/>

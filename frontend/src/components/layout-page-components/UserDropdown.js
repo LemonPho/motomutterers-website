@@ -4,13 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { submitLogout } from "../fetch-utils/fetchPost";
 
 import { useApplicationContext } from "../ApplicationContext";
-import { getLoggedIn, getUser } from "../fetch-utils/fetchGet";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useOpenersContext } from "../OpenersContext";
 import Dropdown from "../util-components/Dropdown";
 
 export default function UserDropdown(){
-
     const { user, userLoading, setLogout, setErrorMessage } = useApplicationContext();
     const { toggleDropdown, openedDropdown } = useOpenersContext();
 
@@ -40,7 +38,7 @@ export default function UserDropdown(){
         <div className="dropdown-div">
             <div id="user-dropdown-button">
                 <div className="ms-auto mt-2 mb-2 dropdown-button" onClick={(e) => {toggleDropdown("user-dropdown-content", e, user.is_logged_in)}}>
-                    <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} username={user.username}/>
+                    <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} user={user}/>
                 </div>
             </div>
             <Dropdown isOpen={openedDropdown == "user-dropdown-content"}>
@@ -48,7 +46,7 @@ export default function UserDropdown(){
                     <li>
                         <Link to={`/users/${user.username}?page=1`} className="d-flex align-items-center py-2 link-no-decorations">
                             <div className="ms-3">
-                                <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} username={user.username}/>
+                                <ProfilePictureLazyLoader width={"2rem"} height={"2rem"} user={user}/>
                             </div>
                             <div className="mx-2">{user.username}</div>
                         </Link>

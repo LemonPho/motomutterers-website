@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { useStandingsContext } from "./StandingsContext";
 import StandingDetailed from "./StandingDetailed";
 import { Link, useLocation } from "react-router-dom";
@@ -14,7 +13,7 @@ export default function Standings(){
     const { user, userLoading } = useApplicationContext();
     const { 
         retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, selectedSeasonYear, seasonList,
-        standings, standingsLoading, selectedSeasonLoading, seasonListLoading, profilePicturesLoading, retrieveUserPicks,
+        standings, standingsLoading, selectedSeasonLoading, seasonListLoading, retrieveUserPicks,
         copyStandingsTable } = useStandingsContext();
     const { openedModal, openModal, openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
 

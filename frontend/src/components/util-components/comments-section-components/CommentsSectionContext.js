@@ -3,11 +3,13 @@ import { getComments } from "../../fetch-utils/fetchGet";
 import { useApplicationContext } from "../../ApplicationContext";
 import { submitComment, submitDeleteComment, submitEditComment } from "../../fetch-utils/fetchPost";
 import { useSearchParams } from "react-router-dom";
+import useImagesContext from "../../ImagesContext";
 
 const CommentsContext = createContext();
 
 export default function CommentsContextProvider({ parentElement, children }){
     const { setErrorMessage, user, setLoadingMessage, resetApplicationMessages } = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const [comments, setComments] = useState([]);
     const [commentsLoading, setCommentsLoading] = useState();
@@ -24,6 +26,12 @@ export default function CommentsContextProvider({ parentElement, children }){
             setErrorMessage("There was an error getting the comments");
             return false;
         }
+
+        const userList = [
+            ...commentsResponse.comments.map(comment => comment.user),
+            ...commentsResponse.comments.flatMap(comment => comment.replies.map(reply => reply.user)),
+        ];
+        prepareProfilePictures(userList);
 
         setComments(commentsResponse.comments);
         setCommentsLoading(false);

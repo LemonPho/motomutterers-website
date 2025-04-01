@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import AnnouncementCard from "../announcement-page-components/AnnouncementCard";
 import { getLatestAnnouncement } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
+import useImagesContext from "../ImagesContext";
 
 export default function Announcement({ loading }){
     const { setErrorMessage } = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const [announcementLoading, setAnnouncementLoading] = useState(true);
     const [announcement, setAnnouncement] = useState({});
@@ -22,6 +24,7 @@ export default function Announcement({ loading }){
         }
 
         setAnnouncement(announcementResponse.announcement);
+        prepareProfilePictures([announcementResponse.announcement.user]);
     }
 
     useEffect(() => {

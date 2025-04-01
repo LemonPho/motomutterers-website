@@ -3,9 +3,11 @@ import { useApplicationContext } from "../ApplicationContext";
 import { getSeasonStandings } from "../fetch-utils/fetchGet";
 import Standing from "../standings-page-components/Standing";
 import { Link } from "react-router-dom";
+import useImagesContext from "../ImagesContext";
 
 export default function Standings({ loading }){
     const { currentSeason, currentSeasonLoading, setErrorMessage } = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const [standings, setStandings] = useState(null);
     const [standingsLoading, setStandingsLoading] = useState(true);
@@ -21,6 +23,8 @@ export default function Standings({ loading }){
         }
 
         setStandings(standingsResponse.standings);
+        const userList = standingsResponse.standings.users_picks.map(user_pick => user_pick.user);
+        prepareProfilePictures(userList);
     }
 
     useEffect(() => {

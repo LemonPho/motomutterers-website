@@ -66,7 +66,7 @@ export default function Comment({ comment, highlighted }){
     return(
         <div className={`rounded-15 mb-2 nested-element-color`} id={`comment-${comment.id}`} key={`comment-${comment.id}`}>
             <div className={`d-flex align-items-start p-2 ${highlighted ? "highlighted" : ""}`}>
-                <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} username={comment.user.username}/>
+                <ProfilePictureLazyLoader width={"2.5rem"} height={"2.5rem"} user={comment.user}/>
                 <div className="dynamic-container ms-2" style={{maxWidth: "calc(100% - 48px)"}}>
                     <div className="d-flex align-items-center">
                         <Link className="link-no-decorations" to={`/users/${comment.user.username}?page=1`}><strong>{comment.user.username}</strong></Link>

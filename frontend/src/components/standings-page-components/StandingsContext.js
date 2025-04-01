@@ -2,11 +2,13 @@ import React, { useContext, createContext, useState, useEffect } from "react";
 import { Outlet, useSearchParams } from "react-router-dom";
 import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getSeasonStandings, getUserPicksSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
+import useImagesContext from "../ImagesContext";
 
 const StandingsContext = createContext();
 
 export default function StandingsContextProvider(){
     const { setErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { prepareProfilePictures } = useImagesContext();
 
     const [searchParams] = useSearchParams();
 
@@ -34,8 +36,10 @@ export default function StandingsContextProvider(){
         }
 
         if(usersStandingsResponse.status === 200){
+            const userList = usersStandingsResponse.standings.users_picks.map(user_picks => user_picks.user);
             setStandings(usersStandingsResponse.standings);
             setStandingsLoading(false);
+            prepareProfilePictures(userList);
         }
     }
 

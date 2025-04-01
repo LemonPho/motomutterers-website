@@ -71,6 +71,59 @@ export async function getUser(username){
     return response;
 }
 
+export async function getUserDefaultProfilePicture(){
+    let response = {
+        error: false,
+        profilePicture: {},
+        status: null,
+    };
+
+    try{
+        const apiResponse = await fetch(`/api/get-user-default-profile-picture/`);
+        const apiResult = apiResponse.status == 200 ? await apiResponse.json() : false;
+
+        response.error = apiResponse.status === 500;
+        response.status = apiResponse.status;
+        response.profilePicture = apiResult ? apiResult.profile_picture : false;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
+export async function getUserProfilePictures(userList){
+    let response = {
+        error: false,
+        profilePictures: {},
+        status: null,
+    };
+
+    try{
+        const csrftoken = getCookie("csrftoken");
+        const apiResponse = await fetch(`/api/get-users-profile-pictures/`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "X-CSRFToken": csrftoken,
+            },
+            mode: "same-origin",
+            body: JSON.stringify({
+                userList: userList,
+            }),
+        });
+
+        const apiResult = apiResponse.status == 200 ? await apiResponse.json() : false;
+        response.error = apiResponse.status === 500;
+        response.status = apiResponse.status;
+        response.profilePictures = apiResult ? apiResult.profile_pictures : false;
+    } catch(error) {
+        response.error = error;
+    }
+
+    return response;
+}
+
 export async function getUserProfilePicture(username){
     let response = {
         error: false,

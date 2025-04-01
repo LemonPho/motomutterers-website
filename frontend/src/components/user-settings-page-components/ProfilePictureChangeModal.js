@@ -4,12 +4,12 @@ import { useApplicationContext } from "../ApplicationContext";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
 import { dataURLtoFile } from "../utils";
 
-export default function ProfilePictureChangeModal({ closeModal, retrieveUserData}){
+export default function ProfilePictureChangeModal({ closeModal }){
     const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [photoPreview, setPhotoPreview] = useState();
     const [changeProfilePictureLoading, setChangeProfilePictureLoading] = useState(null);
 
-    const { user, setErrorMessage, setSuccessMessage, resetApplicationMessages } = useApplicationContext();
+    const { user, setErrorMessage, setSuccessMessage, resetApplicationMessages, retrieveUserData } = useApplicationContext();
 
     //change photo preview
     useEffect(() => {
@@ -90,7 +90,9 @@ export default function ProfilePictureChangeModal({ closeModal, retrieveUserData
         if(profilePictureResponse.status === 200){
             setSuccessMessage("Profile picture changed, reload to view the changes");
             setChangeProfilePictureLoading(false);
+            retrieveUserData();
             closeModal();
+
             return;
         }
 
@@ -114,7 +116,7 @@ export default function ProfilePictureChangeModal({ closeModal, retrieveUserData
                         <div style={{position: "relative"}}>
                             <label>
                                 
-                                {selectedPhoto === false && <ProfilePictureLazyLoader width={"14rem"} height={"14rem"} username={user.username}/>}
+                                {selectedPhoto === false && <ProfilePictureLazyLoader width={"14rem"} height={"14rem"} user={user}/>}
                                 {selectedPhoto && <img className="rounded-circle" id="edit-profile-photo" style={{width: "14rem", height: "14rem"}} src={photoPreview}></img>}
                                 <input type="file" accept="image/*" onChange={changePhotoPreview}/>
                                 <div className="d-flex justify-content-center align-content-center">

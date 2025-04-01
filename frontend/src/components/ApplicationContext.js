@@ -20,8 +20,6 @@ export function ApplicationContextProvider({children}){
     const [modalSuccessMessage, setModalSuccessMessage] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState(false);
 
-    const [profilePictures, setProfilePictures] = useState([]);
-
     const navigate = useNavigate();
 
     function resetApplicationMessages(){
@@ -82,30 +80,6 @@ export function ApplicationContextProvider({children}){
         }
     }
 
-    async function retrieveProfilePicture(username){
-        for(let i=0; i < profilePictures.length; i++){
-            if(profilePictures[i].username == username){
-                return profilePictures[i].profilePicture;
-            }
-        }
-
-        const profilePictureResponse = await getUserProfilePicture(username);
-
-        if(profilePictureResponse.error || profilePictureResponse.status != 200){
-            setErrorMessage("There was an error getting one or more profile pictures");
-            return;
-        }
-
-        const newProfilePicture = {
-            username: username, 
-            profilePicture: profilePictureResponse.profilePicture,
-        }
-        
-        setProfilePictures((prevProfilePictures) => [...prevProfilePictures, newProfilePicture]);
-
-        return profilePictureResponse.profilePicture;
-    }
-
     async function retrieveApplicationContextData(){
         setContextLoading(true);
         await retrieveUserData();
@@ -129,7 +103,6 @@ export function ApplicationContextProvider({children}){
         <ApplicationContext.Provider value={{   
             user, userLoading, contextLoading, retrieveApplicationContextData, retrieveUserData, setLogout, currentSeason, currentSeasonLoading, retrieveCurrentSeason,
             errorMessage, successMessage, modalErrorMessage, modalSuccessMessage, loadingMessage, selectPicksState, selectPicksStateLoading, informationMessage,
-            profilePictures, retrieveProfilePicture,
             setErrorMessage, addErrorMessage, setSuccessMessage, setInformationMessage, setModalErrorMessage, setModalSuccessMessage, setLoadingMessage, retrievePicksState,
             resetApplicationMessages }}>
                 

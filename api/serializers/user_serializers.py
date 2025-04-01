@@ -9,7 +9,7 @@ USERS_PICKS_LENGTH = 5
 
 User = get_user_model()
 
-class ProfilePictureSerializer(serializers.Serializer):
+'''class ProfilePictureSerializer(serializers.Serializer):
     format = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
 
@@ -43,16 +43,59 @@ class ProfilePictureSerializer(serializers.Serializer):
                 with open(default_profile_picture_path, 'rb') as profile_picture_file:
                     return ".webp"
         else:
+            return ".webp"'''
+
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    format = serializers.SerializerMethodField()
+    data = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["format", "data", "username"]
+
+    def get_data(self, user):
+        profile_picture = user.profile_picture
+        if profile_picture:
+            try:
+                with open(profile_picture.path, 'rb') as profile_picture_file:
+                    profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
+                    return profile_picture_data
+            except FileNotFoundError:
+                default_profile_picture_path = "media/profile_pictures/default.webp"
+                with open(default_profile_picture_path, 'rb') as profile_picture_file:
+                    profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
+                    return profile_picture_data
+        else:
+            default_profile_picture_path = "media/profile_pictures/default.webp"
+            with open(default_profile_picture_path, 'rb') as profile_picture_file:
+                profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
+                return profile_picture_data
+        
+    def get_format(self, user):
+        profile_picture = user.profile_picture
+        if profile_picture:
+            try:
+                with open(profile_picture.path, 'rb') as profile_picture_file:
+                    return profile_picture.name.split('.')[-1].lower()
+            except FileNotFoundError:
+                default_profile_picture_path = "media/profile_pictures/default.webp"
+                with open(default_profile_picture_path, 'rb') as profile_picture_file:
+                    return ".webp"
+        else:
             return ".webp"
 
 
 class UserSimpleSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     date_created = serializers.DateTimeField()
+    has_profile_picture = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["username", "date_created"]
+        fields = ["username", "date_created", "has_profile_picture"]
+
+    def get_has_profile_picture(self, user):
+        return user.profile_picture != None
         
 class UserSerializer(serializers.ModelSerializer):
     notifications = serializers.SerializerMethodField()

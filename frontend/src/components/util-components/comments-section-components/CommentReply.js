@@ -50,7 +50,7 @@ export default function CommentReply({ reply, highlighted }){
     return(
         <div id={`reply-${reply.id}`} key={`reply-${reply.id}`} className={`dynamic-container ${highlighted ? "highlighted" : ""}`} style={{marginLeft: "0px", maxWidth: "calc(100% - 2.7rem)"}}>
             <div className="d-flex align-items-start">
-                <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} username={reply.user.username}/>
+                <ProfilePictureLazyLoader width={"1.5rem"} height={"1.5rem"} user={reply.user}/>
                 <div className="dynamic-container">
                     <div className="d-flex align-items-center">
                         <Link className="link-no-decorations ms-2" to={`/users/${reply.user.username}?page=1`}><small><strong>{reply.user.username}</strong></small></Link>

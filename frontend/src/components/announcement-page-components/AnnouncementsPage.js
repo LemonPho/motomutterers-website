@@ -4,9 +4,7 @@ import { useLocation, Navigate, Link } from 'react-router-dom';
 import ApplicationContext, { useApplicationContext } from '../ApplicationContext';
 
 import { getAnnouncements } from '../fetch-utils/fetchGet';
-import { submitAnnouncement } from '../fetch-utils/fetchPost';
 import { autoResizeTextarea, pagination } from '../utils';
-import ProfilePictureLazyLoader from '../util-components/ProfilePictureLazyLoader';
 import Modal from '../util-components/Modal';
 import { useOpenersContext } from '../OpenersContext';
 import CreateAnnouncementModal from './CreateAnnouncementModal';

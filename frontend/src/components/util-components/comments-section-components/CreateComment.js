@@ -34,7 +34,7 @@ export default function CreateComment(){
 
     return(
         <div className="flex-box align-items-center rounded-15 nested-element-color p-2 mb-2" >
-            <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} username={user.username}/>
+            <ProfilePictureLazyLoader width={"3rem"} height={"3rem"} user={user}/>
             <Textarea id="create-comment" value={commentText} setValue={setCommentText} placeholder="Write a comment" className={"ms-2"}/>
             <button className="btn btn-outline-secondary ms-2 rounded-15" onClick={createComment}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">

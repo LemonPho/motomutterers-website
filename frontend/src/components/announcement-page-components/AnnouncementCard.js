@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProfilePictureLazyLoader from "../util-components/ProfilePictureLazyLoader";
+import useImagesContext from "../ImagesContext";
 
 export default function AnnouncementCard({ announcement, loading, maxHeight }){
 
@@ -23,7 +24,7 @@ export default function AnnouncementCard({ announcement, loading, maxHeight }){
         return(
             <Link style={{maxHeight: maxHeight}} className='clickable card mx-auto rounded-15 element-background-color link-no-decorations' to={`/announcements/${announcement.id}`}>
                 <div className='card-header d-flex align-items-center'>
-                    <ProfilePictureLazyLoader width={"2rem"} height="2rem" username={announcement.user.username}/>
+                    <ProfilePictureLazyLoader width={"2rem"} height="2rem" user={announcement.user}/>
                     <small className='ms-2'>{announcement.user.username}</small>
                     <small className='ms-auto'>{new Date(announcement.date_created).toISOString().substring(0,10)}</small>
                 </div>
