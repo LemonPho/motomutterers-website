@@ -61,7 +61,7 @@ export default function UsernameChangeModal({ closeModal, retrieveUserData }){
     return(
         <ChangeModalBody 
             title={"Change username"} submitFunction={postNewUsername} 
-            firstFieldPlaceholder={"New username"} firstFieldValue={newUsername} firstFieldType={"text"} firstFieldInvalid={usernameInvalid} setFirstFieldValue={setNewUsername}
+            firstFieldPlaceholder={"New username"} firstFieldValue={newUsername} firstFieldType={"email"} firstFieldInvalid={usernameInvalid} setFirstFieldValue={setNewUsername}
             secondFieldPlaceholder={"Current password"} secondFieldValue={passwordInput} secondFieldType={"password"} secondFieldInvalid={passwordInvalid} setSecondFieldValue={setPasswordInput}/>
     );
 }

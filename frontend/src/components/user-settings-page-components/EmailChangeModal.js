@@ -45,7 +45,7 @@ export default function EmailChangeModal(){
 
     return(
         <ChangeModalBody title={"Change email"} submitFunction={postNewEmail}
-            firstFieldPlaceholder={"New email"} firstFieldValue={newEmail} firstFieldType={"text"} firstFieldInvalid={newEmailInvalid} setFirstFieldValue={setNewEmail}
+            firstFieldPlaceholder={"New email"} firstFieldValue={newEmail} firstFieldType={"email"} firstFieldInvalid={newEmailInvalid} setFirstFieldValue={setNewEmail}
             secondFieldPlaceholder={"Current password"} secondFieldValue={passwordInput} secondFieldType={"password"} secondFieldInvalid={passwordInvalid} setSecondFieldValue={setPasswordInput}
         />        
     );

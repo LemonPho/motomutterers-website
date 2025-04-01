@@ -78,7 +78,7 @@ function LoginPage() {
                 <h2>Login</h2>
             </div>
             <div className="card-body rounded-15 nested-element-color m-2">
-                <TextInput type="text" className="mb-2" placeholder="Username or email" value={primaryKeyInput} setValue={setPrimaryKeyInput} onEnterFunction={login} />
+                <TextInput type="email" className="mb-2" placeholder="Username or email" value={primaryKeyInput} setValue={setPrimaryKeyInput} onEnterFunction={login} />
                 <TextInput type="password" className="mb-2" placeholder="Password" value={password} setValue={setPassword} onEnterFunction={login}/>
                 {loginLoading && 
                 <div className="input-group mx-auto">

@@ -106,8 +106,8 @@ export default function RegisterPage() {
                 <h2>Sign Up</h2>
             </div>
             <div className="card-body rounded-15 nested-element-color m-2">
-                <TextInput type={"text"} className={"mb-2"} placeholder={"Username"} value={username} setValue={setUsername} onEnterFunction={registerAccount} outline={usernameInvalid}/>
-                <TextInput type={"text"} className={"mb-2"} placeholder={"Email"} value={email} setValue={setEmail} onEnterFunction={registerAccount} outline={emailInvalid} />
+                <TextInput type={"email"} className={"mb-2"} placeholder={"Username"} value={username} setValue={setUsername} onEnterFunction={registerAccount} outline={usernameInvalid}/>
+                <TextInput type={"email"} className={"mb-2"} placeholder={"Email"} value={email} setValue={setEmail} onEnterFunction={registerAccount} outline={emailInvalid} />
                 <TextInput type="password" className={"mb-2"} placeholder="Password" value={password} setValue={setPassword} onEnterFunction={registerAccount} outline={passwordInvalid}/>
                 <TextInput type="password" className={"mb-2"} placeholder="Confirm password" value={passwordConfirmation} setValue={setPasswordConfirmation} onEnterFunction={registerAccount} outline={passwordInvalid}/>
 
