@@ -4,7 +4,7 @@ import useImagesContext from "../ImagesContext";
 export default function ProfilePictureLazyLoader({ user, width, height }){
     const { profilePictures, profilePicturesLoading } = useImagesContext();
 
-    if(profilePicturesLoading || profilePictures[user.username] === undefined || !user || profilePictures["default"] === undefined){
+    if(profilePicturesLoading || profilePictures["default"] === undefined || !user || (user.has_profile_picture && profilePictures[user.username] === undefined)){
         return(
             <div className="fading-circle" style={{ width: width, height: height }}></div>
         );

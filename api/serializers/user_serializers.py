@@ -9,42 +9,6 @@ USERS_PICKS_LENGTH = 5
 
 User = get_user_model()
 
-'''class ProfilePictureSerializer(serializers.Serializer):
-    format = serializers.SerializerMethodField()
-    data = serializers.SerializerMethodField()
-
-    class Meta:
-        fields = ["format", "data"]
-
-    def get_data(self, profile_picture):
-        if profile_picture:
-            try:
-                with open(profile_picture.path, 'rb') as profile_picture_file:
-                    profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
-                    return profile_picture_data
-            except FileNotFoundError:
-                default_profile_picture_path = "media/profile_pictures/default.webp"
-                with open(default_profile_picture_path, 'rb') as profile_picture_file:
-                    profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
-                    return profile_picture_data
-        else:
-            default_profile_picture_path = "media/profile_pictures/default.webp"
-            with open(default_profile_picture_path, 'rb') as profile_picture_file:
-                profile_picture_data = base64.b64encode(profile_picture_file.read()).decode("utf-8")
-                return profile_picture_data
-        
-    def get_format(self, profile_picture):
-        if profile_picture:
-            try:
-                with open(profile_picture.path, 'rb') as profile_picture_file:
-                    return profile_picture.name.split('.')[-1].lower()
-            except FileNotFoundError:
-                default_profile_picture_path = "media/profile_pictures/default.webp"
-                with open(default_profile_picture_path, 'rb') as profile_picture_file:
-                    return ".webp"
-        else:
-            return ".webp"'''
-
 class ProfilePictureSerializer(serializers.ModelSerializer):
     format = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
@@ -95,7 +59,7 @@ class UserSimpleSerializer(serializers.ModelSerializer):
         fields = ["username", "date_created", "has_profile_picture"]
 
     def get_has_profile_picture(self, user):
-        return user.profile_picture != None
+        return True if user.profile_picture else False
         
 class UserSerializer(serializers.ModelSerializer):
     notifications = serializers.SerializerMethodField()
@@ -105,9 +69,10 @@ class UserSerializer(serializers.ModelSerializer):
     is_active = serializers.SerializerMethodField()
     is_logged_in = serializers.SerializerMethodField()
     announcement_response_emails = serializers.SerializerMethodField()
+    has_profile_picture = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications", "race_weekends_emails", "comment_response_emails", "announcement_response_emails"]
+        fields = ["username", "email", "date_created", "date_username_edited", "profile_picture_data", "profile_picture_format", "is_admin", "is_active", "is_logged_in", "notifications", "race_weekends_emails", "comment_response_emails", "announcement_response_emails", "has_profile_picture"]
 
     #get functions
     def get_is_admin(self, user):
@@ -160,6 +125,10 @@ class UserSerializer(serializers.ModelSerializer):
             return None
         else:
             return user.announcement_response_emails
+        
+    def get_has_profile_picture(self, user):
+        print(user.profile_picture)
+        return user.profile_picture != None
 
     #validate functions
     def validate_profile_picture(self, value):
