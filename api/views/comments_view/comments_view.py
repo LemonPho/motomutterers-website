@@ -57,7 +57,6 @@ def post_comment(request):
         return HttpResponse(status=400)
     
     instance = serializer.save()
-    print(instance.id)
 
     return JsonResponse({"new_comment_id": instance.id}, status=201)
 

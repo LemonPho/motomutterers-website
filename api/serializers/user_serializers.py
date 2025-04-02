@@ -127,7 +127,6 @@ class UserSerializer(serializers.ModelSerializer):
             return user.announcement_response_emails
         
     def get_has_profile_picture(self, user):
-        print(user.profile_picture)
         return user.profile_picture != None
 
     #validate functions
