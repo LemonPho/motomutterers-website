@@ -63,7 +63,7 @@ export default function UserComments({ username }){
                                             <path d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 7.1 5.8 12 12 12 2.4 0 4.9-.7 7.1-2.4L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm16 352c0 8.8-7.2 16-16 16H288l-12.8 9.6L208 428v-60H64c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16h384c8.8 0 16 7.2 16 16v288z"/>
                                         </svg>
                                         {comment.parent_comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>}
-                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race_weekend/${comment.parent_comment.race_weekend.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>}
+                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race-weekend/${comment.parent_comment.race_weekend.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>}
                                     </div>
                                     <div className="d-flex align-items-center">
                                         <svg style={{marginLeft: "1.8rem"}} width="1.5rem" height="1.5rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -75,7 +75,7 @@ export default function UserComments({ username }){
                                             />
                                         </svg>
                                         {comment.parent_comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}
-                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race_weekend/${comment.parent_comment.race_weekend.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}                                            
+                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race-weekend/${comment.parent_comment.race_weekend.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}                                            
                                     </div>
                                 </div>
                             ) 
@@ -100,7 +100,7 @@ export default function UserComments({ username }){
                                                     </g>
                                                 </g>
                                             </svg>
-                                            <Link className="link-no-decorations" to={`/race_weekend/${comment.race_weekend.id}?comment=${comment.id}`}><i>{comment.race_weekend.title}</i></Link>                                                
+                                            <Link className="link-no-decorations" to={`/race-weekend/${comment.race_weekend.id}?comment=${comment.id}`}><i>{comment.race_weekend.title}</i></Link>                                                
                                         </>}
 
                                     </div>
@@ -109,7 +109,7 @@ export default function UserComments({ username }){
                                             <path fillRule="evenodd" clipRule="evenodd" d="M9.87737 12H9.9H11.5C11.7761 12 12 11.7761 12 11.5C12 11.2239 11.7761 11 11.5 11H9.9C8.77164 11 7.95545 10.9996 7.31352 10.9472C6.67744 10.8952 6.25662 10.7946 5.91103 10.6185C5.25247 10.283 4.71703 9.74753 4.38148 9.08897C4.20539 8.74338 4.10481 8.32256 4.05284 7.68648C4.00039 7.04455 4 6.22836 4 5.1V3.5C4 3.22386 3.77614 3 3.5 3C3.22386 3 3 3.22386 3 3.5V5.1V5.12263C3 6.22359 3 7.08052 3.05616 7.76791C3.11318 8.46584 3.23058 9.0329 3.49047 9.54296C3.9219 10.3897 4.61031 11.0781 5.45704 11.5095C5.9671 11.7694 6.53416 11.8868 7.23209 11.9438C7.91948 12 8.77641 12 9.87737 12Z" fill="grey"/>
                                         </svg>
                                         {comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.announcement.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}
-                                        {comment.race_weekend != null && <Link className="link-no-decorations" to={`/race_weekend/${comment.race_weekend.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}
+                                        {comment.race_weekend != null && <Link className="link-no-decorations" to={`/race-weekend/${comment.race_weekend.id}?comment=${comment.id}`}><span>{comment.text}</span></Link>}
                                     </div>
                                 </div> 
                             )}
