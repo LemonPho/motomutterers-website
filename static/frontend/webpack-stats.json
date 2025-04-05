@@ -1,18 +1,18 @@
 {
   "status": "done",
   "assets": {
-    "main.438e0a603010116adebc.js": {
-      "name": "main.438e0a603010116adebc.js",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.438e0a603010116adebc.js"
+    "main.063886655ec261365e02.js": {
+      "name": "main.063886655ec261365e02.js",
+      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.063886655ec261365e02.js"
     },
-    "main.438e0a603010116adebc.js.LICENSE.txt": {
-      "name": "main.438e0a603010116adebc.js.LICENSE.txt",
-      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.438e0a603010116adebc.js.LICENSE.txt"
+    "main.063886655ec261365e02.js.LICENSE.txt": {
+      "name": "main.063886655ec261365e02.js.LICENSE.txt",
+      "path": "E:\\Benito.LOUIS-PC\\Documents\\programming\\Motomutterers\\website\\frontend\\static\\frontend\\main.063886655ec261365e02.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.438e0a603010116adebc.js"
+      "main.063886655ec261365e02.js"
     ]
   }
 }

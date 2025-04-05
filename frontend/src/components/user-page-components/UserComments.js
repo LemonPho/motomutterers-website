@@ -35,7 +35,7 @@ export default function UserComments({ username }){
         }
 
         fetchData();
-    }, [currentPage]);
+    }, [currentPage, username]);
 
     useEffect(() => {
         const tempCurrentPage = searchParams.get("page");
@@ -62,8 +62,8 @@ export default function UserComments({ username }){
                                         <svg style={{marginRight: "0.3rem"}} xmlns="http://www.w3.org/2000/svg" fill="#5A5A5A" width="1rem" height="1rem" viewBox="0 0 512 512">
                                             <path d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 7.1 5.8 12 12 12 2.4 0 4.9-.7 7.1-2.4L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm16 352c0 8.8-7.2 16-16 16H288l-12.8 9.6L208 428v-60H64c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16h384c8.8 0 16 7.2 16 16v288z"/>
                                         </svg>
-                                        {comment.parent_comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>}
-                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race-weekends/${comment.parent_comment.race_weekend.id}?comment=${comment.parent_comment.id}`}><i>{comment.parent_comment.text}</i></Link>}
+                                        {comment.parent_comment.announcement != null && <Link className="link-no-decorations" to={`/announcements/${comment.parent_comment.announcement.id}?comment=${comment.parent_comment.id}`}><i style={{fontSize: "0.75rem"}}>{comment.parent_comment.text}</i></Link>}
+                                        {comment.parent_comment.race_weekend != null && <Link className="link-no-decorations" to={`/race-weekends/${comment.parent_comment.race_weekend.id}?comment=${comment.parent_comment.id}`}><i style={{fontSize: "0.75rem"}}>{comment.parent_comment.text}</i></Link>}
                                     </div>
                                     <div className="d-flex align-items-center">
                                         <svg style={{marginLeft: "1.8rem"}} width="1.5rem" height="1.5rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +88,7 @@ export default function UserComments({ username }){
                                             <svg style={{marginRight: "0.15rem"}} xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none">
                                                 <path d="M7 8H17M7 12H17M7 16H13M4 4H20V20H4V4Z" stroke="#5A5A5A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                             </svg>
-                                            <Link className="link-no-decorations" to={`/announcements/${comment.announcement.id}?comment=${comment.id}`}><i>{comment.announcement.title}</i></Link>
+                                            <Link className="link-no-decorations" to={`/announcements/${comment.announcement.id}?comment=${comment.id}`}><i style={{fontSize: "0.75rem"}}>{comment.announcement.title}</i></Link>
                                         </>}
 
                                         {comment.race_weekend != null && 
@@ -100,7 +100,7 @@ export default function UserComments({ username }){
                                                     </g>
                                                 </g>
                                             </svg>
-                                            <Link className="link-no-decorations" to={`/race-weekends/${comment.race_weekend.id}?comment=${comment.id}`}><i>{comment.race_weekend.title}</i></Link>                                                
+                                            <Link className="link-no-decorations" to={`/race-weekends/${comment.race_weekend.id}?comment=${comment.id}`}><i style={{fontSize: "0.75rem"}}>{comment.race_weekend.title}</i></Link>                                                
                                         </>}
 
                                     </div>
