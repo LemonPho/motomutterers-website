@@ -6,6 +6,7 @@ than the other users pick.
 
 from ...models import CurrentSeason, UserPicks, UserPicksRace, SeasonMessage
 
+#should only be used with @transaction.atomic
 def sort_race_standings(standings, season):
     prev_positions = {}
     post_positions = {}
@@ -63,6 +64,7 @@ def sort_race_standings(standings, season):
             type=0,
         )
 
+#should only be used with @transaction.atomic
 def sort_standings(season):
 
     standings = list(season.standings.users_picks.all().order_by("-points"))

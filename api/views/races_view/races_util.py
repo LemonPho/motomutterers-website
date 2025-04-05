@@ -10,6 +10,7 @@ from ..standings_view.standings_util import sort_standings, sort_race_standings
 
 from ..utils_view import send_emails
 
+#should only be used with @transaction.atomic
 def add_points_to_season_competitors(race_weekend):
     season = race_weekend.season.first()
     if season.finalized:
@@ -48,6 +49,7 @@ def add_points_to_season_competitors(race_weekend):
 
     return True
 
+#should only be used with @transaction.atomic
 def remove_points_from_season_competitors(season, race_weekend):
     race_competitors_positions = race_weekend.race.competitors_positions.all()
     sprint_competitors_positions = race_weekend.sprint_race.competitors_positions.all()
