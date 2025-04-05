@@ -313,6 +313,7 @@ def finalize_race_weekend(request):
             message = f"A user that isn't logged in tried to finalize a race weekend",
             type = 0,
         )
+        return HttpResponse(status=403)
     
     if not request.user.is_admin:
         SeasonMessage.objects.create(

@@ -12,6 +12,8 @@ from ..utils_view import send_emails
 
 def add_points_to_season_competitors(race_weekend):
     season = race_weekend.season.first()
+    if season.finalized:
+        return False
     race_competitors_positions = race_weekend.race.competitors_positions.all()
     sprint_competitors_positions = race_weekend.sprint_race.competitors_positions.all()
     season_competitors = season.competitors.all()
@@ -43,7 +45,6 @@ def add_points_to_season_competitors(race_weekend):
         season_competitor.competitor_points.save()
 
     update_members_points()
-    sort_standings(season)
 
     return True
 
@@ -93,7 +94,7 @@ def send_finalize_emails(standings, race_weekend, request):
 
     users_picks = standings.users_picks.all().filter(user__race_weekends_emails = True)
     users = [pick.user for pick in users_picks]
-    if protocol == "http": users = [request.user] #to avoid accidently sending emails to real users
+    if protocol == "http": users = [request.user if request.user.race_weekends_emails else None] #to avoid accidently sending emails to real users
 
     standings = race_weekend.standings    
     standings_serializer = StandingsRaceSerializer(standings)

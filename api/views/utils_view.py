@@ -99,5 +99,6 @@ def find_image(request):
 
 def send_emails(subject, body, user_list, content_subtype):
     for user in user_list:
-        email = send_email(user.email, subject, body, content_subtype)
-        email.send()
+        if(user):
+            email = send_email(user.email, subject, body, content_subtype)
+            email.send()

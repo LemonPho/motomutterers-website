@@ -129,7 +129,7 @@ class UserPicks(models.Model):
     position = models.PositiveIntegerField(default=1)
 
     class Meta:
-        ordering = ['-points']
+        ordering = ['position']
 
 class Standings(models.Model):
     users_picks = models.ManyToManyField(UserPicks)

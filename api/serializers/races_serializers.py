@@ -6,9 +6,9 @@ from . import competitors_serializers, user_serializers
 from ..models import Race, RaceWeekend, Season, SeasonMessage
 
 from ..views.races_view.races_validators import RACE_TYPE_FINAL, RACE_TYPE_SPRINT, RACE_TYPE_UPCOMING
-from ..views.races_view.races_util import add_points_to_season_competitors, send_finalize_emails, remove_points_from_season_competitors
+from ..views.races_view.races_util import add_points_to_season_competitors, send_finalize_emails, remove_points_from_season_competitors, update_members_points
 from ..views.notification_view import create_notifications
-from ..views.standings_view.standings_util import sort_race_standings
+from ..views.standings_view.standings_util import sort_race_standings, sort_standings
 
 
 import importlib
@@ -160,6 +160,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         if standings:
             if len(list(standings.users_picks.all())) != 0:
                 instance.standings = standings
+                add_points_to_season_competitors(instance)
                 sort_race_standings(instance.standings, instance.season.first())
 
         if grid_data:
@@ -214,19 +215,12 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
                 instance.race = race_instance
 
         if finalize and request:
-            if add_points_to_season_competitors(instance):
-                instance.status = STATUS_FINAL
-                instance.save()
-                send_finalize_emails(instance.standings, instance, request)
-                User = get_user_model()
-                notifications = create_notifications(f"The {instance.title} was posted", f"race-weekends/{instance.id}", None, User.objects.all())
-                instance.notifications.set(notifications)
-            else:
-                SeasonMessage.objects.create(
-                    season=instance.season.first(),
-                    message=f"When trying to add the points from the race weekend to the season competitors, one or more weren't found",
-                    type = 0,
-                )
+            instance.status = STATUS_FINAL
+            instance.save()
+            send_finalize_emails(instance.standings, instance, request)
+            User = get_user_model()
+            notifications = create_notifications(f"The {instance.title} was posted", f"race-weekends/{instance.id}", None, User.objects.all())
+            instance.notifications.set(notifications)
 
         instance.save()
         return instance

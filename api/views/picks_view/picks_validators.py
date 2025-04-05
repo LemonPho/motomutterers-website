@@ -14,7 +14,6 @@ def check_picks_conflict(new_picks, independent_pick, rookie_pick, current_seaso
         same_picks = True
         picks = user_picks.picks.all().order_by("position") #need to sort by position in list
         for i in range(0, picks.count()):
-            #print(f"{picks[i].competitor.id} != {new_picks[i]}")
             if picks[i].competitor_points.competitor.id != new_picks[i]:
                 same_picks = False
 
