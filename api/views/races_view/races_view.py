@@ -326,6 +326,7 @@ def finalize_race_weekend(request):
     STATUS_FINAL = 2
     data = json.loads(request.body)
     id = data.get("id", -1)
+    send_finalize_email = data.get("send_finalize_email")
 
     if id == -1:
         return HttpResponse(status=400)
@@ -377,7 +378,8 @@ def finalize_race_weekend(request):
         )
         return JsonResponse(response, status=400)
     
-    serializer.save()
+    instance = serializer.save()
+    send_finalize_emails(instance.standings, instance, request) if send_finalize_email else None
     return HttpResponse(status=201)
 
 def un_finalize_race_weekend(request):

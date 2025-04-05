@@ -41,9 +41,9 @@ export default function RaceWeekendModal(){
         setLoading(false);
     }
 
-    async function finalizeRaceWeekend(){
+    async function finalizeRaceWeekend(sendFinalizeEmail){
         setLoading(true);
-        await postFinalizeRaceWeekend();
+        await postFinalizeRaceWeekend(sendFinalizeEmail);
         setLoading(false);
     }
 
@@ -153,7 +153,11 @@ export default function RaceWeekendModal(){
                 </div>
             </div>
             <div className="custom-modal-footer d-flex flex-column">
-                {((selectedRaceWeekend.status == 1 || selectedRaceWeekend.status == 0) && !loading) && <button className="btn btn-primary rounded-15 w-100 mb-2" onClick={finalizeRaceWeekend}>Finalize</button>}
+                {((selectedRaceWeekend.status == 1) && !loading) && 
+                    <>
+                        <button className="btn btn-primary rounded-15 w-100 mb-2" onClick={() => finalizeRaceWeekend(true)}>Finalize and send email notifications</button>
+                        <button className="btn btn-primary rounded-15 w-100 mb-2" onClick={() => finalizeRaceWeekend(false)}>Finalize and don't send email notifications</button>
+                    </>}
                 {(selectedRaceWeekend.status == 2 && !loading) && <button className="btn btn-primary rounded-15 mb-2 w-100" onClick={unFinalizeRaceWeekend}>Un-finalize</button>}
                 {loading && <button className="btn btn-primary rounded-15 mb-2 w-100" disabled>Loading...</button>}
                 

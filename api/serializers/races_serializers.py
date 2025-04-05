@@ -217,7 +217,6 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         if finalize and request:
             instance.status = STATUS_FINAL
             instance.save()
-            send_finalize_emails(instance.standings, instance, request)
             User = get_user_model()
             notifications = create_notifications(f"The {instance.title} was posted", f"race-weekends/{instance.id}", None, User.objects.all())
             instance.notifications.set(notifications)

@@ -141,11 +141,11 @@ export default function RaceWeekendAdminContextProvider({ children }){
         closeModal();
     }
 
-    async function postFinalizeRaceWeekend(){
+    async function postFinalizeRaceWeekend(sendFinalizeEmail){
         resetApplicationMessages();
         setLoadingMessage("Loading...");
 
-        const raceWeekendResponse = await submitFinalizeRaceWeekend(selectedRaceWeekend.id);
+        const raceWeekendResponse = await submitFinalizeRaceWeekend(selectedRaceWeekend.id, sendFinalizeEmail);
         setLoadingMessage(false);
 
         if(raceWeekendResponse.error){

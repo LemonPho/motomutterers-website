@@ -1067,7 +1067,7 @@ export async function submitRaceWeekendEvent(raceWeekendId, eventType){
     return response;
 }
 
-export async function submitFinalizeRaceWeekend(raceWeekendId){
+export async function submitFinalizeRaceWeekend(raceWeekendId, sendFinalizeEmail){
     let response = {
         error: false,
         cantBeFinalized: false,
@@ -1086,6 +1086,7 @@ export async function submitFinalizeRaceWeekend(raceWeekendId){
             mode: "same-origin",
             body: JSON.stringify({
                 id: raceWeekendId,
+                send_finalize_email: sendFinalizeEmail,
             }),
         });
 

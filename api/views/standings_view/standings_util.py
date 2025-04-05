@@ -55,7 +55,6 @@ def sort_race_standings(standings, season):
             race_standing.position = season_standing.position
             race_standing.position_change = prev_positions[race_standing.user.id] - post_positions[race_standing.user.id]
             race_standing.save()
-            print(f"User {race_standing.user.username} position change: {prev_positions[race_standing.user.id]} - {post_positions[race_standing.user.id]}: {race_standing.position_change}")
 
     if len(users_not_found) > 0:
         SeasonMessage.objects.create(
