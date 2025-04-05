@@ -60,7 +60,7 @@ def sort_race_standings(standings, season):
     if len(users_not_found) > 0:
         SeasonMessage.objects.create(
             season=season,
-            message=f"When calculating the position changes in the race standings, these users were not found in the race standings: {" ".join(users_not_found)}. Please un-finalize then finalize again, if it keeps happening contact spongejunior.",
+            message=f"When calculating the position changes in the race standings, these users were not found in the race standings: " + " ".join(users_not_found) + ". Please un-finalize then finalize again, if it keeps happening contact spongejunior.",
             type=0,
         )
 
