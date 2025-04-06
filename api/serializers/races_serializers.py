@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.db import transaction
 
 from . import competitors_serializers, user_serializers
 
@@ -114,6 +115,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         standings = standings_serializer.save()
         return standings
     
+    @transaction.atomic
     def create(self, validated_data):
         season = validated_data.pop("season")
 
@@ -124,6 +126,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
 
         return instance
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         STATUS_IN_PROGRESS = 1
         STATUS_FINAL = 2
@@ -132,8 +135,10 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         standings = validated_data.get("standings", False)
         race_data = validated_data.get("race", False)
         finalize = self.context.get("finalize", False)
-        request = self.context.get("request", False)
-        if not grid_data and not standings and not race_data:
+        unfinalize = self.context.get("unfinalize", False)
+
+        #block to check if we are modifying the core data, not adding races, finalizing, etc.
+        if not grid_data and not standings and not race_data and not unfinalize:
             title = validated_data.get("title", False)
             url = validated_data.get("url", False)
             start = validated_data.get("start", False)
@@ -160,8 +165,11 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         if standings:
             if len(list(standings.users_picks.all())) != 0:
                 instance.standings = standings
-                add_points_to_season_competitors(instance)
-                sort_race_standings(instance.standings, instance.season.first())
+                if not add_points_to_season_competitors(instance):
+                    raise serializers.ValidationError("Error when adding the race weekend points to the season competitors")
+                
+                if len(sort_race_standings(instance.standings, instance.season.first())) > 0:
+                    raise serializers.ValidationError("Some users were not found in the race weekend standings")
 
         if grid_data:
             if instance.grid.count() != 0:
@@ -214,12 +222,25 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
             else:
                 instance.race = race_instance
 
-        if finalize and request:
+        if finalize:
             instance.status = STATUS_FINAL
             instance.save()
             User = get_user_model()
             notifications = create_notifications(f"The {instance.title} was posted", f"race-weekends/{instance.id}", None, User.objects.all())
             instance.notifications.set(notifications)
+
+        if unfinalize:
+            instance.status = STATUS_IN_PROGRESS
+            if instance.standings:
+                instance.standings.delete()
+                instance.standings = None
+            if instance.notifications:
+                instance.notifications.all().delete()
+                instance.notifications.set([])
+            points_removed = remove_points_from_season_competitors(instance.season.first(), instance)
+            if not points_removed:
+                raise serializers.ValidationError("There was an error removing the points from the season competitors")
+            instance.save()
 
         instance.save()
         return instance

@@ -116,7 +116,8 @@ class StandingsRace(models.Model):
 
     def delete(self, *args, **kwargs):
         # Delete all related UserPicksRace instances before deleting StandingsRace
-        self.users_picks.all().delete()
+        for pick in self.users_picks.all():
+            pick.delete()
         super().delete(*args, **kwargs)
     
 class UserPicks(models.Model):
@@ -190,6 +191,12 @@ class RaceWeekend(models.Model):
         self.comments.all().delete()
         self.notifications.all().delete()
         self.grid.all().delete()
+        if self.standings:
+            self.standings.delete()
+        if self.race:
+            self.race.delete()
+        if self.sprint_race:
+            self.sprint_race.delete()
 
         return super().delete(*args, **kwargs)
 
@@ -215,6 +222,9 @@ class Season(models.Model):
         self.competitors.all().delete()
         self.races.all().delete()
         self.race_weekends.all().delete()
+
+        if self.standings:
+            self.standings.delete()
 
         super().delete(*args, **kwargs)
 

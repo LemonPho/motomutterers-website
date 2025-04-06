@@ -1,5 +1,6 @@
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
+from django.db import transaction
 
 from ...serializers.standings_serializers import StandingsRaceSerializer
 

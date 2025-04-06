@@ -404,7 +404,6 @@ def un_finalize_race_weekend(request):
 
     STATUS_IN_PROGRESS = 1
 
-
     data = json.loads(request.body)
     id = data.get("id", -1)
 
@@ -415,28 +414,18 @@ def un_finalize_race_weekend(request):
         race_weekend = RaceWeekend.objects.get(pk=id)
     except RaceWeekend.DoesNotExist:
         return HttpResponse(status=404)
+    
+    context = {
+        "unfinalize": True,
+        "request": request,
+    }
 
-    if race_weekend.standings is not None:
-        race_weekend.standings.delete()
-        race_weekend.refresh_from_db()  # Refresh to clear deleted references
-        race_weekend.save()
-
-    if race_weekend.notifications is not None:
-        race_weekend.notifications.all().delete()
-        race_weekend.refresh_from_db()
-        race_weekend.save()
-
-    if remove_points_from_season_competitors(race_weekend.season.first(), race_weekend):
-        race_weekend.status = STATUS_IN_PROGRESS
-        race_weekend.save()
-        return HttpResponse(status=201)
-    else:
-        SeasonMessage.objects.create(
-            season=race_weekend.season.first(),
-            message=f"When trying to remove the points from the race weekend to the season competitors, one or more weren't found",
-            type = 0,
-        )
-        return HttpResponse(status=409)
+    serializer = RaceWeekendWriteSerializer(instance=race_weekend, data={}, context=context, partial=True)
+    if not serializer.is_valid():
+        return HttpResponse(status=400)
+    
+    serializer.save()
+    return HttpResponse(status=201)
 
 def delete_race_weekend(request):
     if request.method != "PUT":

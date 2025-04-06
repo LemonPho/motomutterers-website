@@ -20,8 +20,10 @@ export default function RaceWeekendModal(){
             setConfirmDelete(!confirmDelete);
             return;
         }
-
-        deleteRaceWeekend(selectedRaceWeekend.id);
+        
+        setLoading(true);
+        await deleteRaceWeekend(selectedRaceWeekend.id);
+        setLoading(false);
     }
 
     async function retrieveGrid(){

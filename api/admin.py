@@ -1,4 +1,5 @@
 from django.contrib import admin
+from .models import StandingsRace
 from .models import User, UserPicks, UserPicksRace, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus, SeasonMessage, RaceWeekend
 
 class CustomUserAdmin(admin.ModelAdmin):
@@ -15,6 +16,11 @@ class RaceAdmin(admin.ModelAdmin):
 
 class StandingsRaceAdmin(admin.ModelAdmin):
     list_display = ["id"]
+
+    def delete_model(self, request, obj):
+        if obj.users_picks is not None:
+            obj.users_picks.all().delete()
+        super().delete_model(request, obj)
 
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "date_created", "read"]
@@ -47,7 +53,7 @@ class SeleniumStatusAdmin(admin.ModelAdmin):
     list_display = ["executor_url", "message", "id"]
 
 class UserPicksRaceAdmin(admin.ModelAdmin):
-    list_display = ["user__username", "points"]
+    list_display = ["user__username", "points", "id"]
 
 class SeasonMessageAdmin(admin.ModelAdmin):
     list_display = ["message", "timestamp"]

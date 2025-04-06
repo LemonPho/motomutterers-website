@@ -11,51 +11,51 @@ def sort_race_standings(standings, season):
     prev_positions = {}
     post_positions = {}
     race_standings = standings.users_picks.all()
-    season_standings = list(season.standings.users_picks.all().order_by("-points"))
+    users_picks = list(season.standings.users_picks.all().order_by("-points"))
     competitors = list(season.competitors.all().order_by("-competitor_points__points"))
 
     #filling in previous positions
-    for season_standing in season_standings:
-        prev_positions[season_standing.user.id] = season_standing.position
+    for user_picks in users_picks:
+        prev_positions[user_picks.user.id] = user_picks.position
 
     i = 1
-    while i < len(season_standings):
+    while i < len(users_picks):
         if i != 0:
-            prev_user_picks = season_standings[i - 1]
+            prev_user_picks = users_picks[i - 1]
             # tiebreaker
-            if season_standings[i].points == prev_user_picks.points:
-                temp = competitor_based_tie_breaker(season_standings[i], prev_user_picks, competitors, season)
+            if users_picks[i].points == prev_user_picks.points:
+                temp = competitor_based_tie_breaker(users_picks[i], prev_user_picks, competitors, season)
                 if temp is True:
-                    print(f"{prev_user_picks.user.username} and {season_standings[i].user.username} have the same picks!")
+                    print(f"{prev_user_picks.user.username} and {users_picks[i].user.username} have the same picks!")
                 elif temp:
                     # Swap positions if the tie-breaker determines a change
-                    if temp == season_standings[i]:
-                        season_standings[i], season_standings[i - 1] = season_standings[i - 1], season_standings[i]
+                    if temp == users_picks[i]:
+                        users_picks[i], users_picks[i - 1] = users_picks[i - 1], users_picks[i]
                         i = max(i - 2, 0)
                 else:
-                    temp = points_based_tie_breaker(season_standings[i], prev_user_picks)
+                    temp = points_based_tie_breaker(users_picks[i], prev_user_picks)
                     if temp:
-                        if temp == season_standings[i]:
-                            season_standings[i], season_standings[i - 1] = season_standings[i - 1], season_standings[i]
+                        if temp == users_picks[i]:
+                            users_picks[i], users_picks[i - 1] = users_picks[i - 1], users_picks[i]
                             i = max(i - 2, 0)
             
         i += 1
 
     users_not_found = []
 
-    for i, season_standing in enumerate(season_standings):
-        season_standing.position = i + 1
-        season_standing.save()
-        post_positions[season_standing.user.id] = season_standing.position #filling in post_positions at the same time
+    for i, user_picks in enumerate(users_picks):
+        user_picks.position = i + 1
+        user_picks.save()
+        post_positions[user_picks.user.id] = user_picks.position #filling in post_positions at the same time
         try:
-            race_standing = race_standings.get(user__id=season_standing.user.id)
+            race_user_picks = race_standings.get(user__id=user_picks.user.id)
         except UserPicksRace.DoesNotExist:
-            race_standing = None
-            users_not_found.append(season_standing.user.username)
-        if race_standing:
-            race_standing.position = season_standing.position
-            race_standing.position_change = prev_positions[race_standing.user.id] - post_positions[race_standing.user.id]
-            race_standing.save()
+            race_user_picks = None
+            users_not_found.append(user_picks.user.username)
+        if race_user_picks:
+            race_user_picks.position = user_picks.position
+            race_user_picks.position_change = prev_positions[race_user_picks.user.id] - post_positions[race_user_picks.user.id]
+            race_user_picks.save()
 
     if len(users_not_found) > 0:
         SeasonMessage.objects.create(
@@ -63,6 +63,8 @@ def sort_race_standings(standings, season):
             message=f"When calculating the position changes in the race standings, these users were not found in the race standings: " + " ".join(users_not_found) + ". Please un-finalize then finalize again, if it keeps happening contact spongejunior.",
             type=0,
         )
+
+    return users_not_found
 
 #should only be used with @transaction.atomic
 def sort_standings(season):
