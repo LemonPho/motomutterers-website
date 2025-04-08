@@ -39,3 +39,20 @@ def send_email(recipient, subject, body, content_subtype):
 def sanitize_text(text):
     sanitized_text = re.sub(r'\n\s*\n+', '\n\n', text.strip())
     return sanitized_text
+
+def binary_search(arr, target, key):
+    low = 0
+    high = len(arr) - 1
+    
+    while low <= high:
+        mid = (low + high) // 2
+        mid_value = key(arr[mid]) 
+        
+        if mid_value == target:
+            return arr[mid]
+        elif mid_value < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+            
+    return None

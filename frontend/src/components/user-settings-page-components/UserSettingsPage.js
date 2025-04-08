@@ -70,16 +70,6 @@ export default function UserSettings(){
                         <EmailChangeModal closeModal={closeModal} retrieveUserData={retrieveUserData} />
                     </Modal>
                 </div>
-                <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">
-                    <div>
-                        <strong style={{fontSize: "20px"}}>Password</strong>
-                        <div>••••••••••</div>
-                    </div>
-                    <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("password-change")}}>Change</button>
-                    <Modal isOpen={openedModal == "password-change"}>
-                        <PasswordChangeModal closeModal={closeModal}/>
-                    </Modal>
-                </div>
 
                 <div>
                     <div className="nested-element-color rounded-15 m-2">
@@ -114,6 +104,16 @@ export default function UserSettings(){
                             }
                         </Expand>
                     </div>
+                </div>
+                <div className="p-3 d-flex justify-content-center nested-element-color rounded-15 m-2">
+                    <div>
+                        <strong style={{fontSize: "20px"}}>Password</strong>
+                        <div>••••••••••</div>
+                    </div>
+                    <button id="password-button" className="btn btn-outline-secondary rounded-15 align-self-center ms-auto" onClick={(e) => {resetApplicationMessages();openModal("password-change")}}>Change</button>
+                    <Modal isOpen={openedModal == "password-change"}>
+                        <PasswordChangeModal closeModal={closeModal}/>
+                    </Modal>
                 </div>
 
                 <div>

@@ -10,38 +10,35 @@ from ..picks_view.picks_util import update_members_points
 from ..standings_view.standings_util import sort_standings, sort_race_standings
 
 from ..utils_view import send_emails
+from ...utils import binary_search
 
 #should only be used with @transaction.atomic
-def add_points_to_season_competitors(race_weekend):
-    season = race_weekend.season.first()
-    if season.finalized:
-        return False
-    race_competitors_positions = race_weekend.race.competitors_positions.all()
-    sprint_competitors_positions = race_weekend.sprint_race.competitors_positions.all()
-    season_competitors = season.competitors.all()
+def add_points_to_season_competitors(race_weekend, season):
+    if season.finalized: return False
+
+    race_competitors = sorted(list(race_weekend.race.competitors_positions.all()), key = lambda x:x.competitor_points.competitor.id)
+    sprint_competitors = sorted(list(race_weekend.sprint_race.competitors_positions.all()), key = lambda x:x.competitor_points.competitor.id)
+    season_competitors = sorted(list(season.competitors.all()), key = lambda x:x.competitor_points.competitor.id)
+
     updated_competitors = {}
 
-    for race_competitor_position in race_competitors_positions:
-        try:
-            season_competitor_position = season_competitors.get(competitor_points__competitor__id=race_competitor_position.competitor_points.competitor.id)
-        except CompetitorPosition.DoesNotExist:
-            return False
+    for race_competitor in race_competitors:
+        season_competitor = binary_search(season_competitors, race_competitor.competitor_points.competitor.id, lambda x:x.competitor_points.competitor.id)
+        if season_competitor is None: return False
 
-        season_competitor_position.competitor_points.points += race_competitor_position.competitor_points.points
-        updated_competitors[season_competitor_position.id] = season_competitor_position
+        season_competitor.competitor_points.points += race_competitor.competitor_points.points
+        updated_competitors[season_competitor.id] = season_competitor
 
 
-    for sprint_competitor_position in sprint_competitors_positions:
-        try:
-            season_competitor_position = season_competitors.get(competitor_points__competitor__id=sprint_competitor_position.competitor_points.competitor.id)
-        except CompetitorPosition.DoesNotExist:
-            return False
+    for sprint_competitor in sprint_competitors:
+        season_competitor = binary_search(season_competitors, sprint_competitor.competitor_points.competitor.id, lambda x:x.competitor_points.competitor.id)
+        if season_competitor is None: return False
 
-        if season_competitor_position.id in updated_competitors:
-            updated_competitors[season_competitor_position.id].competitor_points.points += sprint_competitor_position.competitor_points.points   
+        if season_competitor.id in updated_competitors:
+            updated_competitors[season_competitor.id].competitor_points.points += sprint_competitor.competitor_points.points   
         else:
-            season_competitor_position.competitor_points.points += race_competitor_position.competitor_points.points
-            updated_competitors[season_competitor_position.id] = season_competitor_position
+            season_competitor.competitor_points.points += sprint_competitor.competitor_points.points
+            updated_competitors[season_competitor.id] = season_competitor
             
     for season_competitor in updated_competitors.values():
         season_competitor.competitor_points.save()
@@ -52,30 +49,30 @@ def add_points_to_season_competitors(race_weekend):
 
 #should only be used with @transaction.atomic
 def remove_points_from_season_competitors(season, race_weekend):
-    race_competitors_positions = race_weekend.race.competitors_positions.all()
-    sprint_competitors_positions = race_weekend.sprint_race.competitors_positions.all()
-    season_competitors = season.competitors.all()
+    if season.finalized: return False
+    
+    race_competitors = sorted(list(race_weekend.race.competitors_positions.all()), key = lambda x:x.competitor_points.competitor.id)
+    sprint_competitors = sorted(list(race_weekend.sprint_race.competitors_positions.all()), key = lambda x:x.competitor_points.competitor.id)
+    season_competitors = sorted(list(season.competitors.all()), key = lambda x:x.competitor_points.competitor.id)
+
     updated_competitors = {}
 
-    for race_competitor_position in race_competitors_positions:
-        try:
-            season_competitor_position = season_competitors.get(competitor_points__competitor__id=race_competitor_position.competitor_points.competitor.id)
-        except CompetitorPosition.DoesNotExist:
-            return False
-        season_competitor_position.competitor_points.points -= race_competitor_position.competitor_points.points
-        updated_competitors[season_competitor_position.id] = season_competitor_position
+    for race_competitor in race_competitors:
+        season_competitor = binary_search(season_competitors, race_competitor.competitor_points.competitor.id, lambda x:x.competitor_points.competitor.id)
+        if season_competitor is None: return False
 
-    for sprint_competitor_position in sprint_competitors_positions:
-        try:
-            season_competitor_position = season_competitors.get(competitor_points__competitor__id=sprint_competitor_position.competitor_points.competitor.id)
-        except CompetitorPosition.DoesNotExist:
-            return False
+        season_competitor.competitor_points.points -= race_competitor.competitor_points.points
+        updated_competitors[season_competitor.id] = season_competitor
 
-        if season_competitor_position.id in updated_competitors:
-            updated_competitors[season_competitor_position.id].competitor_points.points -= sprint_competitor_position.competitor_points.points   
+    for sprint_competitor in sprint_competitors:
+        season_competitor = binary_search(season_competitors, sprint_competitor.competitor_points.competitor.id, lambda x:x.competitor_points.competitor.id)
+        if season_competitor is None: return False
+
+        if season_competitor.id in updated_competitors:
+            updated_competitors[season_competitor.id].competitor_points.points -= sprint_competitor.competitor_points.points   
         else:
-            season_competitor_position.competitor_points.points -= race_competitor_position.competitor_points.points
-            updated_competitors[season_competitor_position.id] = season_competitor_position
+            season_competitor.competitor_points.points -= sprint_competitor.competitor_points.points
+            updated_competitors[season_competitor.id] = season_competitor
 
     for season_competitor in updated_competitors.values():
         season_competitor.competitor_points.save()

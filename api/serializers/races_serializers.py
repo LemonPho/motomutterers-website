@@ -165,7 +165,7 @@ class RaceWeekendWriteSerializer(serializers.ModelSerializer):
         if standings:
             if len(list(standings.users_picks.all())) != 0:
                 instance.standings = standings
-                if not add_points_to_season_competitors(instance):
+                if not add_points_to_season_competitors(instance, instance.season.first()):
                     raise serializers.ValidationError("Error when adding the race weekend points to the season competitors")
                 
                 if len(sort_race_standings(instance.standings, instance.season.first())) > 0:
