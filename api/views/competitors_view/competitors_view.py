@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 
-
+from ...utils import binary_search
 from ...models import Competitor, Season, CompetitorPosition, SeasonCompetitorPosition, SeasonMessage
 from ...serializers.competitors_serializers import CompetitorWriteSerializer, CompetitorPositionWriteSerializer, CompetitorPointsWriteSerializer, CompetitorPositionSimpleSerializer
 from ...serializers.seasons_serializers import SeasonCompetitorPositionWriteSerializer, SeasonCompetitorPositionSerializer
@@ -247,20 +247,18 @@ def delete_competitor(request):
     except Competitor.DoesNotExist:
         return HttpResponse(status=404)
     
-    competitors_picks = CompetitorPosition.objects.filter(
+    competitors_picks = sorted(list(CompetitorPosition.objects.filter(
         Q(picks__isnull=False) |
         Q(independent_pick__isnull=False) |
         Q(rookie_pick__isnull=False) |
-        Q(final_race__isnull=False) | 
-        Q(qualifying_race__isnull=False)).distinct()
-
-    for competitor_pick in competitors_picks:
-        if competitor == competitor_pick.competitor_points.competitor:
-            return HttpResponse(status=422)
-
-    competitor.delete()
-
-    return HttpResponse(status=200)
+        Q(final_race__isnull=False)).distinct()), key = lambda x:x.competitor_points.competitor.id)
+    
+    competitor_exists = binary_search(competitors_picks, competitor.id, lambda x:x.competitor_points.competitor.id)
+    if competitor_exists is not None:
+        return HttpResponse(status=422)
+    else:
+        competitor.delete()
+        return HttpResponse(status=200)
 
 def delete_competitors(request):
     if request.method != "POST":
