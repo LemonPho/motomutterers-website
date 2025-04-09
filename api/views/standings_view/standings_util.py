@@ -107,12 +107,15 @@ def competitor_based_tie_breaker(user1, user2, competitors, season):
         if user_1_picks[i].competitor_points.competitor != user_2_picks[i].competitor_points.competitor:
             same_picks=False
 
+        #if user1 has the pick in the correct position, in relation to the season competitors ordered by points, then they are put ahead
+        #if user1 and user2 both have the pick in the correct position or both dont have the it goes to the next pick in list
         if user_1_picks[i].competitor_points.competitor == competitors[i].competitor_points.competitor and user_2_picks[i].competitor_points.competitor != competitors[i].competitor_points.competitor:
             return user1
         
         if user_1_picks[i].competitor_points.competitor != competitors[i].competitor_points.competitor and user_2_picks[i].competitor_points.competitor == competitors[i].competitor_points.competitor:
             return user2
-        
+    
+    #in this case both either have the perfect picks (same top 5 as the season) or both dont have any correct picks in the top 5, so we check to see which has the independent or rookie with more points
     if season.top_independent and (user1.independent_pick.competitor_points.points > user2.independent_pick.competitor_points.points):
         return user1
     elif season.top_independent and (user1.independent_pick.competitor_points.points < user2.independent_pick.competitor_points.points):
@@ -123,6 +126,7 @@ def competitor_based_tie_breaker(user1, user2, competitors, season):
     elif season.top_rookie and (user1.rookie_pick.competitor_points.points < user2.rookie_pick.competitor_points.points):
         return user2
 
+    #if we have reached here, then they have the same picks or they have different picks but the same independent and rookie
     return same_picks
 
 def points_based_tie_breaker(user1, user2):

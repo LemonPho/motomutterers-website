@@ -7,7 +7,7 @@ import useImagesContext from "../ImagesContext";
 const StandingsContext = createContext();
 
 export default function StandingsContextProvider(){
-    const { setErrorMessage, setSuccessMessage } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, currentSeason } = useApplicationContext();
     const { prepareProfilePictures } = useImagesContext();
 
     const [searchParams] = useSearchParams();
@@ -26,7 +26,7 @@ export default function StandingsContextProvider(){
     async function retrieveStandings(){
         setStandingsLoading(true);
         
-        const seasonYear = searchParams.get("season");
+        let seasonYear = searchParams.get("season");
 
         const usersStandingsResponse = await getSeasonStandings(seasonYear);
 
