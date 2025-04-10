@@ -40,9 +40,6 @@
 <loc>https://www.motomutterers.com/users</loc>
 </url>
 <url>
-<loc>https://www.motomutterers.com/users/{username}</loc>
-</url>
-<url>
 <loc>https://www.motomutterers.com/404</loc>
 </url>
 </urlset>
