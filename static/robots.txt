@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /administration
 
 Sitemap: https://www.motomutterers.com/sitemap.xml
