@@ -10,7 +10,7 @@ export default function RaceWeekendsContextProvider({ children }){
 
     const [raceWeekends, setRaceWeekends] = useState([]);
     const [raceWeekendsLoading, setRaceWeekendsLoading] = useState();
-    const [selectedRaceWeekend, setSelectedRaceWeekend] = useState(false);
+    const [selectedRaceWeekend, setSelectedRaceWeekend] = useState(null);
     const [selectedRaceWeekendLoading, setSelectedRaceWeekendLoading] = useState();
 
     const [seasonList, setSeasonList] = useState([]);
@@ -93,38 +93,25 @@ export default function RaceWeekendsContextProvider({ children }){
 
     useEffect(() => {
         async function fetchData(){
+            await retrieveRaceWeekend();
+        }
+        if(raceWeekendId !== undefined) fetchData();
+    }, [raceWeekendId])
+
+    useEffect(() => {
+        async function fetchData(){
             await retrieveRaceWeekends();
             await retrieveSeasonList();
         }
 
-        fetchData();
-    }, [selectedSeason]);
-
-    useEffect(() => {
-        const season = searchParams.get("season");
-        if(season !== null && season !== selectedSeason){
-            setSelectedSeason(season);
-        }
-    }, [location.search]);
-
-    useEffect(() => {
-        if(selectedSeason !== null){
-            return;
-        }
-
-        const season = searchParams.get("season");
-        if(season === null && !currentSeasonLoading){
-            setSelectedSeason(currentSeason.year);
-            navigate(`/race-weekends?season=${currentSeason.year}`, {replace: true});
-        } else if(season !== null){
-            setSelectedSeason(season);
-        }
-    }, [currentSeasonLoading]);
+        if(selectedSeason !== null) fetchData();
+    }, [selectedSeason])
 
     return(
         <RaceWeekendsContext.Provider value={{
             raceWeekends, raceWeekendsLoading, selectedRaceWeekend, selectedRaceWeekendLoading,
             seasonList, seasonListLoading, selectedSeason,
+            setSelectedRaceWeekend, setSelectedSeason, retrieveRaceWeekend, retrieveRaceWeekends, retrieveSeasonList
         }}>
             
             <Outlet />

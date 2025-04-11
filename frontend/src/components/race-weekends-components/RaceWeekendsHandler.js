@@ -1,11 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRaceWeekendContext } from "./RaceWeekendsContext";
 import RaceWeekend from "./RaceWeekend";
 import RaceWeekends from "./RaceWeekends";
 import PageNotFound from "../PageNotFound";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useApplicationContext } from "../ApplicationContext";
 
 export default function RaceWeekendsHandler(){
-    const { selectedRaceWeekend, selectedSeason, seasonListLoading, selectedRaceWeekendLoading } = useRaceWeekendContext();
+    const { currentSeason, currentSeasonLoading } = useApplicationContext();
+    const { setSelectedRaceWeekend, selectedRaceWeekend, setSelectedSeason, selectedSeason, seasonListLoading, selectedRaceWeekendLoading } = useRaceWeekendContext();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams] = useSearchParams();
+    const { raceWeekendId } = useParams();
+
+    useEffect(() => {
+        const season = searchParams.get("season");
+
+        if(raceWeekendId === undefined){
+            setSelectedRaceWeekend(null);
+        }
+
+        if(raceWeekendId !== undefined){
+            setSelectedSeason(null);
+        }
+
+        if(season !== null && season !== selectedSeason){
+            setSelectedSeason(season);
+        }
+
+        if(season === null && raceWeekendId === undefined && !currentSeasonLoading){
+            setSelectedSeason(currentSeason.year);
+            navigate(`race-weekends?season=${currentSeason.year}`, {replace: true});
+        }
+    }, [location.pathname, location.search, currentSeasonLoading]);
 
     if(selectedRaceWeekendLoading){
         return(
