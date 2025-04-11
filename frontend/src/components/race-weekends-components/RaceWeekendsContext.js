@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
 import { getRace, getRaceWeekend, getRaceWeekends, getSeasonsSimple } from "../fetch-utils/fetchGet";
-import { Outlet, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Outlet, replace, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const RaceWeekendsContext = createContext();
 
 export default function RaceWeekendsContextProvider({ children }){
-    const { setErrorMessage } = useApplicationContext();
+    const { setErrorMessage, currentSeason, currentSeasonLoading } = useApplicationContext();
 
     const [raceWeekends, setRaceWeekends] = useState([]);
     const [raceWeekendsLoading, setRaceWeekendsLoading] = useState();
@@ -15,8 +15,9 @@ export default function RaceWeekendsContextProvider({ children }){
 
     const [seasonList, setSeasonList] = useState([]);
     const [seasonListLoading, setSeasonListLoading] = useState();
-    const [selectedSeason, setSelectedSeason] = useState();
+    const [selectedSeason, setSelectedSeason] = useState(null);
 
+    const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const { raceWeekendId } = useParams();
@@ -35,7 +36,7 @@ export default function RaceWeekendsContextProvider({ children }){
             return;
         }
 
-        if(raceWeekendsResponse.invalidSeason){
+        if(raceWeekendsResponse.status === 404){
             setErrorMessage("Season not found");
             return;
         }
@@ -49,8 +50,7 @@ export default function RaceWeekendsContextProvider({ children }){
     }
 
     async function retrieveSeasonList(){
-        if(searchParams.get("season") == null){
-            setSelectedSeason(null);
+        if(selectedSeason == null){
             return;
         }
 
@@ -94,19 +94,32 @@ export default function RaceWeekendsContextProvider({ children }){
     useEffect(() => {
         async function fetchData(){
             await retrieveRaceWeekends();
+            await retrieveSeasonList();
         }
 
         fetchData();
     }, [selectedSeason]);
 
     useEffect(() => {
-        async function fetchData(){
-            await retrieveSeasonList();
-            await retrieveRaceWeekend();
+        const season = searchParams.get("season");
+        if(season !== null && season !== selectedSeason){
+            setSelectedSeason(season);
+        }
+    }, [location.search]);
+
+    useEffect(() => {
+        if(selectedSeason !== null){
+            return;
         }
 
-        fetchData();
-    }, [location])
+        const season = searchParams.get("season");
+        if(season === null && !currentSeasonLoading){
+            setSelectedSeason(currentSeason.year);
+            navigate(`/race-weekends?season=${currentSeason.year}`, {replace: true});
+        } else if(season !== null){
+            setSelectedSeason(season);
+        }
+    }, [currentSeasonLoading]);
 
     return(
         <RaceWeekendsContext.Provider value={{

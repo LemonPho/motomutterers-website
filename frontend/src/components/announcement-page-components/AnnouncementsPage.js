@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useLocation, Navigate, Link } from 'react-router-dom';
+import { useLocation, Navigate, Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import ApplicationContext, { useApplicationContext } from '../ApplicationContext';
 
@@ -26,16 +26,20 @@ export default function Anouncements(){
     const [pageNumbers, setPageNumbers] = useState([]);
 
     const location = useLocation();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     async function retrieveAnnouncements(){
         setAnnouncementsLoading(true);
-        const params = new URLSearchParams(location.search);
-        let page = parseInt(params.get("page"));
-        setCurrentPage(page);
-
-        const announcementsResponse = await getAnnouncements(page);
-        if(announcementsResponse.error || announcementsResponse.status !== 200){
+        const announcementsResponse = await getAnnouncements(currentPage);
+        if(announcementsResponse.error){
             setErrorMessage("There was an error while loading the announcements");
+            return;
+        }
+
+        if(announcementsResponse.status === 404){
+            setCurrentPage(1);
+            navigate(`/announcements?page=1`, {replace: true});
             return;
         }
 
@@ -46,35 +50,28 @@ export default function Anouncements(){
 
     //when totalAnnouncements is asigned, we can generate the pagination necessary, no need to check if its 0, it will just generate a disabled pagination menu
     useEffect(() => {
+        if(currentPage < 1) return;
+        retrieveAnnouncements();
+    }, [currentPage]);
+
+    useEffect(() => {
         let result = pagination(totalAnnouncements, 10, currentPage);
         if(result !== null){
             setNextPage(result.nextPage);
             setPreviousPage(result.previousPage);
             setPageNumbers(result.pageNumbers);
             setPages(true);
-        }
-        
-    }, [totalAnnouncements]);
+        }    
+    }, [totalAnnouncements, currentPage]);
 
     useEffect(() => {
-        retrieveAnnouncements();
+        const page = searchParams.get("page");
+        if(page === null){
+            navigate(`/announcements?page=1`, {replace: true});
+        } else if(parseInt(page) !== currentPage){
+            setCurrentPage(parseInt(page));
+        }
     }, [location.search]);
-
-    //when totalAnnouncements is asigned, we can generate the pagination necessary, no need to check if its 0, it will just generate a disabled pagination menu
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const page = parseInt(params.get("page"));
-        setCurrentPage(page);
-
-        let result = pagination(totalAnnouncements, 10, page);
-        if(result !== null){
-            setNextPage(result.nextPage);
-            setPreviousPage(result.previousPage);
-            setPageNumbers(result.pageNumbers);
-            setPages(true);
-        }
-        
-    }, [totalAnnouncements, location.search]);
 
     if(announcementsLoading){
         return(

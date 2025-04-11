@@ -39,7 +39,7 @@ def get_announcements(request):
     else:
         amount_announcements = Announcement.objects.count()
         announcements = retrieve_multiple_announcements(start, end)
-        if announcements == None:
+        if len(list(announcements)) == 0:
             return HttpResponse(status=404)
         
         serialized_announcements = AnnouncementSimpleSerializer(announcements, many=True)
@@ -122,9 +122,6 @@ def delete_announcement(request):
 
 # ------ general functions, do what is in the name ------ #
 def retrieve_multiple_announcements(start, end):
-    try:
-        announcements = Announcement.objects.order_by("-date_created")[start:end]
-        return announcements
-    except Announcement.DoesNotExist:
-        return None
+    announcements = Announcement.objects.order_by("-date_created")[start:end]
+    return announcements
     

@@ -99,7 +99,7 @@ def get_race_weekends(request):
         season = Season.objects.filter(visible=True).get(year=season_year)
     except Season.DoesNotExist:
         response["invalid_season"] = True
-        return JsonResponse(response, status=400)
+        return JsonResponse(response, status=404)
 
     race_weekends = season.race_weekends.all()
     race_weekends = race_weekends[0:amount] if amount else race_weekends

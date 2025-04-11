@@ -11,25 +11,8 @@ import Standing from "./Standing";
 
 export default function Standings(){
     const { user, userLoading } = useApplicationContext();
-    const { 
-        retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, selectedSeason, selectedSeasonYear, seasonList,
-        standings, standingsLoading, selectedSeasonLoading, seasonListLoading, retrieveUserPicks,
-        copyStandingsTable } = useStandingsContext();
+    const { selectedSeason, seasonList, standings, standingsLoading, seasonListLoading, retrieveUserPicks, copyStandingsTable } = useStandingsContext();
     const { openedModal, openModal, openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
-
-    const location = useLocation();
-
-    async function fetchData(){
-        await retrieveStandings();
-        await retrieveSeasonList();
-        await retrieveSelectedSeason();
-    }
-
-    useEffect(() => {
-        fetchData();
-    }, [location.search])
-
-
 
     return (
     <div className="card rounded-15 align-middle element-background-color element-border-color p-2">
@@ -38,12 +21,9 @@ export default function Standings(){
                 <h5 className="m-0">
                     <span>Standings</span>
                 </h5>
-                {!selectedSeasonLoading && selectedSeason.finalized &&
-                    <small>‎ (finalized)</small>
-                }
                 <div className="ms-auto btn-group dropdown-div">
                     <button className="btn btn-outline-secondary dropdown-toggle rounded-15" data-bs-toggle="dropdown" type="button" aria-expanded="false" onClick={(e) => {toggleDropdown("season-selector-dropdown", e)}}>
-                        {selectedSeasonYear}
+                        {selectedSeason}
                     </button>
                     <Dropdown isOpen={openedDropdown == "season-selector-dropdown"}>
                         <ul className="dropdown-menu" id="season-selector-dropdown" style={{top: "100%", right: "0"}}>
@@ -51,7 +31,7 @@ export default function Standings(){
                             <li key={`${season.year}`}>
                                 <Link className="dropdown-item" onClick={closeDropdown} to={`?season=${season.year}`} id={`${season.year}`}>
                                     {season.year}
-                                    {season.year == selectedSeason.year && (
+                                    {season.year == selectedSeason && (
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="ms-auto me-1 bi bi-check" viewBox="0 0 16 16">
                                             <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
                                         </svg>

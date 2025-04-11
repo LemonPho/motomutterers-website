@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import { Outlet, useSearchParams } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getSeasonSimple, getSeasonsSimpleYear, getUserPicks, getSeasonStandings, getUserPicksSimple } from "../fetch-utils/fetchGet";
 import { useApplicationContext } from "../ApplicationContext";
 import useImagesContext from "../ImagesContext";
@@ -7,9 +7,11 @@ import useImagesContext from "../ImagesContext";
 const StandingsContext = createContext();
 
 export default function StandingsContextProvider(){
-    const { setErrorMessage, setSuccessMessage, currentSeason } = useApplicationContext();
+    const { setErrorMessage, setSuccessMessage, currentSeason, currentSeasonLoading } = useApplicationContext();
     const { prepareProfilePictures } = useImagesContext();
 
+    const location = useLocation();
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const [standings, setStandings] = useState({});
@@ -19,19 +21,21 @@ export default function StandingsContextProvider(){
 
     const [seasonList, setSeasonList] = useState([]);
     const [seasonListLoading, setSeasonListLoading] = useState(true);
-    const [selectedSeason, setSelectedSeason] = useState({});
-    const [selectedSeasonYear, setSelectedSeasonYear] = useState(searchParams.get("season"));
-    const [selectedSeasonLoading, setSelectedSeasonLoading] = useState(true);
+    const [selectedSeason, setSelectedSeason] = useState(null);
 
     async function retrieveStandings(){
-        setStandingsLoading(true);
-        
-        let seasonYear = searchParams.get("season");
+        if(selectedSeason === null) return;
 
-        const usersStandingsResponse = await getSeasonStandings(seasonYear);
+        setStandingsLoading(true);
+        const usersStandingsResponse = await getSeasonStandings(selectedSeason);
 
         if(usersStandingsResponse.error){
             setErrorMessage("There was an error retrieving the standings");
+            return;
+        }
+
+        if(usersStandingsResponse.status === 404){
+            setErrorMessage("The season was not found");
             return;
         }
 
@@ -41,28 +45,6 @@ export default function StandingsContextProvider(){
             setStandingsLoading(false);
             prepareProfilePictures(userList);
         }
-    }
-
-    async function retrieveSelectedSeason(){
-        setSelectedSeasonLoading(true);
-        
-        const seasonYear = searchParams.get("season");
-        setSelectedSeasonYear(seasonYear);
-
-        const seasonResponse = await getSeasonSimple(seasonYear);
-
-        if(seasonResponse.error){
-            setErrorMessage("There was an error retrieving season data");
-            return;
-        }
-
-        if(seasonResponse.status != 200){
-            setErrorMessage("Be sure to select a valid season");
-            return;
-        }
-
-        setSelectedSeason(seasonResponse.season);
-        setSelectedSeasonLoading(false);
     }
 
     async function retrieveSeasonList(){
@@ -80,7 +62,7 @@ export default function StandingsContextProvider(){
 
     async function retrieveUserPicks(username){
         setUserPicksDetailedLoading(true);
-        const userPicksResponse = await getUserPicksSimple(selectedSeasonYear, username);
+        const userPicksResponse = await getUserPicksSimple(selectedSeason, username);
 
         if(userPicksResponse.error){
             setErrorMessage("There was an error retrieving the user picks");
@@ -143,12 +125,40 @@ export default function StandingsContextProvider(){
         navigator.clipboard.writeText(result);
         setSuccessMessage("Table copied to clipboard");
     }
+
+    useEffect(() => {
+        async function fetchData(){
+            await retrieveStandings();
+            await retrieveSeasonList();
+        }
+
+        fetchData();
+    }, [selectedSeason]);
+
+    useEffect(() => {
+        if(selectedSeason !== null) return;
+
+        const season = searchParams.get("season");
+        if(season === null && !currentSeasonLoading){
+            setSelectedSeason(currentSeason.year);
+            navigate(`/standings?season=${currentSeason.year}`);
+        } else if(season !== null){
+            setSelectedSeason(season);
+        }
+    }, [currentSeasonLoading]);
+
+    useEffect(() => {
+        const season = searchParams.get("season");
+        if(season !== null && season !== selectedSeason){
+            setSelectedSeason(season);
+        }
+    }, [location.search]);
     
     return(
         <StandingsContext.Provider value={{
-            retrieveStandings, retrieveSelectedSeason, retrieveSeasonList, retrieveUserPicks,
+            retrieveStandings, retrieveSeasonList, retrieveUserPicks,
             standings, userPicksDetailed, seasonList, selectedSeason,
-            standingsLoading, userPicksDetailedLoading, seasonListLoading, selectedSeasonLoading, selectedSeasonYear,
+            standingsLoading, userPicksDetailedLoading, seasonListLoading,
             copyStandingsTable,
         }}>
             <Outlet />
