@@ -6,8 +6,9 @@ import { Outlet, replace, useLocation, useNavigate, useParams, useSearchParams }
 const RaceWeekendsContext = createContext();
 
 export default function RaceWeekendsContextProvider({ children }){
-    const { setErrorMessage, currentSeason, currentSeasonLoading } = useApplicationContext();
+    const { setErrorMessage } = useApplicationContext();
 
+    const [loadedRaceWeekendsSeason, setLoadedRaceWeekendsSeason] = useState(null);
     const [raceWeekends, setRaceWeekends] = useState([]);
     const [raceWeekendsLoading, setRaceWeekendsLoading] = useState();
     const [selectedRaceWeekend, setSelectedRaceWeekend] = useState(null);
@@ -17,8 +18,6 @@ export default function RaceWeekendsContextProvider({ children }){
     const [seasonListLoading, setSeasonListLoading] = useState();
     const [selectedSeason, setSelectedSeason] = useState(null);
 
-    const navigate = useNavigate();
-    const location = useLocation();
     const [searchParams] = useSearchParams();
     const { raceWeekendId } = useParams();
 
@@ -46,6 +45,7 @@ export default function RaceWeekendsContextProvider({ children }){
             return;
         }
 
+        setLoadedRaceWeekendsSeason(selectedSeason);
         setRaceWeekends(raceWeekendsResponse.raceWeekends);
     }
 
@@ -104,7 +104,8 @@ export default function RaceWeekendsContextProvider({ children }){
             await retrieveSeasonList();
         }
 
-        if(selectedSeason !== null) fetchData();
+        //loadedRaceWeekendsSeason is so that we reuse the already loaded race weekends if the season doesn't change
+        if(selectedSeason !== null && loadedRaceWeekendsSeason !== selectedSeason) fetchData();
     }, [selectedSeason])
 
     return(
