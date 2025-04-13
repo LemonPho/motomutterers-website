@@ -207,8 +207,8 @@ def edit_season_competitor(request):
         
     if competitor_position.season.first().finalized:
         return HttpResponse(status=400)
-        
-    serializer = SeasonCompetitorPositionWriteSerializer(data=data, instance=competitor_position)
+            
+    serializer = SeasonCompetitorPositionWriteSerializer(data=data, instance=competitor_position, context={"update": True})
     
     if not serializer.is_valid():
         return HttpResponse(status=400)

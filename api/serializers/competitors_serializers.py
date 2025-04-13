@@ -84,7 +84,15 @@ class CompetitorPointsWriteSerializer(serializers.ModelSerializer):
             return instance
         #competitor is a dictionary, to then create the competitor
         elif isinstance(competitor, dict):
-            serializer = CompetitorWriteSerializer(data=competitor)
+            update = self.context.get("update", False)
+            if update:
+                try:
+                    instance = Competitor.objects.get(pk=competitor["id"])
+                except Competitor.DoesNotExist:
+                    raise serializers.ValidationError("Could not find competitor with id: ", competitor["id"])
+                serializer = CompetitorWriteSerializer(data=competitor, instance=instance)
+            else:
+                serializer = CompetitorWriteSerializer(data=competitor)
 
             if not serializer.is_valid():
                 raise serializers.ValidationError("Competitor data was not valid")
