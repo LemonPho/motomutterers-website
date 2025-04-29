@@ -58,11 +58,11 @@ export default function StandingDetailed(){
                     <strong>{pick.position}. </strong>{pick.first} {pick.last} - {pick.points}
                 </li>
                 ))}
-                {selectedSeason.top_independent && 
+                {userPicksDetailed.independent_pick && 
                 <li className="list-group-item" id="pick-independent">
                     <strong>Independent. </strong> {userPicksDetailed.independent_pick.first} {userPicksDetailed.independent_pick.last} - {userPicksDetailed.independent_pick.points}
                 </li>}
-                {selectedSeason.top_rookie && 
+                {userPicksDetailed.rookie_pick && 
                 <li className="list-group-item" id="pick-rookie">
                     <strong>Rookie. </strong> {userPicksDetailed.rookie_pick.first} {userPicksDetailed.rookie_pick.last} - {userPicksDetailed.rookie_pick.points}
                 </li>}
