@@ -70,7 +70,7 @@ def register(request):
     }
     json_context = json.dumps(context)
 
-    if not username_unique or not email_unique or not passwords_match or not password_valid:
+    if not username_unique or not email_unique or not passwords_match or not password_valid or context["invalid_data"]:
         return HttpResponse(json_context, status=400)
 
     #create temporary user

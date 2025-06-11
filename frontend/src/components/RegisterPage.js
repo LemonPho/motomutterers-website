@@ -52,6 +52,7 @@ export default function RegisterPage() {
             message += registerResponse.emailValid ? "" : "Email isn't valid\n";
             message += registerResponse.passwordsMatch ? "" : "Passwords don't match\n";
             message += registerResponse.passwordValid ? "" : "Passwords need at least 8 characters and can't be 'simple'\n";
+            message += registerResponse.invalidData ? "Make sure the password is not simple (atleast 8 characters in length with 2 numbers)\n" : "";
 
             if(!registerResponse.usernameUnique || !registerResponse.usernameValid){
                 setUsernameInvalid(true);
@@ -66,7 +67,6 @@ export default function RegisterPage() {
             }
 
             if(registerResponse.usernameUnique && registerResponse.usernameValid && registerResponse.emailUnique && registerResponse.emailValid && registerResponse.passwordValid && registerResponse.passwordsMatch && registerResponse.invalidData){
-                setErrorMessage("Be sure the data is valid (password can not be simple and more than 8 characters)");
                 setPasswordInvalid(true);
             }
             setErrorMessage(message);
