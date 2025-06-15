@@ -16,7 +16,12 @@ export default function Textarea({ id, value, setValue, onEnterFunction, placeho
         if(value != textareaRef.current.value){
             textareaRef.current.value = value;
         }
-    }, [value])
+    }, [value]);
+
+    useEffect(() => {
+        if(textareaRef == null) return;
+        autoResizeTextarea(textareaRef.current);
+    }, []);
 
     return(
         <textarea className={`input-field w-100 textarea-expand nested-element-color rounded-15 ${className} ${outline ? "border border-danger" : ""}`} id={id} ref={textareaRef} rows={1} defaultValue={value} placeholder={placeholder} onKeyUp={(e) => {keyPress(e)}}></textarea>
