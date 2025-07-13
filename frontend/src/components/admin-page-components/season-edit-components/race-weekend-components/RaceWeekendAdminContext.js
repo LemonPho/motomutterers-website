@@ -150,7 +150,6 @@ export default function RaceWeekendAdminContextProvider({ children }){
 
         if(raceWeekendResponse.error){
             setErrorMessage("There was an error finalizing the race weekend");
-            
             return;
         }
 
@@ -173,6 +172,11 @@ export default function RaceWeekendAdminContextProvider({ children }){
             return;
         }
 
+        if(raceWeekendResponse.alreadyFinalized){
+            setErrorMessage("The race weekend is registered as finalized, please refresh");
+            return;
+        }
+
         if(raceWeekendResponse.status == 404){
             setErrorMessage("The race weekend was not found");
             
@@ -186,7 +190,7 @@ export default function RaceWeekendAdminContextProvider({ children }){
         }
 
         let temporaryRaceWeekend = selectedRaceWeekend;
-        temporaryRaceWeekend.status = 2;
+        //temporaryRaceWeekend.status = 2;
         setSelectedRaceWeekend(temporaryRaceWeekend);
         setSuccessMessage("Race weekend finalized");
         retrieveSeason();
