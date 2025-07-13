@@ -190,7 +190,7 @@ export default function RaceWeekendAdminContextProvider({ children }){
         }
 
         let temporaryRaceWeekend = selectedRaceWeekend;
-        //temporaryRaceWeekend.status = 2;
+        temporaryRaceWeekend.status = 2;
         setSelectedRaceWeekend(temporaryRaceWeekend);
         setSuccessMessage("Race weekend finalized");
         retrieveSeason();
