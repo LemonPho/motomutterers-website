@@ -1,23 +1,23 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useApplicationContext } from "../ApplicationContext";
 import { getRace, getRaceWeekend, getRaceWeekends, getSeasonsSimple } from "../fetch-utils/fetchGet";
-import { Outlet, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Outlet, replace, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const RaceWeekendsContext = createContext();
 
 export default function RaceWeekendsContextProvider({ children }){
     const { setErrorMessage } = useApplicationContext();
 
+    const [loadedRaceWeekendsSeason, setLoadedRaceWeekendsSeason] = useState(null);
     const [raceWeekends, setRaceWeekends] = useState([]);
     const [raceWeekendsLoading, setRaceWeekendsLoading] = useState();
-    const [selectedRaceWeekend, setSelectedRaceWeekend] = useState(false);
+    const [selectedRaceWeekend, setSelectedRaceWeekend] = useState(null);
     const [selectedRaceWeekendLoading, setSelectedRaceWeekendLoading] = useState();
 
     const [seasonList, setSeasonList] = useState([]);
     const [seasonListLoading, setSeasonListLoading] = useState();
-    const [selectedSeason, setSelectedSeason] = useState();
+    const [selectedSeason, setSelectedSeason] = useState(null);
 
-    const location = useLocation();
     const [searchParams] = useSearchParams();
     const { raceWeekendId } = useParams();
 
@@ -35,7 +35,7 @@ export default function RaceWeekendsContextProvider({ children }){
             return;
         }
 
-        if(raceWeekendsResponse.invalidSeason){
+        if(raceWeekendsResponse.status === 404){
             setErrorMessage("Season not found");
             return;
         }
@@ -45,12 +45,12 @@ export default function RaceWeekendsContextProvider({ children }){
             return;
         }
 
+        setLoadedRaceWeekendsSeason(selectedSeason);
         setRaceWeekends(raceWeekendsResponse.raceWeekends);
     }
 
     async function retrieveSeasonList(){
-        if(searchParams.get("season") == null){
-            setSelectedSeason(null);
+        if(selectedSeason == null){
             return;
         }
 
@@ -93,25 +93,26 @@ export default function RaceWeekendsContextProvider({ children }){
 
     useEffect(() => {
         async function fetchData(){
-            await retrieveRaceWeekends();
+            await retrieveRaceWeekend();
         }
-
-        fetchData();
-    }, [selectedSeason]);
+        if(raceWeekendId !== undefined) fetchData();
+    }, [raceWeekendId])
 
     useEffect(() => {
         async function fetchData(){
+            await retrieveRaceWeekends();
             await retrieveSeasonList();
-            await retrieveRaceWeekend();
         }
 
-        fetchData();
-    }, [location])
+        //loadedRaceWeekendsSeason is so that we reuse the already loaded race weekends if the season doesn't change
+        if(selectedSeason !== null && loadedRaceWeekendsSeason !== selectedSeason) fetchData();
+    }, [selectedSeason])
 
     return(
         <RaceWeekendsContext.Provider value={{
             raceWeekends, raceWeekendsLoading, selectedRaceWeekend, selectedRaceWeekendLoading,
             seasonList, seasonListLoading, selectedSeason,
+            setSelectedRaceWeekend, setSelectedSeason, retrieveRaceWeekend, retrieveRaceWeekends, retrieveSeasonList
         }}>
             
             <Outlet />

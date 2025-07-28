@@ -284,7 +284,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled')
 
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
@@ -301,7 +301,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
     else:
         browser.get(race_weekend.url + "?st=SPR")
 
-    delay = 10
+    delay = 30
 
     try:
         table = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-table.ms-table--result")))
@@ -359,42 +359,36 @@ def generate_race_weekend_standings(race_weekend, season):
         points = 0
         for pick in list(standing.picks.all()):
             season_competitor = binary_search(season_competitors, pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
-            season_competitor is None and response["competitors_not_found"].append(pick.competitor_points.competitor.number)
+            if season_competitor is None: response["competitors_not_found"].add(pick.competitor_points.competitor.number)
             
             race_competitor = binary_search(race_competitors, pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
             sprint_race_competitor = binary_search(sprint_race_competitors, pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
             
-            points += season_competitor.competitor_points.points
-            if race_competitor:
-                points += race_competitor.competitor_points.points
-            if sprint_race_competitor:
-                points += sprint_race_competitor.competitor_points.points
+            if season_competitor: points += season_competitor.competitor_points.points
+            if race_competitor: points += race_competitor.competitor_points.points
+            if sprint_race_competitor: points += sprint_race_competitor.competitor_points.points
 
         if season.top_independent:
             season_competitor = binary_search(season_competitors, standing.independent_pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
-            season_competitor is None and response["competitors_not_found"].append(standing.independent_pick.competitor_points.competitor.number)
+            if season_competitor is None: response["competitors_not_found"].add(standing.independent_pick.competitor_points.competitor.number)
             
             race_competitor = binary_search(race_competitors, standing.independent_pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
             sprint_race_competitor = binary_search(sprint_race_competitors, standing.independent_pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
             
-            points += season_competitor.competitor_points.points
-            if race_competitor:
-                points += race_competitor.competitor_points.points
-            if sprint_race_competitor:
-                points += sprint_race_competitor.competitor_points.points
+            if season_competitor: points += season_competitor.competitor_points.points
+            if race_competitor: points += race_competitor.competitor_points.points
+            if sprint_race_competitor: points += sprint_race_competitor.competitor_points.points
             
         if season.top_rookie:
             season_competitor = binary_search(season_competitors, standing.rookie_pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
-            season_competitor is None and response["competitors_not_found"].append(standing.rookie_pick.competitor_points.competitor.number)
+            if season_competitor is None: response["competitors_not_found"].add(standing.rookie_pick.competitor_points.competitor.number)
             
             race_competitor = binary_search(race_competitors, standing.rookie_pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
             sprint_race_competitor = binary_search(sprint_race_competitors, standing.rookie_pick.competitor_points.competitor.id, lambda x: x.competitor_points.competitor.id)
-                        
-            points += season_competitor.competitor_points.points
-            if race_competitor:
-                points += race_competitor.competitor_points.points
-            if sprint_race_competitor:
-                points += sprint_race_competitor.competitor_points.points
+
+            if season_competitor: points += season_competitor.competitor_points.points
+            if race_competitor: points += race_competitor.competitor_points.points
+            if sprint_race_competitor: points += sprint_race_competitor.competitor_points.points
 
         response["standings"]["users_picks"].append({
             "points": points,

@@ -9,6 +9,8 @@ export default function RaceWeekends(){
     const { openedDropdown, toggleDropdown, closeDropdown } = useOpenersContext();
     const { raceWeekends, raceWeekendsLoading, selectedSeason, seasonList, seasonListLoading } = useRaceWeekendContext();
 
+    
+
     return(
         <div className="card rounded-15 element-background-color element-border-color p-2">
             <div className="card-header d-flex align-items-center rounded-15 nested-element-color mb-3">

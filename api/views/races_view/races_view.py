@@ -99,7 +99,7 @@ def get_race_weekends(request):
         season = Season.objects.filter(visible=True).get(year=season_year)
     except Season.DoesNotExist:
         response["invalid_season"] = True
-        return JsonResponse(response, status=400)
+        return JsonResponse(response, status=404)
 
     race_weekends = season.race_weekends.all()
     race_weekends = race_weekends[0:amount] if amount else race_weekends
@@ -341,6 +341,7 @@ def finalize_race_weekend(request):
     response = {
         "cant_be_finalized": race_weekend.race == None or race_weekend.sprint_race == None,
         "competitors_not_found": [],
+        "already_finalized": race_weekend.status == STATUS_FINAL
     }
 
     if response["cant_be_finalized"]:
@@ -349,6 +350,15 @@ def finalize_race_weekend(request):
             message = f"When trying to finalize the {race_weekend.title} weekend, make sure both the race and sprint race have been retrieved",
             type = 0,
         )
+        return JsonResponse(response, status=400)
+    
+    if response["already_finalized"]:
+        SeasonMessage.objects.create(
+            season=season,
+            message = f"When trying to finalize the {race_weekend.title} weekend, it was already registered as finalized, please refresh",
+            type=0
+        )
+
         return JsonResponse(response, status=400)
 
     standings_data = generate_race_weekend_standings(race_weekend, season)
@@ -414,6 +424,9 @@ def un_finalize_race_weekend(request):
         race_weekend = RaceWeekend.objects.get(pk=id)
     except RaceWeekend.DoesNotExist:
         return HttpResponse(status=404)
+    
+    if race_weekend.status != STATUS_IN_PROGRESS:
+        return HttpResponse(status=400)
     
     context = {
         "unfinalize": True,

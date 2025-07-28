@@ -1071,6 +1071,7 @@ export async function submitFinalizeRaceWeekend(raceWeekendId, sendFinalizeEmail
     let response = {
         error: false,
         cantBeFinalized: false,
+        alreadyFinalized: false,
         competitorsNotFound: [],
         status: null,
     }
@@ -1093,6 +1094,7 @@ export async function submitFinalizeRaceWeekend(raceWeekendId, sendFinalizeEmail
         const apiResult = apiResponse.status == 400 ? await apiResponse.json() : false;
         response.error = apiResponse.status == 500;
         response.cantBeFinalized = apiResult ? apiResult.cant_be_finalized : false;
+        response.alreadyFinalized = apiResult ? apiResult.already_finalized : false;
         response.competitorsNotFound = apiResult ? apiResult.competitors_not_found : [];
         response.status = apiResponse.status;
 

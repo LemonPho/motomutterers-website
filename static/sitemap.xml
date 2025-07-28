@@ -7,9 +7,6 @@
 <loc>https://www.motomutterers.com/announcements</loc>
 </url>
 <url>
-<loc>https://www.motomutterers.com/announcements/{announcementId}</loc>
-</url>
-<url>
 <loc>https://www.motomutterers.com/contact</loc>
 </url>
 <url>
@@ -28,9 +25,6 @@
 <loc>https://www.motomutterers.com/race-weekends</loc>
 </url>
 <url>
-<loc>https://www.motomutterers.com/race-weekends/{raceWeekendId}</loc>
-</url>
-<url>
 <loc>https://www.motomutterers.com/register</loc>
 </url>
 <url>
@@ -44,9 +38,6 @@
 </url>
 <url>
 <loc>https://www.motomutterers.com/users</loc>
-</url>
-<url>
-<loc>https://www.motomutterers.com/users/{username}</loc>
 </url>
 <url>
 <loc>https://www.motomutterers.com/404</loc>

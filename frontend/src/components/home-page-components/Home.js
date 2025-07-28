@@ -4,9 +4,10 @@ import Announcement from "./HomePageAnnouncement";
 import { useApplicationContext } from "../ApplicationContext";
 import RaceWeekend from "./HomePageRaceWeekend";
 import Standings from "./HomePageStandings";
+import Welcome from "./Welcome";
 
 export default function Home(){
-    const { currentSeason, contextLoading } = useApplicationContext();
+    const { currentSeason, contextLoading, user } = useApplicationContext();
 
     if(contextLoading){
         return(
@@ -20,6 +21,10 @@ export default function Home(){
                 </div>
             </div>
         );
+    } else if(!user.is_logged_in) {
+        return(
+            <Welcome />
+        )
     } else {
         return(
             <>

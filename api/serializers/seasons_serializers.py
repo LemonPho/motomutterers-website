@@ -97,6 +97,7 @@ class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
         fields = ["id", "competitor_points", "independent", "rookie", "season"]
 
     def validate_competitor_points(self, competitor_points):
+        update = self.context.get("update", False)
         if isinstance(competitor_points, int):
             try:
                 instance = CompetitorPoints.objects.get(pk=competitor_points)
@@ -106,7 +107,14 @@ class SeasonCompetitorPositionWriteSerializer(serializers.ModelSerializer):
             return instance
         
         elif isinstance(competitor_points, dict):
-            serializer = importlib.import_module("api.serializers.competitors_serializers").CompetitorPointsWriteSerializer(data=competitor_points)
+            if update:
+                try:
+                    instance = CompetitorPoints.objects.get(pk=competitor_points["id"])
+                except CompetitorPoints.DoesNotExist:
+                    raise serializers.ValidationError("Could not find competitor points object with id: ", competitor_points["id"])
+                serializer = importlib.import_module("api.serializers.competitors_serializers").CompetitorPointsWriteSerializer(data=competitor_points, instance=instance, context={"update": True})
+            else:
+                serializer = importlib.import_module("api.serializers.competitors_serializers").CompetitorPointsWriteSerializer(data=competitor_points)
             if not serializer.is_valid():
                 raise serializers.ValidationError("competitor points data given was not valid for creation")
             

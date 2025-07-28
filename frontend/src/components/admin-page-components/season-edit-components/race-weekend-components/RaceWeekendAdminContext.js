@@ -150,7 +150,6 @@ export default function RaceWeekendAdminContextProvider({ children }){
 
         if(raceWeekendResponse.error){
             setErrorMessage("There was an error finalizing the race weekend");
-            
             return;
         }
 
@@ -170,6 +169,11 @@ export default function RaceWeekendAdminContextProvider({ children }){
 
         if(raceWeekendResponse.cantBeFinalized){
             setErrorMessage("Make sure both the sprint race and race are retrieved before finalizing");
+            return;
+        }
+
+        if(raceWeekendResponse.alreadyFinalized){
+            setErrorMessage("The race weekend is registered as finalized, please refresh");
             return;
         }
 
