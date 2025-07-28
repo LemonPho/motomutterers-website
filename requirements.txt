@@ -4,3 +4,4 @@ django-rest-framework
 selenium
 six
 pillow
+django-webpack-loader

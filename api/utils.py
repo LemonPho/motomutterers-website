@@ -1,5 +1,4 @@
 from django.contrib.sites.shortcuts import get_current_site
-from django_ratelimit.decorators import ratelimit
 from django.core.mail import EmailMessage
 
 import os
