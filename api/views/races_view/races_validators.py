@@ -6,6 +6,7 @@ from ...serializers.competitors_serializers import CompetitorPositionWriteSerial
 from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
 from pyvirtualdisplay import Display
+from pyvirtualdisplay import Xvfb
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -195,7 +196,7 @@ def generate_qualifying_positions_data(url, season, request):
         browser = webdriver.Chrome()
     #linux
     else:
-        display = Display(visible=0, size=(1920, 1080), use_xauth=True) #virtual display for gunicorn
+        display = Xvfb(size=(1920, 1080)) #virtual display for gunicorn
         display.start()
         service = Service(executable_path="/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
@@ -292,7 +293,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         browser = webdriver.Chrome(options=options)
     #linux
     else:
-        display = Display(0, (1920, 1080), use_xauth=True)
+        display = Xvfb(size=(1920, 1080))
         display.start()
         service = Service(executable_path="/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)

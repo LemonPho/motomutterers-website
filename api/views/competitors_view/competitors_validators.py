@@ -3,6 +3,7 @@ from ...serializers.serializers_util import sanitize_html
 from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
 from pyvirtualdisplay import Display
+from pyvirtualdisplay.xvfb import Xvfb
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -133,7 +134,7 @@ def generate_competitor_table_data(url, season, request):
         browser = webdriver.Chrome()
     #raspberry pi
     else:
-        display = Display(visible=0, size=(1920, 1080), use_xauth=True) # be sure to have xvfb installed on linux
+        display = Xvfb(size=(1920, 1080)) # be sure to have xvfb installed on linux
         display.start() # virtual display so that the browser can run headless with gunicorn
 
         service = Service(executable_path="/usr/bin/chromedriver")
