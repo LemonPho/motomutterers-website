@@ -188,7 +188,7 @@ def generate_qualifying_positions_data(url, season, request):
     else:
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "/home/mishu/chromedriver"
+        options.binary_location = "/usr/bin/chromedriver"
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -281,7 +281,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
     else:
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "/home/mishu/chromedriver"
+        options.binary_location = "/usr/bin/chromedriver"
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")

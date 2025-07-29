@@ -138,7 +138,7 @@ def generate_competitor_table_data(url, season, request):
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        browser = webdriver.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)
+        browser = webdriver.Chrome(driver_executable_path="/home/mishu/chromedriver", options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request, browser=browser)
 
