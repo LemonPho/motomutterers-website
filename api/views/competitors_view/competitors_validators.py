@@ -131,8 +131,14 @@ def generate_competitor_table_data(url, season, request):
         browser = webdriver.Chrome()
     #raspberry pi
     else:
-        service = Service("/usr/bin/chromedriver")
-        browser = webdriver.Chrome(service=service, options=options)
+        options = webdriver.ChromeOptions()
+        options.add_argument('--disable-blink-features=AutomationControlled')
+        options.binary_location = "usr/bin/chromedriver"
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        browser = webdriver.Chrome(driver_executable_path="usr/bin/chromedriver", options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request, browser=browser)
 
