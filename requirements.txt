@@ -6,4 +6,4 @@ six
 pillow
 django-webpack-loader
 pillow-heif
-undetected-chromedriver
+pyvirtualdisplay #also need xvfb on linux

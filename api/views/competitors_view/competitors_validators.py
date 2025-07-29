@@ -133,7 +133,7 @@ def generate_competitor_table_data(url, season, request):
         browser = webdriver.Chrome()
     #raspberry pi
     else:
-        display = Display(visible=0, size=(1920, 1080))
+        display = Display(visible=0, size=(1920, 1080), use_xauth=True) # be sure to have xvfb installed on linux
         display.start() # virtual display so that the browser can run headless with gunicorn
 
         service = Service(executable_path="/usr/bin/chromedriver")

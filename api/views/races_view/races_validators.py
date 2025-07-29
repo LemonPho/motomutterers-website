@@ -195,7 +195,7 @@ def generate_qualifying_positions_data(url, season, request):
         browser = webdriver.Chrome()
     #linux
     else:
-        display = Display(visible=0, size=(1920, 1080)) #virtual display for gunicorn
+        display = Display(visible=0, size=(1920, 1080), use_xauth=True) #virtual display for gunicorn
         display.start()
         service = Service(executable_path="/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
@@ -292,7 +292,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         browser = webdriver.Chrome(options=options)
     #linux
     else:
-        display = Display(0, (1920, 1080))
+        display = Display(0, (1920, 1080), use_xauth=True)
         display.start()
         service = Service(executable_path="/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
