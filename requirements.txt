@@ -6,3 +6,4 @@ six
 pillow
 django-webpack-loader
 pillow-heif
+undetected-chromedriver

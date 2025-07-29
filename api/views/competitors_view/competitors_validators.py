@@ -2,7 +2,7 @@ from ...models import Season, Competitor, CompetitorPoints
 from ...serializers.serializers_util import sanitize_html
 from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
-from selenium import webdriver
+import undetected_chromedriver as webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC

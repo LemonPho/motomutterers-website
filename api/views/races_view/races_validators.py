@@ -5,7 +5,7 @@ from ...serializers.competitors_serializers import CompetitorPositionWriteSerial
 
 from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
-from selenium import webdriver
+import undetected_chromedriver as webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
