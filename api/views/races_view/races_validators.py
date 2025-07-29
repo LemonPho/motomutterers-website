@@ -292,7 +292,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         browser = webdriver.Chrome(options=options)
     #linux
     else:
-        display = Display(0, (1920, 1080), backend="xvfb")
+        display = Display(visible=0, size=(1920, 1080), backend="xvfb")
         display.start()
         service = Service(executable_path="/usr/bin/chromedriver")
         browser = webdriver.Chrome(service=service, options=options)
