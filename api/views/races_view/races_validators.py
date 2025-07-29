@@ -5,7 +5,8 @@ from ...serializers.competitors_serializers import CompetitorPositionWriteSerial
 
 from ..selenium_status_view import create_selenium_status, check_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
-import undetected_chromedriver as webdriver
+from pyvirtualdisplay import Display
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -181,19 +182,23 @@ def generate_qualifying_positions_data(url, season, request):
     q1_url = url + "?st=Q1"
     q2_url = url + "?st=Q2"
 
+    display = None
+
+    options = webdriver.ChromeOptions()
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+
     #windows
     if os.name == "nt":
         browser = webdriver.Chrome()
     #linux
     else:
-        options = webdriver.ChromeOptions()
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "/usr/bin/chromedriver"
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        browser = webdriver.Chrome(driver_executable_path="/home/mishu/chromedriver", options=options)
+        display = Display(visible=0, size=(1920, 1080)) #virtual display for gunicorn
+        display.start()
+        service = Service(executable_path="/usr/bin/chromedriver")
+        browser = webdriver.Chrome(service=service, options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving qualifying positions", request=request, browser=browser)
     browser.get(q2_url)
@@ -205,6 +210,7 @@ def generate_qualifying_positions_data(url, season, request):
         response["timeout"] = True
         browser.quit()
         close_selenium_status(selenium_instance)
+        if display: display.stop()
         return response
         
     table_body = table.find_element(By.TAG_NAME, "tbody")
@@ -235,6 +241,7 @@ def generate_qualifying_positions_data(url, season, request):
         response["timeout"] = True
         browser.quit()
         close_selenium_status(selenium_instance)
+        if display: display.stop()
         return response
 
     table_body = table.find_element(By.TAG_NAME, "tbody")
@@ -257,6 +264,7 @@ def generate_qualifying_positions_data(url, season, request):
 
     browser.quit()
     close_selenium_status(selenium_instance)
+    if display: display.stop()
     return response
 
 
@@ -271,22 +279,23 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         }
     }
 
+    display = None
+
+    options = webdriver.ChromeOptions()
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+
     #windows
     if os.name == "nt":
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
         browser = webdriver.Chrome(options=options)
     #linux
     else:
-        options = webdriver.ChromeOptions()
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "/usr/bin/chromedriver"
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        browser = webdriver.Chrome(driver_executable_path="/home/mishu/chromedriver", options=options)
+        display = Display(0, (1920, 1080))
+        display.start()
+        service = Service(executable_path="/usr/bin/chromedriver")
+        browser = webdriver.Chrome(service=service, options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message=f"Retrieving race result for {race_weekend.title}", request=request, browser=browser)
 
@@ -307,6 +316,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         response["timeout"] = True
         browser.quit()
         close_selenium_status(selenium_instance)
+        if display: display.stop()
         return response
     
     table_body = table.find_element(By.TAG_NAME, "tbody")
@@ -331,6 +341,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         
     browser.quit()
     close_selenium_status(selenium_instance)
+    if display: display.stop()
     return response
 
 #generates standings after race

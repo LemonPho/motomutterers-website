@@ -2,7 +2,8 @@ from ...models import Season, Competitor, CompetitorPoints
 from ...serializers.serializers_util import sanitize_html
 from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status, ACTIVE_BROWSERS
 
-import undetected_chromedriver as webdriver
+from pyvirtualdisplay import Display
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -121,24 +122,22 @@ def generate_competitor_table_data(url, season, request):
     }
 
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+    
+    display = None
 
     #windows
     if os.name == "nt":
         browser = webdriver.Chrome()
     #raspberry pi
     else:
-        options = webdriver.ChromeOptions()
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "/usr/bin/chromedriver"
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        browser = webdriver.Chrome(driver_executable_path="/home/mishu/chromedriver", options=options)
+        display = Display(visible=0, size=(1920, 1080))
+        display.start() # virtual display so that the browser can run headless with gunicorn
+
+        service = Service(executable_path="/usr/bin/chromedriver")
+        browser = webdriver.Chrome(service=service, options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request, browser=browser)
 
@@ -153,6 +152,7 @@ def generate_competitor_table_data(url, season, request):
             response["timeout"] = True
             browser.quit()
             close_selenium_status(selenium_instance)
+            if display: display.stop()
             return response
         
         table_rows = table.find_elements(By.TAG_NAME, "a")
@@ -190,6 +190,7 @@ def generate_competitor_table_data(url, season, request):
             response["timeout"] = True
             browser.quit()
             close_selenium_status(selenium_instance)
+            if display: display.stop()
             return response
 
         for i in range(0, len(table_rows)):
@@ -222,4 +223,5 @@ def generate_competitor_table_data(url, season, request):
 
     browser.quit()
     close_selenium_status(selenium_instance)
+    if display: display.stop()
     return response
