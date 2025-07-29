@@ -284,7 +284,7 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled')
 
-        #options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
