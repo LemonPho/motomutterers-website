@@ -5,3 +5,4 @@ selenium
 six
 pillow
 django-webpack-loader
+pillow-heif
