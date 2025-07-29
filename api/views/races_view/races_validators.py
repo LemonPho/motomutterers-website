@@ -188,12 +188,12 @@ def generate_qualifying_positions_data(url, season, request):
     else:
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "usr/bin/chromedriver"
+        options.binary_location = "/usr/bin/chromedriver"
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        browser = webdriver.Chrome(driver_executable_path="usr/bin/chromedriver", options=options)
+        browser = webdriver.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving qualifying positions", request=request, browser=browser)
     browser.get(q2_url)
@@ -281,12 +281,12 @@ def generate_race_data(race_weekend, is_sprint, request, season):
     else:
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled')
-        options.binary_location = "usr/bin/chromedriver"
+        options.binary_location = "/usr/bin/chromedriver"
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        browser = webdriver.Chrome(driver_executable_path="usr/bin/chromedriver", options=options)
+        browser = webdriver.Chrome(driver_executable_path="/usr/bin/chromedriver", options=options)
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message=f"Retrieving race result for {race_weekend.title}", request=request, browser=browser)
 
