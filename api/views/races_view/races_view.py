@@ -412,7 +412,7 @@ def un_finalize_race_weekend(request):
         )
         return HttpResponse(status=403)
 
-    STATUS_IN_PROGRESS = 1
+    STATUS_FINALIZED = 2
 
     data = json.loads(request.body)
     id = data.get("id", -1)
@@ -425,7 +425,7 @@ def un_finalize_race_weekend(request):
     except RaceWeekend.DoesNotExist:
         return HttpResponse(status=404)
     
-    if race_weekend.status != STATUS_IN_PROGRESS:
+    if race_weekend.status != STATUS_FINALIZED:
         return HttpResponse(status=400)
     
     context = {
