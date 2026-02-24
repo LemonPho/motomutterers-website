@@ -3,7 +3,7 @@ from .models import StandingsRace
 from .models import User, UserPicks, UserPicksRace, Announcement, Race, Competitor, CompetitorPosition, CompetitorPoints, Season, CurrentSeason, Notification, SeasonCompetitorPosition, Standings, Comment, StandingsRace, SeleniumStatus, SeasonMessage, RaceWeekend
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ["username", "is_admin", "last_login", "race_weekends_emails", "comment_response_emails"]
+    list_display = ["username", "email", "is_admin", "last_login", "race_weekends_emails", "comment_response_emails"]
 
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = ["title", "user"]
