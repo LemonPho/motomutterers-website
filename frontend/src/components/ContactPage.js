@@ -14,7 +14,7 @@ export default function Contact(){
                 <hr />
                 <span>Donations:</span>
                 <p></p>
-                <span><strong>Paypal link: </strong><a href="https://www.paypal.com/donate/?hosted_button_id=X5DS62EXQ8RDY">https://www.paypal.com/donate/?hosted_button_id=X5DS62EXQ8RDY</a></span>
+                <span><strong>Paypal link: </strong><a href="https://www.paypal.com/donate/?hosted_button_id=LCXBRSW5TECUQ">https://www.paypal.com/donate/?hosted_button_id=LCXBRSW5TECUQ</a></span>
             </div>
         </div>
     )
