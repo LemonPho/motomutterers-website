@@ -115,5 +115,5 @@ urlpatterns = [
     path('activate-email', activation_view.activate_email),
     path('login/', authentication_view.login_view),
     path('logout/', authentication_view.logout_view),
-    path('send-reset-email', user_view.email_new_password),
+    path('send-reset-email/', user_view.email_new_password),
 ]
