@@ -11,6 +11,7 @@ export default function FindAccount() {
     const [account, setAccount] = useState(null);
     const [accountFound, setAccountFound] = useState(null);
     const [searchInput, setSearchInput] = useState("");
+    const [isUsername, setIsUsername] = useState(false);
     const [searchInvalid, setSearchInvalid] = useState(false);
 
     const { setErrorMessage, setSuccessMessage } = useApplicationContext();
@@ -21,8 +22,10 @@ export default function FindAccount() {
             let queryString = "/api/find-account?";
 
             if(searchInput.includes("@")){
+                setIsUsername(false);
                 queryString += `email=${searchInput}`;
             } else {
+                setIsUsername(true);
                 queryString += `username=${searchInput}`;
             }
 
@@ -47,7 +50,7 @@ export default function FindAccount() {
         if(!accountFound) return;
 
         setLoading(true);
-        let emailResponse = await sendNewPasswordEmail(searchInput);
+        let emailResponse = await sendNewPasswordEmail(searchInput, isUsername);
 
         if(emailResponse.error){
             return;

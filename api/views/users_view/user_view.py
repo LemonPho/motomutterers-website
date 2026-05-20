@@ -320,18 +320,23 @@ def toggle_email_notifications(request):
 
 
 def email_new_password(request):
-    if request.method != "POST":
+    if request.method != "GET":
         return HttpResponse(status=405)
     
-    body = json.loads(request.body)
-    username = body.get("username", False)
     User = get_user_model()
 
-    if not username:
+    body = json.loads(request.body)
+    primary_key_input = body.get("primaryKeyInput", False)
+    is_username = body.get("isUsername", False)
+
+    if not primary_key_input or not is_username:
         return HttpResponse(status=405)
     
     try:
-        user = User.objects.get(username=username)
+        if not is_username:
+            user = User.objects.get(email=primary_key_input)
+        else:
+            user = User.objects.get(username=primary_key_input)
         email = user.email
     except User.DoesNotExist:
         return HttpResponse(status=405)

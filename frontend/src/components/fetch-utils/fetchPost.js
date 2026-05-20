@@ -623,7 +623,7 @@ export async function readNotification(notificationId){
     return response;
 }
 
-export async function sendNewPasswordEmail(accountUsername){
+export async function sendNewPasswordEmail(primaryKeyInput, isUsername){
     let response = {
         error: false,
         status: null,
@@ -631,7 +631,7 @@ export async function sendNewPasswordEmail(accountUsername){
 
     try{
         const csrftoken = getCookie("csrftoken");
-        const apiResponse = await fetch(`/api/send-reset-email?username=${accountUsername}`, {
+        const apiResponse = await fetch(`/api/send-reset-email/`, {
             method: 'POST',
             headers: {
                 "X-CSRFToken": csrftoken,
@@ -639,7 +639,8 @@ export async function sendNewPasswordEmail(accountUsername){
             },
             mode: "same-origin",
             body: JSON.stringify({
-                username: accountUsername,
+                primaryKeyInput: primaryKeyInput,
+                isUsername: isUsername
             }),
         });
 
