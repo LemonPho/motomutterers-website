@@ -320,6 +320,7 @@ def toggle_email_notifications(request):
 
 
 def email_new_password(request):
+    print(request)
     if request.method != "POST":
         return HttpResponse(status=405)
     
@@ -328,12 +329,14 @@ def email_new_password(request):
     User = get_user_model()
 
     if not username:
+        print(username)
         return HttpResponse(status=405)
     
     try:
         user = User.objects.get(username=username)
         email = user.email
     except User.DoesNotExist:
+        print("User not found")
         return HttpResponse(status=405)
     
     domain = get_current_site(request).domain
