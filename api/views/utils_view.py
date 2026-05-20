@@ -35,7 +35,7 @@ def find_account(request):
     email = request.GET.get("email", False)
     username = request.GET.get("username", False)
 
-    if not email and not username or request.method != "POST":
+    if not email and not username or request.method != "GET":
         return HttpResponse(status=405)
 
     email_found = None
