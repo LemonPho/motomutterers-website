@@ -188,7 +188,6 @@ def generate_qualifying_positions_data(url, season, request):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.add_argument("--headless")
 
     #windows
     if os.name == "nt":
@@ -287,7 +286,6 @@ def generate_race_data(race_weekend, is_sprint, request, season):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.add_argument("--headless")
 
     #windows
     if os.name == "nt":
