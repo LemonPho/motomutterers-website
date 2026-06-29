@@ -124,6 +124,7 @@ def generate_competitor_table_data(url, season, request):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+    options.add_argument("--headless")
     
     display = None
 
