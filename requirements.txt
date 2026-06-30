@@ -8,3 +8,4 @@ django-webpack-loader
 pillow-heif
 pyvirtualdisplay #also need xvfb on linux
 psutil
+gunicorn

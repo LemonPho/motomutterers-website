@@ -41,7 +41,6 @@ export default function App() {
         <Suspense fallback={<LoadingPage />}>
             <Routes>
                 <Route path="/" element={<LayoutPage />}>
-                    <Route index element={<Home />}/>
                     <Route path="activate" element={<AccountActivation />}/>
                     <Route path="administration" element={<SeasonCreateContextProvider />}>
                         <Route index element={<Admin />}/>

@@ -1,14 +1,33 @@
 {
   "status": "done",
   "assets": {
-    "main.7964d7859e7936e3cab5.js": {
-      "name": "main.7964d7859e7936e3cab5.js",
-      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.7964d7859e7936e3cab5.js"
+    "76a8e76fdcecafc080d4.jpg": {
+      "name": "76a8e76fdcecafc080d4.jpg",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/76a8e76fdcecafc080d4.jpg",
+      "sourceFilename": "static/css/background-image.jpg"
+    },
+    "main.004e824fe0fe39d58559.js": {
+      "name": "main.004e824fe0fe39d58559.js",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.004e824fe0fe39d58559.js"
+    },
+    "main.2fe70bf7a621f1b2700e.js": {
+      "name": "main.2fe70bf7a621f1b2700e.js",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.2fe70bf7a621f1b2700e.js"
+    },
+    "main.da88323a467ab6a19b9e.js": {
+      "name": "main.da88323a467ab6a19b9e.js",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.da88323a467ab6a19b9e.js"
+    },
+    "main.f3be32806969320036d1.js": {
+      "name": "main.f3be32806969320036d1.js",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.f3be32806969320036d1.js"
     }
   },
   "chunks": {
     "main": [
-      "main.7964d7859e7936e3cab5.js"
+      "main.2fe70bf7a621f1b2700e.js"
     ]
-  }
+  },
+  "error": "ModuleNotFoundError",
+  "message": "Module not found: Error: Can't resolve '../css/index.css' in '/home/Luigi/Documents/Motomutterers/motomutterers/frontend/src'"
 }
