@@ -1,6 +1,7 @@
 from ...models import Season, Competitor, CompetitorPoints
 from ...serializers.serializers_util import sanitize_html
 from ..selenium_status_view import check_selenium_status, create_selenium_status, close_selenium_status, ACTIVE_BROWSERS
+from ..races_view.races_validators import create_browser, load_page
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -120,28 +121,11 @@ def generate_competitor_table_data(url, season, request):
         "data": [],
     }
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    
-    display = None
-
-    #windows
-    if os.name == "nt":
-        browser = webdriver.Chrome()
-    #raspberry pi
-    else:
-        from pyvirtualdisplay import Display
-        display = Display(visible=0, size=(1920, 1080), backend="xvfb") # be sure to have xvfb installed on linux
-        display.start() # virtual display so that the browser can run headless with gunicorn
-
-        service = Service(executable_path="/usr/bin/chromedriver")
-        browser = webdriver.Chrome(service=service, options=options)
+    browser, display = create_browser()
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving season competitor data", request=request, browser=browser)
 
-    browser.get(url)
+    load_page(browser, url)
     delay = 10
 
     if url.find("riders/motogp") >= 0:

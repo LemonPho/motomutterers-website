@@ -15,6 +15,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
 import os
+import sys
 import psutil
 
 RACE_TYPE_UPCOMING = 1
@@ -24,6 +25,50 @@ RACE_TYPE_SPRINT = 3
 RACE = 1
 SPRINT_RACE = 2
 GRID = 3
+
+#motorsport.com pages load a lot of third party ads/trackers, and some of them never settle, so the
+#window load event can take minutes to fire (or never fires). the results table is server rendered,
+#so waiting for the dom instead of the load event is enough, and a page load timeout keeps a stalled
+#request from blocking the worker until chrome's 300 second default kicks in
+PAGE_LOAD_TIMEOUT = 25
+
+# ---------------------// FUNCTIONS USED FOR SETTING UP THE BROWSER //---------------------
+
+def create_browser():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
+    options.page_load_strategy = "eager" #don't wait for ads/trackers, only for the dom
+
+    #don't add --headless, motorsport.com's cdn returns a 403 for the HeadlessChrome user agent
+
+    display = None
+
+    #windows and macos have a real display and let selenium resolve chromedriver on its own
+    if sys.platform in ("win32", "darwin"):
+        browser = webdriver.Chrome(options=options)
+    #linux (gunicorn) has no display, so chrome runs inside a virtual one
+    else:
+        from pyvirtualdisplay import Display
+        display = Display(visible=0, size=(1920, 1080), backend="xvfb")
+        display.start()
+        service = Service(executable_path="/usr/bin/chromedriver")
+        browser = webdriver.Chrome(service=service, options=options)
+
+    browser.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
+
+    return browser, display
+
+#a stalled load doesn't mean the table is missing, it usually is already in the dom, so let the
+#explicit wait that follows decide whether the page is actually usable
+def load_page(browser, url):
+    try:
+        browser.get(url)
+    except TimeoutException:
+        pass
 
 # ---------------------// FUNCTIONS USED FOR CREATING RACES FROM LINKS //---------------------
 
@@ -181,27 +226,10 @@ def generate_qualifying_positions_data(url, season, request):
     q1_url = url + "?st=Q1"
     q2_url = url + "?st=Q2"
 
-    display = None
-
-    options = webdriver.ChromeOptions()
-    options.add_argument('--disable-blink-features=AutomationControlled')
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-
-    #windows
-    if os.name == "nt":
-        browser = webdriver.Chrome()
-    #linux
-    else:
-        from pyvirtualdisplay import Display
-        display = Display(visible=0, size=(1920, 1080), backend="xvfb") #virtual display for gunicorn
-        display.start()
-        service = Service(executable_path="/usr/bin/chromedriver")
-        browser = webdriver.Chrome(service=service, options=options)
+    browser, display = create_browser()
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message="Retrieving qualifying positions", request=request, browser=browser)
-    browser.get(q2_url)
+    load_page(browser, q2_url)
     delay = 10
 
     try:
@@ -233,7 +261,7 @@ def generate_qualifying_positions_data(url, season, request):
 
             position += 1
     
-    browser.get(q1_url)
+    load_page(browser, q1_url)
 
     try:
         table = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ms-table.ms-table--result")))
@@ -279,35 +307,20 @@ def generate_race_data(race_weekend, is_sprint, request, season):
         }
     }
 
-    display = None
-
-    options = webdriver.ChromeOptions()
-    options.add_argument('--disable-blink-features=AutomationControlled')
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-
-    #windows
-    if os.name == "nt":
-        browser = webdriver.Chrome(options=options)
-    #linux
-    else:
-        from pyvirtualdisplay import Display
-        display = Display(visible=0, size=(1920, 1080), backend="xvfb")
-        display.start()
-        service = Service(executable_path="/usr/bin/chromedriver")
-        browser = webdriver.Chrome(service=service, options=options)
+    browser, display = create_browser()
 
     selenium_instance = create_selenium_status(pid=browser.service.process.pid, message=f"Retrieving race result for {race_weekend.title}", request=request, browser=browser)
 
     if not selenium_instance:
         response["selenium_busy"] = True
+        browser.quit()
+        if display: display.stop()
         return response
 
     if not is_sprint:
-        browser.get(race_weekend.url + "?st=RACE")
+        load_page(browser, race_weekend.url + "?st=RACE")
     else:
-        browser.get(race_weekend.url + "?st=SPR")
+        load_page(browser, race_weekend.url + "?st=SPR")
 
     delay = 30
 
