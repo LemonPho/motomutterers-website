@@ -9,7 +9,11 @@ class AnnouncementAdmin(admin.ModelAdmin):
     list_display = ["title", "user"]
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ["id", "text", "user__username"]
+    list_display = ["id", "text", "username"]
+
+    @admin.display(ordering="user__username", description="username")
+    def username(self, obj):
+        return obj.user.username
 
 class RaceAdmin(admin.ModelAdmin):
     list_display = ["track"]
@@ -29,13 +33,28 @@ class CompetitorAdmin(admin.ModelAdmin):
     list_display = ["id", "first", "last", "number"]
 
 class CompetitorPointsAdmin(admin.ModelAdmin):
-    list_display = ["id", "competitor__number", "points"]
+    list_display = ["id", "competitor_number", "points"]
 
-class CompetitorPositionAdmin(admin.ModelAdmin):
-    list_display = ["id", "competitor_points__points", "competitor_points__competitor__number", "position"]
+    @admin.display(ordering="competitor__number", description="competitor number")
+    def competitor_number(self, obj):
+        return obj.competitor.number if obj.competitor else None
 
-class SeasonCompetitorPositionAdmin(admin.ModelAdmin):
-    list_display = ["id", "competitor_points__points", "competitor_points__competitor__number", "independent"]
+class CompetitorPointsMixin:
+    @admin.display(ordering="competitor_points__points", description="points")
+    def points(self, obj):
+        return obj.competitor_points.points if obj.competitor_points else None
+
+    @admin.display(ordering="competitor_points__competitor__number", description="competitor number")
+    def competitor_number(self, obj):
+        if obj.competitor_points and obj.competitor_points.competitor:
+            return obj.competitor_points.competitor.number
+        return None
+
+class CompetitorPositionAdmin(CompetitorPointsMixin, admin.ModelAdmin):
+    list_display = ["id", "points", "competitor_number", "position"]
+
+class SeasonCompetitorPositionAdmin(CompetitorPointsMixin, admin.ModelAdmin):
+    list_display = ["id", "points", "competitor_number", "independent"]
 
 class SeasonAdmin(admin.ModelAdmin):
     list_display = ["id", "year"]
@@ -53,7 +72,11 @@ class SeleniumStatusAdmin(admin.ModelAdmin):
     list_display = ["executor_url", "message", "id"]
 
 class UserPicksRaceAdmin(admin.ModelAdmin):
-    list_display = ["user__username", "points", "id"]
+    list_display = ["username", "points", "id"]
+
+    @admin.display(ordering="user__username", description="username")
+    def username(self, obj):
+        return obj.user.username
 
 class SeasonMessageAdmin(admin.ModelAdmin):
     list_display = ["message", "timestamp"]

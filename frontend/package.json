@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development --watch",
+    "dev": "webpack serve --mode development --open",
     "build": "webpack --mode production"
   },
   "keywords": [],
@@ -20,7 +20,8 @@
     "source-map-loader": "^4.0.1",
     "webpack": "^5.98.0",
     "webpack-bundle-tracker": "^3.1.1",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^6.0.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",
