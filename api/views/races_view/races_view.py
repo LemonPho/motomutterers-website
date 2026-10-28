@@ -339,19 +339,10 @@ def finalize_race_weekend(request):
     season = race_weekend.season.first()
 
     response = {
-        "cant_be_finalized": race_weekend.race == None or race_weekend.sprint_race == None,
         "competitors_not_found": [],
         "already_finalized": race_weekend.status == STATUS_FINAL
     }
 
-    if response["cant_be_finalized"]:
-        SeasonMessage.objects.create(
-            season = season,
-            message = f"When trying to finalize the {race_weekend.title} weekend, make sure both the race and sprint race have been retrieved",
-            type = 0,
-        )
-        return JsonResponse(response, status=400)
-    
     if response["already_finalized"]:
         SeasonMessage.objects.create(
             season=season,
