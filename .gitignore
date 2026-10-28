@@ -8,3 +8,4 @@ backup.py
 *.swp
 #dev build output, only read when DEBUG=True so it never needs to be committed
 /frontend/webpack-stats-dev.json
+cloudflared.deb
