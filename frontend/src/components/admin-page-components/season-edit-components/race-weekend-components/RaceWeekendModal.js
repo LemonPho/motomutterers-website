@@ -121,8 +121,8 @@ export default function RaceWeekendModal(){
                                 </div>
                             ))}
                         {(selectedRaceWeekend.status == 2 && selectedRaceWeekend.race == null) && <button className="btn btn-primary rounded-15" disabled>Race weekend finalized</button>}
-                        {(selectedRaceWeekend.race == null && !loading && selectedRaceWeekend.status == 1) && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
-                        {(selectedRaceWeekend.race == null && loading && selectedRaceWeekend.status == 1) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
+                        {(selectedRaceWeekend.race == null && !loading && selectedRaceWeekend.status != 2) && <button className="btn btn-primary rounded-15" onClick={retrieveRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.race == null && loading && selectedRaceWeekend.status != 2) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
                     </div>  
                 </div>
             
@@ -151,8 +151,8 @@ export default function RaceWeekendModal(){
                                 </div>
                             ))}
                         {(selectedRaceWeekend.status == 2 && selectedRaceWeekend.sprint_race == null) && <button className="btn btn-primary rounded-15" disabled>Race weekend finalized</button>}
-                        {(selectedRaceWeekend.sprint_race == null && !loading && selectedRaceWeekend.status == 1) && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
-                        {(selectedRaceWeekend.sprint_race == null && loading && selectedRaceWeekend.status == 1) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
+                        {(selectedRaceWeekend.sprint_race == null && !loading && selectedRaceWeekend.status != 2) && <button className="btn btn-primary rounded-15" onClick={retrieveSprintRace}>Retrieve</button>}
+                        {(selectedRaceWeekend.sprint_race == null && loading && selectedRaceWeekend.status != 2) && <button className="btn btn-primary rounded-15" disabled>Loading...</button>}
                     </div>  
                 </div>
             </div>

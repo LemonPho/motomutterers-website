@@ -7,20 +7,20 @@
       "publicPath": "/static/frontend/76a8e76fdcecafc080d4.jpg",
       "sourceFilename": "static/css/background-image.jpg"
     },
-    "main.cd8abe6ec3244ee65376.js": {
-      "name": "main.cd8abe6ec3244ee65376.js",
-      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.cd8abe6ec3244ee65376.js",
-      "publicPath": "/static/frontend/main.cd8abe6ec3244ee65376.js"
+    "main.b9fc53985a7e7697180b.js": {
+      "name": "main.b9fc53985a7e7697180b.js",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.b9fc53985a7e7697180b.js",
+      "publicPath": "/static/frontend/main.b9fc53985a7e7697180b.js"
     },
-    "main.cd8abe6ec3244ee65376.js.LICENSE.txt": {
-      "name": "main.cd8abe6ec3244ee65376.js.LICENSE.txt",
-      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.cd8abe6ec3244ee65376.js.LICENSE.txt",
-      "publicPath": "/static/frontend/main.cd8abe6ec3244ee65376.js.LICENSE.txt"
+    "main.b9fc53985a7e7697180b.js.LICENSE.txt": {
+      "name": "main.b9fc53985a7e7697180b.js.LICENSE.txt",
+      "path": "/home/Luigi/Documents/Motomutterers/motomutterers/frontend/static/frontend/main.b9fc53985a7e7697180b.js.LICENSE.txt",
+      "publicPath": "/static/frontend/main.b9fc53985a7e7697180b.js.LICENSE.txt"
     }
   },
   "chunks": {
     "main": [
-      "main.cd8abe6ec3244ee65376.js"
+      "main.b9fc53985a7e7697180b.js"
     ]
   },
   "publicPath": "/static/frontend/"
