@@ -1,0 +1,103 @@
+name: Motomutterers CI/CD Pipeline
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  frontend-build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        check-latest: true
+        cache: 'npm'
+        cache-dependency-path: './frontend/package-lock.json'
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: frontend
+
+    - name: Build frontend
+      run: npm run build
+      working-directory: frontend
+
+    - name: Upload build
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-dist
+        path: frontend/dist   # change to frontend/build if that's your output dir
+  backend-build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create venv and install dependencies
+      run: |
+        python3 -m venv "$HOME/.ci-venvs/motomutterers"
+        "$HOME/.ci-venvs/motomutterers/bin/pip" install --upgrade pip
+        "$HOME/.ci-venvs/motomutterers/bin/pip" install -r requirements.txt
+
+    - name: Migrations
+      run: $HOME/.ci-venvs/motomutterers/bin/python manage.py migrate --no-input
+      env:
+        DATABASE_PATH: ${{ runner.temp }}/db.sqlite3
+
+    - name: Verify code
+      run: $HOME/.ci-venvs/motomutterers/bin/python manage.py check
+
+  deploy:
+    needs: [frontend-build, backend-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    environment: production
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    env:
+      APP_DIR: /var/www/apps/motomutterers-prod
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download frontend build
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-dist
+        path: ${{ runner.temp }}/frontend-dist
+    
+    - name: Sync code to app directory
+      run: |
+        rsync -a --delete \
+          --exclude '.git' \
+          --filter=':- .gitignore' \
+          "$GITHUB_WORKSPACE/" "$APP_DIR/"
+
+    - name: Install frontend build
+      run: rsync -a --delete "$RUNNER_TEMP/frontend-dist/" "$APP_DIR/frontend/dist/"
+
+    - name: Install dependencies
+      working-directory: ${{ env.APP_DIR }}
+      run: ./venv/bin/pip install -r requirements.txt
+
+    - name: Migrate production database
+      working-directory: ${{ env.APP_DIR }}
+      run: ./venv/bin/python manage.py migrate --noinput
+
+    - name: Collect static files
+      working-directory: ${{ env.APP_DIR }}
+      run: ./venv/bin/python manage.py collectstatic --noinput
+
+    - name: Restart services
+      run: sudo systemctl restart motomutterers-prod
