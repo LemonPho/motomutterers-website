@@ -34,9 +34,16 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: frontend-dist
-        path: frontend/dist   # change to frontend/build if that's your output dir
+        path: frontend/dist
+        if-no-files-found: error
+
   backend-build:
     runs-on: self-hosted
+    env:
+      MOTOMUTTERERS_DJANGO_KEY: ci-only-not-a-real-secret
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
     - name: Checkout code
@@ -66,6 +73,7 @@ jobs:
       cancel-in-progress: false
     env:
       APP_DIR: /var/www/apps/motomutterers-prod
+      FRONTEND_DIR: /var/www/apps/motomutterers-frontend
 
     steps:
     - name: Checkout code
@@ -76,16 +84,16 @@ jobs:
       with:
         name: frontend-dist
         path: ${{ runner.temp }}/frontend-dist
-    
-    - name: Sync code to app directory
+
+    - name: Sync backend to app directory
       run: |
         rsync -a --delete \
           --exclude '.git' \
           --filter=':- .gitignore' \
-          "$GITHUB_WORKSPACE/" "$APP_DIR/"
+          "$GITHUB_WORKSPACE/backend/" "$APP_DIR/"
 
-    - name: Install frontend build
-      run: rsync -a --delete "$RUNNER_TEMP/frontend-dist/" "$APP_DIR/frontend/dist/"
+    - name: Deploy frontend
+      run: rsync -a --delete "$RUNNER_TEMP/frontend-dist/" "$FRONTEND_DIR/"
 
     - name: Install dependencies
       working-directory: ${{ env.APP_DIR }}
