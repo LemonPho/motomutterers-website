@@ -73,7 +73,6 @@ jobs:
       cancel-in-progress: false
     env:
       APP_DIR: /var/www/apps/motomutterers-prod
-      FRONTEND_DIR: /var/www/apps/motomutterers-frontend
 
     steps:
     - name: Checkout code
@@ -84,27 +83,31 @@ jobs:
       with:
         name: frontend-dist
         path: ${{ runner.temp }}/frontend-dist
-
-    - name: Sync backend to app directory
+ 
+    - name: Sync repo to app directory
       run: |
         rsync -a --delete \
-          --exclude '.git' \
+          --exclude '.git' --exclude '.github' \
+          --exclude 'venv/' --exclude '.env' --exclude 'db.sqlite3*' \
+          --exclude '/backend/media/' --exclude '/backend/static/' \
           --filter=':- .gitignore' \
-          "$GITHUB_WORKSPACE/backend/" "$APP_DIR/"
+          "$GITHUB_WORKSPACE/" "$APP_DIR/"
 
-    - name: Deploy frontend
-      run: rsync -a --delete "$RUNNER_TEMP/frontend-dist/" "$FRONTEND_DIR/"
+    - name: Deploy frontend build
+      run: rsync -a --delete "$RUNNER_TEMP/frontend-dist/" "$APP_DIR/frontend/dist/"
 
-    - name: Install dependencies
-      working-directory: ${{ env.APP_DIR }}
-      run: ./venv/bin/pip install -r requirements.txt
+    - name: Ensure venv and install dependencies
+      working-directory: ${{ env.APP_DIR }}/backend
+      run: |
+        [ -d venv ] || python3 -m venv venv
+        ./venv/bin/pip install -r requirements.txt
 
     - name: Migrate production database
-      working-directory: ${{ env.APP_DIR }}
+      working-directory: ${{ env.APP_DIR }}/backend
       run: ./venv/bin/python manage.py migrate --noinput
 
     - name: Collect static files
-      working-directory: ${{ env.APP_DIR }}
+      working-directory: ${{ env.APP_DIR }}/backend
       run: ./venv/bin/python manage.py collectstatic --noinput
 
     - name: Restart services
