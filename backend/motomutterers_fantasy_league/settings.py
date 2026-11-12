@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv("MOTOMUTTERERS_DJANGO_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'motomutterersfantasyleague.com', '192.168.0.196']
+ALLOWED_HOSTS = ['www.motomutterers.com']
 
 # Application definition
 
