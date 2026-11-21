@@ -18,6 +18,6 @@ export default function TextInput({ id, value, setValue, onEnterFunction, placeh
     }, [value])
 
     return(
-        <input type={type} className={`input-field w-100 textarea-expand nested-element-color rounded-15 ${className} ${outline ? "border border-danger" : ""}`} id={id} ref={textareaRef} defaultValue={value} placeholder={placeholder} onKeyUp={(e) => {keyPress(e)}}></input>
+        <input type={type} className={`input-field w-100 textarea-expand nested-element-color rounded-15 ${className} ${outline ? "border border-danger" : ""}`} id={id} ref={textareaRef} defaultValue={value} placeholder={placeholder} onChange={(e) => {keyPress(e)}}></input>
     );
 }
